@@ -1,0 +1,103 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{F8BFFD5D-F4C9-4E4D-B964-405A4290A2A2}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Queries</RootNamespace>
+    <AssemblyName>Queries</AssemblyName>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Builders\Fluent\ISqlFrom.cs" />
+    <Compile Include="Builders\Fluent\ISqlOrder.cs" />
+    <Compile Include="Builders\Fluent\ISqlSelect.cs" />
+    <Compile Include="Builders\Fluent\ISqlWhere.cs" />
+    <Compile Include="Builders\Fluent\SelectQueryBuilder.cs" />
+    <Compile Include="Builders\UpdateFieldValue.cs" />
+    <Compile Include="Builders\SelectIntoQuery.cs" />
+    <Compile Include="Builders\SelectQueryBase.cs" />
+    <Compile Include="Builders\UpdateQuery.cs" />
+    <Compile Include="Parts\Columns\AggregateType.cs" />
+    <Compile Include="Parts\Columns\AggregateColumn.cs" />
+    <Compile Include="Parts\Columns\Avg.cs" />
+    <Compile Include="Parts\Columns\ColumnBase.cs" />
+    <Compile Include="Parts\Columns\Count.cs" />
+    <Compile Include="Parts\Columns\IFunctionColumn.cs" />
+    <Compile Include="Parts\Columns\Max.cs" />
+    <Compile Include="Parts\Columns\Min.cs" />
+    <Compile Include="Parts\Columns\TableColumn.cs" />
+    <Compile Include="Parts\CompositeWhereClause.cs" />
+    <Compile Include="Parts\IClause.cs" />
+    <Compile Include="Parts\Joins\CrossJoin.cs" />
+    <Compile Include="Parts\Joins\IJoin.cs" />
+    <Compile Include="Parts\Columns\InlineSelectQueryColumn.cs" />
+    <Compile Include="Parts\Joins\InnerJoin.cs" />
+    <Compile Include="Parts\Joins\JoinBase.cs" />
+    <Compile Include="Parts\Joins\JoinType.cs" />
+    <Compile Include="Parts\Joins\LeftOuterJoin.cs" />
+    <Compile Include="Parts\Joins\RightOuterJoin.cs" />
+    <Compile Include="Parts\WhereClause.cs" />
+    <Compile Include="Parts\WhereLogic.cs" />
+    <Compile Include="Parts\WhereOperator.cs" />
+    <Compile Include="Renderers\DatabaseType.cs" />
+    <Compile Include="Parts\IAliasable.cs" />
+    <Compile Include="Parts\Columns\IColumn.cs" />
+    <Compile Include="Parts\INamable.cs" />
+    <Compile Include="Parts\Columns\LiteralColumn.cs" />
+    <Compile Include="Builders\SelectQuery.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Parts\TableTerm.cs" />
+    <Compile Include="Renderers\ISqlRenderer.cs" />
+    <Compile Include="Renderers\PostgresqlRenderer.cs" />
+    <Compile Include="Renderers\SqlRendererBase.cs" />
+    <Compile Include="Renderers\SqlServerRenderer.cs" />
+    <Compile Include="Validators\InlineSelectQueryColumnValidator.cs" />
+    <Compile Include="Validators\IValidate.cs" />
+    <Compile Include="Validators\SelectQueryBaseValidator.cs" />
+    <Compile Include="Validators\SelectQueryValidator.cs" />
+    <Compile Include="Validators\ColumnValidator.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Parts\UML.cd" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

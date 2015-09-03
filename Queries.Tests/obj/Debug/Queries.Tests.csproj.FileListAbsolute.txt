@@ -1,0 +1,9 @@
+c:\Users\candoumbe\documents\visual studio 2012\Projects\Queries\Queries.Tests\bin\Debug\Queries.Tests.dll
+c:\Users\candoumbe\documents\visual studio 2012\Projects\Queries\Queries.Tests\bin\Debug\Queries.Tests.pdb
+c:\Users\candoumbe\documents\visual studio 2012\Projects\Queries\Queries.Tests\bin\Debug\nunit.framework.dll
+c:\Users\candoumbe\documents\visual studio 2012\Projects\Queries\Queries.Tests\bin\Debug\Queries.dll
+c:\Users\candoumbe\documents\visual studio 2012\Projects\Queries\Queries.Tests\bin\Debug\Queries.pdb
+c:\Users\candoumbe\documents\visual studio 2012\Projects\Queries\Queries.Tests\bin\Debug\nunit.framework.xml
+c:\Users\candoumbe\documents\visual studio 2012\Projects\Queries\Queries.Tests\obj\Debug\Queries.Tests.csprojResolveAssemblyReference.cache
+c:\Users\candoumbe\documents\visual studio 2012\Projects\Queries\Queries.Tests\obj\Debug\Queries.Tests.dll
+c:\Users\candoumbe\documents\visual studio 2012\Projects\Queries\Queries.Tests\obj\Debug\Queries.Tests.pdb
