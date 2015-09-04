@@ -1,67 +1,20 @@
-using System;
-using Queries.Parts;
 using Queries.Parts.Columns;
 
 namespace Queries.Builders.Fluent
 {
-    public class SelectQueryBuilder : ISqlSelect, ISqlFrom, ISqlWhere
+    public static class QueryBuilders
     {
-        private readonly SelectQuery _query;
-
-
-        public SelectQueryBuilder()
+        public static IColumn Min(string columnName)
         {
-            _query = new SelectQuery();
+            return new Min(columnName);
         }
 
-
-        public ISqlFrom Select(IColumn col, params IColumn[] columns)
+        public static IColumn Max(string columnName)
         {
-
-            if (col == null)
-            {
-                throw new ArgumentNullException("col");
-            }
-
-
-
-            foreach (IColumn column in columns)
-            {
-                _query.Select.Add(column);
-            }
-
-
-            return this;
+            return new Max(TableColumn.From(columnName));
         }
 
-        public ISqlWhere From(TableTerm table, params TableTerm[] tables)
-        {
-            _query.From.Add(table);
+        
 
-            foreach (TableTerm tableTerm in tables)
-            {
-                _query.From.Add(tableTerm);
-            }
-
-            return this;
-        }
-
-        public ISqlWhere From(SelectQuery @select)
-        {
-            throw new NotSupportedException();
-        }
-
-        public ISqlWhere Where(IClause clause)
-        {
-            _query.Where = clause;
-
-            return this;
-        }
-
-
-        public ISqlOrder OrderBy(IColumn column, params IColumn[] cols)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

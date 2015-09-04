@@ -624,20 +624,22 @@ namespace Queries.Tests.Renderers
     //}
 
 
-    public class SqlServerRendererTest
+    public class RenderersTest
     {
 
-        private ISqlRenderer _renderer;
-
+        
         private class Cases
         {
             public IEnumerable<ITestCaseData> SelectTestsCases
             {
                 get
                 {
-                    yield return new TestCaseData(null)
-                    .SetName("Select null query")
-                    .Returns(String.Empty);
+                    #region SQL SERVER
+                    yield return new TestCaseData(null, DatabaseType.SqlServer)
+                                .SetName("Select null query")
+                                .SetCategory("SQL SERVER")
+                                .Returns(String.Empty);
+
 
                     yield return new TestCaseData(new SelectQuery()
                     {
@@ -647,22 +649,27 @@ namespace Queries.Tests.Renderers
                         },
                         From = new[]
                         {
-                            new TableTerm(){Name = "Table", Alias = "t"}
+                            new Table(){Name = "Table", Alias = "t"}
                         },
 
-                    })
-                    .SetName(@"""SELECT <TableColumn{ Name = ""Col1"" }> FROM <TableTerm { Name = ""Table"", Alias = ""t"" }>""")
+                    }, DatabaseType.SqlServer)
+                    .SetName(@"""SELECT <TableColumn{ Name = ""Col1"" }> 
+                                FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
+                    .SetCategory("SQL SERVER")
                     .Returns("SELECT [Col1] FROM [Table] [t]");
+
+
 
                     yield return new TestCaseData(new SelectQuery()
                     {
                         From = new[]
                         {
-                            new TableTerm(){Name = "Table", Alias = "t"}
+                            new Table(){Name = "Table", Alias = "t"}
                         },
 
-                    })
-                    .SetName(@"""SELECT FROM <TableTerm { Name = ""Table"", Alias = ""t"" }>""")
+                    }, DatabaseType.SqlServer)
+                    .SetName(@"""SELECT FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
+                    .SetCategory("SQL SERVER")
                     .Returns("SELECT * FROM [Table] [t]");
 
                     yield return new TestCaseData(new SelectQuery()
@@ -670,11 +677,12 @@ namespace Queries.Tests.Renderers
                         Select = null,
                         From = new[]
                         {
-                            new TableTerm(){Name = "Table", Alias = "t"}
+                            new Table(){Name = "Table", Alias = "t"}
                         },
 
-                    })
+                    }, DatabaseType.SqlServer)
                     .SetName("Select with no column specified and one table in the FROM part")
+                    .SetCategory("SQL SERVER")
                     .Returns("SELECT * FROM [Table] [t]");
 
                     yield return new TestCaseData(new SelectQuery()
@@ -685,11 +693,12 @@ namespace Queries.Tests.Renderers
                         },
                         From = new[]
                         {
-                            new TableTerm(){Name = "dbo.Table", Alias = "t"}
+                            new Table(){Name = "dbo.Table", Alias = "t"}
                         },
 
-                    })
-                    .SetName(@"""SELECT <TableColumn{ Name = ""Col1"" }> FROM <TableTerm { Name = ""dbo.Table"", Alias = ""t"" }>""")
+                    }, DatabaseType.SqlServer)
+                    .SetName(@"""SELECT <TableColumn{ Name = ""Col1"" }> FROM <Table { Name = ""dbo.Table"", Alias = ""t"" }>""")
+                    .SetCategory("SQL SERVER")
                     .Returns("SELECT [Col1] FROM [dbo].[Table] [t]");
 
                     yield return new TestCaseData(new SelectQuery()
@@ -701,12 +710,13 @@ namespace Queries.Tests.Renderers
                         },
                         From = new[]
                         {
-                            new TableTerm(){Name = "Table1", Alias = "t1"},
-                            new TableTerm(){Name = "Table2", Alias = "t2"}
+                            new Table(){Name = "Table1", Alias = "t1"},
+                            new Table(){Name = "Table2", Alias = "t2"}
                         },
 
-                    })
-                    .SetName(@"""SELECT <TableColumn{ Name = ""Col1"" }>, <TableColumn{ Name = ""Col2"" }> FROM <TableTerm { Name = ""Table"", Alias = ""t"" }>""")
+                    }, DatabaseType.SqlServer)
+                    .SetName(@"""SELECT <TableColumn{ Name = ""Col1"" }>, <TableColumn{ Name = ""Col2"" }> FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
+                    .SetCategory("SQL SERVER")
                     .Returns("SELECT [Col1], [Col2] FROM [Table1] [t1], [Table2] [t2]");
 
 
@@ -718,11 +728,12 @@ namespace Queries.Tests.Renderers
                         },
                         From = new[]
                         {
-                            new TableTerm(){Name = "Table", Alias = "t"}
+                            new Table(){Name = "Table", Alias = "t"}
                         },
 
-                    })
-                    .SetName(@"""SELECT <TableColumn{ Name = ""Col1"", Alias = ""Alias"" }> FROM <TableTerm { Name = ""Table"", Alias = ""t"" }>""")
+                    }, DatabaseType.SqlServer)
+                    .SetName(@"""SELECT <TableColumn{ Name = ""Col1"", Alias = ""Alias"" }> FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
+                    .SetCategory("SQL SERVER")
                     .Returns("SELECT [Col1] AS [Alias] FROM [Table] [t]");
 
                     yield return new TestCaseData(new SelectQuery()
@@ -734,14 +745,15 @@ namespace Queries.Tests.Renderers
                         },
                         From = new[]
                         {
-                            new TableTerm(){Name = "Table", Alias = "t"}
+                            new Table(){Name = "Table", Alias = "t"}
                         },
 
-                    })
-                    .SetName(@"""SELECT <TableColumn{ Name = ""Col1"" }>, <TableColumn{ Name = ""Col2"" }> FROM <TableTerm { Name = ""Table"", Alias = ""t"" }>""")
+                    }, DatabaseType.SqlServer)
+                    .SetName(@"""SELECT <TableColumn{ Name = ""Col1"" }>, <TableColumn{ Name = ""Col2"" }> FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
+                    .SetCategory("SQL SERVER")
                     .Returns("SELECT [Col1], [Col2] FROM [Table] [t]");
 
-                    
+
 
 
                     yield return new TestCaseData(new SelectQuery()
@@ -752,13 +764,13 @@ namespace Queries.Tests.Renderers
                         },
                         From = new[]
                         {
-                            new TableTerm() {Name = "Table", Alias = "t"}
+                            new Table() {Name = "Table", Alias = "t"}
                         },
 
-                    })
-                    .SetName(@"""SELECT <new Min (new TableColumn() {Name = ""Col1""})> FROM <TableTerm { Name = ""Table"", Alias = ""t"" }>""")
-                    .SetName("Select with one aggregate column MIN")
-                        .Returns("SELECT MIN([Col1]) FROM [Table] [t]");
+                    }, DatabaseType.SqlServer)
+                    .SetName(@"""SELECT <Min(new TableColumn() {Name = ""Col1""})> FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
+                    .SetCategory("SQL SERVER")
+                    .Returns("SELECT MIN([Col1]) FROM [Table] [t]");
 
                     yield return new TestCaseData(new SelectQuery()
                     {
@@ -768,12 +780,12 @@ namespace Queries.Tests.Renderers
                         },
                         From = new[]
                         {
-                            new TableTerm() {Name = "Table", Alias = "t"}
+                            new Table() {Name = "Table", Alias = "t"}
                         },
 
-                    })
-                    .SetName(@"""SELECT <new Min (""Col1"")> FROM <TableTerm { Name = ""Table"", Alias = ""t"" }>""")
-                    .SetName("Select with one aggregate column MIN")
+                    }, DatabaseType.SqlServer)
+                    .SetName(@"""SELECT <new Min (""Col1"")> FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
+                    .SetCategory("SQL SERVER")
                     .Returns("SELECT MIN([Col1]) FROM [Table] [t]");
 
                     yield return new TestCaseData(new SelectQuery()
@@ -784,12 +796,13 @@ namespace Queries.Tests.Renderers
                         },
                         From = new[]
                         {
-                            new TableTerm() {Name = "Table", Alias = "t"}
+                            new Table() {Name = "Table", Alias = "t"}
                         },
 
-                    })
-                        .SetName(@"""SELECT <Min(TableColumn {Name = ""Col1""})> FROM <TableTerm { Name = ""Table"", Alias = ""t"" }>""")
-                        .Returns("SELECT MIN([Col1]) FROM [Table] [t]");
+                    }, DatabaseType.SqlServer)
+                        .SetName(@"""SELECT <Min(TableColumn {Name = ""Col1""})> FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
+                        .SetCategory("SQL SERVER")
+                    .Returns("SELECT MIN([Col1]) FROM [Table] [t]");
 
 
                     yield return new TestCaseData(new SelectQuery()
@@ -800,11 +813,12 @@ namespace Queries.Tests.Renderers
                         },
                         From = new[]
                         {
-                            new TableTerm(){Name = "Table", Alias = "t"}
+                            new Table(){Name = "Table", Alias = "t"}
                         },
 
-                    })
-                    .SetName(@"""SELECT <Min(TableColumn {Name = ""Col1"", Alias = ""Alias""})> FROM <TableTerm { Name = ""Table"", Alias = ""t"" }>""")
+                    }, DatabaseType.SqlServer)
+                    .SetName(@"""SELECT <Min(TableColumn {Name = ""Col1"", Alias = ""Alias""})> FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
+                    .SetCategory("SQL SERVER")
                     .Returns("SELECT MIN([Col1]) AS [Alias] FROM [Table] [t]");
 
                     yield return new TestCaseData(new SelectQuery()
@@ -816,11 +830,12 @@ namespace Queries.Tests.Renderers
                         },
                         From = new[]
                         {
-                            new TableTerm(){Name = "Table", Alias = "t"}
+                            new Table(){Name = "Table", Alias = "t"}
                         },
 
-                    })
-                    .SetName(@"""SELECT <Min(TableColumn {Name = ""Col1"", Alias = ""Minimum""})>, <Min(TableColumn {Name = ""Col2"", Alias = ""Maximum""})> FROM <TableTerm { Name = ""Table"", Alias = ""t"" }>""")
+                    }, DatabaseType.SqlServer)
+                    .SetName(@"""SELECT <Min(TableColumn {Name = ""Col1"", Alias = ""Minimum""})>, <Min(TableColumn {Name = ""Col2"", Alias = ""Maximum""})> FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
+                    .SetCategory("SQL SERVER")
                     .Returns("SELECT MIN([Col1]) AS [Minimum], MAX([Col2]) AS [Maximum] FROM [Table] [t]");
 
 
@@ -831,13 +846,14 @@ namespace Queries.Tests.Renderers
                             new Min(new TableColumn(){Name = "Col1", Alias = "Minimum"}),
                             new TableColumn(){Name = "Col2", Alias = "Maximum"}
                         },
-                        From = new[]
+                        From = new ITable[]
                         {
-                            new TableTerm(){Name = "Table", Alias = "t"}
+                            new Table(){Name = "Table", Alias = "t"}
                         },
 
-                    })
-                    .SetName(@"""SELECT <Min(TableColumn {Name = ""Col1"", Alias = ""Minimum""})>, <TableColumn {Name = ""Col2"", Alias = ""Maximum"")> FROM <TableTerm { Name = ""Table"", Alias = ""t"" }>""")
+                    }, DatabaseType.SqlServer)
+                    .SetName(@"""SELECT <Min(TableColumn {Name = ""Col1"", Alias = ""Minimum""})>, <TableColumn {Name = ""Col2"", Alias = ""Maximum"")> FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
+                    .SetCategory("SQL SERVER")
                     .SetDescription("This should generate a GROUP BY clause")
                     .Returns("SELECT MIN([Col1]) AS [Minimum], [Col2] AS [Maximum] FROM [Table] [t] GROUP BY [Col2]");
 
@@ -847,9 +863,9 @@ namespace Queries.Tests.Renderers
                         {
                             new Min(new TableColumn(){Name = "Col1", Alias = "Minimum"}),
                         },
-                        From = new[]
+                        From = new ITable[]
                         {
-                            new TableTerm(){Name = "Table", Alias = "t"}
+                            new Table(){Name = "Table", Alias = "t"}
                         },
                         Union = new[]{
                            new SelectQuery()
@@ -860,13 +876,14 @@ namespace Queries.Tests.Renderers
                                 },
                                 From = new[]
                                 {
-                                    new TableTerm(){Name = "Table2", Alias = "t2"}
+                                    new Table(){Name = "Table2", Alias = "t2"}
                                 }
                            }
                         }
-                    })
-                   .SetName(@"""SELECT <Min(TableColumn {Name = ""Col1"", Alias = ""Minimum""})> FROM <TableTerm { Name = ""Table"", Alias = ""t"" }> UNION SELECT <Min(TableColumn {Name = ""Col2"", Alias = ""Minimum""})> FROM <TableTerm { Name = ""Table2"", Alias = ""t2"" }>""")
-                   .Returns("SELECT MIN([Col1]) AS [Minimum] FROM [Table] [t] UNION SELECT MIN([Col2]) AS [Minimum] FROM [Table2] [t2]");
+                    }, DatabaseType.SqlServer)
+                   .SetName(@"""SELECT <Min(TableColumn {Name = ""Col1"", Alias = ""Minimum""})> FROM <Table { Name = ""Table"", Alias = ""t"" }> UNION SELECT <Min(TableColumn {Name = ""Col2"", Alias = ""Minimum""})> FROM <Table { Name = ""Table2"", Alias = ""t2"" }>""")
+                   .SetCategory("SQL SERVER")
+                    .Returns("SELECT MIN([Col1]) AS [Minimum] FROM [Table] [t] UNION SELECT MIN([Col2]) AS [Minimum] FROM [Table2] [t2]");
 
 
                     yield return new TestCaseData(new SelectQuery()
@@ -878,7 +895,7 @@ namespace Queries.Tests.Renderers
 
                         From = new[]
                         {
-                            new TableTerm(){ Name =  "t_civilite", Alias = "civ"}
+                            new Table(){ Name =  "t_civilite", Alias = "civ"}
                         },
                         Where = new WhereClause()
                         {
@@ -886,8 +903,9 @@ namespace Queries.Tests.Renderers
                             Operator = WhereOperator.EqualTo,
                             Constraint = "dupont"
                         }
-                    })
-                    .SetName(@"""SELECT <TableColumn {Name = ""civ_prenom""}> FROM <TableTerm { Name = ""t_civilite"", Alias = ""civ"" }> WHERE <WhereClause { Column = TableColumn.From(""civ_nom""),Operator = WhereOperator.EqualTo, Constraint = ""dupont""})>")
+                    }, DatabaseType.SqlServer)
+                    .SetName(@"""SELECT <TableColumn {Name = ""civ_prenom""}> FROM <Table { Name = ""t_civilite"", Alias = ""civ"" }> WHERE <WhereClause { Column = TableColumn.From(""civ_nom""),Operator = WhereOperator.EqualTo, Constraint = ""dupont""})>")
+                    .SetCategory("SQL SERVER")
                     .Returns("SELECT [civ_prenom] FROM [t_civilite] [civ] WHERE ([civ_nom] = 'dupont')");
 
 
@@ -899,7 +917,7 @@ namespace Queries.Tests.Renderers
                         },
                         From = new[]
                         {
-                            new TableTerm(){ Name =  "t_person", Alias = "p"}
+                            new Table(){ Name =  "t_person", Alias = "p"}
                         },
                         Where = new CompositeWhereClause()
                         {
@@ -910,8 +928,9 @@ namespace Queries.Tests.Renderers
                                 new WhereClause() {Column = new TableColumn(){ Name = "per_age"}, Operator = WhereOperator.LessThan, Constraint = 18}
                             }
                         }
-                    })
-                    .SetName(@"""SELECT <TableColumn.From(""prenom"")> FROM <TableTerm { Name = ""t_person"", Alias = ""p"" }> WHERE <CompositeWhereClause {  Logic = WhereLogic.Or, Clauses = new IClause[]{new WhereClause() {Column = new TableColumn(){ Name = ""per_age""}, Operator = WhereOperator.GreaterThanOrEqualTo, Constraint = 15}, new WhereClause(){Column = new TableColumn{Name = ""per_age""}, Operator = WhereOperator.LessThan, Constraint = 18}})")
+                    }, DatabaseType.SqlServer)
+                    .SetName(@"""SELECT <TableColumn.From(""prenom"")> FROM <Table { Name = ""t_person"", Alias = ""p"" }> WHERE <CompositeWhereClause {  Logic = WhereLogic.Or, Clauses = new IClause[]{new WhereClause() {Column = new TableColumn(){ Name = ""per_age""}, Operator = WhereOperator.GreaterThanOrEqualTo, Constraint = 15}, new WhereClause(){Column = new TableColumn{Name = ""per_age""}, Operator = WhereOperator.LessThan, Constraint = 18}})")
+                    .SetCategory("SQL SERVER")
                     .Returns("SELECT [prenom] FROM [t_person] [p] WHERE (([per_age] >= 15) OR ([per_age] < 18))");
 
 
@@ -924,7 +943,7 @@ namespace Queries.Tests.Renderers
 
                         From = new[]
                         {
-                            new TableTerm(){ Name =  "t_person", Alias = "p"}
+                            new Table(){ Name =  "t_person", Alias = "p"}
                         },
                         Where = new CompositeWhereClause()
                         {
@@ -949,8 +968,8 @@ namespace Queries.Tests.Renderers
                                 }
                             }
                         }
-                    })
-                   .SetName(@"""SELECT <TableColumn.From(""prenom"")> FROM <TableTerm { Name = ""t_person"", Alias = ""p"" }> WHERE <CompositeWhereClause {  
+                    }, DatabaseType.SqlServer)
+                    .SetName(@"""SELECT <TableColumn.From(""prenom"")> FROM <Table { Name = ""t_person"", Alias = ""p"" }> WHERE <CompositeWhereClause {  
                         Logic = WhereLogic.And, 
                         Clauses = new IClause[]{
                             new CompositeWhereClause()
@@ -971,7 +990,8 @@ namespace Queries.Tests.Renderers
                                 } 
                         }
                     })")
-                   .Returns("SELECT [prenom] FROM [t_person] [p] WHERE ((([per_nom] = 'dupont') OR ([per_nom] = 'durant')) AND (([per_age] >= 15) OR ([per_age] < 18)))");
+                    .SetCategory("SQL SERVER")
+                    .Returns("SELECT [prenom] FROM [t_person] [p] WHERE ((([per_nom] = 'dupont') OR ([per_nom] = 'durant')) AND (([per_age] >= 15) OR ([per_age] < 18)))");
 
 
                     yield return new TestCaseData(new SelectQuery()
@@ -983,7 +1003,7 @@ namespace Queries.Tests.Renderers
 
                         From = new[]
                         {
-                            new TableTerm(){ Name =  "t_person", Alias = "p"}
+                            new Table(){ Name =  "t_person", Alias = "p"}
                         },
                         Where = new CompositeWhereClause()
                         {
@@ -1001,9 +1021,10 @@ namespace Queries.Tests.Renderers
                                 }
                             }
                         }
-                    })
-                   .SetName("SELECT with WhereClause + Composite clause")
-                   .Returns("SELECT [prenom] FROM [t_person] [p] WHERE (([per_nom] = 'dupont') AND (([per_age] >= 15) OR ([per_age] < 18)))");
+                    }, DatabaseType.SqlServer)
+                    .SetName("SELECT with WhereClause + Composite clause")
+                    .SetCategory("SQL SERVER")
+                    .Returns("SELECT [prenom] FROM [t_person] [p] WHERE (([per_nom] = 'dupont') AND (([per_age] >= 15) OR ([per_age] < 18)))");
 
 
                     yield return new TestCaseData(new SelectQuery()
@@ -1013,14 +1034,15 @@ namespace Queries.Tests.Renderers
                             new TableColumn(){Name = "p.Name", Alias = "Nom complet"},
                             new TableColumn() {Name = "c.Name", Alias = "Civilité"}
                         },
-                        From = new[] { new TableTerm() { Name = "person", Alias = "p" } },
+                        From = new[] { new Table() { Name = "person", Alias = "p" } },
                         Joins = new IJoin[]
                         {
-                            new InnerJoin(new TableTerm(){Name = "Civility", Alias = "c"}, 
+                            new InnerJoin(new Table(){Name = "Civility", Alias = "c"}, 
                                 new WhereClause(){ Column = new TableColumn(){Name = "c.Id"}, Operator = WhereOperator.EqualTo, Constraint = TableColumn.From("p.CivilityId")})
                         }
-                    })
+                    }, DatabaseType.SqlServer)
                     .SetName("Select with one inner join")
+                    .SetCategory("SQL SERVER")
                     .Returns("SELECT [p].[Name] AS [Nom complet], [c].[Name] AS [Civilité] FROM [person] [p] INNER JOIN [Civility] [c] ON ([c].[Id] = [p].[CivilityId])");
 
 
@@ -1034,34 +1056,35 @@ namespace Queries.Tests.Renderers
                                 SelectQuery = new SelectQuery()
                                 {
                                     Select = new IColumn[]{new TableColumn() {Name = "c.Name", Alias = "Civilité"}},
-                                    From = new [] {new TableTerm(){Name = "Civility", Alias = "c"}},
+                                    From = new [] {new Table(){Name = "Civility", Alias = "c"}},
                                     Where = new WhereClause(){Column = TableColumn.From("p.CivilityId"), Operator = WhereOperator.EqualTo, Constraint = TableColumn.From("c.Id")}
                                 }
                             }
                         },
-                        From = new[] { new TableTerm() { Name = "person", Alias = "p" } },
-                        
-                    })
+                        From = new[] { new Table() { Name = "person", Alias = "p" } },
+
+                    }, DatabaseType.SqlServer)
                     .SetName("SELECT TableColumn col1, (SELECT TableColumn col2 FROM Table2 WHERE Table1.col = Table2.col) AS alias FROM Table1")
+                    .SetCategory("SQL SERVER")
                     .Returns("SELECT [p].[Name] AS [Nom complet], (SELECT [c].[Name] AS [Civilité] FROM [Civility] [c] WHERE ([p].[CivilityId] = [c].[Id])) FROM [person] [p]");
 
 
                     yield return new TestCaseData(new SelectIntoQuery()
                     {
-                        Into = new TableTerm() {Name = "destination"},
-                        FromTable = new List<TableTerm>(){new TableTerm(){Name = "source"}}
-                    })
+                        Into = new Table() { Name = "destination" },
+                        From = new Table() { Name = "source" }
+                    }, DatabaseType.SqlServer)
                     .SetName("SELECT into from list of table")
-                    .SetCategory("SELECT INTO")
+                    .SetCategory("SQL SERVER")
                     .Returns("SELECT * INTO [destination] FROM [source]");
 
                     yield return new TestCaseData(new SelectIntoQuery()
                     {
-                        Into = new TableTerm() { Name = "destination" },
-                        FromTable = new List<TableTerm>() { new TableTerm() { Name = "source" } }
-                    })
+                        Into = new Table() { Name = "destination" },
+                        From = new Table() { Name = "source" }
+                    }, DatabaseType.SqlServer)
                     .SetName("SELECT into from list of table")
-                    .SetCategory("SELECT INTO")
+                    .SetCategory("SQL SERVER")
                     .Returns("SELECT * INTO [destination] FROM [source]");
 
 
@@ -1080,62 +1103,700 @@ namespace Queries.Tests.Renderers
                                 }
                             }
                         }
-                    })
-                        .SetName(@"""SELECT <SelectColumn({SelectQuery =  }>""")
+                    }, DatabaseType.SqlServer)
+                    .SetCategory("SQL SERVER")
+                    .SetName(@"""SELECT <SelectColumn(
+                        {
+                            SelectQuery = new SelectQuery(){
+                                Select = new IColumn[]
+                                {
+                                    new LiteralColumn {Value = 1},
+                                }
+                            }
+                        }>""")
+                    .SetCategory("SQL SERVER")
+                    .Returns("SELECT (SELECT 1)");
+
+
+                    yield return new TestCaseData(new SelectQuery()
+                    {
+                        Select = new IColumn[]
+                        {
+                            new Concat(TableColumn.From("firstname"), LiteralColumn.From(" "), TableColumn.From("lastname")){Alias = "fullname" }, 
+                        },
+                        From = new ITable[]
+                        {
+                            new Table(){Name = "t_person", Alias = "p"} 
+                        }
+                    }, DatabaseType.SqlServer)
+                    .SetName(@"""SELECT <Concat {alias: ""fullname"", columns: new IColumn[]
+                            {
+                                TableColumn.From(""firstname""),
+                                LiteralColumn.From("" ""),
+                                TableColumn.From(""lastname"")
+                            }> 
+                        FROM <Table {Name = ""t_person"", Alias = ""p""}> ")
+                    .SetCategory("SQL SERVER")
+                    .Returns("SELECT [firstname] + ' ' + [lastname] AS [fullname] FROM [t_person] [p]");
+                    
+                    #endregion
+
+                    #region POSTGRES
+                    yield return new TestCaseData(null, DatabaseType.Postgres)
+                                .SetName("Select null query")
+                                .SetCategory("POSTGRES")
+                                .Returns(String.Empty);
+
+
+                    yield return new TestCaseData(new SelectQuery()
+                    {
+                        Select = new IColumn[]
+                        {
+                            new TableColumn(){Name = "Col1"}
+                        },
+                        From = new ITable[]
+                        {
+                            new Table(){Name = "Table", Alias = "t"}
+                        },
+
+                    }, DatabaseType.Postgres)
+                    .SetName(@"""SELECT <TableColumn{ Name = ""Col1"" }> 
+                                FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
+                    .SetCategory("POSTGRES")
+                    .Returns(@"SELECT ""Col1"" FROM ""Table"" ""t""");
+
+
+
+                    yield return new TestCaseData(new SelectQuery()
+                    {
+                        From = new ITable[]
+                        {
+                            new Table(){Name = "Table", Alias = "t"}
+                        },
+
+                    }, DatabaseType.Postgres)
+                    .SetName(@"""SELECT FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
+                    .SetCategory("POSTGRES")
+                    .Returns(@"SELECT * FROM ""Table"" ""t""");
+
+                    yield return new TestCaseData(new SelectQuery()
+                    {
+                        Select = null,
+                        From = new ITable[]
+                        {
+                            new Table(){Name = "Table", Alias = "t"}
+                        },
+
+                    }, DatabaseType.Postgres)
+                    .SetName("Select with no column specified and one table in the FROM part")
+                    .SetCategory("POSTGRES")
+                    .Returns(@"SELECT * FROM ""Table"" ""t""");
+
+                    yield return new TestCaseData(new SelectQuery()
+                    {
+                        Select = new IColumn[]
+                        {
+                            new TableColumn(){Name = "Col1"}
+                        },
+                        From = new ITable[]
+                        {
+                            new Table(){Name = "dbo.Table", Alias = "t"}
+                        },
+
+                    }, DatabaseType.Postgres)
+                    .SetName(@"""SELECT <TableColumn{ Name = ""Col1"" }> FROM <Table { Name = ""dbo.Table"", Alias = ""t"" }>""")
+                    .SetCategory("POSTGRES")
+                    .Returns(@"SELECT ""Col1"" FROM ""dbo"".""Table"" ""t""");
+
+                    yield return new TestCaseData(new SelectQuery()
+                    {
+                        Select = new IColumn[]
+                        {
+                            new TableColumn(){Name = "Col1"},
+                            new TableColumn(){Name = "Col2"}
+                        },
+                        From = new ITable[]
+                        {
+                            new Table(){Name = "Table1", Alias = "t1"},
+                            new Table(){Name = "Table2", Alias = "t2"}
+                        },
+
+                    }, DatabaseType.Postgres)
+                    .SetName(@"""SELECT <TableColumn{ Name = ""Col1"" }>, <TableColumn{ Name = ""Col2"" }> FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
+                    .SetCategory("POSTGRES")
+                    .Returns(@"SELECT ""Col1"", ""Col2"" FROM ""Table1"" ""t1"", ""Table2"" ""t2""");
+
+
+                    yield return new TestCaseData(new SelectQuery()
+                    {
+                        Select = new IColumn[]
+                        {
+                            new TableColumn(){Name = "Col1", Alias = "Alias"}
+                        },
+                        From = new ITable[]
+                        {
+                            new Table(){Name = "Table", Alias = "t"}
+                        },
+
+                    }, DatabaseType.Postgres)
+                    .SetName(@"""SELECT <TableColumn{ Name = ""Col1"", Alias = ""Alias"" }> FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
+                    .SetCategory("POSTGRES")
+                    .Returns(@"SELECT ""Col1"" ""Alias"" FROM ""Table"" ""t""");
+
+                    yield return new TestCaseData(new SelectQuery()
+                    {
+                        Select = new IColumn[]
+                        {
+                            new TableColumn(){Name = "Col1"},
+                            new TableColumn(){Name = "Col2"},
+                        },
+                        From = new ITable[]
+                        {
+                            new Table(){Name = "Table", Alias = "t"}
+                        },
+
+                    }, DatabaseType.Postgres)
+                    .SetName(@"""SELECT <TableColumn{ Name = ""Col1"" }>, <TableColumn{ Name = ""Col2"" }> FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
+                    .SetCategory("POSTGRES")
+                    .Returns(@"SELECT ""Col1"", ""Col2"" FROM ""Table"" ""t""");
+                    
+                    yield return new TestCaseData(new SelectQuery()
+                    {
+                        Select = new IColumn[]
+                        {
+                            new Min (new TableColumn() {Name = "Col1"})
+                        },
+                        From = new ITable[]
+                        {
+                            new Table() {Name = "Table", Alias = "t"}
+                        },
+
+                    }, DatabaseType.Postgres)
+                    .SetName(@"""SELECT <Min(new TableColumn() {Name = ""Col1""})> FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
+                    .SetCategory("POSTGRES")
+                    .Returns(@"SELECT MIN(""Col1"") FROM ""Table"" ""t""");
+
+                    yield return new TestCaseData(new SelectQuery()
+                    {
+                        Select = new IColumn[]
+                        {
+                            new Min ("Col1")
+                        },
+                        From = new ITable[]
+                        {
+                            new Table() {Name = "Table", Alias = "t"}
+                        },
+
+                    }, DatabaseType.Postgres)
+                    .SetName(@"""SELECT <new Min (""Col1"")> FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
+                    .SetCategory("POSTGRES")
+                    .Returns(@"SELECT MIN(""Col1"") FROM ""Table"" ""t""");
+
+                    yield return new TestCaseData(new SelectQuery()
+                    {
+                        Select = new IColumn[]
+                        {
+                            new Min(new TableColumn(){Name = "Col1"})
+                        },
+                        From = new ITable[]
+                        {
+                            new Table() {Name = "Table", Alias = "t"}
+                        },
+
+                    }, DatabaseType.Postgres)
+                        .SetName(@"""SELECT <Min(TableColumn {Name = ""Col1""})> FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
+                        .SetCategory("POSTGRES")
+                    .Returns(@"SELECT MIN(""Col1"") FROM ""Table"" ""t""");
+
+
+                    yield return new TestCaseData(new SelectQuery()
+                    {
+                        Select = new IColumn[]
+                        {
+                            new Min(new TableColumn(){Name = "Col1", Alias = "Alias"})
+                        },
+                        From = new ITable[]
+                        {
+                            new Table(){Name = "Table", Alias = "t"}
+                        },
+
+                    }, DatabaseType.Postgres)
+                    .SetName(@"""SELECT <Min(TableColumn {Name = ""Col1"", Alias = ""Alias""})> FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
+                    .SetCategory("POSTGRES")
+                    .Returns(@"SELECT MIN(""Col1"") ""Alias"" FROM ""Table"" ""t""");
+
+                    yield return new TestCaseData(new SelectQuery()
+                    {
+                        Select = new IColumn[]
+                        {
+                            new Min(new TableColumn(){Name = "Col1", Alias = "Minimum"}),
+                            new Max(new TableColumn(){Name = "Col2", Alias = "Maximum"})
+                        },
+                        From = new ITable[]
+                        {
+                            new Table(){Name = "Table", Alias = "t"}
+                        },
+
+                    }, DatabaseType.Postgres)
+                    .SetName(@"""SELECT <Min(TableColumn {Name = ""Col1"", Alias = ""Minimum""})>, <Min(TableColumn {Name = ""Col2"", Alias = ""Maximum""})> FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
+                    .SetCategory("POSTGRES")
+                    .Returns(@"SELECT MIN(""Col1"") ""Minimum"", MAX(""Col2"") ""Maximum"" FROM ""Table"" ""t""");
+
+
+                    yield return new TestCaseData(new SelectQuery()
+                    {
+                        Select = new IColumn[]
+                        {
+                            new Min(new TableColumn(){Name = "Col1", Alias = "Minimum"}),
+                            new TableColumn(){Name = "Col2", Alias = "Maximum"}
+                        },
+                        From = new ITable[]
+                        {
+                            new Table(){Name = "Table", Alias = "t"}
+                        },
+
+                    }, DatabaseType.Postgres)
+                    .SetName(@"""SELECT <Min(TableColumn {Name = ""Col1"", Alias = ""Minimum""})>, <TableColumn {Name = ""Col2"", Alias = ""Maximum"")> FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
+                    .SetCategory("POSTGRES")
+                    .SetDescription("This should generate a GROUP BY clause")
+                    .Returns(@"SELECT MIN(""Col1"") ""Minimum"", ""Col2"" ""Maximum"" FROM ""Table"" ""t"" GROUP BY ""Col2""");
+
+                    yield return new TestCaseData(new SelectQuery()
+                    {
+                        Select = new IColumn[]
+                        {
+                            new Min(new TableColumn(){Name = "Col1", Alias = "Minimum"}),
+                        },
+                        From = new[]
+                        {
+                            new Table(){Name = "Table", Alias = "t"}
+                        },
+                        Union = new[]{
+                           new SelectQuery()
+                           { 
+                                Select = new IColumn[]
+                                {
+                                    new Min(new TableColumn(){Name = "Col2", Alias = "Minimum"}),
+                                },
+                                From = new ITable[]
+                                {
+                                    new Table(){Name = "Table2", Alias = "t2"}
+                                }
+                           }
+                        }
+                    }, DatabaseType.Postgres)
+                   .SetName(@"""SELECT <Min(TableColumn {Name = ""Col1"", Alias = ""Minimum""})> FROM <Table { Name = ""Table"", Alias = ""t"" }> UNION SELECT <Min(TableColumn {Name = ""Col2"", Alias = ""Minimum""})> FROM <Table { Name = ""Table2"", Alias = ""t2"" }>""")
+                   .SetCategory("POSTGRES")
+                    .Returns(@"SELECT MIN(""Col1"") ""Minimum"" FROM ""Table"" ""t"" UNION SELECT MIN(""Col2"") ""Minimum"" FROM ""Table2"" ""t2""");
+
+
+                    yield return new TestCaseData(new SelectQuery()
+                    {
+                        Select = new IColumn[]
+                        {
+                            new TableColumn(){ Name = "civ_prenom"}
+                        },
+
+                        From = new ITable[]
+                        {
+                            new Table(){ Name =  "t_civilite", Alias = "civ"}
+                        },
+                        Where = new WhereClause()
+                        {
+                            Column = TableColumn.From("civ_nom"),
+                            Operator = WhereOperator.EqualTo,
+                            Constraint = "dupont"
+                        }
+                    }, DatabaseType.Postgres)
+                    .SetName(@"""SELECT <TableColumn {Name = ""civ_prenom""}> FROM <Table { Name = ""t_civilite"", Alias = ""civ"" }> WHERE <WhereClause { Column = TableColumn.From(""civ_nom""),Operator = WhereOperator.EqualTo, Constraint = ""dupont""})>")
+                    .SetCategory("POSTGRES")
+                    .Returns(@"SELECT ""civ_prenom"" FROM ""t_civilite"" ""civ"" WHERE (""civ_nom"" = 'dupont')");
+
+
+                    yield return new TestCaseData(new SelectQuery()
+                    {
+                        Select = new IColumn[]
+                        {
+                            TableColumn.From("prenom")
+                        },
+                        From = new[]
+                        {
+                            new Table(){ Name =  "t_person", Alias = "p"}
+                        },
+                        Where = new CompositeWhereClause()
+                        {
+                            Logic = WhereLogic.Or,
+                            Clauses = new List<IClause>()
+                            {
+                                new WhereClause() {Column = new TableColumn(){ Name = "per_age"}, Operator = WhereOperator.GreaterThanOrEqualTo, Constraint = 15},
+                                new WhereClause() {Column = new TableColumn(){ Name = "per_age"}, Operator = WhereOperator.LessThan, Constraint = 18}
+                            }
+                        }
+                    }, DatabaseType.Postgres)
+                    .SetName(@"""SELECT <TableColumn.From(""prenom"")> FROM <Table { Name = ""t_person"", Alias = ""p"" }> WHERE <CompositeWhereClause {  Logic = WhereLogic.Or, Clauses = new IClause[]{new WhereClause() {Column = new TableColumn(){ Name = ""per_age""}, Operator = WhereOperator.GreaterThanOrEqualTo, Constraint = 15}, new WhereClause(){Column = new TableColumn{Name = ""per_age""}, Operator = WhereOperator.LessThan, Constraint = 18}})")
+                    .SetCategory("POSTGRES")
+                    .Returns(@"SELECT ""prenom"" FROM ""t_person"" ""p"" WHERE ((""per_age"" >= 15) OR (""per_age"" < 18))");
+
+
+                    yield return new TestCaseData(new SelectQuery()
+                    {
+                        Select = new IColumn[]
+                        {
+                            new TableColumn(){ Name = "prenom"}
+                        },
+
+                        From = new[]
+                        {
+                            new Table(){ Name =  "t_person", Alias = "p"}
+                        },
+                        Where = new CompositeWhereClause()
+                        {
+                            Logic = WhereLogic.And,
+                            Clauses = new IClause[]
+                            {
+                                new CompositeWhereClause()
+                                {
+                                    Logic = WhereLogic.Or,
+                                    Clauses = new IClause[]{
+                                        new WhereClause(){Column = new TableColumn{Name = "per_nom"}, Operator = WhereOperator.EqualTo, Constraint = "dupont"},
+                                        new WhereClause(){Column = new TableColumn{Name = "per_nom"}, Operator = WhereOperator.EqualTo, Constraint = "durant"}
+                                    }
+                                },
+                                new CompositeWhereClause()
+                                {
+                                    Logic = WhereLogic.Or,
+                                    Clauses = new IClause[]{
+                                        new WhereClause(){Column = new TableColumn{Name = "per_age"}, Operator = WhereOperator.GreaterThanOrEqualTo, Constraint = 15},
+                                        new WhereClause(){Column = new TableColumn{Name = "per_age"}, Operator = WhereOperator.LessThan, Constraint = 18}
+                                    }
+                                }
+                            }
+                        }
+                    }, DatabaseType.Postgres)
+                    .SetName(@"""SELECT <TableColumn.From(""prenom"")> FROM <Table { Name = ""t_person"", Alias = ""p"" }> WHERE <CompositeWhereClause {  
+                        Logic = WhereLogic.And, 
+                        Clauses = new IClause[]{
+                            new CompositeWhereClause()
+                                {
+                                    Logic = WhereLogic.Or,
+                                    Clauses = new IClause[]{
+                                        new WhereClause(){Column = new TableColumn{Name = ""per_nom""}, Operator = WhereOperator.EqualTo, Constraint = ""dupont""},
+                                        new WhereClause(){Column = new TableColumn{Name = ""per_nom""}, Operator = WhereOperator.EqualTo, Constraint = ""durant""}
+                                    }
+                                },
+                                new CompositeWhereClause()
+                                {
+                                    Logic = WhereLogic.Or,
+                                    Clauses = new IClause[]{
+                                        new WhereClause(){Column = new TableColumn{Name = ""per_age""}, Operator = WhereOperator.GreaterThanOrEqualTo, Constraint = 15},
+                                        new WhereClause(){Column = new TableColumn{Name = ""per_age""}, Operator = WhereOperator.LessThan, Constraint = 18}
+                                    }
+                                } 
+                        }
+                    })")
+                    .SetCategory("POSTGRES")
+                    .Returns(@"SELECT ""prenom"" FROM ""t_person"" ""p"" WHERE (((""per_nom"" = 'dupont') OR (""per_nom"" = 'durant')) AND ((""per_age"" >= 15) OR (""per_age"" < 18)))");
+
+
+                    yield return new TestCaseData(new SelectQuery()
+                    {
+                        Select = new IColumn[]
+                        {
+                            new TableColumn(){ Name = "prenom"}
+                        },
+
+                        From = new ITable[]
+                        {
+                            new Table(){ Name =  "t_person", Alias = "p"}
+                        },
+                        Where = new CompositeWhereClause()
+                        {
+                            Logic = WhereLogic.And,
+                            Clauses = new IClause[]
+                            {
+                                new WhereClause(){Column = new TableColumn{Name = "per_nom"}, Operator = WhereOperator.EqualTo, Constraint = "dupont"},
+                                new CompositeWhereClause()
+                                {
+                                    Logic = WhereLogic.Or,
+                                    Clauses = new IClause[]{
+                                        new WhereClause(){Column = new TableColumn{Name = "per_age"}, Operator = WhereOperator.GreaterThanOrEqualTo, Constraint = 15},
+                                        new WhereClause(){Column = new TableColumn{Name = "per_age"}, Operator = WhereOperator.LessThan, Constraint = 18}
+                                    }
+                                }
+                            }
+                        }
+                    }, DatabaseType.Postgres)
+                    .SetName("SELECT with WhereClause + Composite clause")
+                    .SetCategory("POSTGRES")
+                    .Returns(@"SELECT ""prenom"" FROM ""t_person"" ""p"" WHERE ((""per_nom"" = 'dupont') AND ((""per_age"" >= 15) OR (""per_age"" < 18)))");
+
+
+                    yield return new TestCaseData(new SelectQuery()
+                    {
+                        Select = new List<IColumn>()
+                        {
+                            new TableColumn(){Name = "p.Name", Alias = "Nom complet"},
+                            new TableColumn() {Name = "c.Name", Alias = "Civilité"}
+                        },
+                        From = new ITable[] { new Table() { Name = "person", Alias = "p" } },
+                        Joins = new IJoin[]
+                        {
+                            new InnerJoin(new Table(){Name = "Civility", Alias = "c"}, 
+                                new WhereClause(){ Column = new TableColumn(){Name = "c.Id"}, Operator = WhereOperator.EqualTo, Constraint = TableColumn.From("p.CivilityId")})
+                        }
+                    }, DatabaseType.Postgres)
+                    .SetName("Select with one inner join")
+                    .SetCategory("POSTGRES")
+                    .Returns(@"SELECT ""p"".""Name"" ""Nom complet"", ""c"".""Name"" ""Civilité"" FROM ""person"" ""p"" INNER JOIN ""Civility"" ""c"" ON (""c"".""Id"" = ""p"".""CivilityId"")");
+
+
+                    yield return new TestCaseData(new SelectQuery()
+                    {
+                        Select = new List<IColumn>()
+                        {
+                            new TableColumn(){Name = "p.Name", Alias = "Nom complet"},
+                            new SelectColumn()
+                            {
+                                SelectQuery = new SelectQuery()
+                                {
+                                    Select = new IColumn[]{new TableColumn() {Name = "c.Name", Alias = "Civilité"}},
+                                    From = new ITable[] {new Table(){Name = "Civility", Alias = "c"}},
+                                    Where = new WhereClause(){Column = TableColumn.From("p.CivilityId"), Operator = WhereOperator.EqualTo, Constraint = TableColumn.From("c.Id")}
+                                }
+                            }
+                        },
+                        From = new[] { new Table() { Name = "person", Alias = "p" } },
+
+                    }, DatabaseType.Postgres)
+                    .SetName("SELECT TableColumn col1, (SELECT TableColumn col2 FROM Table2 WHERE Table1.col = Table2.col) AS alias FROM Table1")
+                    .SetCategory("POSTGRES")
+                    .Returns(@"SELECT ""p"".""Name"" ""Nom complet"", (SELECT ""c"".""Name"" ""Civilité"" FROM ""Civility"" ""c"" WHERE (""p"".""CivilityId"" = ""c"".""Id"")) FROM ""person"" ""p""");
+
+
+                    yield return new TestCaseData(new SelectIntoQuery()
+                    {
+                        Into = new Table() { Name = "destination" },
+                        From = new Table() { Name = "source" } 
+                    }, DatabaseType.Postgres)
+                    .SetName("SELECT into from list of table")
+                    .SetCategory("POSTGRES")
+                    .Returns(@"SELECT * INTO ""destination"" FROM ""source""");
+
+                    yield return new TestCaseData(new SelectIntoQuery()
+                    {
+                        Into = new Table() { Name = "destination" },
+                        From = new Table() { Name = "source" }
+                    }, DatabaseType.Postgres)
+                    .SetName("SELECT into <Table> from <Table>")
+                    .SetCategory("POSTGRES")
+                    .Returns(@"SELECT * INTO ""destination"" FROM ""source""");
+
+
+                    yield return new TestCaseData(new SelectQuery()
+                    {
+                        Select = new IColumn[]
+                        {
+                            new SelectColumn()
+                            {
+                                SelectQuery = new SelectQuery()
+                                {
+                                    Select = new IColumn[]
+                                    {
+                                        new LiteralColumn {Value = 1},
+                                    }
+                                }
+                            }
+                        }
+                    }, DatabaseType.Postgres)
+                        .SetCategory("POSTGRES")
+                        .SetName(@"""SELECT <SelectColumn(
+                        {
+                            SelectQuery = new SelectQuery(){
+                                Select = new IColumn[]
+                                {
+                                    new LiteralColumn {Value = 1},
+                                }
+                            }
+                        }>""")
+                        .SetCategory("POSTGRES")
                         .Returns("SELECT (SELECT 1)");
+
+
+                    yield return new TestCaseData(new SelectQuery()
+                    {
+                        Select = new IColumn[]
+                        {
+                            new Concat(
+                                TableColumn.From("firstname"),
+                                LiteralColumn.From(" "),
+                                TableColumn.From("lastname")
+                                ) {Alias = "fullname"},
+                        },
+                        From = new[]
+                        {
+                            new Table() {Name = "t_person", Alias = "p"}
+                        }
+                    }, DatabaseType.Postgres)
+                        .SetName(@"""SELECT <Concat (TableColumn.From(""firstname""), LiteralColumn.From("" ""),TableColumn.From(""lastname"")
+                            }> 
+                        FROM <Table {Name = ""t_person"", Alias = ""p""}> ")
+                        .SetCategory("POSTGRES")
+                        .Returns(@"SELECT ""firstname"" || ' ' || ""lastname"" ""fullname"" FROM ""t_person"" ""p""");
+
+
+                    yield return new TestCaseData(new SelectQuery()
+                    {
+                        From = new ITable[]
+                        {
+                            new SelectTable()
+                            {
+                                Select = new SelectQuery()
+                                {
+                                    Select = new IColumn[]
+                                    {
+                                        TableColumn.From("firstname"),
+                                        TableColumn.From("lastname")
+                                    },
+                                    From = new ITable[]
+                                    {
+                                        new Table(){Name = "members"}
+                                    }
+                                }
+                            }
+                        }
+                    }, DatabaseType.Postgres)
+                    .SetName("SELECT FROM SelectTable")
+                    .SetCategory("POSTGRES")
+                    .Returns(@"SELECT * FROM SELECT ""firstname"", ""lastname"" FROM ""members""");
+
+                    #endregion
+
 
                 }
             }
-
-
-
+            
             public IEnumerable<ITestCaseData> RenderUpdateTestCases
             {
                 get
                 {
+                    #region SQL SERVER
                     yield return new TestCaseData(new UpdateQuery()
-                    {
-                        Table = new TableTerm { Name = "Table" },
-                        Set = new[]
+            {
+                Table = new Table { Name = "Table" },
+                Set = new[]
                         {
                             new UpdateFieldValue(){ Destination = TableColumn.From("col2"), Source = TableColumn.From("col1")}
                         }
-                    })
-                    .SetName("\"UPDATE <tablename> SET <destination> = <source>\" where <destination> and <source> are table columns")
-                    .Returns("UPDATE [Table] SET [col2] = [col1]");
+            }, DatabaseType.SqlServer)
+            .SetName("\"UPDATE <tablename> SET <destination> = <source>\" where <destination> and <source> are table columns")
+            .SetCategory("SQL SERVER")
+            .Returns("UPDATE [Table] SET [col2] = [col1]");
 
                     yield return new TestCaseData(new UpdateQuery()
                     {
-                        Table = new TableTerm { Name = "Table" },
+                        Table = new Table { Name = "Table" },
                         Set = new[]
                         {
                             new UpdateFieldValue(){ Destination = TableColumn.From("col2"), Source = "col1"}
                         }
-                    })
-                    .SetName("\"UPDATE <tablename> SET <destination> = <source>\" where <destination> is a table column and <source> is a c# string")
+                    }, DatabaseType.SqlServer)
+                    .SetName(@"""UPDATE <tablename> SET <destination> = <source>"" where <destination> is a table column and <source> is a c# string")
+                    .SetCategory("SQL SERVER")
                     .Returns("UPDATE [Table] SET [col2] = 'col1'");
 
                     yield return new TestCaseData(new UpdateQuery()
                     {
-                        Table = new TableTerm { Name = "Table" },
+                        Table = new Table { Name = "Table" },
                         Set = new[]
                         {
                             new UpdateFieldValue(){ Destination = TableColumn.From("col2"), Source = 1}
                         }
-                    })
-                    .SetName("\"UPDATE <tablename> SET <destination> = <source>\" where <destination> is a table column and <source> is a c# positive integer")
+                    }, DatabaseType.SqlServer)
+                    .SetName(@"""UPDATE <tablename> SET <destination> = <source>"" where <destination> is a table column and <source> is a c# positive integer")
+                    .SetCategory("SQL SERVER")
                     .Returns("UPDATE [Table] SET [col2] = 1");
+
 
                     yield return new TestCaseData(new UpdateQuery()
                     {
-                        Table = new TableTerm { Name = "Table" },
+                        Table = new Table { Name = "Table" },
                         Set = new[]
                         {
                             new UpdateFieldValue(){ Destination = TableColumn.From("col2"), Source = -1}
                         }
-                    })
-                    .SetName("\"UPDATE <tablename> SET <destination> = <source>\" where <destination> is a table column and <source> is a c# negative integer")
+                    }, DatabaseType.SqlServer)
+                    .SetName(@"""UPDATE <tablename> SET <destination> = <source>"" where <destination> is a table column and <source> is a c# negative integer")
+                    .SetCategory("SQL SERVER")
                     .Returns("UPDATE [Table] SET [col2] = -1");
+                    
+                    #endregion
+
+
+                    #region POSTGRES
+
+
+                    yield return new TestCaseData(new UpdateQuery()
+                    {
+                        Table = new Table { Name = "Table" },
+                        Set = new[]
+                        {
+                            new UpdateFieldValue(){ Destination = TableColumn.From("col2"), Source = TableColumn.From("col1")}
+                        }
+                    }, DatabaseType.Postgres)
+            .SetName("\"UPDATE <tablename> SET <destination> = <source>\" where <destination> and <source> are table columns")
+            .SetCategory("POSTGRES")
+            .Returns(@"UPDATE ""Table"" SET ""col2"" = ""col1""");
+
+                    yield return new TestCaseData(new UpdateQuery()
+                    {
+                        Table = new Table { Name = "Table" },
+                        Set = new[]
+                        {
+                            new UpdateFieldValue(){ Destination = TableColumn.From("col2"), Source = "col1"}
+                        }
+                    }, DatabaseType.Postgres)
+                    .SetName(@"""UPDATE <tablename> SET <destination> = <source>"" where <destination> is a table column and <source> is a c# string")
+                    .SetCategory("POSTGRES")
+                    .Returns(@"UPDATE ""Table"" SET ""col2"" = 'col1'");
+
+                    yield return new TestCaseData(new UpdateQuery()
+                    {
+                        Table = new Table { Name = "Table" },
+                        Set = new[]
+                        {
+                            new UpdateFieldValue(){ Destination = TableColumn.From("col2"), Source = 1}
+                        }
+                    }, DatabaseType.Postgres)
+                    .SetName(@"""UPDATE <tablename> SET <destination> = <source>"" where <destination> is a table column and <source> is a c# positive integer")
+                    .SetCategory("POSTGRES")
+                    .Returns(@"UPDATE ""Table"" SET ""col2"" = 1");
+
+
+                    yield return new TestCaseData(new UpdateQuery()
+                    {
+                        Table = new Table { Name = "Table" },
+                        Set = new[]
+                        {
+                            new UpdateFieldValue(){ Destination = TableColumn.From("col2"), Source = -1}
+                        }
+                    }, DatabaseType.Postgres)
+                    .SetName(@"""UPDATE <tablename> SET <destination> = <source>"" where <destination> is a table column and <source> is a c# negative integer")
+                    .SetCategory("POSTGRES")
+                    .Returns(@"UPDATE ""Table"" SET ""col2"" = -1");
+
+                    yield return new TestCaseData(new UpdateQuery()
+                                {
+                                    Table = new Table { Name = "Table" },
+                                    Set = new[]
+                        {
+                            new UpdateFieldValue(){ Destination = TableColumn.From("col2"), Source = TableColumn.From("col1")}
+                        }
+                                }, DatabaseType.Postgres)
+                                .SetName("\"UPDATE <tablename> SET <destination> = <source>\" where <destination> and <source> are table columns")
+                                .SetCategory("POSTGRES")
+                                .Returns(@"UPDATE ""Table"" SET ""col2"" = ""col1""");
+                    
+                    #endregion
 
                 }
             }
@@ -1144,26 +1805,58 @@ namespace Queries.Tests.Renderers
         [SetUp]
         public void SetUp()
         {
-            _renderer = new SqlServerRenderer();
+            
         }
 
         [TearDown]
         public void TearDown()
         {
-            _renderer = null;
+            
         }
 
 
         [TestCaseSource(typeof(Cases), "SelectTestsCases")]
-        public string RenderSelect(SelectQueryBase selectQuery)
+        public string RenderSelect(SelectQueryBase selectQuery, DatabaseType databaseType)
         {
-            return _renderer.Render(selectQuery);
+            ISqlRenderer renderer;
+            switch (databaseType)
+            {
+                case DatabaseType.SqlServer:
+                case DatabaseType.SqlServerCompact:
+                    renderer = new SqlServerRenderer();
+                    break;
+                case DatabaseType.Mysql:
+                case DatabaseType.Postgres:
+                    renderer = new PostgresqlRenderer();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException("databaseType");
+            }
+
+
+            return renderer.Render(selectQuery);
         }
 
         [TestCaseSource(typeof(Cases), "RenderUpdateTestCases")]
-        public string RenderUpdate(UpdateQuery updateQuery)
+        public string RenderUpdate(UpdateQuery updateQuery, DatabaseType databaseType)
         {
-            return _renderer.Render(updateQuery);
+            ISqlRenderer renderer;
+            switch (databaseType)
+            {
+                case DatabaseType.SqlServer:
+                case DatabaseType.SqlServerCompact:
+                    renderer = new SqlServerRenderer();
+                    break;
+                case DatabaseType.Mysql:
+                case DatabaseType.Postgres:
+                    renderer = new PostgresqlRenderer();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException("databaseType");
+            }
+
+
+            return renderer.Render(updateQuery);
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using Queries.Parts.Columns;
+﻿using Queries.Parts.Columns;
 
 namespace Queries.Validators
 {

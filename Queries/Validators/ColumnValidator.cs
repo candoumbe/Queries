@@ -1,5 +1,4 @@
 ﻿using System;
-using Queries.Parts;
 using Queries.Parts.Columns;
 
 namespace Queries.Validators
@@ -40,15 +39,6 @@ namespace Queries.Validators
 
 
             return valid;
-        }
-    }
-
-
-    public class TableValidator : IValidate<TableTerm>
-    {
-        public bool Validate(TableTerm table)
-        {
-            return table != null && !String.IsNullOrWhiteSpace(table.Name);
         }
     }
 }

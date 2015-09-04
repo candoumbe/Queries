@@ -2,7 +2,7 @@
 {
     public class InnerJoin : JoinBase
     {
-        public InnerJoin(TableTerm table, IClause @on) : base(JoinType.InnerJoin, table, @on)
+        public InnerJoin(Table table, IClause @on) : base(JoinType.InnerJoin, table, @on)
         {}
     }
 }

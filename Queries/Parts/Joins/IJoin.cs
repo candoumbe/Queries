@@ -3,7 +3,7 @@
     public interface IJoin
     {
         JoinType JoinType { get; }
-        TableTerm Table { get; }
+        Table Table { get; }
         IClause On { get; }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace Queries.Builders.Fluent
 {
-    public interface ISqlWhere
+    public interface IWhereQuery<T> : IBuildableQuery<T>
     {
 
         

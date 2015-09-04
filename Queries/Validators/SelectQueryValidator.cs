@@ -9,7 +9,7 @@ namespace Queries.Validators
     {
 
         public IValidate<IColumn> ColumnValidator { get; private set; }
-        public IValidate<TableTerm> TableValidator { get; private set; }
+        public IValidate<Table> TableValidator { get; private set; }
 
 
         public SelectQueryValidator()
@@ -25,7 +25,7 @@ namespace Queries.Validators
                 // SELECT validation
                 &&  query.Select != null && query.Select.Any() && query.Select.All(col => ColumnValidator.Validate(col))
                 // FROM validation
-                && (query.From == null || query.From.All(table => TableValidator.Validate(table)));    
+                && (query.From == null || query.From.All(table => (table is Table && TableValidator.Validate((Table)table)) || (table is SelectTable)));    
         }
     }
 }

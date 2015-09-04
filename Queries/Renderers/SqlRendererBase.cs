@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Permissions;
 using System.Text;
 using Queries.Builders;
 using Queries.Parts;
@@ -92,7 +91,7 @@ namespace Queries.Renderers
                     sb.AppendFormat("SELECT {0} INTO {1} FROM {2}",
                         fieldsString,
                         RenderTablename(selectInto.Into, false),
-                        RenderTables(selectInto.FromTable));
+                        RenderTables(new [] {selectInto.From}));
                 }
             
 
@@ -202,20 +201,31 @@ namespace Queries.Renderers
             return sbJoins.ToString();
         }
 
-        protected virtual string RenderTables(IEnumerable<TableTerm> tables)
+        protected virtual string RenderTables(IEnumerable<ITable> tables)
         {
-            tables = tables as TableTerm[] ?? tables.ToArray();
+            tables = tables as Table[] ?? tables.ToArray();
             StringBuilder sbTables = new StringBuilder(tables.Count() * 25);
-            foreach (TableTerm table in tables)
+            foreach (ITable table in tables)
             {
+
                 if (sbTables.Length != 0)
                 {
                     sbTables = sbTables.Append(", ");
                 }
 
-                sbTables = String.IsNullOrWhiteSpace(table.Alias)
-                    ? sbTables.Append(EscapeName(table.Name))
-                    : sbTables.AppendFormat(RenderTablenameWithAlias(EscapeName(table.Name), EscapeName(table.Alias)));
+                if (table is Table)
+                {
+                    sbTables = String.IsNullOrWhiteSpace(table.Alias)
+                        ? sbTables.Append(EscapeName(((Table)table).Name))
+                        : sbTables.AppendFormat(RenderTablenameWithAlias(EscapeName(((Table)table).Name), EscapeName(table.Alias))); 
+                } 
+                else if (table is SelectTable)
+                {
+                    SelectTable selectTable = (SelectTable) table;
+                    sbTables = String.IsNullOrWhiteSpace(table.Alias)
+                        ? sbTables.Append(Render(selectTable.Select))
+                        : sbTables.AppendFormat(RenderTablenameWithAlias(Render(selectTable.Select), EscapeName(selectTable.Alias))); 
+                }
             }
             return sbTables.ToString();
         }
@@ -331,7 +341,7 @@ namespace Queries.Renderers
             return sbWhere.Insert(0, '(').Insert(sbWhere.Length, ')').ToString();
         }
 
-        protected virtual string RenderTablename(TableTerm table, bool renderAlias)
+        protected virtual string RenderTablename(Table table, bool renderAlias)
         {
             return !renderAlias || String.IsNullOrWhiteSpace(table.Alias)
                 ? EscapeName(table.Name)
@@ -348,45 +358,64 @@ namespace Queries.Renderers
         protected virtual string RenderColumn(IColumn column, bool renderAlias)
         {
             string columnString = String.Empty;
-            TableColumn tableColumn = column as TableColumn;
-            if (tableColumn != null)
+            if (column is TableColumn)
             {
-                TableColumn tc = tableColumn;
+                TableColumn tc = column as TableColumn;
                 columnString = !renderAlias || String.IsNullOrWhiteSpace(tc.Alias)
                     ? EscapeName(tc.Name)
                     : RenderColumnnameWithAlias(EscapeName(tc.Name), EscapeName(tc.Alias));
             }
-            else
+            else if (column is LiteralColumn)
             {
-                LiteralColumn literalColumn = column as LiteralColumn;
-                if (literalColumn != null)
-                {
-                    columnString = RenderLiteralColumn(literalColumn, renderAlias);
-                }
-                else
-                {
-                    AggregateColumn aggregateColumn = column as AggregateColumn;
-                    if (aggregateColumn != null)
-                    {
-                        columnString = RenderAggregateColumn(aggregateColumn, renderAlias);
-                    }
-                    else
-                    {
-                        SelectColumn selectColumn = column as SelectColumn;
-                        if(selectColumn != null)
-                        {
 
-                            columnString = RenderInlineSelect(selectColumn, renderAlias);
-                            
-                        }
-                    }
-                } 
+                LiteralColumn literalColumn = column as LiteralColumn;
+                columnString = RenderLiteralColumn(literalColumn, renderAlias);
+            }
+            else if (column is AggregateColumn)
+            {
+                AggregateColumn aggregateColumn = column as AggregateColumn;
+                columnString = RenderAggregateColumn(aggregateColumn, renderAlias);
+            }
+            else if (column is SelectColumn)
+            {
+                SelectColumn selectColumn = column as SelectColumn;
+                columnString = RenderInlineSelect(selectColumn, renderAlias);
+            } else if (column is IFunctionColumn)
+            {
+                if (column is Concat)
+                {
+                    Concat concatColumn = column as Concat;
+                    columnString = RenderConcatColumn(concatColumn, renderAlias);
+                }
             }
 
 
             return columnString;
         }
-        
+
+        protected string RenderConcatColumn(Concat concatColumn, bool renderAlias)
+        {
+            StringBuilder sbConcat = new StringBuilder();
+            foreach (IColumn column in concatColumn.Columns)
+            {
+                if (sbConcat.Length > 0)
+                {
+                    sbConcat = sbConcat.AppendFormat(" {0} ", GetConcatString());
+                }
+                sbConcat = sbConcat.Append(RenderColumn(column, false));
+            }
+
+            string queryString = renderAlias && !String.IsNullOrWhiteSpace(concatColumn.Alias)
+                ? RenderColumnnameWithAlias(sbConcat.ToString(), EscapeName(concatColumn.Alias))
+                : sbConcat.ToString();
+
+            return queryString;
+
+        }
+
+
+        protected abstract string GetConcatString();
+
         protected virtual string RenderInlineSelect(SelectColumn inlineSelectQuery, bool renderAlias)
         {
             string columnString  = !renderAlias || String.IsNullOrWhiteSpace(inlineSelectQuery.Alias)

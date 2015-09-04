@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Queries.Builders;
-using Queries.Parts;
-using Queries.Parts.Columns;
-using Queries.Parts.Joins;
 
 namespace Queries.Renderers
 {
@@ -15,6 +10,11 @@ namespace Queries.Renderers
         {
             string result = Render(query, DatabaseType.SqlServer);
             return result;
+        }
+
+        protected override string GetConcatString()
+        {
+            return "+";
         }
 
         public override string EscapeName(string rawColumnName)
