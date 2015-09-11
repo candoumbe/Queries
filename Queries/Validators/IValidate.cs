@@ -6,6 +6,6 @@
     /// <typeparam name="T"></typeparam>
     public interface IValidate<in T>
     {
-        bool Validate(T element);
+        bool IsValid(T element);
     }
 }

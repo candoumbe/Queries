@@ -6,7 +6,7 @@
         SqlServerCompact,
         Mysql,
         MariaDb,
-        Postgres,
+        Postgresql,
         Sqlite,
         Oracle
     }

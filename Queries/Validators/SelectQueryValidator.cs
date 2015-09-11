@@ -19,13 +19,13 @@ namespace Queries.Validators
         }
 
 
-        public override bool Validate(SelectQuery query)
+        public override bool IsValid(SelectQuery query)
         {
             return query != null 
                 // SELECT validation
-                &&  query.Select != null && query.Select.Any() && query.Select.All(col => ColumnValidator.Validate(col))
+                &&  query.Select != null && query.Select.Any() && query.Select.All(col => ColumnValidator.IsValid(col))
                 // FROM validation
-                && (query.From == null || query.From.All(table => (table is Table && TableValidator.Validate((Table)table)) || (table is SelectTable)));    
+                && (query.From == null || query.From.All(table => (table is Table && TableValidator.IsValid((Table)table)) || (table is SelectTable)));    
         }
     }
 }

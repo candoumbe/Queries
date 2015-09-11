@@ -1,11 +1,15 @@
 namespace Queries.Parts.Columns
 {
-    public class Min : AggregateColumn
+    public class Min : MinColumn
     {
-        public Min(TableColumn column) : base(AggregateType.Min, column)
+
+
+        public Min(FieldColumn column, string alias = null)
+            : base(column, alias)
         {}
 
-        public Min(string columnName) : this(new TableColumn(){Name = columnName})
+        public Min(string columnName, string alias = null)
+            : base(columnName, alias)
         {}
     }
 }

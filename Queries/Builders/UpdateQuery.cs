@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Queries.Parts;
+using Queries.Parts.Clauses;
 
 namespace Queries.Builders
 {
@@ -7,6 +8,6 @@ namespace Queries.Builders
     {
         public Table Table { get; set; }
         public IList<UpdateFieldValue> Set { get; set; }
-        public IClause Where { get; set; }
+        public IWhereClause Where { get; set; }
     }
 }

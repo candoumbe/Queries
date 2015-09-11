@@ -20,8 +20,5 @@ namespace Queries.Parts.Columns
         {
             return new LiteralColumn(value);
         }
-
-        
-        
     }
 }

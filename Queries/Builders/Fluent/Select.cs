@@ -1,5 +1,6 @@
 using System;
 using Queries.Parts;
+using Queries.Parts.Clauses;
 using Queries.Parts.Columns;
 using Queries.Parts.Joins;
 
@@ -32,7 +33,7 @@ namespace Queries.Builders.Fluent
         {
             foreach (string column in columnNames)
             {
-                _query.Select.Add(TableColumn.From(column));
+                _query.Select.Add(FieldColumn.From(column));
             }
         }
 
@@ -72,28 +73,28 @@ namespace Queries.Builders.Fluent
             return this;
         }
 
-        public IWhereQuery<SelectQuery> Where(IClause clause)
+        public IWhereQuery<SelectQuery> Where(IWhereClause clause)
         {
             _query.Where = clause;
 
             return this;
         }
 
-        public IJoinQuery<SelectQuery> InnerJoin(Table table, IClause clause)
+        public IJoinQuery<SelectQuery> InnerJoin(Table table, IWhereClause clause)
         {
             _query.Joins.Add(new InnerJoin(table, clause));
 
             return this;
         }
 
-        public IJoinQuery<SelectQuery> LeftOuterJoin(Table table, IClause clause)
+        public IJoinQuery<SelectQuery> LeftOuterJoin(Table table, IWhereClause clause)
         {
             _query.Joins.Add(new LeftOuterJoin(table, clause));
 
             return this;
         }
 
-        public IJoinQuery<SelectQuery> RightOuterJoin(Table table, IClause clause)
+        public IJoinQuery<SelectQuery> RightOuterJoin(Table table, IWhereClause clause)
         {
             _query.Joins.Add(new RightOuterJoin(table, clause));
 
@@ -108,7 +109,7 @@ namespace Queries.Builders.Fluent
             return _query;
         }
 
-        public IWhereQuery<SelectQuery> InnerJoin(IClause clause)
+        public IWhereQuery<SelectQuery> InnerJoin(IWhereClause clause)
         {
             throw new NotImplementedException();
         }

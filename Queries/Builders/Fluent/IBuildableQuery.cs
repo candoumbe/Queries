@@ -1,6 +1,6 @@
 ﻿namespace Queries.Builders.Fluent
 {
-    public interface IBuildableQuery<T>
+    public interface IBuildableQuery<out T>
     {
         T Build();
     }

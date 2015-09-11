@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Linq;
+using System.Text;
 using Queries.Builders;
+using Queries.Parts.Columns;
 
 namespace Queries.Renderers
 {
     public class PostgresqlRenderer : SqlRendererBase
     {
+
         public override string Render(SelectQueryBase query)
         {
-            return Render(query, DatabaseType.Postgres);
+            return Render(query, DatabaseType.Postgresql);
         }
 
         public override string EscapeName(string rawColumnName)
@@ -20,7 +23,7 @@ namespace Queries.Renderers
             return escapedColumnName;
         }
 
-        protected override string GetConcatString()
+        protected override string GetConcatOperator()
         {
             return "||";
         }
@@ -30,6 +33,19 @@ namespace Queries.Renderers
             return String.Format("{0} {1}", columnName, alias);
         }
 
+
+        protected override string RenderNullColumn(NullColumn nullColumn, bool renderAlias)
+        {
+            StringBuilder sbNullColumn = new StringBuilder();
+
+            sbNullColumn = sbNullColumn.AppendFormat("COALESCE({0}, {1})", RenderColumn(nullColumn.Column, false), RenderColumn(nullColumn.DefaultValue, false));
+
+            string queryString = renderAlias && !String.IsNullOrWhiteSpace(nullColumn.Alias)
+                ? RenderColumnnameWithAlias(sbNullColumn.ToString(), EscapeName(nullColumn.Alias))
+                : sbNullColumn.ToString();
+
+            return queryString;
+        }
 
 
 

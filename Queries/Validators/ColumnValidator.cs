@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Queries.Parts.Columns;
 
 namespace Queries.Validators
@@ -7,7 +8,7 @@ namespace Queries.Validators
     {
         
 
-        public bool Validate(IColumn column)
+        public bool IsValid(IColumn column)
         {
 
             bool valid = false;
@@ -17,23 +18,36 @@ namespace Queries.Validators
             {
                 valid = true;
             } 
-            else if (column is TableColumn)
+            else if (column is FieldColumn)
             {
-                TableColumn tc = (TableColumn) column;
+                FieldColumn tc = (FieldColumn) column;
                 valid = !String.IsNullOrWhiteSpace(tc.Name);
             }
             else if (column is AggregateColumn)
             {
                 AggregateColumn ac = (AggregateColumn)column;
-                valid = Validate(ac.Column);
+                valid = IsValid(ac.Column);
             } 
             else if (column is SelectColumn)
             {
                 SelectColumn inlineSelectQuery = (SelectColumn) column;
                 SelectQueryValidator validator = new SelectQueryValidator();
-                valid = validator.Validate(inlineSelectQuery.SelectQuery);
+                valid = validator.IsValid(inlineSelectQuery.SelectQuery);
 
 
+            }
+            else if (column is IFunctionColumn)
+            {
+                if (column is NullColumn)
+                {
+                    NullColumn nullColumn = column as NullColumn;
+                    valid = IsValid(nullColumn.Column) && IsValid(nullColumn.DefaultValue);
+                    
+                } else if (column is ConcatColumn)
+                {
+                    ConcatColumn concatColumn = column as ConcatColumn;
+                    valid = concatColumn.Columns.All(IsValid);
+                }
             }
            
 

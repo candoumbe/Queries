@@ -1,9 +1,10 @@
 namespace Queries.Parts.Columns
 {
-    public class Max : AggregateColumn
+    public class Max : MaxColumn
     {
-        public Max(TableColumn column)
-            : base(AggregateType.Max, column)
-        { }
+        public Max(FieldColumn column, string alias = null)
+            : base(column, alias)
+        {
+        }
     }
 }

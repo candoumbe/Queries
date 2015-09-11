@@ -6,7 +6,7 @@ namespace Queries.Validators
     public class TableValidator : IValidate<ITable>
     {
 
-        public bool Validate(ITable table)
+        public bool IsValid(ITable table)
         {
             Func<ITable, bool> validateFunc = t =>
             {
@@ -19,7 +19,7 @@ namespace Queries.Validators
                 else if (table is SelectTable)
                 {
                     SelectTable selectTable = (SelectTable) table;
-                    valid = new SelectQueryValidator().Validate(selectTable.Select);
+                    valid = new SelectQueryValidator().IsValid(selectTable.Select);
                 }
 
 

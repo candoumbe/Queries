@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using Queries.Builders;
 using Queries.Builders.Fluent;
+using Queries.Extensions;
 using Queries.Parts;
+using Queries.Parts.Clauses;
 using Queries.Parts.Columns;
 using Queries.Renderers;
 
@@ -19,54 +21,61 @@ namespace Queries.Tests.Renderers
                 get
                 {
 
-#region SQL SERVER
+#region SQL Server
 
                     yield return
                         new TestCaseData(new Select("col1", "col2").From("table1").Build(), DatabaseType.SqlServer)
                             .SetName(@"""new Select(""col1"", ""col2"").From(""table1"")""")
-                            .SetCategory("SQL SERVER")
+                            .SetCategory("SQL Server")
                             .Returns("SELECT [col1], [col2] FROM [table1]");
                     yield return
                         new TestCaseData(
-                            new Select(new Concat(TableColumn.From("firstname"), LiteralColumn.From(" "),
-                                TableColumn.From("lastname")) {Alias = "fullname"})
+                            new Select(new ConcatColumn(FieldColumn.From("firstname"), LiteralColumn.From(" "),
+                                FieldColumn.From("lastname")) {Alias = "fullname"})
                                 .From("table1").Build(), DatabaseType.SqlServer)
                             .SetName(
-                                @"""new Select(new Concat(""fullname"", TableColumn.From(""firstname""), LiteralColumn.From(""""), TableColumn.From(""lastname"")).From(""table1"").Build()")
-                            .SetCategory("SQL SERVER")
+                                @"""new Select(new Concat(""fullname"", Field.From(""firstname""), LiteralColumn.From(""""), Field.From(""lastname"")).From(""table1"").Build()")
+                            .SetCategory("SQL Server")
                             .Returns(@"SELECT [firstname] + ' ' + [lastname] AS [fullname] FROM [table1]");
 
-                    yield return new TestCaseData(new Select(new Concat(TableColumn.From("firstname"), LiteralColumn.From(" "), TableColumn.From("lastname")){Alias = "fullname"})
+                    yield return new TestCaseData(new Select(new ConcatColumn(FieldColumn.From("firstname"), LiteralColumn.From(" "), FieldColumn.From("lastname")){Alias = "fullname"})
                             .From("table1")
                             .Where(new CompositeWhereClause()
                             {
-                                Logic = WhereLogic.And,
-                                Clauses = new IClause[]
+                                Logic = ClauseLogic.And,
+                                Clauses = new IWhereClause[]
                                 {
-                                    new WhereClause(){Column = TableColumn.From("age"), Operator = WhereOperator.GreaterThanOrEqualTo, Constraint = 15},
-                                    new WhereClause(){Column = TableColumn.From("age"), Operator = WhereOperator.LessThan, Constraint = 18}
+                                    new WhereClause(){Column = FieldColumn.From("age"), Operator = ClauseOperator.GreaterThanOrEqualTo, Constraint = 15},
+                                    new WhereClause(){Column = FieldColumn.From("age"), Operator = ClauseOperator.LessThan, Constraint = 18}
                                 }
                             })
                             .Build(),
                             DatabaseType.SqlServer)
-                        .SetName(@"""new Select(new Concat(""fullname"", TableColumn.From(""firstname""), LiteralColumn.From(""""), TableColumn.From(""lastname"")).From(""table1"").Build()")
-                        .SetCategory("SQL SERVER")
+                        .SetName(@"""new Select(new Concat(""fullname"", Field.From(""firstname""), LiteralColumn.From(""""), Field.From(""lastname"")).From(""table1"").Build()")
+                        .SetCategory("SQL Server")
                         .Returns(@"SELECT [firstname] + ' ' + [lastname] AS [fullname] FROM [table1] WHERE (([age] >= 15) AND ([age] < 18))");
 #endregion
 
 
 
-                    #region POSTGRES
-                    yield return new TestCaseData(new Select("col1", "col2").From("table1").Build(), DatabaseType.Postgres)
+                    #region Postgresql
+                    yield return new TestCaseData(new Select("col1", "col2").From("table1").Build(), DatabaseType.Postgresql)
                                     .SetName(@"""new Select(""col1"", ""col2"").From(""table1"")""")
-                                    .SetCategory("POSTGRES")
+                                    .SetCategory("Postgresql")
                                     .Returns(@"SELECT ""col1"", ""col2"" FROM ""table1""");
 
-                    yield return new TestCaseData(new Select(new Concat(TableColumn.From("firstname"), LiteralColumn.From(" "), TableColumn.From("lastname")) { Alias = "fullname" })
-                            .From("table1").Build(), DatabaseType.Postgres)
-                        .SetName(@"""new SelectQueryBuilder()..Select(new Concat(""fullname"", TableColumn.From(""firstname""), LiteralColumn.From(""""), TableColumn.From(""lastname"")).From(""table1"").Build()")
-                        .SetCategory("POSTGRES")
-                        .Returns(@"SELECT ""firstname"" || ' ' || ""lastname"" ""fullname"" FROM ""table1"""); 
+                    yield return new TestCaseData(new Select(new Concat("firstname".Field(), " ".Literal(), "lastname".Field()) { Alias = "fullname" })
+                            .From("table1").Build(), DatabaseType.Postgresql)
+                        .SetName(@"""new Select(new Concat(""firstname"".Field(), "" "".Literal(), ""lastname"".Field()) { Alias = ""fullname""}).From(""table1"").Build()")
+                        .SetCategory("Postgresql")
+                        .Returns(@"SELECT ""firstname"" || ' ' || ""lastname"" ""fullname"" FROM ""table1""");
+
+
+                    yield return new TestCaseData(new Select(new ConcatColumn(FieldColumn.From("firstname"), LiteralColumn.From(" "), FieldColumn.From("lastname")) { Alias = "fullname" })
+                           .From("table1").Build(), DatabaseType.Postgresql)
+                       .SetName(@"""new SelectQueryBuilder()..Select(new Concat(""fullname"", Field.From(""firstname""), LiteralColumn.From(""""), Field.From(""lastname"")).From(""table1"").Build()")
+                       .SetCategory("Postgresql")
+                       .Returns(@"SELECT ""firstname"" || ' ' || ""lastname"" ""fullname"" FROM ""table1"""); 
                     #endregion
 
                    

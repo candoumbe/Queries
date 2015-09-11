@@ -1,12 +1,9 @@
 namespace Queries.Parts.Columns
 {
-    public class Count : AggregateColumn
+    public class Count : CountColumn
     {
-        public Count(TableColumn column)
-            : base(AggregateType.Count, column)
-        { }
+        public Count(FieldColumn column, string alias = null)
+            : base(column, alias)
+        {}
     }
-
-
-    
 }

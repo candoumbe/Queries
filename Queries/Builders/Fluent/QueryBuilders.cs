@@ -11,7 +11,7 @@ namespace Queries.Builders.Fluent
 
         public static IColumn Max(string columnName)
         {
-            return new Max(TableColumn.From(columnName));
+            return new MaxColumn(FieldColumn.From(columnName));
         }
 
         
