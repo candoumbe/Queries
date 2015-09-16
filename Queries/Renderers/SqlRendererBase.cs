@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Queries.Builders;
 using Queries.Exceptions;
+using Queries.Extensions;
 using Queries.Parts;
 using Queries.Parts.Clauses;
 using Queries.Parts.Columns;
@@ -634,6 +635,34 @@ namespace Queries.Renderers
 
 
             return queryStringBuilder.ToString();
+        }
+
+
+        public virtual string Render(CreateViewQuery query)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            if (query != null && new CreateViewQueryValidator().IsValid(query))
+            {
+                sb = sb.AppendFormat("CREATE VIEW {0} ", RenderTables(new ITable[] {query.Name.Table()}))
+                    .Append(PrettyPrint ? Environment.NewLine : String.Empty)
+                    .AppendFormat("AS ")
+                    .Append(PrettyPrint ? Environment.NewLine : String.Empty)
+                    .Append(Render(query.Select));
+            }
+
+            return sb.ToString();
+        }
+
+        public string Render(TruncateQuery query)
+        {
+            string sbQuery = String.Empty;
+            if (query != null && new TruncateQueryValidator().IsValid(query))
+            {
+                sbQuery = String.Format("TRUNCATE TABLE {0}", query.Name);
+            }
+
+            return sbQuery;
         }
 
         public virtual string Render(DeleteQuery deleteQuery)

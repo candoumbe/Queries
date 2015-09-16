@@ -33,8 +33,6 @@ namespace Queries.Validators
                 SelectColumn inlineSelectQuery = (SelectColumn) column;
                 SelectQueryValidator validator = new SelectQueryValidator();
                 valid = validator.IsValid(inlineSelectQuery.SelectQuery);
-
-
             }
             else if (column is IFunctionColumn)
             {
@@ -50,8 +48,6 @@ namespace Queries.Validators
                 }
             }
            
-
-
             return valid;
         }
     }

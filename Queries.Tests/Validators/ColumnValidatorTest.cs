@@ -83,10 +83,6 @@ namespace Queries.Tests.Validators
             _columnValidator = null;
         }
 
-
-
-
-
         [TestCaseSource(typeof(Cases), "ColumnValidatorTestCases")]
         public bool Validate(IColumn column)
         {

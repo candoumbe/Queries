@@ -300,7 +300,7 @@ namespace Queries.Tests.Renderers
                         },
 
                     }, false)
-                        .SetName(@"""SELECT <Min(Field {Name = ""Col1"", Alias = ""Minimum""})>, <Min(Field {Name = ""Col2"", Alias = ""Maximum""})> FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
+                        .SetName(@"""SELECT <Min(Field {Name = ""Col1""}, ""Minimum"")>, <MaxColumn(Field {Name = ""Col2""}, ""Maximum"")> FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
                         .SetCategory("Postgresql")
                         .Returns(@"SELECT MIN(""Col1"") ""Minimum"", MAX(""Col2"") ""Maximum"" FROM ""Table"" ""t""");
 
@@ -351,10 +351,10 @@ namespace Queries.Tests.Renderers
                             }
                         }
                     }, false)
-                        .SetName(@"""SELECT <Min(Field {Name = ""Col1"", Alias = ""Minimum""})> FROM <Table { Name = ""Table"", Alias = ""t"" }> UNION SELECT <Min(Field {Name = ""Col2"", Alias = ""Minimum""})> FROM <Table { Name = ""Table2"", Alias = ""t2"" }>""")
+                        .SetName(@"""SELECT <Min(Field {Name = ""Col1""}, ""Minimum"")> FROM <Table { Name = ""Table"", Alias = ""t"" }> UNION SELECT <Min(Field {Name = ""Col2"", Alias = ""Minimum""})> FROM <Table { Name = ""Table2"", Alias = ""t2"" }>""")
                         .SetCategory("Postgresql")
                         .Returns(
-                            @"SELECT MIN(""Col1"") FROM ""Table"" ""t"" UNION SELECT MIN(""Col2"") ""Minimum"" FROM ""Table2"" ""t2""")
+                            @"SELECT MIN(""Col1"") ""Minimum"" FROM ""Table"" ""t"" UNION SELECT MIN(""Col2"") FROM ""Table2"" ""t2""")
                         ;
 
 
@@ -383,13 +383,13 @@ namespace Queries.Tests.Renderers
                             }
                         }
                     }, true)
-                        .SetName(@"PRETTY PRINT : ""SELECT <Min(Field {Name = ""Col1"", Alias = ""Minimum""})> FROM <Table { Name = ""Table"", Alias = ""t"" }> UNION SELECT <Min(Field {Name = ""Col2"", Alias = ""Minimum""})> FROM <Table { Name = ""Table2"", Alias = ""t2"" }>""")
+                        .SetName(@"PRETTY PRINT : ""SELECT <Min(Field {Name = ""Col1""}, ""Minimum"")> FROM <Table { Name = ""Table"", Alias = ""t"" }> UNION SELECT <Min(Field {Name = ""Col2"", Alias = ""Minimum""})> FROM <Table { Name = ""Table2"", Alias = ""t2"" }>""")
                         .SetCategory("Postgresql")
                         .Returns(
-                            "SELECT MIN(\"Col1\") \r\n" +
+                            "SELECT MIN(\"Col1\") \"Minimum\" \r\n" +
                             "FROM \"Table\" \"t\" \r\n" +
                             "UNION \r\n" +
-                            "SELECT MIN(\"Col2\") \"Minimum\" \r\n" +
+                            "SELECT MIN(\"Col2\") \r\n" +
                             @"FROM ""Table2"" ""t2""")
                         ;
 
@@ -985,7 +985,7 @@ namespace Queries.Tests.Renderers
                         {
                             new UpdateFieldValue(){ Destination = FieldColumn.From("col2"), Source = FieldColumn.From("col1")}
                         }
-                    })
+                    }, false)
                     .SetName("\"UPDATE <tablename> SET <destination> = <source>\" where <destination> and <source> are table columns")
                     .SetCategory("Postgresql")
                     .Returns(@"UPDATE ""Table"" SET ""col2"" = ""col1""");
@@ -997,7 +997,7 @@ namespace Queries.Tests.Renderers
                         {
                             new UpdateFieldValue(){ Destination = FieldColumn.From("col2"), Source = "col1"}
                         }
-                    })
+                    }, false)
                     .SetName(@"UPDATE <Table {Name = ""Table""}> SET <Set = new[] { new UpdateFieldValue(){ Destination = FieldColumn.From(""col2""), Source = ""col1""}}""")
                     .SetCategory("Postgresql")
                     .Returns(@"UPDATE ""Table"" SET ""col2"" = 'col1'");
@@ -1009,7 +1009,7 @@ namespace Queries.Tests.Renderers
                         {
                             new UpdateFieldValue(){ Destination = FieldColumn.From("col2"), Source = 1}
                         }
-                    })
+                    }, false)
                     .SetName(@"UPDATE <Table {Name = ""Table""}> SET <Set = new[] { new UpdateFieldValue(){ Destination = FieldColumn.From(""col2""), Source = 1""")
                     .SetCategory("Postgresql")
                     .Returns(@"UPDATE ""Table"" SET ""col2"" = 1");
@@ -1022,7 +1022,7 @@ namespace Queries.Tests.Renderers
                         {
                             new UpdateFieldValue(){ Destination = FieldColumn.From("col2"), Source = -1}
                         }
-                    })
+                    }, false)
                     .SetName(@"UPDATE <Table {Name = ""Table""}> SET <Set = new[] { new UpdateFieldValue(){ Destination = FieldColumn.From(""col2""), Source = -1 }}""")
                     .SetCategory("Postgresql")
                     .Returns(@"UPDATE ""Table"" SET ""col2"" = -1");
@@ -1034,10 +1034,24 @@ namespace Queries.Tests.Renderers
                         {
                             new UpdateFieldValue(){ Destination = FieldColumn.From("col2"), Source = FieldColumn.From("col1")}
                         }
-                    })
+                    }, false)
                                 .SetName(@"UPDATE <Table {Name = ""Table""}> SET <Set = new[] { new UpdateFieldValue(){ Destination = FieldColumn.From(""col2""), Source = FieldColumn.From(""col1"")}}""")
                                 .SetCategory("Postgresql")
                                 .Returns(@"UPDATE ""Table"" SET ""col2"" = ""col1""");
+
+
+                    yield return new TestCaseData(new UpdateQuery()
+                    {
+                        Table = "Table".Table() ,
+                        Set = new[]
+                        {
+                            new UpdateFieldValue(){ Destination = "col2".Field(), Source = "col1".Field()}
+                        }
+                    }, true)
+                                .SetName(@"PRETTY PRINT UPDATE <Table {Name = ""Table""}> SET <Set = new[] { new UpdateFieldValue(){ Destination = FieldColumn.From(""col2""), Source = FieldColumn.From(""col1"")}}""")
+                                .SetCategory("Postgresql")
+                                .Returns("UPDATE \"Table\" \r\n" +
+                                         "SET \"col2\" = \"col1\"");
                 }
             }
 
@@ -1102,8 +1116,10 @@ namespace Queries.Tests.Renderers
         }
 
         [TestCaseSource(typeof(Cases), "UpdateTestsCases")]
-        public string Update(UpdateQuery updateQuery)
+        public string Update(UpdateQuery updateQuery, bool prettyPrint)
+
         {
+            _renderer.PrettyPrint = prettyPrint;
             return _renderer.Render(updateQuery);
         }
 

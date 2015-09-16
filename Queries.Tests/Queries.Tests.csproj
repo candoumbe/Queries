@@ -63,6 +63,8 @@
     <Compile Include="Validators\DeleteQueryValidatorTest.cs" />
     <Compile Include="Validators\SelectQueryValidatorTest.cs" />
     <Compile Include="Validators\TableValidatorTest.cs" />
+    <Compile Include="Validators\CreateViewQueryValidatorTest.cs" />
+    <Compile Include="Validators\TruncateQueryValidatorTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

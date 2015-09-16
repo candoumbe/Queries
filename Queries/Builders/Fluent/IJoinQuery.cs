@@ -4,6 +4,6 @@ namespace Queries.Builders.Fluent
 {
     public interface IJoinQuery<T>
     {
-        IWhereQuery<T> InnerJoin(IWhereClause clause);
+        IWhereQuery<T> Where(IWhereClause clause);
     }
 }

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using NUnit.Framework;
 using Queries.Builders;
+using Queries.Builders.Fluent;
+using Queries.Extensions;
 using Queries.Parts;
 using Queries.Parts.Clauses;
 using Queries.Parts.Columns;
@@ -585,7 +587,7 @@ namespace Queries.Tests.Renderers
                 }
             }
             
-            public IEnumerable<ITestCaseData> RenderUpdateTestCases
+            public IEnumerable<ITestCaseData> UpdateTestCases
             {
                 get
                 {
@@ -641,6 +643,81 @@ namespace Queries.Tests.Renderers
 
                 }
             }
+
+
+            public IEnumerable<ITestCaseData> CreateViewTestCases
+            {
+                get
+                {
+                    yield return new TestCaseData(null, false)
+                        .SetName("null")
+                        .Returns(String.Empty);
+
+                    yield return new TestCaseData(null, true)
+                        .SetName("PRETTY PRINT null")
+                        .Returns(String.Empty);
+
+
+                    yield return new TestCaseData(new CreateViewQuery(), false)
+                        .SetName("new CreateViewQuery(), false")
+                        .Returns(String.Empty);
+
+                    yield return new TestCaseData(new CreateViewQuery(), true)
+                        .SetName("new CreateViewQuery(), true")
+                        .Returns(String.Empty);
+
+                    
+                    yield return new TestCaseData(new CreateViewQuery()
+                    {
+                        Name = "people",
+                        Select = new Select(new Concat(
+                                "Firstname".Field(),
+                                " ".Literal(),
+                                "Lastname".Field()
+                            ))
+                            .From("user".Table())
+                            .Build()
+                    }, false)
+                    .SetName("new CreateViewQuery()" +
+                             "{ " +
+                                "Name = \"people\", " +
+                                "Select = new Select(" +
+                                    "new Concat(" +
+                                        "\"Firstname\".Field(), " +
+                                        "\" \".Literal(), " +
+                                        "\"Lastname\".Field()))" +
+                                    ".From(\"user\".Table())" +
+                                    ".Build()}, PRETTY PRINT : false")
+                    .Returns("CREATE VIEW [people] AS SELECT [Firstname] + ' ' + [Lastname] FROM [user]");
+
+                    yield return new TestCaseData(new CreateViewQuery()
+                    {
+                        Name = "people",
+                        Select = new Select(new Concat(
+                                "Firstname".Field(),
+                                " ".Literal(),
+                                "Lastname".Field()
+                            ))
+                            .From("user".Table())
+                            .Build()
+                    }, true)
+                    .SetName("new CreateViewQuery()" +
+                             "{ " +
+                                "Name = \"people\", " +
+                                "Select = new Select(" +
+                                    "new Concat(" +
+                                        "\"Firstname\".Field(), " +
+                                        "\" \".Literal(), " +
+                                        "\"Lastname\".Field()))" +
+                                    ".From(\"user\".Table())" +
+                                    ".Build()}, PRETTY PRINT : true")
+                    .Returns("CREATE VIEW [people] \r\n" +
+                             "AS \r\n" +
+                             "SELECT [Firstname] + ' ' + [Lastname] \r\n" +
+                             "FROM [user]");
+
+                }
+            }
         }
 
         [SetUp]
@@ -657,15 +734,25 @@ namespace Queries.Tests.Renderers
 
 
         [TestCaseSource(typeof(Cases), "SelectTestsCases")]
-        public string Select(SelectQueryBase selectQuery)
+        public string Select(SelectQueryBase query)
         {
-            return _renderer.Render(selectQuery);
+            return _renderer.Render(query);
         }
 
-        [TestCaseSource(typeof(Cases), "RenderUpdateTestCases")]
-        public string Update(UpdateQuery updateQuery)
+        [TestCaseSource(typeof(Cases), "UpdateTestCases")]
+        public string Update(UpdateQuery query)
         {
-            return _renderer.Render(updateQuery);
+            return _renderer.Render(query);
         }
+
+        [TestCaseSource(typeof(Cases), "CreateViewTestCases")]
+        public string CreateView(CreateViewQuery query, bool prettyPrint)
+        {
+            _renderer.PrettyPrint = prettyPrint;
+            return _renderer.Render(query);
+        }
+
+
+
     }
 }

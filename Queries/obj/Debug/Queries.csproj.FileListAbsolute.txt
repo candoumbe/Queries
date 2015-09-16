@@ -6,3 +6,4 @@ C:\Users\candoumbe\Documents\GitHub\Queries\Queries\obj\Debug\Queries.dll
 C:\Users\candoumbe\Documents\GitHub\Queries\Queries\obj\Debug\Queries.pdb
 C:\Users\candoumbe\Documents\GitHub\Queries\Queries\bin\Debug\Queries.dll
 C:\Users\candoumbe\Documents\GitHub\Queries\Queries\bin\Debug\Queries.pdb
+C:\Users\candoumbe\Documents\GitHub\Queries\Queries\obj\Debug\Queries.csprojResolveAssemblyReference.cache

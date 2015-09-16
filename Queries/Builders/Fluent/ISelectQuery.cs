@@ -8,7 +8,7 @@ namespace Queries.Builders.Fluent
 
         IFromQuery<T> From(params string[] tables);
 
-        IFromQuery<T> From(SelectQuery select);
+        IFromQuery<T> From(SelectTable select);
 
         IFromQuery<T> From(string tableName);
     }

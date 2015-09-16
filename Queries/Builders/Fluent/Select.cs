@@ -61,9 +61,11 @@ namespace Queries.Builders.Fluent
             return this;
         }
 
-        public IFromQuery<SelectQuery> From(SelectQuery @select)
+        public IFromQuery<SelectQuery> From(SelectTable @select)
         {
-            throw new NotImplementedException();
+            _query.From.Add(@select);
+
+            return this;
         }
 
         public IFromQuery<SelectQuery> From(string tableName)
@@ -101,17 +103,10 @@ namespace Queries.Builders.Fluent
             return this;
         }
 
-
-        
-
         public SelectQuery Build()
         {
             return _query;
         }
 
-        public IWhereQuery<SelectQuery> InnerJoin(IWhereClause clause)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
