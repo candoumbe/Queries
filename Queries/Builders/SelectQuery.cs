@@ -7,11 +7,11 @@ namespace Queries.Builders
     {
 
         public int? Limit { get; set; }
-        public IList<TableTerm> From { get; set; }
+        public IList<ITable> From { get; set; }
 
         public SelectQuery()
         {
-            From = new List<TableTerm>();
+            From = new List<ITable>();
         }
     }
 

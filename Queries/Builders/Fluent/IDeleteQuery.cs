@@ -1,9 +1,7 @@
 ﻿namespace Queries.Builders.Fluent
 {
-    public interface ISqlWhere
+    public interface IDeleteQuery<T> : IBuildableQuery<T>
     {
-
         
-
     }
 }

@@ -1,11 +1,10 @@
-﻿using System;
-using Queries.Parts.Columns;
+﻿using Queries.Parts.Columns;
 
 namespace Queries.Validators
 {
     public class InlineSelectQueryColumnValidator : IValidate<SelectColumn>
     {
-        public bool Validate(SelectColumn query)
+        public bool IsValid(SelectColumn query)
         {
 
             return false;

@@ -1,6 +1,6 @@
-﻿namespace Queries.Parts
+﻿namespace Queries.Parts.Clauses
 {
-    public enum WhereOperator
+    public enum ClauseOperator
     {
         EqualTo,
         NotEqualTo,

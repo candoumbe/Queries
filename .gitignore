@@ -1,0 +1,6 @@
+*.user
+*.dll
+*.pdb
+*.csproj
+*.suo
+*.pdb

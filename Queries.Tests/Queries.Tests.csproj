@@ -56,11 +56,15 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Renderers\PostgresRendererTest.cs" />
+    <Compile Include="Renderers\PostgresqlRendererTest.cs" />
     <Compile Include="Renderers\SqlServerRendererTest.cs" />
-    <Compile Include="Renderers\UnitTest1.cs" />
+    <Compile Include="Renderers\SelectTest.cs" />
+    <Compile Include="Validators\ColumnValidatorTest.cs" />
+    <Compile Include="Validators\DeleteQueryValidatorTest.cs" />
     <Compile Include="Validators\SelectQueryValidatorTest.cs" />
     <Compile Include="Validators\TableValidatorTest.cs" />
+    <Compile Include="Validators\CreateViewQueryValidatorTest.cs" />
+    <Compile Include="Validators\TruncateQueryValidatorTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

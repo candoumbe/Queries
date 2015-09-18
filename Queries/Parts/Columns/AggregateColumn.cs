@@ -2,14 +2,16 @@
 
 namespace Queries.Parts.Columns
 {
-    public abstract class AggregateColumn : IColumn
+    public abstract class AggregateColumn : IColumn, IAliasable
     {
         public AggregateType Type { get; set; }
 
-        public TableColumn Column { get; set; }
+        public FieldColumn Column { get; set; }
+
+        public string Alias { get; set; }
 
 
-        protected AggregateColumn(AggregateType aggregate, TableColumn column)
+        protected AggregateColumn(AggregateType aggregate, FieldColumn column, string alias = null)
         {
             if (column == null)
             {
@@ -18,6 +20,7 @@ namespace Queries.Parts.Columns
 
             Type = aggregate;
             Column = column;
+            Alias = alias;
         }
     }
 }

@@ -1,8 +1,10 @@
+using Queries.Parts.Clauses;
+
 namespace Queries.Parts.Joins
 {
     public class LeftOuterJoin : JoinBase
     {
-        public LeftOuterJoin(TableTerm table, IClause @on)
+        public LeftOuterJoin(Table table, IWhereClause @on)
             : base(JoinType.LeftOuterJoin, table, @on)
         { }
     }

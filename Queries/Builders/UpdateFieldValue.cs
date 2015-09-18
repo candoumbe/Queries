@@ -6,6 +6,6 @@ namespace Queries.Builders
     {
         public ColumnBase Source { get; set; }
 
-        public TableColumn Destination { get; set; }
+        public FieldColumn Destination { get; set; }
     }
 }

@@ -1,9 +1,11 @@
-﻿namespace Queries.Parts.Joins
+﻿using Queries.Parts.Clauses;
+
+namespace Queries.Parts.Joins
 {
     public interface IJoin
     {
         JoinType JoinType { get; }
-        TableTerm Table { get; }
-        IClause On { get; }
+        Table Table { get; }
+        IWhereClause On { get; }
     }
 }
