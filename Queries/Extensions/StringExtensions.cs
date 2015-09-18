@@ -14,6 +14,5 @@ namespace Queries.Extensions
         {
             return new Table() { Name = tableName, Alias = alias};
         }
-
     }
 }

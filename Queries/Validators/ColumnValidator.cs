@@ -41,10 +41,16 @@ namespace Queries.Validators
                     NullColumn nullColumn = column as NullColumn;
                     valid = IsValid(nullColumn.Column) && IsValid(nullColumn.DefaultValue);
                     
-                } else if (column is ConcatColumn)
+                } 
+                else if (column is ConcatColumn)
                 {
                     ConcatColumn concatColumn = column as ConcatColumn;
                     valid = concatColumn.Columns.All(IsValid);
+                } 
+                else if (column is LengthColumn)
+                {
+                    LengthColumn lengthColumn = column as LengthColumn;
+                    valid = IsValid(lengthColumn.Column);
                 }
             }
            

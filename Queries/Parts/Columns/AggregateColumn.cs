@@ -20,7 +20,7 @@ namespace Queries.Parts.Columns
 
             Type = aggregate;
             Column = column;
-            Alias = alias ?? String.Empty;
+            Alias = alias;
         }
     }
 }

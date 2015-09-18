@@ -468,11 +468,28 @@ namespace Queries.Renderers
                 {
                     NullColumn nullColumn = column as NullColumn;
                     columnString = RenderNullColumn(nullColumn, renderAlias);
+                } else if (column is LengthColumn)
+                {
+                    LengthColumn lengthColumn = column as LengthColumn;
+                    columnString = RenderLengthColumn(lengthColumn, renderAlias);
                 }
             } 
 
 
             return columnString;
+        }
+
+        protected string RenderLengthColumn(LengthColumn lengthColumn, bool renderAlias)
+        {
+            StringBuilder sbLengthColumn = new StringBuilder();
+
+            sbLengthColumn = sbLengthColumn.AppendFormat("LENGTH({0})", RenderColumn(lengthColumn.Column, false));
+
+            string queryString = renderAlias && !String.IsNullOrWhiteSpace(lengthColumn.Alias)
+                ? RenderColumnnameWithAlias(sbLengthColumn.ToString(), EscapeName(lengthColumn.Alias))
+                : sbLengthColumn.ToString();
+
+            return queryString;
         }
 
         protected string RenderConcatColumn(ConcatColumn concatColumn, bool renderAlias)

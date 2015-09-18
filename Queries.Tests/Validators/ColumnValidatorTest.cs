@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using Queries.Extensions;
 using Queries.Parts.Columns;
@@ -10,7 +11,6 @@ namespace Queries.Tests.Validators
     public class ColumnValidatorTest
     {
         private IValidate<IColumn> _columnValidator;
-
 
 
         private class Cases 
@@ -62,12 +62,23 @@ namespace Queries.Tests.Validators
 
                     
                     yield return new TestCaseData(new Null(1.Literal(), 1.Literal()))
-                        .SetName(@"""new Null(1.Literal(), 1.Literal())"" is not valid")
+                        .SetName(@"""new Null(1.Literal(), 1.Literal())"" is valid")
                         .SetCategory("NullColumn")
                         .Returns(true);
-                }
-            } 
 
+                    yield return new TestCaseData(new Length("".Field()))
+                        .SetName(@"""new Length("""".Field()) not is valid")
+                        .SetCategory("LengthColumn")
+                        .Returns(false);
+
+                    
+
+                    yield return new TestCaseData(new Length("firstname".Field()))
+                        .SetName(@"""new Length(""firstname"".Field()) not is valid")
+                        .SetCategory("LengthColumn")
+                        .Returns(true);
+                }
+            }
         }
 
 

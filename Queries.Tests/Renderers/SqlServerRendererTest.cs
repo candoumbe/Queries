@@ -23,26 +23,56 @@ namespace Queries.Tests.Renderers
             {
                 get
                 {
-                    yield return new TestCaseData(null)
-                                .SetName("Select null query")
+                    yield return new TestCaseData(null, false)
+                                .SetName("null")
                                 .SetCategory("SQL Server")
                                 .Returns(String.Empty);
+
+                    yield return new TestCaseData(null, true)
+                                .SetName("Pretty print null")
+                                .SetCategory("SQL Server")
+                                .Returns(String.Empty);
+
+
+                    yield return new TestCaseData(new Select(new Length(
+                                "Firstname".Field()
+                            ))
+                            .From("user".Table())
+                            .Build()
+                     , true)
+                    .SetName("Pretty print new Select(" +
+                                    "new Length(\"Firstname\".Field())" +
+                                    ".From(\"user\".Table())" +
+                                    ".Build(), Pretty print : true")
+                    .Returns("SELECT LENGTH([Firstname]) \r\n" +
+                             "FROM [user]");
+
+                    yield return new TestCaseData(new Select(new Length(
+                                "Firstname".Field()
+                            ))
+                            .From("user".Table())
+                            .Build()
+                     , false)
+                    .SetName("new Select(" +
+                                    "new Length(\"Firstname\".Field())" +
+                                    ".From(\"user\".Table())" +
+                                    ".Build()")
+                    .Returns("SELECT LENGTH([Firstname]) FROM [user]");
 
 
                     yield return new TestCaseData(new SelectQuery()
                     {
                         Select = new IColumn[]
                         {
-                            new Field(){Name = "Col1"}
+                            "Col1".Field()
                         },
                         From = new ITable[]
                         {
-                            new Table(){Name = "Table", Alias = "t"}
+                            "Table".Table("t")
                         },
 
-                    })
-                    .SetName(@"""SELECT <Field{ Name = ""Col1"" }> 
-                                FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
+                    }, false)
+                    .SetName(@"""SELECT <Field{ Name = ""Col1"" }> FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
                     .SetCategory("SQL Server")
                     .Returns("SELECT [Col1] FROM [Table] [t]");
 
@@ -57,7 +87,7 @@ namespace Queries.Tests.Renderers
                             new Table(){Name = "Table", Alias = "t"}
                         },
 
-                    })
+                    }, false)
                     .SetName(@"""SELECT <Null(Field{ Name = ""col1"" }, """")> 
                                 FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
                     .SetCategory("SQL Server")
@@ -78,7 +108,7 @@ namespace Queries.Tests.Renderers
                             new Table(){Name = "Table", Alias = "t"}
                         },
 
-                    })
+                    }, false)
                     .SetName(@"""SELECT <Concat(Null(Field{ Name = ""firstname"" }, """"), LiteralColumn.From("" ""), Null(Field{ Name = ""lastname"" }, """")){ Alias = ""fullname"" }> 
                                 FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
                     .SetCategory("SQL Server")
@@ -93,7 +123,7 @@ namespace Queries.Tests.Renderers
                             new Table(){Name = "Table", Alias = "t"}
                         },
 
-                    })
+                    }, false)
                     .SetName(@"""SELECT FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
                     .SetCategory("SQL Server")
                     .Returns("SELECT * FROM [Table] [t]");
@@ -106,7 +136,7 @@ namespace Queries.Tests.Renderers
                             new Table(){Name = "Table", Alias = "t"}
                         },
 
-                    })
+                    }, false)
                     .SetName("Select with no column specified and one table in the FROM part")
                     .SetCategory("SQL Server")
                     .Returns("SELECT * FROM [Table] [t]");
@@ -122,8 +152,8 @@ namespace Queries.Tests.Renderers
                             new Table(){Name = "dbo.Table", Alias = "t"}
                         },
 
-                    })
-                    .SetName(@"""SELECT <Field{ Name = ""Col1"" }> FROM <Table { Name = ""dbo.Table"", Alias = ""t"" }>""")
+                    }, false)
+                    .SetName(@"""SELECT <Field{ Name = ""Col1"" }> FROM <Table { Name = ""dbo.Table"", Alias = ""t"" }>"", Pretty print: false")
                     .SetCategory("SQL Server")
                     .Returns("SELECT [Col1] FROM [dbo].[Table] [t]");
 
@@ -140,7 +170,7 @@ namespace Queries.Tests.Renderers
                             new Table(){Name = "Table2", Alias = "t2"}
                         },
 
-                    })
+                    }, false)
                     .SetName(@"""SELECT <Field{ Name = ""Col1"" }>, <Field{ Name = ""Col2"" }> FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
                     .SetCategory("SQL Server")
                     .Returns("SELECT [Col1], [Col2] FROM [Table1] [t1], [Table2] [t2]");
@@ -157,7 +187,7 @@ namespace Queries.Tests.Renderers
                             new Table(){Name = "Table", Alias = "t"}
                         },
 
-                    })
+                    }, false)
                     .SetName(@"""SELECT <Field{ Name = ""Col1"", Alias = ""Alias"" }> FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
                     .SetCategory("SQL Server")
                     .Returns("SELECT [Col1] AS [Alias] FROM [Table] [t]");
@@ -174,11 +204,28 @@ namespace Queries.Tests.Renderers
                             new Table(){Name = "Table", Alias = "t"}
                         },
 
-                    })
+                    }, false)
                     .SetName(@"""SELECT <Field{ Name = ""Col1"" }>, <Field{ Name = ""Col2"" }> FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
                     .SetCategory("SQL Server")
                     .Returns("SELECT [Col1], [Col2] FROM [Table] [t]");
 
+                    yield return new TestCaseData(new SelectQuery()
+                    {
+                        Select = new IColumn[]
+                        {
+                            new Field(){Name = "Col1"},
+                            new Field(){Name = "Col2"},
+                        },
+                        From = new ITable[]
+                        {
+                            new Table(){Name = "Table", Alias = "t"}
+                        },
+
+                    }, true)
+                    .SetName(@"""SELECT <Field{ Name = ""Col1"" }>, <Field{ Name = ""Col2"" }> FROM <Table { Name = ""Table"", Alias = ""t"" }>"", Pretty print : true")
+                    .SetCategory("SQL Server")
+                    .Returns("SELECT [Col1], [Col2] \r\n" +
+                             "FROM [Table] [t]");
 
 
 
@@ -193,7 +240,7 @@ namespace Queries.Tests.Renderers
                             new Table() {Name = "Table", Alias = "t"}
                         },
 
-                    })
+                    }, false)
                     .SetName(@"""SELECT <Min(new Field() {Name = ""Col1""})> FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
                     .SetCategory("SQL Server")
                     .Returns("SELECT MIN([Col1]) FROM [Table] [t]");
@@ -209,7 +256,7 @@ namespace Queries.Tests.Renderers
                             new Table() {Name = "Table", Alias = "t"}
                         },
 
-                    })
+                    }, false)
                     .SetName(@"""SELECT <new Min (""Col1"")> FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
                     .SetCategory("SQL Server")
                     .Returns("SELECT MIN([Col1]) FROM [Table] [t]");
@@ -225,7 +272,7 @@ namespace Queries.Tests.Renderers
                             new Table() {Name = "Table", Alias = "t"}
                         },
 
-                    })
+                    }, false)
                         .SetName(@"""SELECT <Min(Field {Name = ""Col1""})> FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
                         .SetCategory("SQL Server")
                     .Returns("SELECT MIN([Col1]) FROM [Table] [t]");
@@ -242,7 +289,7 @@ namespace Queries.Tests.Renderers
                             new Table(){Name = "Table", Alias = "t"}
                         },
 
-                    })
+                    }, false)
                     .SetName(@"""SELECT <Min(Field {Name = ""Col1"", Alias = ""Alias""})> FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
                     .SetCategory("SQL Server")
                     .Returns("SELECT MIN([Col1]) FROM [Table] [t]");
@@ -258,7 +305,7 @@ namespace Queries.Tests.Renderers
                             new Table(){Name = "Table", Alias = "t"}
                         },
 
-                    })
+                    }, false)
                     .SetName(@"""SELECT <Min(Field {Name = ""Col1""}, ""Alias"")> FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
                     .SetCategory("SQL Server")
                     .Returns("SELECT MIN([Col1]) AS [Alias] FROM [Table] [t]");
@@ -276,7 +323,7 @@ namespace Queries.Tests.Renderers
                             new Table(){Name = "Table", Alias = "t"}
                         },
 
-                    })
+                    }, false)
                     .SetName(@"""SELECT <Min(Field {Name = ""Col1""}, ""Minimum""})>, <Max(Field {Name = ""Col2"", Alias = ""Maximum""})> FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
                     .SetCategory("SQL Server")
                     .Returns("SELECT MIN([Col1]) AS [Minimum], MAX([Col2]) FROM [Table] [t]");
@@ -294,7 +341,7 @@ namespace Queries.Tests.Renderers
                             new Table(){Name = "Table", Alias = "t"}
                         },
 
-                    })
+                    }, false)
                     .SetName(@"""SELECT <Min(Field {Name = ""Col1"", Alias = ""Minimum""})>, <Field {Name = ""Col2"", Alias = ""Maximum"")> FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
                     .SetCategory("SQL Server")
                     .SetDescription("This should generate a GROUP BY clause")
@@ -323,7 +370,7 @@ namespace Queries.Tests.Renderers
                                 }
                            }
                         }
-                    })
+                    }, false)
                    .SetName(@"""SELECT <Min(Field {Name = ""Col1"", Alias = ""Minimum""})> FROM <Table { Name = ""Table"", Alias = ""t"" }> UNION SELECT <Min(Field {Name = ""Col2"", Alias = ""Minimum""})> FROM <Table { Name = ""Table2"", Alias = ""t2"" }>""")
                    .SetCategory("SQL Server")
                     .Returns("SELECT MIN([Col1]) FROM [Table] [t] UNION SELECT MIN([Col2]) FROM [Table2] [t2]");
@@ -346,7 +393,7 @@ namespace Queries.Tests.Renderers
                             Operator = ClauseOperator.EqualTo,
                             Constraint = "dupont"
                         }
-                    })
+                    }, false)
                     .SetName(@"""SELECT <Field {Name = ""civ_prenom""}> FROM <Table { Name = ""t_civilite"", Alias = ""civ"" }> WHERE <WhereClause { Column = FieldColumn.From(""civ_nom""),Operator = WhereOperator.EqualTo, Constraint = ""dupont""})>")
                     .SetCategory("SQL Server")
                     .Returns("SELECT [civ_prenom] FROM [t_civilite] [civ] WHERE ([civ_nom] = 'dupont')");
@@ -371,7 +418,7 @@ namespace Queries.Tests.Renderers
                                 new WhereClause() {Column = new Field(){ Name = "per_age"}, Operator = ClauseOperator.LessThan, Constraint = 18}
                             }
                         }
-                    })
+                    }, false)
                     .SetName(@"""SELECT <FieldColumn.From(""prenom"")> FROM <Table { Name = ""t_person"", Alias = ""p"" }> WHERE <CompositeWhereClause {  Logic = WhereLogic.Or, Clauses = new IWhereClause[]{new WhereClause() {Column = new Field(){ Name = ""per_age""}, Operator = WhereOperator.GreaterThanOrEqualTo, Constraint = 15}, new WhereClause(){Column = new Field{Name = ""per_age""}, Operator = WhereOperator.LessThan, Constraint = 18}})")
                     .SetCategory("SQL Server")
                     .Returns("SELECT [prenom] FROM [t_person] [p] WHERE (([per_age] >= 15) OR ([per_age] < 18))");
@@ -411,7 +458,7 @@ namespace Queries.Tests.Renderers
                                 }
                             }
                         }
-                    })
+                    }, false)
                     .SetName(@"""SELECT <FieldColumn.From(""prenom"")> FROM <Table { Name = ""t_person"", Alias = ""p"" }> WHERE <CompositeWhereClause {  
                         Logic = WhereLogic.And, 
                         Clauses = new IWhereClause[]{
@@ -464,7 +511,7 @@ namespace Queries.Tests.Renderers
                                 }
                             }
                         }
-                    })
+                    }, false)
                     .SetName("SELECT with WhereClause + Composite clause")
                     .SetCategory("SQL Server")
                     .Returns("SELECT [prenom] FROM [t_person] [p] WHERE (([per_nom] = 'dupont') AND (([per_age] >= 15) OR ([per_age] < 18)))");
@@ -483,7 +530,7 @@ namespace Queries.Tests.Renderers
                             new InnerJoin(new Table(){Name = "Civility", Alias = "c"}, 
                                 new WhereClause(){ Column = new Field(){Name = "c.Id"}, Operator = ClauseOperator.EqualTo, Constraint = FieldColumn.From("p.CivilityId")})
                         }
-                    })
+                    }, false)
                     .SetName("Select with one inner join")
                     .SetCategory("SQL Server")
                     .Returns("SELECT [p].[Name] AS [Nom complet], [c].[Name] AS [Civilité] FROM [person] [p] INNER JOIN [Civility] [c] ON ([c].[Id] = [p].[CivilityId])");
@@ -506,17 +553,42 @@ namespace Queries.Tests.Renderers
                         },
                         From = new ITable[] { new Table() { Name = "person", Alias = "p" } },
 
-                    })
+                    }, false)
                     .SetName(@"SELECT <Field {Name = ""p.Name"", Alias = ""Nom complet""}>, (SELECT col2 FROM Table2 WHERE Table1.col = Table2.col) AS alias FROM Table1")
                     .SetCategory("SQL Server")
                     .Returns("SELECT [p].[Name] AS [Nom complet], (SELECT [c].[Name] AS [Civilité] FROM [Civility] [c] WHERE ([p].[CivilityId] = [c].[Id])) FROM [person] [p]");
+
+                    yield return new TestCaseData(new SelectQuery()
+                    {
+                        Select = new List<IColumn>()
+                        {
+                            new Field(){Name = "p.Name", Alias = "Nom complet"},
+                            new SelectColumn()
+                            {
+                                SelectQuery = new SelectQuery()
+                                {
+                                    Select = new IColumn[]{new Field() {Name = "c.Name", Alias = "Civilité"}},
+                                    From = new ITable[] {new Table(){Name = "Civility", Alias = "c"}},
+                                    Where = new WhereClause(){Column = FieldColumn.From("p.CivilityId"), Operator = ClauseOperator.EqualTo, Constraint = FieldColumn.From("c.Id")}
+                                }
+                            }
+                        },
+                        From = new ITable[] { new Table() { Name = "person", Alias = "p" } },
+
+                    }, true)
+                    .SetName(@"Pretty print SELECT <Field {Name = ""p.Name"", Alias = ""Nom complet""}>, (SELECT col2 FROM Table2 WHERE Table1.col = Table2.col) AS alias FROM Table1")
+                    .SetCategory("SQL Server")
+                    .Returns("SELECT [p].[Name] AS [Nom complet], (SELECT [c].[Name] AS [Civilité] \r\n" +
+                             "FROM [Civility] [c] \r\n" +
+                             "WHERE ([p].[CivilityId] = [c].[Id])) \r\n" +
+                             "FROM [person] [p]");
 
 
                     yield return new TestCaseData(new SelectIntoQuery()
                     {
                         Into = new Table() { Name = "destination" },
                         From = new Table() { Name = "source" }
-                    })
+                    }, false)
                     .SetName("SELECT into from list of table")
                     .SetCategory("SQL Server")
                     .Returns("SELECT * INTO [destination] FROM [source]");
@@ -525,7 +597,7 @@ namespace Queries.Tests.Renderers
                     {
                         Into = new Table() { Name = "destination" },
                         From = new Table() { Name = "source" }
-                    })
+                    }, false)
                     .SetName("SELECT into from list of table")
                     .SetCategory("SQL Server")
                     .Returns("SELECT * INTO [destination] FROM [source]");
@@ -546,7 +618,7 @@ namespace Queries.Tests.Renderers
                                 }
                             }
                         }
-                    })
+                    }, false)
                     .SetCategory("SQL Server")
                     .SetName(@"""SELECT <SelectColumn(
                         {
@@ -571,7 +643,7 @@ namespace Queries.Tests.Renderers
                         {
                             new Table(){Name = "t_person", Alias = "p"} 
                         }
-                    })
+                    }, false)
                     .SetName(@"""SELECT <Concat {alias: ""fullname"", columns: new IColumn[]
                             {
                                 FieldColumn.From(""firstname""),
@@ -592,16 +664,16 @@ namespace Queries.Tests.Renderers
                 get
                 {
                     yield return new TestCaseData(new UpdateQuery()
-            {
-                Table = new Table { Name = "Table" },
-                Set = new[]
-                        {
-                            new UpdateFieldValue(){ Destination = FieldColumn.From("col2"), Source = FieldColumn.From("col1")}
-                        }
-            })
-            .SetName("\"UPDATE <tablename> SET <destination> = <source>\" where <destination> and <source> are table columns")
-            .SetCategory("SQL Server")
-            .Returns("UPDATE [Table] SET [col2] = [col1]");
+                    {
+                        Table = new Table { Name = "Table" },
+                        Set = new[]
+                                {
+                                    new UpdateFieldValue(){ Destination = FieldColumn.From("col2"), Source = FieldColumn.From("col1")}
+                                }
+                    }, false)
+                    .SetName("\"UPDATE <tablename> SET <destination> = <source>\" where <destination> and <source> are table columns")
+                    .SetCategory("SQL Server")
+                    .Returns("UPDATE [Table] SET [col2] = [col1]");
 
                     yield return new TestCaseData(new UpdateQuery()
                     {
@@ -610,7 +682,7 @@ namespace Queries.Tests.Renderers
                         {
                             new UpdateFieldValue(){ Destination = FieldColumn.From("col2"), Source = "col1"}
                         }
-                    })
+                    }, false)
                     .SetName(@"""UPDATE <tablename> SET <destination> = <source>"" where <destination> is a table column and <source> is a c# string")
                     .SetCategory("SQL Server")
                     .Returns("UPDATE [Table] SET [col2] = 'col1'");
@@ -622,7 +694,7 @@ namespace Queries.Tests.Renderers
                         {
                             new UpdateFieldValue(){ Destination = FieldColumn.From("col2"), Source = 1}
                         }
-                    })
+                    }, false)
                     .SetName(@"""UPDATE <tablename> SET <destination> = <source>"" where <destination> is a table column and <source> is a c# positive integer")
                     .SetCategory("SQL Server")
                     .Returns("UPDATE [Table] SET [col2] = 1");
@@ -635,7 +707,7 @@ namespace Queries.Tests.Renderers
                         {
                             new UpdateFieldValue(){ Destination = FieldColumn.From("col2"), Source = -1}
                         }
-                    })
+                    }, false)
                     .SetName(@"""UPDATE <tablename> SET <destination> = <source>"" where <destination> is a table column and <source> is a c# negative integer")
                     .SetCategory("SQL Server")
                     .Returns("UPDATE [Table] SET [col2] = -1");
@@ -663,7 +735,7 @@ namespace Queries.Tests.Renderers
                         .Returns(String.Empty);
 
                     yield return new TestCaseData(new CreateViewQuery(), true)
-                        .SetName("new CreateViewQuery(), true")
+                        .SetName("Pretty print new CreateViewQuery(), true")
                         .Returns(String.Empty);
 
                     
@@ -716,6 +788,11 @@ namespace Queries.Tests.Renderers
                              "SELECT [Firstname] + ' ' + [Lastname] \r\n" +
                              "FROM [user]");
 
+
+                    
+
+
+
                 }
             }
         }
@@ -734,14 +811,16 @@ namespace Queries.Tests.Renderers
 
 
         [TestCaseSource(typeof(Cases), "SelectTestsCases")]
-        public string Select(SelectQueryBase query)
+        public string Select(SelectQueryBase query, bool prettyPrint)
         {
+            _renderer.PrettyPrint = prettyPrint;
             return _renderer.Render(query);
         }
 
         [TestCaseSource(typeof(Cases), "UpdateTestCases")]
-        public string Update(UpdateQuery query)
+        public string Update(UpdateQuery query, bool prettyPrint)
         {
+            _renderer.PrettyPrint = prettyPrint;
             return _renderer.Render(query);
         }
 
