@@ -2,7 +2,7 @@
 
 namespace Queries.Extensions
 {
-    public static class LiteralExtensions
+    public static class RawExtensions
     {
         public static StringColumn Literal(this string obj, string alias = null)
         {

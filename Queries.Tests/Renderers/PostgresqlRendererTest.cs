@@ -8,6 +8,7 @@ using Queries.Parts;
 using Queries.Parts.Clauses;
 using Queries.Parts.Columns;
 using Queries.Parts.Joins;
+using Queries.Parts.Sorting;
 using Queries.Renderers;
 
 namespace Queries.Tests.Renderers
@@ -71,9 +72,9 @@ namespace Queries.Tests.Renderers
                         Select = new IColumn[]
                         {
                             new Concat(
-                                new Null(new Field() {Name = "firstname"}, LiteralColumn.From(String.Empty)),
-                                LiteralColumn.From(" "),
-                                new Null(new Field() {Name = "lastname"}, LiteralColumn.From(String.Empty))
+                                new Null(new Field() {Name = "firstname"}, "".Literal()),
+                                " ".Literal(),
+                                new Null(new Field() {Name = "lastname"}, "".Literal())
                                 ) {Alias = "fullname"}
                         },
                         From = new ITable[]
@@ -83,7 +84,7 @@ namespace Queries.Tests.Renderers
 
                     }, false)
                         .SetName(
-                            @"""SELECT <Concat(Null(Field{ Name = ""firstname"" }, """"), LiteralColumn.From("" ""), Null(Field{ Name = ""lastname"" }, """")){ Alias = ""fullname"" }> 
+                            @"""SELECT <Concat(Null(""firstname"".Field }, """".Literal()), "" "".Literal(), Null(""lastname"".Field(), """".Literal())){ Alias = ""fullname"" }> 
                                 FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
                         .SetCategory("Postgresql")
                         .Returns(
@@ -106,7 +107,7 @@ namespace Queries.Tests.Renderers
                     {
                         Select = new IColumn[]
                         {
-                            new Null(new Field() {Name = "col1"}, LiteralColumn.From(String.Empty))
+                            new Null(new Field() {Name = "col1"}, "".Literal())
                         },
                         From = new ITable[]
                         {
@@ -407,7 +408,7 @@ namespace Queries.Tests.Renderers
                         },
                         Where = new WhereClause()
                         {
-                            Column = FieldColumn.From("civ_nom"),
+                            Column = "civ_nom".Field(),
                             Operator = ClauseOperator.EqualTo,
                             Constraint = "dupont"
                         }
@@ -430,7 +431,7 @@ namespace Queries.Tests.Renderers
                         },
                         Where = new WhereClause()
                         {
-                            Column = FieldColumn.From("civ_nom"),
+                            Column = "civ_nom".Field(),
                             Operator = ClauseOperator.EqualTo,
                             Constraint = "dupont"
                         }
@@ -447,12 +448,9 @@ namespace Queries.Tests.Renderers
                     {
                         Select = new IColumn[]
                         {
-                            FieldColumn.From("prenom")
+                            "prenom".Field()
                         },
-                        From = new ITable[]
-                        {
-                            new Table() {Name = "t_person", Alias = "p"}
-                        },
+                        From = new ITable[] { "t_person".Table("p") },
                         Where = new CompositeWhereClause()
                         {
                             Logic = ClauseLogic.Or,
@@ -460,13 +458,13 @@ namespace Queries.Tests.Renderers
                             {
                                 new WhereClause()
                                 {
-                                    Column = new Field() {Name = "per_age"},
+                                    Column = "per_age".Field(),
                                     Operator = ClauseOperator.GreaterThanOrEqualTo,
                                     Constraint = 15
                                 },
                                 new WhereClause()
                                 {
-                                    Column = new Field() {Name = "per_age"},
+                                    Column = "per_age".Field(),
                                     Operator = ClauseOperator.LessThan,
                                     Constraint = 18
                                 }
@@ -632,7 +630,7 @@ namespace Queries.Tests.Renderers
                                 {
                                     Column = new Field() {Name = "c.Id"},
                                     Operator = ClauseOperator.EqualTo,
-                                    Constraint = FieldColumn.From("p.CivilityId")
+                                    Constraint = "p.CivilityId".Field()
                                 })
                         }
                     }, false)
@@ -657,9 +655,9 @@ namespace Queries.Tests.Renderers
                                     Where =
                                         new WhereClause()
                                         {
-                                            Column = FieldColumn.From("p.CivilityId"),
+                                            Column = "p.CivilityId".Field(),
                                             Operator = ClauseOperator.EqualTo,
-                                            Constraint = FieldColumn.From("c.Id")
+                                            Constraint = "c.Id".Field()
                                         }
                                 }
                             }
@@ -729,10 +727,10 @@ namespace Queries.Tests.Renderers
                         Select = new IColumn[]
                         {
                             new Concat(
-                                FieldColumn.From("firstname"),
-                                LiteralColumn.From(" "),
-                                FieldColumn.From("lastname")
-                                ) {Alias = "fullname"},
+                                "firstname".Field(),
+                                " ".Literal(),
+                                "lastname".Field()
+                            ){ Alias = "fullname"}
                         },
                         From = new ITable[]
                         {
@@ -757,8 +755,8 @@ namespace Queries.Tests.Renderers
                                 {
                                     Select = new IColumn[]
                                     {
-                                        FieldColumn.From("firstname"),
-                                        FieldColumn.From("lastname")
+                                        "firstname".Field(),
+                                        "lastname".Field()
                                     },
                                     From = new ITable[]
                                     {
@@ -777,16 +775,16 @@ namespace Queries.Tests.Renderers
                     {
                         Select = new IColumn[]
                         {
-                            new Null(new Field() {Name = "col1"}, LiteralColumn.From(String.Empty))
+                            new Null(new Field() {Name = "col1"}, "".Literal())
                         },
                         From = new ITable[]
                         {
-                            new Table() {Name = "Table", Alias = "t"}
-                        },
+                            "Table".Table("t")
+                        }
 
                     }, false)
                         .SetName(@"""SELECT <Null(Field{ Name = ""col1"" }, """")> 
-                                FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
+                                FROM <""Table"".Table(""t"")>""")
                         .SetCategory("Postgresql")
                         .Returns(@"SELECT COALESCE(""col1"", '') FROM ""Table"" ""t""");
 
@@ -925,50 +923,70 @@ namespace Queries.Tests.Renderers
                         Having = new HavingClause() { Column = new Count("Orders.OrderID".Field()), Operator = ClauseOperator.GreaterThan, Constraint = 25 }
 
                     }, false)
-                    .SetName(@"new SelectQuery()
-{
-		Select = new IColumn[]
-			{
-				new Field() {Name = ""Employees.Lastname""},
-                new Count(new Field() {Name = ""Orders.OrderID""}, ""NumberOfOrders""),
-            },
-            From = new ITable[]
-            {
-                ""Orders"".Table()
-            },
-            Joins = new IJoin[]
-            {
-                new InnerJoin(""Employees"".Table(),
-                    new WhereClause()
-                    {
-                        Column = ""Employees.EmployeeID"".Field(),
-                        Operator = WhereOperator.EqualTo,
-                        Constraint = ""Orders.EmployeeID"".Field()
-                    })
-            },
-            Where = new CompositeWhereClause()
-            {
-                Logic = WhereLogic.Or,
-                Clauses = new IWhereClause[]
-                {
-                    
-                    new WhereClause()
-                    {
-                        Column = new Field() {Name = ""Lastname""},
-                        Operator = WhereOperator.EqualTo,
-                        Constraint = ""Wayne""
-                    },
-                    new WhereClause()
-                    {
-                        Column = new Field() {Name = ""Lastname""},
-                        Operator = WhereOperator.EqualTo,
-                        Constraint = ""Grayson""
-                    }
-                }
-            },
-            Having = new HavingClause(){ Column = new Count(""Orders.OrderID"".Field()), Operator = WhereOperator.GreaterThan, ColumnBase = 25}
-                    }")
+                    .SetName("new SelectQuery()" +
+                             "{" +
+                                "Select = new IColumn[]" +
+                                "{" +
+                                    "new Field() {Name = \"Employees.Lastname\"}," +
+                                    "new Count(new Field() {Name = \"Orders.OrderID\"}, \"NumberOfOrders\")," +
+                                "}," +
+                                "From = new ITable[]" +
+                                "{" +
+                                    "\"Orders\".Table()" +
+                                "}," +
+                                "Joins = new IJoin[]" +
+                             "{" + 
+                                "new InnerJoin(\"Employees\".Table(), new WhereClause()\r\n{\r\nColumn = \"Employees.EmployeeID\".Field(),\r\nOperator = WhereOperator.EqualTo,\r\nConstraint = \"Orders.EmployeeID\".Field()\r\n})\r\n},\r\nWhere = new CompositeWhereClause()\r\n{\r\nLogic = WhereLogic.Or,\r\nClauses = new IWhereClause[]\r\n{\r\n\r\nnew WhereClause()\r\n{\r\nColumn = new Field() {Name = \"Lastname\"},\r\nOperator = WhereOperator.EqualTo,\r\nConstraint = \"Wayne\"\r\n},\r\nnew WhereClause()\r\n{\r\nColumn = new Field() {Name = \"Lastname\"},\r\nOperator = WhereOperator.EqualTo,\r\nConstraint = \"Grayson\"\r\n}\r\n}\r\n},\r\nHaving = new HavingClause(){ Column = new Count(\"Orders.OrderID\".Field()), Operator = WhereOperator.GreaterThan, ColumnBase = 25}\r\n}")
                     .Returns(@"SELECT ""Employees"".""Lastname"", COUNT(""Orders"".""OrderID"") ""NumberOfOrders"" FROM ""Orders"" INNER JOIN ""Employees"" ON (""Employees"".""EmployeeID"" = ""Orders"".""EmployeeID"") WHERE ((""Lastname"" = 'Wayne') OR (""Lastname"" = 'Grayson')) GROUP BY ""Employees"".""Lastname"" HAVING (COUNT(""Orders"".""OrderID"") > 25)");
+
+
+                    yield return new TestCaseData(new SelectQuery()
+                    {
+                        Select = new IColumn[] { "Col1".Field() },
+                        From = new ITable[] { "Table".Table("t") },
+                        Limit = 3
+                    }, false)
+                    .SetName("SelectQuery {Select = new IColumn[] {\"Col1\".Field()}, From = new ITable[] { \"Table\".Table(\"t\") }, Limit = 3}")
+                    .SetCategory("SQL Server")
+                    .Returns(@"SELECT ""Col1"" FROM ""Table"" ""t"" LIMIT 3");
+
+                    yield return new TestCaseData(new SelectQuery()
+                    {
+                        Select = new IColumn[] { "Col1".Field() },
+                        From = new ITable[] { "Table".Table("t") },
+                        Limit = 3
+                    }, true)
+                    .SetName("Pretty print SelectQuery {Select = new IColumn[] {\"Col1\".Field()}, From = new ITable[] { \"Table\".Table(\"t\") }, Limit = 3}")
+                    .SetCategory("SQL Server")
+                    .Returns("SELECT \"Col1\" \r\n" +
+                             "FROM \"Table\" \"t\" \r\n" +
+                             "LIMIT 3");
+
+
+                    yield return new TestCaseData(new SelectQuery()
+                    {
+                        Select = new IColumn[] { "Col1".Field() },
+                        From = new ITable[] { "Table".Table("t") },
+                        Limit = 3,
+                        OrderBy = new ISort[] { new SortExpression("Col1") }
+                    }, false)
+                    .SetName("SelectQuery {Select = new IColumn[] {\"Col1\".Field()}, From = new ITable[] { \"Table\".Table(\"t\") }, Limit = 3, OrderBy = new ISort[]{ new SortExpression(\"Col1\")  }}")
+                    .SetCategory("SQL Server")
+                    .Returns(@"SELECT ""Col1"" FROM ""Table"" ""t"" ORDER BY ""Col1"" LIMIT 3");
+
+                    yield return new TestCaseData(new SelectQuery()
+                    {
+                        Select = new IColumn[] { "Col1".Field() },
+                        From = new ITable[] { "Table".Table("t") },
+                        Limit = 3,
+                        OrderBy = new ISort[] { new SortExpression("Col1") }
+                    }, true)
+                    .SetName("Pretty print SelectQuery {Select = new IColumn[] {\"Col1\".Field()}, From = new ITable[] { \"Table\".Table(\"t\") }, Limit = 3}")
+                    .SetCategory("SQL Server")
+                    .Returns("SELECT \"Col1\" \r\n" +
+                             "FROM \"Table\" \"t\" \r\n" +
+                             "ORDER BY \"Col1\" \r\n" +
+                             "LIMIT 3");
 
                 }
             }
@@ -983,7 +1001,7 @@ namespace Queries.Tests.Renderers
                         Table = new Table { Name = "Table" },
                         Set = new[]
                         {
-                            new UpdateFieldValue(){ Destination = FieldColumn.From("col2"), Source = FieldColumn.From("col1")}
+                            new UpdateFieldValue(){ Destination = "col2".Field(), Source = "col1".Field()}
                         }
                     }, false)
                     .SetName("\"UPDATE <tablename> SET <destination> = <source>\" where <destination> and <source> are table columns")
@@ -995,7 +1013,7 @@ namespace Queries.Tests.Renderers
                         Table = new Table { Name = "Table" },
                         Set = new[]
                         {
-                            new UpdateFieldValue(){ Destination = FieldColumn.From("col2"), Source = "col1"}
+                            new UpdateFieldValue(){ Destination = "col2".Field(), Source = "col1"}
                         }
                     }, false)
                     .SetName(@"UPDATE <Table {Name = ""Table""}> SET <Set = new[] { new UpdateFieldValue(){ Destination = FieldColumn.From(""col2""), Source = ""col1""}}""")
@@ -1007,7 +1025,7 @@ namespace Queries.Tests.Renderers
                         Table = new Table { Name = "Table" },
                         Set = new[]
                         {
-                            new UpdateFieldValue(){ Destination = FieldColumn.From("col2"), Source = 1}
+                            new UpdateFieldValue(){ Destination = "col2".Field(), Source = 1}
                         }
                     }, false)
                     .SetName(@"UPDATE <Table {Name = ""Table""}> SET <Set = new[] { new UpdateFieldValue(){ Destination = FieldColumn.From(""col2""), Source = 1""")
@@ -1020,7 +1038,7 @@ namespace Queries.Tests.Renderers
                         Table = new Table { Name = "Table" },
                         Set = new[]
                         {
-                            new UpdateFieldValue(){ Destination = FieldColumn.From("col2"), Source = -1}
+                            new UpdateFieldValue(){ Destination = "col2".Field(), Source = -1}
                         }
                     }, false)
                     .SetName(@"UPDATE <Table {Name = ""Table""}> SET <Set = new[] { new UpdateFieldValue(){ Destination = FieldColumn.From(""col2""), Source = -1 }}""")
@@ -1032,7 +1050,7 @@ namespace Queries.Tests.Renderers
                         Table = new Table { Name = "Table" },
                         Set = new[]
                         {
-                            new UpdateFieldValue(){ Destination = FieldColumn.From("col2"), Source = FieldColumn.From("col1")}
+                            new UpdateFieldValue(){ Destination = "col2".Field(), Source = "col1".Field()}
                         }
                     }, false)
                                 .SetName(@"UPDATE <Table {Name = ""Table""}> SET <Set = new[] { new UpdateFieldValue(){ Destination = FieldColumn.From(""col2""), Source = FieldColumn.From(""col1"")}}""")

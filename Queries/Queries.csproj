@@ -43,10 +43,10 @@
     <Compile Include="Builders\DeleteQuery.cs" />
     <Compile Include="Builders\Fluent\Delete.cs" />
     <Compile Include="Builders\Fluent\IDeleteQuery.cs" />
+    <Compile Include="Builders\Fluent\ISortQuery.cs" />
     <Compile Include="Builders\Fluent\ISelectQuery.cs" />
     <Compile Include="Builders\Fluent\IFromQuery.cs" />
     <Compile Include="Builders\Fluent\IJoinQuery.cs" />
-    <Compile Include="Builders\Fluent\ISqlOrder.cs" />
     <Compile Include="Builders\Fluent\IBuildableQuery.cs" />
     <Compile Include="Builders\Fluent\IWhereQuery.cs" />
     <Compile Include="Builders\Fluent\Select.cs" />
@@ -57,6 +57,7 @@
     <Compile Include="Builders\SelectQueryBase.cs" />
     <Compile Include="Builders\UpdateQuery.cs" />
     <Compile Include="Exceptions\InvalidQueryException.cs" />
+    <Compile Include="Extensions\FieldExtensions.cs" />
     <Compile Include="Extensions\LiteralExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Parts\Clauses\IClause.cs" />
@@ -64,6 +65,7 @@
     <Compile Include="Parts\Columns\AggregateType.cs" />
     <Compile Include="Parts\Columns\AggregateColumn.cs" />
     <Compile Include="Parts\Columns\Avg.cs" />
+    <Compile Include="Parts\Columns\AvgColumn.cs" />
     <Compile Include="Parts\Columns\ColumnBase.cs" />
     <Compile Include="Parts\Columns\Concat.cs" />
     <Compile Include="Parts\Columns\ConcatColumn.cs" />
@@ -100,6 +102,9 @@
     <Compile Include="Parts\SelectTable.cs" />
     <Compile Include="Parts\Clauses\ClauseLogic.cs" />
     <Compile Include="Parts\Clauses\ClauseOperator.cs" />
+    <Compile Include="Parts\Sorting\ISort.cs" />
+    <Compile Include="Parts\Sorting\SortDirection.cs" />
+    <Compile Include="Parts\Sorting\SortExpression.cs" />
     <Compile Include="Renderers\DatabaseType.cs" />
     <Compile Include="Parts\IAliasable.cs" />
     <Compile Include="Parts\Columns\IColumn.cs" />

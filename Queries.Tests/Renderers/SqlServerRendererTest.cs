@@ -8,6 +8,7 @@ using Queries.Parts;
 using Queries.Parts.Clauses;
 using Queries.Parts.Columns;
 using Queries.Parts.Joins;
+using Queries.Parts.Sorting;
 using Queries.Renderers;
 
 namespace Queries.Tests.Renderers
@@ -47,6 +48,8 @@ namespace Queries.Tests.Renderers
                     .Returns("SELECT LENGTH([Firstname]) \r\n" +
                              "FROM [user]");
 
+
+
                     yield return new TestCaseData(new Select(new Length(
                                 "Firstname".Field()
                             ))
@@ -78,9 +81,100 @@ namespace Queries.Tests.Renderers
 
                     yield return new TestCaseData(new SelectQuery()
                     {
+                        Select = new IColumn[] {"Col1".Field()},
+                        From = new ITable[] { "Table".Table("t") },
+                        Limit = 3
+                    }, false)
+                    .SetName("SelectQuery {Select = new IColumn[] {\"Col1\".Field()}, From = new ITable[] { \"Table\".Table(\"t\") }, Limit = 3}")
+                    .SetCategory("SQL Server")
+                    .Returns("SELECT TOP 3 [Col1] FROM [Table] [t]");
+
+                    yield return new TestCaseData(new SelectQuery()
+                    {
+                        Select = new IColumn[] { "Col1".Field() },
+                        From = new ITable[] { "Table".Table("t") },
+                        Limit = 3
+                    }, true)
+                    .SetName("Pretty print SelectQuery {Select = new IColumn[] {\"Col1\".Field()}, From = new ITable[] { \"Table\".Table(\"t\") }, Limit = 3}")
+                    .SetCategory("SQL Server")
+                    .Returns("SELECT TOP 3 [Col1] \r\n" +
+                             "FROM [Table] [t]");
+
+
+                    yield return new TestCaseData(new SelectQuery()
+                    {
+                        Select = new IColumn[] { "Col1".Field() },
+                        From = new ITable[] { "Table".Table("t") },
+                        Limit = 3,
+                        OrderBy = new ISort[]{ new SortExpression("Col1")  }
+                    }, false)
+                    .SetName("SelectQuery {Select = new IColumn[] {\"Col1\".Field()}, From = new ITable[] { \"Table\".Table(\"t\") }, Limit = 3, OrderBy = new ISort[]{ new SortExpression(\"Col1\")  }}")
+                    .SetCategory("SQL Server")
+                    .Returns("SELECT TOP 3 [Col1] FROM [Table] [t] ORDER BY [Col1]");
+
+                    yield return new TestCaseData(new SelectQuery()
+                    {
+                        Select = new IColumn[] { "Col1".Field() },
+                        From = new ITable[] { "Table".Table("t") },
+                        Limit = 3,
+                        OrderBy = new ISort[] { new SortExpression("Col1") }
+                    }, true)
+                    .SetName("Pretty print SelectQuery {Select = new IColumn[] {\"Col1\".Field()}, From = new ITable[] { \"Table\".Table(\"t\") }, Limit = 3}")
+                    .SetCategory("SQL Server")
+                    .Returns("SELECT TOP 3 [Col1] \r\n" +
+                             "FROM [Table] [t] \r\n" +
+                             "ORDER BY [Col1]");
+
+
+                    yield return new TestCaseData(new SelectQuery()
+                    {
+                        Select = new IColumn[] { "Col1".Field() },
+                        From = new ITable[] { "Table".Table("t") },
+                        Limit = 3,
+                        OrderBy = new ISort[] { new SortExpression("Col1") }
+                    }, false)
+                    .SetName("Pretty print SelectQuery with : 1 column, 1 order directive and limit directive")
+                    .SetCategory("SQL Server")
+                    .Returns("SELECT TOP 3 [Col1] FROM [Table] [t] ORDER BY [Col1]");
+
+                    yield return new TestCaseData(new SelectQuery()
+                    {
+                        Select = new IColumn[] { new Concat("firstname".Field(), " ".Literal(), "lastname".Field()) {Alias = "fullname"} },
+                        From = new ITable[] { "Table".Table("t") },
+                        Limit = 3,
+                        OrderBy = new ISort[] { "firstname".Desc() }
+                    }, true)
+                    .SetName("Pretty print " +
+                             "Select <Concat(\"firstname.Field()\", \" \".Literal(), \"lastname\".Field()) { Alias = \"fullname\"} \r\n" +
+                             "From = new ITable[] { \"Table\".Table(\"t\") }, \r\n" +
+                             "Limit = 3,\r\n" +
+                             @"OrderBy = new ISort[] { ""firstname"".Desc()}")
+                    .SetCategory("SQL Server")
+                    .Returns("SELECT TOP 3 [firstname] + ' ' + [lastname] AS [fullname] \r\n" +
+                             "FROM [Table] [t] \r\n" +
+                             "ORDER BY [firstname] DESC");
+
+
+                    yield return new TestCaseData(new SelectQuery()
+                    {
+                        Select = new IColumn[] { new Concat("firstname".Field(), " ".Literal(), "lastname".Field()) { Alias = "fullname" } },
+                        From = new ITable[] { "Table".Table("t") },
+                        Limit = 3,
+                        OrderBy = new ISort[] {"firstname".Desc(), "lastname".Asc()}
+                    }, true)
+                    .SetName("Pretty print SelectQuery with : 1 column, 1 descending order directive on a field and limit directive")
+                    .SetCategory("SQL Server")
+                    .Returns("SELECT TOP 3 [firstname] + ' ' + [lastname] AS [fullname] \r\n" +
+                             "FROM [Table] [t] \r\n" +
+                             "ORDER BY [firstname] DESC, [lastname]");
+
+
+
+                    yield return new TestCaseData(new SelectQuery()
+                    {
                         Select = new IColumn[]
                         {
-                            new NullColumn(new Field(){Name = "col1"}, LiteralColumn.From(String.Empty))
+                            new NullColumn(new Field(){Name = "col1"}, "".Literal())
                         },
                         From = new ITable[]
                         {
@@ -98,10 +192,10 @@ namespace Queries.Tests.Renderers
                         Select = new IColumn[]
                         {
                             new Concat(
-                                new NullColumn(new Field(){Name = "firstname"}, LiteralColumn.From(String.Empty)),
-                                LiteralColumn.From(" "),
-                                new NullColumn(new Field(){Name = "lastname"}, LiteralColumn.From(String.Empty))
-                            ) {Alias = "fullname"}
+                                new Null("firstname".Field(), "".Literal()),
+                                " ".Literal(),
+                                new Null("lastname".Field(), "".Literal()))
+                             {Alias = "fullname"}
                         },
                         From = new ITable[]
                         {
@@ -161,17 +255,35 @@ namespace Queries.Tests.Renderers
                     {
                         Select = new IColumn[]
                         {
-                            new Field(){Name = "Col1"},
-                            new Field(){Name = "Col2"}
+                            "Col1".Field(),
+                            "Col2".Field()
                         },
                         From = new ITable[]
                         {
-                            new Table(){Name = "Table1", Alias = "t1"},
-                            new Table(){Name = "Table2", Alias = "t2"}
+                            "Table1".Table("t1"),
+                            "Table2".Table("t2")
                         },
 
                     }, false)
-                    .SetName(@"""SELECT <Field{ Name = ""Col1"" }>, <Field{ Name = ""Col2"" }> FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
+                    .SetName(@"""SELECT <""Col1"".Field(), ""Col2"".Field()FROM ""Table1"".Table(""t1""),  ""Table2"".Table(""t2"")Alias = ""t"" }>""")
+                    .SetCategory("SQL Server")
+                    .Returns("SELECT [Col1], [Col2] FROM [Table1] [t1], [Table2] [t2]");
+
+                    yield return new TestCaseData(new SelectQuery()
+                    {
+                        Select = new IColumn[]
+                        {
+                            "Col1".Field(),
+                            "Col2".Field()
+                        },
+                        From = new ITable[]
+                        {
+                            "Table1".Table("t1"),
+                            "Table2".Table("t2")
+                        },
+
+                    }, false)
+                    .SetName(@"""SELECT <""Col1"".Field(), ""Col2"".Field()FROM ""Table1"".Table(""t1""),  ""Table2"".Table(""t2"")Alias = ""t"" }>""")
                     .SetCategory("SQL Server")
                     .Returns("SELECT [Col1], [Col2] FROM [Table1] [t1], [Table2] [t2]");
 
@@ -389,7 +501,7 @@ namespace Queries.Tests.Renderers
                         },
                         Where = new WhereClause()
                         {
-                            Column = FieldColumn.From("civ_nom"),
+                            Column = "civ_nom".Field(),
                             Operator = ClauseOperator.EqualTo,
                             Constraint = "dupont"
                         }
@@ -401,21 +513,15 @@ namespace Queries.Tests.Renderers
 
                     yield return new TestCaseData(new SelectQuery()
                     {
-                        Select = new IColumn[]
-                        {
-                            FieldColumn.From("prenom")
-                        },
-                        From = new ITable[]
-                        {
-                            new Table(){ Name =  "t_person", Alias = "p"}
-                        },
+                        Select = new IColumn[] { "prenom".Field() },
+                        From = new ITable[] { "t_person".Table("p") },
                         Where = new CompositeWhereClause()
                         {
                             Logic = ClauseLogic.Or,
                             Clauses = new List<IWhereClause>()
                             {
-                                new WhereClause() {Column = new Field(){ Name = "per_age"}, Operator = ClauseOperator.GreaterThanOrEqualTo, Constraint = 15},
-                                new WhereClause() {Column = new Field(){ Name = "per_age"}, Operator = ClauseOperator.LessThan, Constraint = 18}
+                                new WhereClause() {Column = "per_age".Field(), Operator = ClauseOperator.GreaterThanOrEqualTo, Constraint = 15},
+                                new WhereClause() {Column = "per_age".Field(), Operator = ClauseOperator.LessThan, Constraint = 18}
                             }
                         }
                     }, false)
@@ -528,7 +634,7 @@ namespace Queries.Tests.Renderers
                         Joins = new IJoin[]
                         {
                             new InnerJoin(new Table(){Name = "Civility", Alias = "c"}, 
-                                new WhereClause(){ Column = new Field(){Name = "c.Id"}, Operator = ClauseOperator.EqualTo, Constraint = FieldColumn.From("p.CivilityId")})
+                                new WhereClause(){ Column = "c.Id".Field(), Operator = ClauseOperator.EqualTo, Constraint = "p.CivilityId".Field()})
                         }
                     }, false)
                     .SetName("Select with one inner join")
@@ -547,7 +653,7 @@ namespace Queries.Tests.Renderers
                                 {
                                     Select = new IColumn[]{new Field() {Name = "c.Name", Alias = "Civilité"}},
                                     From = new ITable[] {new Table(){Name = "Civility", Alias = "c"}},
-                                    Where = new WhereClause(){Column = FieldColumn.From("p.CivilityId"), Operator = ClauseOperator.EqualTo, Constraint = FieldColumn.From("c.Id")}
+                                    Where = new WhereClause(){Column = "p.CivilityId".Field(), Operator = ClauseOperator.EqualTo, Constraint = "c.Id".Field()}
                                 }
                             }
                         },
@@ -569,7 +675,7 @@ namespace Queries.Tests.Renderers
                                 {
                                     Select = new IColumn[]{new Field() {Name = "c.Name", Alias = "Civilité"}},
                                     From = new ITable[] {new Table(){Name = "Civility", Alias = "c"}},
-                                    Where = new WhereClause(){Column = FieldColumn.From("p.CivilityId"), Operator = ClauseOperator.EqualTo, Constraint = FieldColumn.From("c.Id")}
+                                    Where = new WhereClause(){Column = "p.CivilityId".Field(), Operator = ClauseOperator.EqualTo, Constraint = "c.Id".Field()}
                                 }
                             }
                         },
@@ -637,7 +743,7 @@ namespace Queries.Tests.Renderers
                     {
                         Select = new IColumn[]
                         {
-                            new Concat(FieldColumn.From("firstname"), LiteralColumn.From(" "), FieldColumn.From("lastname")){Alias = "fullname" }, 
+                            new Concat("firstname".Field(), " ".Literal(), "lastname".Field()){Alias = "fullname"}, 
                         },
                         From = new ITable[]
                         {
@@ -668,7 +774,7 @@ namespace Queries.Tests.Renderers
                         Table = new Table { Name = "Table" },
                         Set = new[]
                                 {
-                                    new UpdateFieldValue(){ Destination = FieldColumn.From("col2"), Source = FieldColumn.From("col1")}
+                                    new UpdateFieldValue(){ Destination = "col2".Field(), Source = "col1".Field()}
                                 }
                     }, false)
                     .SetName("\"UPDATE <tablename> SET <destination> = <source>\" where <destination> and <source> are table columns")
@@ -680,7 +786,7 @@ namespace Queries.Tests.Renderers
                         Table = new Table { Name = "Table" },
                         Set = new[]
                         {
-                            new UpdateFieldValue(){ Destination = FieldColumn.From("col2"), Source = "col1"}
+                            new UpdateFieldValue(){ Destination = "col2".Field(), Source = "col1"}
                         }
                     }, false)
                     .SetName(@"""UPDATE <tablename> SET <destination> = <source>"" where <destination> is a table column and <source> is a c# string")
@@ -689,10 +795,10 @@ namespace Queries.Tests.Renderers
 
                     yield return new TestCaseData(new UpdateQuery()
                     {
-                        Table = new Table { Name = "Table" },
+                        Table = "Table".Table(),
                         Set = new[]
                         {
-                            new UpdateFieldValue(){ Destination = FieldColumn.From("col2"), Source = 1}
+                            new UpdateFieldValue(){ Destination = "col2".Field(), Source = 1}
                         }
                     }, false)
                     .SetName(@"""UPDATE <tablename> SET <destination> = <source>"" where <destination> is a table column and <source> is a c# positive integer")
@@ -705,7 +811,7 @@ namespace Queries.Tests.Renderers
                         Table = new Table { Name = "Table" },
                         Set = new[]
                         {
-                            new UpdateFieldValue(){ Destination = FieldColumn.From("col2"), Source = -1}
+                            new UpdateFieldValue(){ Destination = "col2".Field(), Source = -1}
                         }
                     }, false)
                     .SetName(@"""UPDATE <tablename> SET <destination> = <source>"" where <destination> is a table column and <source> is a c# negative integer")
@@ -726,7 +832,7 @@ namespace Queries.Tests.Renderers
                         .Returns(String.Empty);
 
                     yield return new TestCaseData(null, true)
-                        .SetName("PRETTY PRINT null")
+                        .SetName("Pretty print null")
                         .Returns(String.Empty);
 
 
@@ -759,7 +865,7 @@ namespace Queries.Tests.Renderers
                                         "\" \".Literal(), " +
                                         "\"Lastname\".Field()))" +
                                     ".From(\"user\".Table())" +
-                                    ".Build()}, PRETTY PRINT : false")
+                                    ".Build()}, Pretty print : false")
                     .Returns("CREATE VIEW [people] AS SELECT [Firstname] + ' ' + [Lastname] FROM [user]");
 
                     yield return new TestCaseData(new CreateViewQuery()
@@ -782,17 +888,11 @@ namespace Queries.Tests.Renderers
                                         "\" \".Literal(), " +
                                         "\"Lastname\".Field()))" +
                                     ".From(\"user\".Table())" +
-                                    ".Build()}, PRETTY PRINT : true")
+                                    ".Build()}, Pretty print : true")
                     .Returns("CREATE VIEW [people] \r\n" +
                              "AS \r\n" +
                              "SELECT [Firstname] + ' ' + [Lastname] \r\n" +
                              "FROM [user]");
-
-
-                    
-
-
-
                 }
             }
         }

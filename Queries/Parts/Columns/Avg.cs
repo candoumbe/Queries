@@ -1,9 +1,8 @@
 namespace Queries.Parts.Columns
 {
-    public class Avg : AggregateColumn
+    public class Avg : AvgColumn
     {
-        public Avg(Field column, string alias = null)
-            : base(AggregateType.Average, column, alias)
+        public Avg(FieldColumn column, string alias = null) : base(column, alias)
         { }
     }
 }

@@ -9,6 +9,7 @@ using Queries.Parts;
 using Queries.Parts.Clauses;
 using Queries.Parts.Columns;
 using Queries.Parts.Joins;
+using Queries.Parts.Sorting;
 using Queries.Validators;
 
 namespace Queries.Renderers
@@ -155,26 +156,44 @@ namespace Queries.Renderers
                         .AppendFormat("HAVING {0}", RenderHaving(query.Having));
                 }
 
+                if (query.OrderBy.Any())
+                {
+
+                    StringBuilder sbOrderBy = new StringBuilder();
+
+                    foreach (ISort sort in query.OrderBy)
+                    {
+                        if (sbOrderBy.Length > 0)
+                        {
+                            sbOrderBy = sbOrderBy.Append(", ");
+                        }
+
+                        sbOrderBy = sort.Direction == SortDirection.Descending 
+                            ? sbOrderBy.AppendFormat("{0} DESC", RenderColumn(sort.Column, false))
+                            : sbOrderBy.Append(RenderColumn(sort.Column, false));
+                    }
+                    sb.Append(" ")
+                            .Append(PrettyPrint ? Environment.NewLine : String.Empty)
+                            .AppendFormat("ORDER BY {0}", sbOrderBy);
+
+                }
+
+
                 if (query is SelectQuery)
                 {
                     SelectQuery selectQuery = (SelectQuery) query;
 
-                    if (selectQuery.Limit.HasValue)
+                    if (selectQuery.Limit.HasValue &&
+                        (databaseType == DatabaseType.Postgresql || databaseType == DatabaseType.Mysql ||
+                         databaseType == DatabaseType.MariaDb))
                     {
-                        switch (databaseType)
-                        {
-                            case DatabaseType.Postgresql:
-                            case DatabaseType.Mysql:
-                            case DatabaseType.MariaDb:
-                                sb
-                                    .Append(' ')
-                                    .Append(PrettyPrint ? Environment.NewLine : String.Empty)
-                                    .AppendFormat("LIMIT {0}", selectQuery.Limit.Value);
-                                break;
-                        } 
+                        sb
+                            .Append(' ')
+                            .Append(PrettyPrint ? Environment.NewLine : String.Empty)
+                            .AppendFormat("LIMIT {0}", selectQuery.Limit.Value);
                     }
                 }
-                
+
                 if (query.Union != null)
                 {
                     foreach (SelectQuery union in query.Union)

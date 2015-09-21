@@ -1,3 +1,4 @@
+using Queries.Extensions;
 using Queries.Parts.Columns;
 
 namespace Queries.Builders.Fluent
@@ -11,7 +12,7 @@ namespace Queries.Builders.Fluent
 
         public static IColumn Max(string columnName)
         {
-            return new MaxColumn(FieldColumn.From(columnName));
+            return new MaxColumn(columnName.Field());
         }
 
         

@@ -6,10 +6,5 @@ namespace Queries.Parts.Columns
 
         public string Alias { get; set; }
 
-
-        public static FieldColumn From(string name, string alias = "")
-        {
-            return new Field(){Name = name, Alias = alias};
-        }
     }
 }

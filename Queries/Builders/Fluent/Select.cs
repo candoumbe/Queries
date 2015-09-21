@@ -1,12 +1,15 @@
 using System;
+using System.Collections.Generic;
+using Queries.Extensions;
 using Queries.Parts;
 using Queries.Parts.Clauses;
 using Queries.Parts.Columns;
 using Queries.Parts.Joins;
+using Queries.Parts.Sorting;
 
 namespace Queries.Builders.Fluent
 {
-    public class Select : ISelectQuery<SelectQuery>, IFromQuery<SelectQuery>, IWhereQuery<SelectQuery>, IJoinQuery<SelectQuery>
+    public class Select : ISelectQuery<SelectQuery>, IFromQuery<SelectQuery>, IWhereQuery<SelectQuery>, IJoinQuery<SelectQuery>, ISortQuery<SelectQuery>
     {
         private readonly SelectQuery _query;
 
@@ -33,12 +36,18 @@ namespace Queries.Builders.Fluent
         {
             foreach (string column in columnNames)
             {
-                _query.Select.Add(FieldColumn.From(column));
+                _query.Select.Add(column.Field());
             }
         }
 
         
         #endregion
+
+        public IFromQuery<SelectQuery> Limit(int limit)
+        {
+            _query.Limit = limit;
+            return this;
+        }
 
         public IFromQuery<SelectQuery> From(params ITable[] tables)
         {            
@@ -49,6 +58,9 @@ namespace Queries.Builders.Fluent
 
             return this;
         }
+
+
+
 
 
         public IFromQuery<SelectQuery> From(params string[] tables)
@@ -63,6 +75,10 @@ namespace Queries.Builders.Fluent
 
         public IFromQuery<SelectQuery> From(SelectTable @select)
         {
+            if (select == null)
+            {
+                throw new ArgumentNullException("select", "select cannot be null");
+            }
             _query.From.Add(@select);
 
             return this;
@@ -75,8 +91,15 @@ namespace Queries.Builders.Fluent
             return this;
         }
 
+
+        
         public IWhereQuery<SelectQuery> Where(IWhereClause clause)
         {
+            if (clause == null)
+            {
+                throw new ArgumentNullException("clause", "clause cannot be null");
+            }
+
             _query.Where = clause;
 
             return this;
@@ -84,6 +107,16 @@ namespace Queries.Builders.Fluent
 
         public IJoinQuery<SelectQuery> InnerJoin(Table table, IWhereClause clause)
         {
+            if (table == null)
+            {
+                throw new ArgumentNullException("table", "table cannot be null");
+            }
+            
+            if (clause == null)
+            {
+                throw new ArgumentNullException("clause", "clause cannot be null");
+            }
+
             _query.Joins.Add(new InnerJoin(table, clause));
 
             return this;
@@ -91,6 +124,16 @@ namespace Queries.Builders.Fluent
 
         public IJoinQuery<SelectQuery> LeftOuterJoin(Table table, IWhereClause clause)
         {
+            if (table == null)
+            {
+                throw new ArgumentNullException("table", "table cannot be null");
+            }
+
+            if (clause == null)
+            {
+                throw new ArgumentNullException("clause", "clause cannot be null");
+            }
+
             _query.Joins.Add(new LeftOuterJoin(table, clause));
 
             return this;
@@ -98,6 +141,17 @@ namespace Queries.Builders.Fluent
 
         public IJoinQuery<SelectQuery> RightOuterJoin(Table table, IWhereClause clause)
         {
+
+            if (table == null)
+            {
+                throw new ArgumentNullException("table", "table cannot be null");
+            }
+
+            if (clause == null)
+            {
+                throw new ArgumentNullException("clause", "clause cannot be null");
+            }
+
             _query.Joins.Add(new RightOuterJoin(table, clause));
 
             return this;
@@ -107,6 +161,25 @@ namespace Queries.Builders.Fluent
         {
             return _query;
         }
+
+        ISortQuery<SelectQuery> IWhereQuery<SelectQuery>.OrderBy(params ISort[] sorts)
+        {
+            foreach (ISort sort in sorts)
+            {
+                _query.OrderBy.Add(sort);
+            }
+            return this;
+        }
+
+        public ISortQuery<SelectQuery> OrderBy(params ISort[] sorts)
+        {
+            foreach (ISort sort in sorts)
+            {
+                _query.OrderBy.Add(sort);
+            }
+            return this;
+        }
+
 
     }
 }

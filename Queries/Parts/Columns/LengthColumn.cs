@@ -1,6 +1,4 @@
-﻿using System.CodeDom;
-
-namespace Queries.Parts.Columns
+﻿namespace Queries.Parts.Columns
 {
     public class LengthColumn : IFunctionColumn, IAliasable
     {

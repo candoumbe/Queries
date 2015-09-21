@@ -16,9 +16,6 @@ namespace Queries.Parts.Columns
         }
 
 
-        public static LiteralColumn From(string value)
-        {
-            return new LiteralColumn(value);
-        }
+        
     }
 }

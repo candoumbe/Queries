@@ -1,5 +1,4 @@
-﻿using System;
-using Queries.Builders;
+﻿using Queries.Builders;
 using Queries.Extensions;
 
 namespace Queries.Validators

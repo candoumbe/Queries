@@ -1,5 +1,6 @@
 ﻿using Queries.Parts;
 using Queries.Parts.Columns;
+using Queries.Parts.Sorting;
 
 namespace Queries.Extensions
 {
