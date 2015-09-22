@@ -271,7 +271,7 @@ namespace Queries.Tests.Validators
         }
 
 
-        [TestCaseSource(typeof(Cases), nameof(Cases.ValidateSelectQueryTestCases))]
+        [TestCaseSource(typeof(Cases), "ValidateSelectQueryTestCases")]
         public bool ValidateSelectQuery(SelectQuery selectQuery)
         {
             return _validator.IsValid(selectQuery);

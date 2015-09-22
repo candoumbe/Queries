@@ -83,8 +83,8 @@ namespace Queries.Tests.Validators
                         .SetCategory("SelectTable")
                         .Returns(false);
 
-                    yield return new TestCaseData(new SelectTable() {Select = QueryBuilder.Select(new NumericColumn(1)).Build()})
-                        .SetName(@"""new SelectTable(){ Select = QueryBuilder.Select(new NumericColumn(1)).Build() }"" is valid")
+                    yield return new TestCaseData(new SelectTable() {Select = new Select(new NumericColumn(1)).Build()})
+                        .SetName(@"""new SelectTable(){ Select = new Select(new NumericColumn(1)).Build() }"" is valid")
                         .SetCategory("SelectTable")
                         .Returns(true);
 
@@ -93,8 +93,8 @@ namespace Queries.Tests.Validators
                         .SetCategory("SelectTable")
                         .Returns(false);
 
-                    yield return new TestCaseData(new SelectTable() {Select = QueryBuilder.Select("col1", "col2").Build()})
-                        .SetName(@"""new SelectTable(){Select = QueryBuilder.Select(""col1"", ""col2"").Build() }"" is valid")
+                    yield return new TestCaseData(new SelectTable() {Select = new Select("col1", "col2").Build()})
+                        .SetName(@"""new SelectTable(){Select = new Select(""col1"", ""col2"").Build() }"" is valid")
                         .SetCategory("SelectTable")
                         .Returns(true);
 
@@ -104,7 +104,7 @@ namespace Queries.Tests.Validators
 
         }
 
-        [TestCaseSource(typeof(Cases), nameof(Cases.TableValidatorTestCases))]
+        [TestCaseSource(typeof(Cases), "TableValidatorTestCases")]
         public bool ValidateTable(ITable selectQuery)
         {
             return new TableValidator().IsValid(selectQuery);

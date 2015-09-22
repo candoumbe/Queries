@@ -16,5 +16,3 @@ C:\Users\candoumbe\Documents\GitHub\Queries\Queries.Tests\bin\Debug\nunit.framew
 C:\Users\candoumbe\Documents\GitHub\Queries\Queries.Tests\bin\Debug\Queries.dll
 C:\Users\candoumbe\Documents\GitHub\Queries\Queries.Tests\bin\Debug\Queries.pdb
 C:\Users\candoumbe\Documents\GitHub\Queries\Queries.Tests\bin\Debug\nunit.framework.xml
-C:\Users\candoumbe\Documents\GitHub\Queries\Queries.Tests\bin\Debug\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll
-C:\Users\candoumbe\Documents\GitHub\Queries\Queries.Tests\bin\Debug\fr\Microsoft.VisualStudio.QualityTools.UnitTestFramework.resources.dll

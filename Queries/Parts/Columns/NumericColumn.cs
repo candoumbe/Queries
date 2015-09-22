@@ -2,18 +2,18 @@ namespace Queries.Parts.Columns
 {
     public class NumericColumn : LiteralColumn
     {
-        public NumericColumn(int? value = null) : base(value)
+        public NumericColumn(int? value = null, string alias = "") : base(value, alias)
         {}
-        public NumericColumn(float? value = null)
-            : base(value)
+        public NumericColumn(float? value = null, string alias = "")
+            : base(value, alias)
         { }
 
-        public NumericColumn(double? value = null)
-            : base(value)
+        public NumericColumn(double? value = null, string alias = "")
+            : base(value, alias)
         { }
 
-        public NumericColumn(long? value = null)
-            : base(value)
+        public NumericColumn(long? value = null, string alias = "")
+            : base(value, alias)
         { }
     }
 }

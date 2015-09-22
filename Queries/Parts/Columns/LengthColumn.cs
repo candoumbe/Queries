@@ -1,27 +1,19 @@
 ﻿namespace Queries.Parts.Columns
 {
-    public class LengthColumn : IAliasable<LengthColumn>, IFunctionColumn
+    public class LengthColumn : IFunctionColumn, IAliasable
     {
         public ColumnBase Column { get; private set; }
-        private string _alias;
+        public string Alias { get; set; }
 
-        public string Alias => _alias;
-
-        public LengthColumn(FieldColumn column)
+        public LengthColumn(FieldColumn column, string alias = null)
         {
             Column = column;
         }
         
-        public LengthColumn(StringColumn column)
+        public LengthColumn(StringColumn column, string alias = null)
         {
             Column = column;
         }
 
-        public LengthColumn As(string alias)
-        {
-            _alias = alias;
-
-            return this;
-        }
     }
 }

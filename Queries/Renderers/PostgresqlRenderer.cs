@@ -18,7 +18,7 @@ namespace Queries.Renderers
         {
             string escapedColumnName = String.Join(".",
                 rawColumnName.Split(new[] { '.' }, StringSplitOptions.None)
-                .Select(token => $@"""{token}"""));
+                .Select(token => String.Format("\"{0}\"", token)));
 
             return escapedColumnName;
         }
@@ -30,7 +30,7 @@ namespace Queries.Renderers
 
         protected override string RenderColumnnameWithAlias(string columnName, string alias)
         {
-            return $"{columnName} {alias}";
+            return String.Format("{0} {1}", columnName, alias);
         }
 
 
@@ -38,7 +38,7 @@ namespace Queries.Renderers
         {
             StringBuilder sbNullColumn = new StringBuilder();
 
-            sbNullColumn = sbNullColumn.Append($"COALESCE({RenderColumn(nullColumn.Column, false)}, {RenderColumn(nullColumn.DefaultValue, false)})");
+            sbNullColumn = sbNullColumn.AppendFormat("COALESCE({0}, {1})", RenderColumn(nullColumn.Column, false), RenderColumn(nullColumn.DefaultValue, false));
 
             string queryString = renderAlias && !String.IsNullOrWhiteSpace(nullColumn.Alias)
                 ? RenderColumnnameWithAlias(sbNullColumn.ToString(), EscapeName(nullColumn.Alias))

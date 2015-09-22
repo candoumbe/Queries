@@ -9,7 +9,7 @@ namespace Queries.Validators
         {
             return query != null 
                 && new TableValidator().IsValid(query.Name.Table())
-                && new SelectQueryValidator().IsValid(query.As);
+                && new SelectQueryValidator().IsValid(query.Select);
         }
     }
 }

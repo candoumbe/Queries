@@ -2,11 +2,12 @@ using System;
 
 namespace Queries.Parts.Columns
 {
-    public class NullColumn : IAliasable<NullColumn>, IFunctionColumn
+    public class NullColumn : IFunctionColumn, IAliasable
     {
         public IColumn Column { get; set; }
         public IColumn DefaultValue { get; set; }
-        
+        public string Alias { get; set; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="NullColumn"/> class.
         /// </summary>
@@ -18,30 +19,22 @@ namespace Queries.Parts.Columns
         /// or
         /// defaultValue
         /// </exception>
-        public NullColumn(IColumn column, IColumn defaultValue)
+        public NullColumn(IColumn column, IColumn defaultValue, string alias = "")
         {
             if (column == null)
             {
-                throw new ArgumentNullException(nameof(column));
+                throw new ArgumentNullException("column");
             }
             if (defaultValue == null)
             {
-                throw new ArgumentNullException(nameof(defaultValue));
+                throw new ArgumentNullException("defaultValue");
             }
             Column = column;
             DefaultValue = defaultValue;
+            Alias = alias;
         }
 
-        private string _alias;
 
-        public string Alias => _alias;
-
-        public NullColumn As(string alias)
-        {
-            _alias = alias;
-
-            return this;
-        }
-
+        
     }
 }

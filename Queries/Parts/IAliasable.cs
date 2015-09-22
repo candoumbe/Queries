@@ -1,19 +1,11 @@
 ﻿namespace Queries.Parts
 {
-    public interface IAliasable<T>
+    public interface IAliasable
     {
-        /// <summary>
-        /// Gets the alias
-        /// </summary>
         string Alias
         {
             get;
+            set;
         }
-
-        /// <summary>
-        /// Defines the alias of the element
-        /// </summary>
-        /// <param name="alias"></param>
-        T As(string alias);
     }
 }

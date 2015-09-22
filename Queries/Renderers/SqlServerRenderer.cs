@@ -23,7 +23,7 @@ namespace Queries.Renderers
 
             string escapedColumnName = String.Join(".",
                 rawColumnName.Split(new[] {'.'}, StringSplitOptions.None)
-                .Select(item => $"[{item}]"));
+                .Select(item => String.Format("[{0}]", item)));
 
             return escapedColumnName;
         }

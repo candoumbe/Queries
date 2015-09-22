@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using Queries.Builders;
-using Queries.Builders.Fluent;
-using static Queries.Builders.Fluent.QueryBuilder;
 using Queries.Exceptions;
 using Queries.Extensions;
 using Queries.Parts;
@@ -12,7 +10,6 @@ using Queries.Parts.Columns;
 using Queries.Parts.Joins;
 using Queries.Parts.Sorting;
 using Queries.Renderers;
-
 
 namespace Queries.Tests.Renderers
 {
@@ -28,24 +25,40 @@ namespace Queries.Tests.Renderers
                 {
                     yield return new TestCaseData(null, false)
                         .SetName("Select null query")
-                        .SetCategory(nameof(DatabaseType.Postgresql))
+                        .SetCategory("Postgresql")
                         .Returns(String.Empty);
 
 
-                    yield return new TestCaseData(
-                        QueryBuilder.Select("Col1".Field())
-                        .From("Table".Table().As("t"))
-                        .Build(), false)
+                    yield return new TestCaseData(new SelectQuery()
+                    {
+                        Select = new IColumn[]
+                        {
+                            new Field() {Name = "Col1"}
+                        },
+                        From = new ITable[]
+                        {
+                            new Table() {Name = "Table", Alias = "t"}
+                        },
+
+                    }, false)
                         .SetName(@"""SELECT <Field{ Name = ""Col1"" }> 
                                 FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
-                        .SetCategory(nameof(DatabaseType.Postgresql))
+                        .SetCategory("Postgresql")
                         .Returns(@"SELECT ""Col1"" FROM ""Table"" ""t""");
 
 
-                    yield return new TestCaseData(QueryBuilder
-                        .Select("Col1".Field())
-                        .From("Table".Table("t"))
-                        .Build(), true)
+                    yield return new TestCaseData(new SelectQuery()
+                    {
+                        Select = new IColumn[]
+                        {
+                            new Field() {Name = "Col1"}
+                        },
+                        From = new ITable[]
+                        {
+                            new Table() {Name = "Table", Alias = "t"}
+                        },
+
+                    }, true)
                         .SetName(@"""SELECT <Field{ Name = ""Col1"" }> 
                                 FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
                         .SetCategory("Postgresql Pretty Print")
@@ -54,115 +67,271 @@ namespace Queries.Tests.Renderers
                             "FROM \"Table\" \"t\""
                         );
 
-                    yield return new TestCaseData(
-                        QueryBuilder
-                        .Select(Concat(Null("firstname".Field(),  "".Literal()), " ".Literal(), Null("lastname".Field(), "".Literal())).As("fullname"))
-                        .From("Table".Table().As("t"))
-                        .Build(), false)
+                    yield return new TestCaseData(new SelectQuery()
+                    {
+                        Select = new IColumn[]
+                        {
+                            new Concat(
+                                new Null(new Field() {Name = "firstname"}, "".Literal()),
+                                " ".Literal(),
+                                new Null(new Field() {Name = "lastname"}, "".Literal())
+                                ) {Alias = "fullname"}
+                        },
+                        From = new ITable[]
+                        {
+                            new Table() {Name = "Table", Alias = "t"}
+                        },
+
+                    }, false)
                         .SetName(
                             @"""SELECT <Concat(Null(""firstname"".Field }, """".Literal()), "" "".Literal(), Null(""lastname"".Field(), """".Literal())){ Alias = ""fullname"" }> 
                                 FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
-                        .SetCategory(nameof(DatabaseType.Postgresql))
+                        .SetCategory("Postgresql")
                         .Returns(
                             @"SELECT COALESCE(""firstname"", '') || ' ' || COALESCE(""lastname"", '') ""fullname"" FROM ""Table"" ""t""");
 
-                    yield return new TestCaseData(QueryBuilder.Select("*").From("Table".Table("t")).Build(), false)
+                    yield return new TestCaseData(new SelectQuery()
+                    {
+                        From = new ITable[]
+                        {
+                            new Table() {Name = "Table", Alias = "t"}
+                        },
+
+                    }, false)
                         .SetName(@"""SELECT FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
-                        .SetCategory(nameof(DatabaseType.Postgresql))
+                        .SetCategory("Postgresql")
                         .Returns(@"SELECT * FROM ""Table"" ""t""");
 
 
-                    yield return new TestCaseData(
-                        QueryBuilder.Select(Null("col1".Field(), "".Literal()))
-                        .From("Table".Table("t"))
-                        .Build(), false)
+                    yield return new TestCaseData(new SelectQuery()
+                    {
+                        Select = new IColumn[]
+                        {
+                            new Null(new Field() {Name = "col1"}, "".Literal())
+                        },
+                        From = new ITable[]
+                        {
+                            new Table() {Name = "Table", Alias = "t"}
+                        },
+
+                    }, false)
                         .SetName(@"""SELECT <Null(Field{ Name = ""col1"" }, """")> 
                                 FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
-                        .SetCategory(nameof(DatabaseType.Postgresql))
+                        .SetCategory("Postgresql")
                         .Returns(@"SELECT COALESCE(""col1"", '') FROM ""Table"" ""t""");
 
-                
-                    yield return new TestCaseData(
-                        QueryBuilder.Select("Col1".Field())
-                        .From("dbo.Table".Table("t"))
-                        .Build(), false)
+                    yield return new TestCaseData(new SelectQuery()
+                    {
+                        Select = null,
+                        From = new ITable[]
+                        {
+                            new Table() {Name = "Table", Alias = "t"}
+                        },
+
+                    }, false)
+                        .SetName("Select with no column specified and one table in the FROM part")
+                        .SetCategory("Postgresql")
+                        .Returns(@"SELECT * FROM ""Table"" ""t""");
+
+                    yield return new TestCaseData(new SelectQuery()
+                    {
+                        Select = new IColumn[]
+                        {
+                            new Field() {Name = "Col1"}
+                        },
+                        From = new ITable[]
+                        {
+                            new Table() {Name = "dbo.Table", Alias = "t"}
+                        },
+
+                    }, false)
                         .SetName(
                             @"""SELECT <Field{ Name = ""Col1"" }> FROM <Table { Name = ""dbo.Table"", Alias = ""t"" }>""")
-                        .SetCategory(nameof(DatabaseType.Postgresql))
+                        .SetCategory("Postgresql")
                         .Returns(@"SELECT ""Col1"" FROM ""dbo"".""Table"" ""t""");
 
-                    yield return new TestCaseData(
-                        QueryBuilder.Select("Col1","Col2")
-                        .From("Table1".Table("t1"), "Table2".Table("t2"))
-                        .Build(), false)
+                    yield return new TestCaseData(new SelectQuery()
+                    {
+                        Select = new IColumn[]
+                        {
+                            new Field() {Name = "Col1"},
+                            new Field() {Name = "Col2"}
+                        },
+                        From = new ITable[]
+                        {
+                            new Table() {Name = "Table1", Alias = "t1"},
+                            new Table() {Name = "Table2", Alias = "t2"}
+                        },
+
+                    }, false)
                         .SetName(
                             @"""SELECT <Field{ Name = ""Col1"" }>, <Field{ Name = ""Col2"" }> FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
-                        .SetCategory(nameof(DatabaseType.Postgresql))
+                        .SetCategory("Postgresql")
                         .Returns(@"SELECT ""Col1"", ""Col2"" FROM ""Table1"" ""t1"", ""Table2"" ""t2""");
 
 
-                    yield return new TestCaseData(QueryBuilder.Select("Col1".Field().As("Alias"))
-                        .From("Table".Table("t")), false)
+                    yield return new TestCaseData(new SelectQuery()
+                    {
+                        Select = new IColumn[]
+                        {
+                            new Field() {Name = "Col1", Alias = "Alias"}
+                        },
+                        From = new ITable[]
+                        {
+                            new Table() {Name = "Table", Alias = "t"}
+                        }
+                    }, false)
                         .SetName(
                             @"""SELECT <Field{ Name = ""Col1"", Alias = ""Alias"" }> FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
-                        .SetCategory(nameof(DatabaseType.Postgresql))
+                        .SetCategory("Postgresql")
                         .Returns(@"SELECT ""Col1"" ""Alias"" FROM ""Table"" ""t""");
 
-                    
-                    yield return new TestCaseData(QueryBuilder.
-                        Select(Min("Col1".Field()))
-                        .From("Table".Table("t")), false)
+                    yield return new TestCaseData(new SelectQuery()
+                    {
+                        Select = new IColumn[]
+                        {
+                            new Field() {Name = "Col1"},
+                            new Field() {Name = "Col2"},
+                        },
+                        From = new ITable[]
+                        {
+                            new Table() {Name = "Table", Alias = "t"}
+                        },
+
+                    }, false)
+                        .SetName(
+                            @"""SELECT <Field{ Name = ""Col1"" }>, <Field{ Name = ""Col2"" }> FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
+                        .SetCategory("Postgresql")
+                        .Returns(@"SELECT ""Col1"", ""Col2"" FROM ""Table"" ""t""");
+
+                    yield return new TestCaseData(new SelectQuery()
+                    {
+                        Select = new IColumn[]
+                        {
+                            new Min(new Field() {Name = "Col1"})
+                        },
+                        From = new ITable[]
+                        {
+                            new Table() {Name = "Table", Alias = "t"}
+                        },
+
+                    }, false)
                         .SetName(
                             @"""SELECT <Min(new Field() {Name = ""Col1""})> FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
-                        .SetCategory(nameof(DatabaseType.Postgresql))
+                        .SetCategory("Postgresql")
+                        .Returns(@"SELECT MIN(""Col1"") FROM ""Table"" ""t""");
+
+                    yield return new TestCaseData(new SelectQuery()
+                    {
+                        Select = new IColumn[]
+                        {
+                            new Min("Col1")
+                        },
+                        From = new ITable[]
+                        {
+                            new Table() {Name = "Table", Alias = "t"}
+                        },
+
+                    }, false)
+                        .SetName(@"""SELECT <new Min (""Col1"")> FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
+                        .SetCategory("Postgresql")
+                        .Returns(@"SELECT MIN(""Col1"") FROM ""Table"" ""t""");
+
+                    yield return new TestCaseData(new SelectQuery()
+                    {
+                        Select = new IColumn[]
+                        {
+                            new Min(new Field() {Name = "Col1"})
+                        },
+                        From = new ITable[]
+                        {
+                            new Table() {Name = "Table", Alias = "t"}
+                        },
+
+                    }, false)
+                        .SetName(@"""SELECT <Min(Field {Name = ""Col1""})> FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
+                        .SetCategory("Postgresql")
                         .Returns(@"SELECT MIN(""Col1"") FROM ""Table"" ""t""");
 
 
-                    yield return new TestCaseData(QueryBuilder.
-                        Select(Min("Col1".Field()).As("Alias"))
-                        .From("Table".Table("t")), false)
-                        .SetName(
-                            @"""SELECT <Min(new Field() {Name = ""Col1""})> FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
-                        .SetCategory(nameof(DatabaseType.Postgresql))
+                    yield return new TestCaseData(new SelectQuery()
+                    {
+                        Select = new IColumn[]
+                        {
+                            new Min(new Field() {Name = "Col1", Alias = "Alias"})
+                        },
+                        From = new ITable[]
+                        {
+                            new Table() {Name = "Table", Alias = "t"}
+                        },
+
+                    }, false)
+                        .SetName(@"""SELECT <Min(Field {Name = ""Col1"", Alias = ""Alias""})> FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
+                        .SetCategory("Postgresql")
+                        .Returns(@"SELECT MIN(""Col1"") FROM ""Table"" ""t""");
+
+                    yield return new TestCaseData(new SelectQuery()
+                    {
+                        Select = new IColumn[]
+                        {
+                            new Min(new Field() {Name = "Col1"}, "Alias")
+                        },
+                        From = new ITable[]
+                        {
+                            new Table() {Name = "Table", Alias = "t"}
+                        },
+
+                    }, false)
+                        .SetName(@"""SELECT <Min(Field {Name = ""Col1"", Alias = ""Alias""})> FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
+                        .SetCategory("Postgresql")
                         .Returns(@"SELECT MIN(""Col1"") ""Alias"" FROM ""Table"" ""t""");
 
 
-                    yield return new TestCaseData(QueryBuilder.
-                        Select(
-                            Min("Col1".Field()).As("Minimum"),
-                            Max("Col2".Field()).As("Maximum")
-                        )
-                        .From("Table".Table("t")), false)
+
+                    yield return new TestCaseData(new SelectQuery()
+                    {
+                        Select = new IColumn[]
+                        {
+                            new Min(new Field() {Name = "Col1"}, "Minimum"),
+                            new MaxColumn(new Field() {Name = "Col2"}, "Maximum")
+                        },
+                        From = new ITable[]
+                        {
+                            new Table() {Name = "Table", Alias = "t"}
+                        },
+
+                    }, false)
                         .SetName(@"""SELECT <Min(Field {Name = ""Col1""}, ""Minimum"")>, <MaxColumn(Field {Name = ""Col2""}, ""Maximum"")> FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
-                        .SetCategory(nameof(DatabaseType.Postgresql))
-                        .Returns(@"SELECT MIN(""Col1"") ""Alias"" FROM ""Table"" ""t""");
+                        .SetCategory("Postgresql")
+                        .Returns(@"SELECT MIN(""Col1"") ""Minimum"", MAX(""Col2"") ""Maximum"" FROM ""Table"" ""t""");
 
-                    yield return new TestCaseData(QueryBuilder.
-                        Select(
-                            Min("Col1".Field()).As("Minimum"),
-                            "Col2".Field().As("Maximum")
-                        )
-                        .From("Table".Table("t")), false)
+
+                    yield return new TestCaseData(new SelectQuery()
+                    {
+                        Select = new IColumn[]
+                        {
+                            new Min(new Field() {Name = "Col1"}, "Minimum"),
+                            new Field() {Name = "Col2", Alias = "Maximum"}
+                        },
+                        From = new ITable[]
+                        {
+                            new Table() {Name = "Table", Alias = "t"}
+                        },
+
+                    }, false)
                         .SetName(
                             @"""SELECT <Min(Field {Name = ""Col1"", Alias = ""Minimum""})>, <Field {Name = ""Col2"", Alias = ""Maximum"")> FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
-                        .SetCategory(nameof(DatabaseType.Postgresql))
+                        .SetCategory("Postgresql")
                         .SetDescription("This should generate a GROUP BY clause")
                         .Returns(
                             @"SELECT MIN(""Col1"") ""Minimum"", ""Col2"" ""Maximum"" FROM ""Table"" ""t"" GROUP BY ""Col2""")
                         ;
 
-
-
-
-
-
-
-                    
                     yield return new TestCaseData(new SelectQuery()
                     {
                         Select = new IColumn[]
                         {
-                            new Min(new Field() {Name = "Col1"}, "Minimum")
+                            new Min(new Field() {Name = "Col1"}, "Minimum"),
                         },
                         From = new ITable[]
                         {
@@ -174,7 +343,7 @@ namespace Queries.Tests.Renderers
                             {
                                 Select = new IColumn[]
                                 {
-                                    new Min(new Field() {Name = "Col2", Alias = "Minimum"})
+                                    new Min(new Field() {Name = "Col2", Alias = "Minimum"}),
                                 },
                                 From = new ITable[]
                                 {
@@ -184,7 +353,7 @@ namespace Queries.Tests.Renderers
                         }
                     }, false)
                         .SetName(@"""SELECT <Min(Field {Name = ""Col1""}, ""Minimum"")> FROM <Table { Name = ""Table"", Alias = ""t"" }> UNION SELECT <Min(Field {Name = ""Col2"", Alias = ""Minimum""})> FROM <Table { Name = ""Table2"", Alias = ""t2"" }>""")
-                        .SetCategory(nameof(DatabaseType.Postgresql))
+                        .SetCategory("Postgresql")
                         .Returns(
                             @"SELECT MIN(""Col1"") ""Minimum"" FROM ""Table"" ""t"" UNION SELECT MIN(""Col2"") FROM ""Table2"" ""t2""")
                         ;
@@ -194,7 +363,7 @@ namespace Queries.Tests.Renderers
                     {
                         Select = new IColumn[]
                         {
-                            new Min(new Field() {Name = "Col1"}, "Minimum")
+                            new Min(new Field() {Name = "Col1"}, "Minimum"),
                         },
                         From = new ITable[]
                         {
@@ -206,7 +375,7 @@ namespace Queries.Tests.Renderers
                             {
                                 Select = new IColumn[]
                                 {
-                                    new Min(new Field() {Name = "Col2", Alias = "Minimum"})
+                                    new Min(new Field() {Name = "Col2", Alias = "Minimum"}),
                                 },
                                 From = new ITable[]
                                 {
@@ -216,7 +385,7 @@ namespace Queries.Tests.Renderers
                         }
                     }, true)
                         .SetName(@"PRETTY PRINT : ""SELECT <Min(Field {Name = ""Col1""}, ""Minimum"")> FROM <Table { Name = ""Table"", Alias = ""t"" }> UNION SELECT <Min(Field {Name = ""Col2"", Alias = ""Minimum""})> FROM <Table { Name = ""Table2"", Alias = ""t2"" }>""")
-                        .SetCategory(nameof(DatabaseType.Postgresql))
+                        .SetCategory("Postgresql")
                         .Returns(
                             "SELECT MIN(\"Col1\") \"Minimum\" \r\n" +
                             "FROM \"Table\" \"t\" \r\n" +
@@ -246,7 +415,7 @@ namespace Queries.Tests.Renderers
                     }, false)
                         .SetName(
                             @"""SELECT <Field {Name = ""civ_prenom""}> FROM <Table { Name = ""t_civilite"", Alias = ""civ"" }> WHERE <WhereClause { Column = FieldColumn.From(""civ_nom""),Operator = WhereOperator.EqualTo, Constraint = ""dupont""})>")
-                        .SetCategory(nameof(DatabaseType.Postgresql))
+                        .SetCategory("Postgresql")
                         .Returns(@"SELECT ""civ_prenom"" FROM ""t_civilite"" ""civ"" WHERE (""civ_nom"" = 'dupont')");
 
                     yield return new TestCaseData(new SelectQuery()
@@ -304,7 +473,7 @@ namespace Queries.Tests.Renderers
                     }, false)
                         .SetName(
                             @"""SELECT <FieldColumn.From(""prenom"")> FROM <Table { Name = ""t_person"", Alias = ""p"" }> WHERE <CompositeWhereClause {  Logic = WhereLogic.Or, Clauses = new IWhereClause[]{new WhereClause() {Column = new Field(){ Name = ""per_age""}, Operator = WhereOperator.GreaterThanOrEqualTo, Constraint = 15}, new WhereClause(){Column = new Field{Name = ""per_age""}, Operator = WhereOperator.LessThan, Constraint = 18}})")
-                        .SetCategory(nameof(DatabaseType.Postgresql))
+                        .SetCategory("Postgresql")
                         .Returns(
                             @"SELECT ""prenom"" FROM ""t_person"" ""p"" WHERE ((""per_age"" >= 15) OR (""per_age"" < 18))")
                         ;
@@ -333,13 +502,13 @@ namespace Queries.Tests.Renderers
                                     {
                                         new WhereClause()
                                         {
-                                            Column = "per_nom".Field(),
+                                            Column = new Field {Name = "per_nom"},
                                             Operator = ClauseOperator.EqualTo,
                                             Constraint = "dupont"
                                         },
                                         new WhereClause()
                                         {
-                                            Column = "per_nom".Field(),
+                                            Column = new Field {Name = "per_nom"},
                                             Operator = ClauseOperator.EqualTo,
                                             Constraint = "durant"
                                         }
@@ -352,13 +521,13 @@ namespace Queries.Tests.Renderers
                                     {
                                         new WhereClause()
                                         {
-                                            Column = "per_age".Field(),
+                                            Column = new Field {Name = "per_age"},
                                             Operator = ClauseOperator.GreaterThanOrEqualTo,
                                             Constraint = 15
                                         },
                                         new WhereClause()
                                         {
-                                            Column = "per_age".Field(),
+                                            Column = new Field {Name = "per_age"},
                                             Operator = ClauseOperator.LessThan,
                                             Constraint = 18
                                         }
@@ -389,7 +558,7 @@ namespace Queries.Tests.Renderers
                                 } 
                         }
                     })")
-                        .SetCategory(nameof(DatabaseType.Postgresql))
+                        .SetCategory("Postgresql")
                         .Returns(
                             @"SELECT ""prenom"" FROM ""t_person"" ""p"" WHERE (((""per_nom"" = 'dupont') OR (""per_nom"" = 'durant')) AND ((""per_age"" >= 15) OR (""per_age"" < 18)))")
                         ;
@@ -440,7 +609,7 @@ namespace Queries.Tests.Renderers
                         }
                     }, false)
                         .SetName("SELECT with WhereClause + Composite clause")
-                        .SetCategory(nameof(DatabaseType.Postgresql))
+                        .SetCategory("Postgresql")
                         .Returns(
                             @"SELECT ""prenom"" FROM ""t_person"" ""p"" WHERE ((""per_nom"" = 'dupont') AND ((""per_age"" >= 15) OR (""per_age"" < 18)))")
                         ;
@@ -466,7 +635,7 @@ namespace Queries.Tests.Renderers
                         }
                     }, false)
                         .SetName("Select with one inner join")
-                        .SetCategory(nameof(DatabaseType.Postgresql))
+                        .SetCategory("Postgresql")
                         .Returns(
                             @"SELECT ""p"".""Name"" ""Nom complet"", ""c"".""Name"" ""Civilité"" FROM ""person"" ""p"" INNER JOIN ""Civility"" ""c"" ON (""c"".""Id"" = ""p"".""CivilityId"")")
                         ;
@@ -493,12 +662,12 @@ namespace Queries.Tests.Renderers
                                 }
                             }
                         },
-                        From = new ITable[] {new Table() {Name = "person", Alias = "p"}}
+                        From = new ITable[] {new Table() {Name = "person", Alias = "p"}},
 
                     }, false)
                         .SetName(
                             @"SELECT <Field {Name = ""col1""}, (SELECT <Field {Name = ""col2"" FROM Table2 WHERE Table1.col = Table2.col) AS alias FROM Table1")
-                        .SetCategory(nameof(DatabaseType.Postgresql))
+                        .SetCategory("Postgresql")
                         .Returns(
                             @"SELECT ""p"".""Name"" ""Nom complet"", (SELECT ""c"".""Name"" ""Civilité"" FROM ""Civility"" ""c"" WHERE (""p"".""CivilityId"" = ""c"".""Id"")) FROM ""person"" ""p""")
                         ;
@@ -506,11 +675,20 @@ namespace Queries.Tests.Renderers
 
                     yield return new TestCaseData(new SelectIntoQuery()
                     {
-                        Into = "destination".Table(),
-                        From = "source".Table()
+                        Into = new Table() {Name = "destination"},
+                        From = new Table() {Name = "source"}
+                    }, false)
+                        .SetName("SELECT into from list of table")
+                        .SetCategory("Postgresql")
+                        .Returns(@"SELECT * INTO ""destination"" FROM ""source""");
+
+                    yield return new TestCaseData(new SelectIntoQuery()
+                    {
+                        Into = new Table() {Name = "destination"},
+                        From = new Table() {Name = "source"}
                     }, false)
                         .SetName("SELECT into <Table> from <Table>")
-                        .SetCategory(nameof(DatabaseType.Postgresql))
+                        .SetCategory("Postgresql")
                         .Returns(@"SELECT * INTO ""destination"" FROM ""source""");
 
 
@@ -522,14 +700,25 @@ namespace Queries.Tests.Renderers
                             {
                                 SelectQuery = new SelectQuery()
                                 {
-                                    Select = new IColumn[] { 1.Literal() }
+                                    Select = new IColumn[]
+                                    {
+                                        new LiteralColumn {Value = 1},
+                                    }
                                 }
                             }
                         }
                     }, false)
-                        .SetCategory(nameof(DatabaseType.Postgresql))
-                        .SetName(@"""SELECT <SelectColumn( { SelectQuery = new SelectQuery(){ Select = new IColumn[] { 1.Literal()} }}>""")
-                        .SetCategory(nameof(DatabaseType.Postgresql))
+                        .SetCategory("Postgresql")
+                        .SetName(@"""SELECT <SelectColumn(
+                        {
+                            SelectQuery = new SelectQuery(){
+                                Select = new IColumn[]
+                                {
+                                    new LiteralColumn {Value = 1},
+                                }
+                            }
+                        }>""")
+                        .SetCategory("Postgresql")
                         .Returns("SELECT (SELECT 1)");
 
 
@@ -552,7 +741,7 @@ namespace Queries.Tests.Renderers
                             @"""SELECT <Concat (FieldColumn.From(""firstname""), LiteralColumn.From("" ""),FieldColumn.From(""lastname"")
                             }> 
                         FROM <Table {Name = ""t_person"", Alias = ""p""}> ")
-                        .SetCategory(nameof(DatabaseType.Postgresql))
+                        .SetCategory("Postgresql")
                         .Returns(@"SELECT ""firstname"" || ' ' || ""lastname"" ""fullname"" FROM ""t_person"" ""p""");
 
 
@@ -578,7 +767,7 @@ namespace Queries.Tests.Renderers
                         }
                     }, false)
                         .SetName("SELECT FROM SelectTable")
-                        .SetCategory(nameof(DatabaseType.Postgresql))
+                        .SetCategory("Postgresql")
                         .Returns(@"SELECT * FROM SELECT ""firstname"", ""lastname"" FROM ""members""");
 
 
@@ -596,7 +785,7 @@ namespace Queries.Tests.Renderers
                     }, false)
                         .SetName(@"""SELECT <Null(Field{ Name = ""col1"" }, """")> 
                                 FROM <""Table"".Table(""t"")>""")
-                        .SetCategory(nameof(DatabaseType.Postgresql))
+                        .SetCategory("Postgresql")
                         .Returns(@"SELECT COALESCE(""col1"", '') FROM ""Table"" ""t""");
 
 
@@ -605,7 +794,7 @@ namespace Queries.Tests.Renderers
                         Select = new IColumn[]
                         {
                             new Field() {Name = "Employees.Lastname"},
-                            new Count(new Field() {Name = "Orders.OrderID"}, "NumberOfOrders")
+                            new Count(new Field() {Name = "Orders.OrderID"}, "NumberOfOrders"),
                         },
                         From = new ITable[]
                         {
@@ -695,7 +884,7 @@ namespace Queries.Tests.Renderers
                         Select = new IColumn[]
                         {
                             new Field() {Name = "Employees.Lastname"},
-                            new Count(new Field() {Name = "Orders.OrderID"}, "NumberOfOrders")
+                            new Count(new Field() {Name = "Orders.OrderID"}, "NumberOfOrders"),
                         },
                         From = new ITable[]
                         {
@@ -787,16 +976,16 @@ namespace Queries.Tests.Renderers
 
                     yield return new TestCaseData(new SelectQuery()
                     {
-                        Select = new IColumn[] {new Concat("firstname".Field(), " ".Literal(), "lastname".Field()) {Alias = "fullname"} },
+                        Select = new IColumn[] { "Col1".Field() },
                         From = new ITable[] { "Table".Table("t") },
                         Limit = 3,
-                        OrderBy = new ISort[] { "firstname".Asc(), "lastname".Desc() }
+                        OrderBy = new ISort[] { new SortExpression("Col1") }
                     }, true)
-                    .SetName("Pretty print SelectQuery { Select = new IColumn[] { \"Col1\".Field() }, From = new ITable[] { \"Table\".Table(\"t\") }, Limit = 3, OrderBy = new ISort[] { new SortExpression(\"Col1\") } }")
-                    .SetCategory("Postgres") 
-                    .Returns("SELECT \"firstname\" || ' ' || \"lastname\" \"fullname\" \r\n" +
+                    .SetName("Pretty print SelectQuery {Select = new IColumn[] {\"Col1\".Field()}, From = new ITable[] { \"Table\".Table(\"t\") }, Limit = 3}")
+                    .SetCategory("SQL Server")
+                    .Returns("SELECT \"Col1\" \r\n" +
                              "FROM \"Table\" \"t\" \r\n" +
-                             "ORDER BY \"firstname\", \"lastname\" DESC \r\n" +
+                             "ORDER BY \"Col1\" \r\n" +
                              "LIMIT 3");
 
                 }
@@ -816,7 +1005,7 @@ namespace Queries.Tests.Renderers
                         }
                     }, false)
                     .SetName("\"UPDATE <tablename> SET <destination> = <source>\" where <destination> and <source> are table columns")
-                    .SetCategory(nameof(DatabaseType.Postgresql))
+                    .SetCategory("Postgresql")
                     .Returns(@"UPDATE ""Table"" SET ""col2"" = ""col1""");
 
                     yield return new TestCaseData(new UpdateQuery()
@@ -828,7 +1017,7 @@ namespace Queries.Tests.Renderers
                         }
                     }, false)
                     .SetName(@"UPDATE <Table {Name = ""Table""}> SET <Set = new[] { new UpdateFieldValue(){ Destination = FieldColumn.From(""col2""), Source = ""col1""}}""")
-                    .SetCategory(nameof(DatabaseType.Postgresql))
+                    .SetCategory("Postgresql")
                     .Returns(@"UPDATE ""Table"" SET ""col2"" = 'col1'");
 
                     yield return new TestCaseData(new UpdateQuery()
@@ -840,7 +1029,7 @@ namespace Queries.Tests.Renderers
                         }
                     }, false)
                     .SetName(@"UPDATE <Table {Name = ""Table""}> SET <Set = new[] { new UpdateFieldValue(){ Destination = FieldColumn.From(""col2""), Source = 1""")
-                    .SetCategory(nameof(DatabaseType.Postgresql))
+                    .SetCategory("Postgresql")
                     .Returns(@"UPDATE ""Table"" SET ""col2"" = 1");
 
 
@@ -853,7 +1042,7 @@ namespace Queries.Tests.Renderers
                         }
                     }, false)
                     .SetName(@"UPDATE <Table {Name = ""Table""}> SET <Set = new[] { new UpdateFieldValue(){ Destination = FieldColumn.From(""col2""), Source = -1 }}""")
-                    .SetCategory(nameof(DatabaseType.Postgresql))
+                    .SetCategory("Postgresql")
                     .Returns(@"UPDATE ""Table"" SET ""col2"" = -1");
 
                     yield return new TestCaseData(new UpdateQuery()
@@ -865,7 +1054,7 @@ namespace Queries.Tests.Renderers
                         }
                     }, false)
                                 .SetName(@"UPDATE <Table {Name = ""Table""}> SET <Set = new[] { new UpdateFieldValue(){ Destination = FieldColumn.From(""col2""), Source = FieldColumn.From(""col1"")}}""")
-                                .SetCategory(nameof(DatabaseType.Postgresql))
+                                .SetCategory("Postgresql")
                                 .Returns(@"UPDATE ""Table"" SET ""col2"" = ""col1""");
 
 
@@ -878,7 +1067,7 @@ namespace Queries.Tests.Renderers
                         }
                     }, true)
                                 .SetName(@"PRETTY PRINT UPDATE <Table {Name = ""Table""}> SET <Set = new[] { new UpdateFieldValue(){ Destination = FieldColumn.From(""col2""), Source = FieldColumn.From(""col1"")}}""")
-                                .SetCategory(nameof(DatabaseType.Postgresql))
+                                .SetCategory("Postgresql")
                                 .Returns("UPDATE \"Table\" \r\n" +
                                          "SET \"col2\" = \"col1\"");
                 }
@@ -936,7 +1125,7 @@ namespace Queries.Tests.Renderers
         }
 
 
-        [TestCaseSource(typeof(Cases), nameof(Cases.SelectTestsCases))]
+        [TestCaseSource(typeof(Cases), "SelectTestsCases")]
         public string Select(SelectQueryBase selectQuery, bool prettyPrint)
         {
             _renderer.PrettyPrint = prettyPrint;
@@ -944,7 +1133,7 @@ namespace Queries.Tests.Renderers
             return _renderer.Render(selectQuery);
         }
 
-        [TestCaseSource(typeof(Cases), nameof(Cases.UpdateTestsCases))]
+        [TestCaseSource(typeof(Cases), "UpdateTestsCases")]
         public string Update(UpdateQuery updateQuery, bool prettyPrint)
 
         {
@@ -952,7 +1141,7 @@ namespace Queries.Tests.Renderers
             return _renderer.Render(updateQuery);
         }
 
-        [TestCaseSource(typeof(Cases), nameof(Cases.DeleteTestsCases))]
+        [TestCaseSource(typeof(Cases), "DeleteTestsCases")]
         public string Delete(DeleteQuery deleteQuery, bool prettyPrint)
         {
             _renderer.PrettyPrint = prettyPrint;

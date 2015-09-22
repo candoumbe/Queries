@@ -2,35 +2,25 @@
 
 namespace Queries.Parts.Columns
 {
-    public abstract class AggregateColumn : IAliasable<AggregateColumn>, IColumn
+    public abstract class AggregateColumn : IColumn, IAliasable
     {
-        public AggregateType Type { get; }
+        public AggregateType Type { get; set; }
 
-        public FieldColumn Column { get; }
+        public FieldColumn Column { get; set; }
 
-        protected AggregateColumn(AggregateType aggregate, FieldColumn column)
+        public string Alias { get; set; }
+
+
+        protected AggregateColumn(AggregateType aggregate, FieldColumn column, string alias = null)
         {
             if (column == null)
             {
-                throw new ArgumentNullException(nameof(column));
+                throw new ArgumentNullException("column");
             }
 
             Type = aggregate;
             Column = column;
+            Alias = alias;
         }
-
-
-        private string _alias;
-
-        public string Alias => _alias;
-
-        public AggregateColumn As(string alias)
-        {
-            _alias = alias;
-
-            return this;
-        }
-
-
     }
 }

@@ -2,6 +2,10 @@
 {
     public interface INamable
     {
-        string Name { get; }
+        string Name
+        {
+            get;
+            set;
+        }
     }
 }

@@ -30,8 +30,8 @@ namespace Queries.Renderers
         /// <returns>Escaped object name</returns>
         public virtual string EscapeName(string objectName)
         {
-            string escapedColumnName = string.Join(".",
-                objectName.Split(new[] { '.' }, StringSplitOptions.None).Select(item => $"[{item}]"));
+            string escapedColumnName = String.Join(".",
+                objectName.Split(new[] { '.' }, StringSplitOptions.None).Select(item => String.Format("[{0}]", item)));
 
             return escapedColumnName;
         }
@@ -40,7 +40,7 @@ namespace Queries.Renderers
 
         protected virtual string Render(SelectQueryBase query, DatabaseType databaseType)
         {
-            string queryString = string.Empty;
+            String queryString = String.Empty;
 
             if (query != null)
             {
@@ -66,7 +66,7 @@ namespace Queries.Renderers
                             {
                                 case DatabaseType.SqlServer:
                                 case DatabaseType.SqlServerCompact:
-                                    sb.Append($"SELECT TOP {limit.Value} {fieldsString} ")
+                                    sb.AppendFormat("SELECT TOP {0} {1} ", limit.Value, fieldsString)
                                         .Append(PrettyPrint ? Environment.NewLine : String.Empty)
                                         .AppendFormat("FROM {0}", tableString);
                                     break;
@@ -75,9 +75,9 @@ namespace Queries.Renderers
                                 case DatabaseType.Postgresql:
                                 case DatabaseType.Sqlite:
                                 case DatabaseType.Oracle:
-                                    sb.Append($"SELECT {fieldsString} ")
+                                    sb.AppendFormat("SELECT {0} ", fieldsString)
                                         .Append(PrettyPrint ? Environment.NewLine : String.Empty)
-                                        .Append($"FROM {tableString}");
+                                        .AppendFormat("FROM {0}", tableString);;
                                     break;
                             }
                         }
@@ -117,7 +117,10 @@ namespace Queries.Renderers
 
                 if (query.Where != null)
                 {
-                    sb = sb.Append($" {(PrettyPrint ? Environment.NewLine : "")}WHERE {RenderWhere(query.Where)}");
+                    sb = sb
+                        .Append(' ')
+                        .Append(PrettyPrint ? Environment.NewLine : String.Empty)
+                        .AppendFormat("WHERE {0}", RenderWhere(query.Where));
                 }
 
                 if (query.Select != null)
@@ -304,35 +307,42 @@ namespace Queries.Renderers
             switch (clause.Operator)
             {
                 case ClauseOperator.EqualTo:
-                    clauseString = $"{RenderColumn(clause.Column, false)} = {RenderColumn(clause.Constraint, false)}";
+                    clauseString = String.Format("{0} = {1}", RenderColumn(clause.Column, false),
+                        RenderColumn(clause.Constraint, false));
                     break;
                 case ClauseOperator.NotEqualTo:
-                    clauseString = $"{RenderColumn(clause.Column, false)} <> {RenderColumn(clause.Constraint, false)}";
+                    clauseString = String.Format("{0} <> {1}", RenderColumn(clause.Column, false),
+                        RenderColumn(clause.Constraint, false));
                     break;
                 case ClauseOperator.LessThan:
-                    clauseString = $"{RenderColumn(clause.Column, false)} < {RenderColumn(clause.Constraint, false)}";
+                    clauseString = String.Format("{0} < {1}", RenderColumn(clause.Column, false),
+                        RenderColumn(clause.Constraint, false));
                     break;
                 case ClauseOperator.GreaterThan:
-                    clauseString = $"{RenderColumn(clause.Column, false)} > {RenderColumn(clause.Constraint, false)}";
+                    clauseString = String.Format("{0} > {1}", RenderColumn(clause.Column, false),
+                        RenderColumn(clause.Constraint, false));
                     break;
                 case ClauseOperator.Like:
-                    clauseString = $"{RenderColumn(clause.Column, false)} LIKE {RenderColumn(clause.Constraint, false)}";
+                    clauseString = String.Format("{0} LIKE {1}", RenderColumn(clause.Column, false),
+                        RenderColumn(clause.Constraint, false));
                     break;
                 case ClauseOperator.NotLike:
-                    clauseString =
-                        $"{RenderColumn(clause.Column, false)} NOT LIKE {RenderColumn(clause.Constraint, false)}";
+                    clauseString = String.Format("{0} NOT LIKE {1}", RenderColumn(clause.Column, false),
+                        RenderColumn(clause.Constraint, false));
                     break;
                 case ClauseOperator.LessThanOrEqualTo:
-                    clauseString = $"{RenderColumn(clause.Column, false)} <= {RenderColumn(clause.Constraint, false)}";
+                    clauseString = String.Format("{0} <= {1}", RenderColumn(clause.Column, false),
+                        RenderColumn(clause.Constraint, false));
                     break;
                 case ClauseOperator.GreaterThanOrEqualTo:
-                    clauseString = $"{RenderColumn(clause.Column, false)} >= {RenderColumn(clause.Constraint, false)}";
+                    clauseString = String.Format("{0} >= {1}", RenderColumn(clause.Column, false),
+                        RenderColumn(clause.Constraint, false));
                     break;
                 case ClauseOperator.IsNull:
-                    clauseString = $"{RenderColumn(clause.Column, false)} IS NULL";
+                    clauseString = String.Format("{0} IS NULL", RenderColumn(clause.Column, false));
                     break;
                 case ClauseOperator.IsNotNull:
-                    clauseString = $"{RenderColumn(clause.Column, false)} IS NOT NULL";
+                    clauseString = String.Format("{0} IS NOT NULL", RenderColumn(clause.Column, false));
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -432,7 +442,7 @@ namespace Queries.Renderers
         {
             return !renderAlias || String.IsNullOrWhiteSpace(table.Alias)
                 ? EscapeName(table.Name)
-                : $"{EscapeName(table.Name)} {EscapeName(table.Alias)}";
+                : String.Format("{0} {1}", EscapeName(table.Name), EscapeName(table.Alias));
         }
 
         /// <summary>
@@ -539,8 +549,8 @@ namespace Queries.Renderers
         protected virtual string RenderInlineSelect(SelectColumn inlineSelectQuery, bool renderAlias)
         {
             string columnString  = !renderAlias || String.IsNullOrWhiteSpace(inlineSelectQuery.Alias)
-                        ? $"({Render(inlineSelectQuery.SelectQuery)})"
-                : RenderColumnnameWithAlias($"({Render(inlineSelectQuery.SelectQuery)})", EscapeName(inlineSelectQuery.Alias));
+                        ? String.Format("({0})", Render(inlineSelectQuery.SelectQuery))
+                        : RenderColumnnameWithAlias(String.Format("({0})", Render(inlineSelectQuery.SelectQuery)), EscapeName(inlineSelectQuery.Alias));
             
 
 
@@ -549,12 +559,12 @@ namespace Queries.Renderers
 
         protected virtual string RenderTablenameWithAlias(string tableName, string alias)
         {
-            return $"{tableName} {alias}";
+            return String.Format("{0} {1}", tableName, alias);
         }
 
         protected virtual string RenderColumnnameWithAlias(string columnName, string alias)
         {
-            return $"{columnName} AS {alias}";
+            return String.Format("{0} AS {1}", columnName, alias);
         }
 
         protected virtual string RenderAggregateColumn(AggregateColumn ac, bool renderAlias)
@@ -564,23 +574,23 @@ namespace Queries.Renderers
             {
                 case AggregateType.Min:
                     columnString = !renderAlias || String.IsNullOrWhiteSpace(ac.Alias)
-                        ? $"MIN({EscapeName(ac.Column.Name)})"
-                        : RenderColumnnameWithAlias($"MIN({EscapeName(ac.Column.Name)})", EscapeName(ac.Alias));
+                        ? String.Format("MIN({0})", EscapeName(ac.Column.Name))
+                        : RenderColumnnameWithAlias(String.Format("MIN({0})", EscapeName(ac.Column.Name)), EscapeName(ac.Alias));
                     break;
                 case AggregateType.Max:
                     columnString = !renderAlias || String.IsNullOrWhiteSpace(ac.Alias)
-                        ? $"MAX({EscapeName(ac.Column.Name)})"
-                        : RenderColumnnameWithAlias($"MAX({EscapeName(ac.Column.Name)})", EscapeName(ac.Alias));
+                        ? String.Format("MAX({0})", EscapeName(ac.Column.Name))
+                        : RenderColumnnameWithAlias(String.Format("MAX({0})", EscapeName(ac.Column.Name)), EscapeName(ac.Alias));
                     break;
                 case AggregateType.Average:
                     columnString = !renderAlias || String.IsNullOrWhiteSpace(ac.Alias)
-                        ? $"AVG({EscapeName(ac.Column.Name)})"
-                        : RenderColumnnameWithAlias($"AVG({EscapeName(ac.Column.Name)})", EscapeName(ac.Alias));
+                        ? String.Format("AVG({0})", EscapeName(ac.Column.Name))
+                        : RenderColumnnameWithAlias(String.Format("AVG({0})", EscapeName(ac.Column.Name)), EscapeName(ac.Alias));
                     break;
                 case AggregateType.Count:
                     columnString = !renderAlias || String.IsNullOrWhiteSpace(ac.Alias)
-                        ? $"COUNT({EscapeName(ac.Column.Name)})"
-                        : RenderColumnnameWithAlias($"COUNT({EscapeName(ac.Column.Name)})", EscapeName(ac.Alias));
+                        ? String.Format("COUNT({0})", EscapeName(ac.Column.Name))
+                        : RenderColumnnameWithAlias(String.Format("COUNT({0})", EscapeName(ac.Column.Name)), EscapeName(ac.Alias));
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -598,18 +608,18 @@ namespace Queries.Renderers
             {
                 if (renderAlias && !String.IsNullOrWhiteSpace(lc.Alias))
                 {
-                    columnString = $"'{EscapeString((string) value)}' AS {EscapeName(lc.Alias)}";
+                    columnString = String.Format("'{0}' AS {1}", EscapeString((string) value), EscapeName(lc.Alias));
                 }
                 else
                 {
-                    columnString = $"'{EscapeString((String) value)}'";
+                    columnString = String.Format("'{0}'", EscapeString((String)value));
                 }
             }
             else
             {
                 if (renderAlias && !String.IsNullOrWhiteSpace(lc.Alias))
                 {
-                    columnString = $"{value} AS {EscapeName(lc.Alias)}";
+                    columnString = String.Format("{0} AS {1}", value, EscapeName(lc.Alias));
                 }
                 else
                 {
@@ -674,7 +684,7 @@ namespace Queries.Renderers
                     .Append(PrettyPrint ? Environment.NewLine : String.Empty)
                     .AppendFormat("AS ")
                     .Append(PrettyPrint ? Environment.NewLine : String.Empty)
-                    .Append(Render(query.As));
+                    .Append(Render(query.Select));
             }
 
             return sb.ToString();
@@ -685,7 +695,7 @@ namespace Queries.Renderers
             string sbQuery = String.Empty;
             if (query != null && new TruncateQueryValidator().IsValid(query))
             {
-                sbQuery = $"TRUNCATE TABLE {query.Name}";
+                sbQuery = String.Format("TRUNCATE TABLE {0}", query.Name);
             }
 
             return sbQuery;

@@ -9,7 +9,7 @@ namespace Queries.Builders
         public int? Limit { get; set; }
         public IList<ITable> From { get; set; }
 
-        internal SelectQuery()
+        public SelectQuery()
         {
             From = new List<ITable>();
         }

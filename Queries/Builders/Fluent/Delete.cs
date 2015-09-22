@@ -8,11 +8,11 @@ namespace Queries.Builders.Fluent
     {
         private readonly DeleteQuery _query;
 
-        internal Delete(Table table)
+        public Delete(Table table)
         {
             if (table == null)
             {
-                throw new ArgumentNullException(nameof(table));
+                throw new ArgumentNullException("table");
             }
             _query = new DeleteQuery(){Table = table};
 
@@ -23,7 +23,7 @@ namespace Queries.Builders.Fluent
         {
             if (clause == null)
             {
-                throw new ArgumentNullException(nameof(clause));
+                throw new ArgumentNullException("clause");
             }
 
             _query.Where = clause;
