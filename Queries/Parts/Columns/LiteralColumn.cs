@@ -1,21 +1,27 @@
-﻿using System;
-
-namespace Queries.Parts.Columns
+﻿namespace Queries.Parts.Columns
 {
-    public class LiteralColumn : ColumnBase, IAliasable
+    public class LiteralColumn : ColumnBase, IAliasable<LiteralColumn>
     {
-        public string Alias { get; set; }
-
         public object Value { get; set; }
 
 
-        public LiteralColumn(object value = null, string alias = "")
+        public LiteralColumn(object value = null)
         {
             Value = value;
-            Alias = alias ?? String.Empty;
+        }
+
+        private string _alias;
+
+        public string Alias => _alias;
+
+        public LiteralColumn As(string alias)
+        {
+            _alias = alias;
+
+            return this;
         }
 
 
-        
+
     }
 }

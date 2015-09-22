@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Queries.Parts.Columns
 {
-    public class ConcatColumn : IFunctionColumn, IAliasable
+    public class ConcatColumn : IAliasable<ConcatColumn>, IFunctionColumn
     {
         public IList<IColumn> Columns { get; private set; }
 
@@ -15,11 +15,20 @@ namespace Queries.Parts.Columns
             }
             if (columns.Length < 2)
             {
-                throw new ArgumentOutOfRangeException("columns", "must be at least two columns to concatenate");
+                throw new ArgumentOutOfRangeException(nameof(columns), $"{nameof(columns)} must be at least two columns to concatenate");
             }
             Columns = columns;
         }
 
-        public string Alias { get; set; }
+        private string _alias;
+
+        public string Alias => _alias;
+
+        public ConcatColumn As(string alias)
+        {
+            _alias = alias;
+
+            return this;
+        }
     }
 }

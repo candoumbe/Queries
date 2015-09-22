@@ -1,6 +1,6 @@
 namespace Queries.Parts
 {
-    public interface ITable : IAliasable
+    public interface ITable : IAliasable<Table>
     {
     }
 }

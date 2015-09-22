@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using NUnit.Framework;
 using Queries.Builders;
+using static Queries.Builders.CreateView;
 using Queries.Builders.Fluent;
+using static Queries.Builders.Fluent.QueryBuilder;
 using Queries.Extensions;
 using Queries.Parts;
 using Queries.Parts.Clauses;
@@ -35,13 +37,13 @@ namespace Queries.Tests.Renderers
                                 .Returns(String.Empty);
 
 
-                    yield return new TestCaseData(new Select(new Length(
+                    yield return new TestCaseData(QueryBuilder.Select(new Length(
                                 "Firstname".Field()
                             ))
                             .From("user".Table())
                             .Build()
                      , true)
-                    .SetName("Pretty print new Select(" +
+                    .SetName("Pretty print QueryBuilder.Select(" +
                                     "new Length(\"Firstname\".Field())" +
                                     ".From(\"user\".Table())" +
                                     ".Build(), Pretty print : true")
@@ -50,13 +52,13 @@ namespace Queries.Tests.Renderers
 
 
 
-                    yield return new TestCaseData(new Select(new Length(
+                    yield return new TestCaseData(QueryBuilder.Select(new Length(
                                 "Firstname".Field()
                             ))
                             .From("user".Table())
                             .Build()
                      , false)
-                    .SetName("new Select(" +
+                    .SetName("QueryBuilder.Select(" +
                                     "new Length(\"Firstname\".Field())" +
                                     ".From(\"user\".Table())" +
                                     ".Build()")
@@ -72,7 +74,7 @@ namespace Queries.Tests.Renderers
                         From = new ITable[]
                         {
                             "Table".Table("t")
-                        },
+                        }
 
                     }, false)
                     .SetName(@"""SELECT <Field{ Name = ""Col1"" }> FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
@@ -179,7 +181,7 @@ namespace Queries.Tests.Renderers
                         From = new ITable[]
                         {
                             new Table(){Name = "Table", Alias = "t"}
-                        },
+                        }
 
                     }, false)
                     .SetName(@"""SELECT <Null(Field{ Name = ""col1"" }, """")> 
@@ -200,7 +202,7 @@ namespace Queries.Tests.Renderers
                         From = new ITable[]
                         {
                             new Table(){Name = "Table", Alias = "t"}
-                        },
+                        }
 
                     }, false)
                     .SetName(@"""SELECT <Concat(Null(Field{ Name = ""firstname"" }, """"), LiteralColumn.From("" ""), Null(Field{ Name = ""lastname"" }, """")){ Alias = ""fullname"" }> 
@@ -215,7 +217,7 @@ namespace Queries.Tests.Renderers
                         From = new ITable[]
                         {
                             new Table(){Name = "Table", Alias = "t"}
-                        },
+                        }
 
                     }, false)
                     .SetName(@"""SELECT FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
@@ -228,7 +230,7 @@ namespace Queries.Tests.Renderers
                         From = new ITable[]
                         {
                             new Table(){Name = "Table", Alias = "t"}
-                        },
+                        }
 
                     }, false)
                     .SetName("Select with no column specified and one table in the FROM part")
@@ -244,7 +246,7 @@ namespace Queries.Tests.Renderers
                         From = new ITable[]
                         {
                             new Table(){Name = "dbo.Table", Alias = "t"}
-                        },
+                        }
 
                     }, false)
                     .SetName(@"""SELECT <Field{ Name = ""Col1"" }> FROM <Table { Name = ""dbo.Table"", Alias = ""t"" }>"", Pretty print: false")
@@ -262,7 +264,7 @@ namespace Queries.Tests.Renderers
                         {
                             "Table1".Table("t1"),
                             "Table2".Table("t2")
-                        },
+                        }
 
                     }, false)
                     .SetName(@"""SELECT <""Col1"".Field(), ""Col2"".Field()FROM ""Table1"".Table(""t1""),  ""Table2"".Table(""t2"")Alias = ""t"" }>""")
@@ -280,7 +282,7 @@ namespace Queries.Tests.Renderers
                         {
                             "Table1".Table("t1"),
                             "Table2".Table("t2")
-                        },
+                        }
 
                     }, false)
                     .SetName(@"""SELECT <""Col1"".Field(), ""Col2"".Field()FROM ""Table1"".Table(""t1""),  ""Table2"".Table(""t2"")Alias = ""t"" }>""")
@@ -297,7 +299,7 @@ namespace Queries.Tests.Renderers
                         From = new ITable[]
                         {
                             new Table(){Name = "Table", Alias = "t"}
-                        },
+                        }
 
                     }, false)
                     .SetName(@"""SELECT <Field{ Name = ""Col1"", Alias = ""Alias"" }> FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
@@ -309,12 +311,12 @@ namespace Queries.Tests.Renderers
                         Select = new IColumn[]
                         {
                             new Field(){Name = "Col1"},
-                            new Field(){Name = "Col2"},
+                            new Field(){Name = "Col2"}
                         },
                         From = new ITable[]
                         {
                             new Table(){Name = "Table", Alias = "t"}
-                        },
+                        }
 
                     }, false)
                     .SetName(@"""SELECT <Field{ Name = ""Col1"" }>, <Field{ Name = ""Col2"" }> FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
@@ -326,12 +328,12 @@ namespace Queries.Tests.Renderers
                         Select = new IColumn[]
                         {
                             new Field(){Name = "Col1"},
-                            new Field(){Name = "Col2"},
+                            new Field(){Name = "Col2"}
                         },
                         From = new ITable[]
                         {
                             new Table(){Name = "Table", Alias = "t"}
-                        },
+                        }
 
                     }, true)
                     .SetName(@"""SELECT <Field{ Name = ""Col1"" }>, <Field{ Name = ""Col2"" }> FROM <Table { Name = ""Table"", Alias = ""t"" }>"", Pretty print : true")
@@ -350,7 +352,7 @@ namespace Queries.Tests.Renderers
                         From = new ITable[]
                         {
                             new Table() {Name = "Table", Alias = "t"}
-                        },
+                        }
 
                     }, false)
                     .SetName(@"""SELECT <Min(new Field() {Name = ""Col1""})> FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
@@ -366,7 +368,7 @@ namespace Queries.Tests.Renderers
                         From = new ITable[]
                         {
                             new Table() {Name = "Table", Alias = "t"}
-                        },
+                        }
 
                     }, false)
                     .SetName(@"""SELECT <new Min (""Col1"")> FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
@@ -382,7 +384,7 @@ namespace Queries.Tests.Renderers
                         From = new ITable[]
                         {
                             new Table() {Name = "Table", Alias = "t"}
-                        },
+                        }
 
                     }, false)
                         .SetName(@"""SELECT <Min(Field {Name = ""Col1""})> FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
@@ -399,7 +401,7 @@ namespace Queries.Tests.Renderers
                         From = new ITable[]
                         {
                             new Table(){Name = "Table", Alias = "t"}
-                        },
+                        }
 
                     }, false)
                     .SetName(@"""SELECT <Min(Field {Name = ""Col1"", Alias = ""Alias""})> FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
@@ -415,7 +417,7 @@ namespace Queries.Tests.Renderers
                         From = new ITable[]
                         {
                             new Table(){Name = "Table", Alias = "t"}
-                        },
+                        }
 
                     }, false)
                     .SetName(@"""SELECT <Min(Field {Name = ""Col1""}, ""Alias"")> FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
@@ -433,7 +435,7 @@ namespace Queries.Tests.Renderers
                         From = new ITable[]
                         {
                             new Table(){Name = "Table", Alias = "t"}
-                        },
+                        }
 
                     }, false)
                     .SetName(@"""SELECT <Min(Field {Name = ""Col1""}, ""Minimum""})>, <Max(Field {Name = ""Col2"", Alias = ""Maximum""})> FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
@@ -451,7 +453,7 @@ namespace Queries.Tests.Renderers
                         From = new ITable[]
                         {
                             new Table(){Name = "Table", Alias = "t"}
-                        },
+                        }
 
                     }, false)
                     .SetName(@"""SELECT <Min(Field {Name = ""Col1"", Alias = ""Minimum""})>, <Field {Name = ""Col2"", Alias = ""Maximum"")> FROM <Table { Name = ""Table"", Alias = ""t"" }>""")
@@ -463,7 +465,7 @@ namespace Queries.Tests.Renderers
                     {
                         Select = new IColumn[]
                         {
-                            new Min(new Field(){Name = "Col1", Alias = "Minimum"}),
+                            new Min(new Field(){Name = "Col1", Alias = "Minimum"})
                         },
                         From = new ITable[]
                         {
@@ -474,7 +476,7 @@ namespace Queries.Tests.Renderers
                            { 
                                 Select = new IColumn[]
                                 {
-                                    new Min(new Field(){Name = "Col2", Alias = "Minimum"}),
+                                    new Min(new Field(){Name = "Col2", Alias = "Minimum"})
                                 },
                                 From = new ITable[]
                                 {
@@ -657,7 +659,7 @@ namespace Queries.Tests.Renderers
                                 }
                             }
                         },
-                        From = new ITable[] { new Table() { Name = "person", Alias = "p" } },
+                        From = new ITable[] { new Table() { Name = "person", Alias = "p" } }
 
                     }, false)
                     .SetName(@"SELECT <Field {Name = ""p.Name"", Alias = ""Nom complet""}>, (SELECT col2 FROM Table2 WHERE Table1.col = Table2.col) AS alias FROM Table1")
@@ -679,7 +681,7 @@ namespace Queries.Tests.Renderers
                                 }
                             }
                         },
-                        From = new ITable[] { new Table() { Name = "person", Alias = "p" } },
+                        From = new ITable[] { "person".Table("p")}
 
                     }, true)
                     .SetName(@"Pretty print SELECT <Field {Name = ""p.Name"", Alias = ""Nom complet""}>, (SELECT col2 FROM Table2 WHERE Table1.col = Table2.col) AS alias FROM Table1")
@@ -719,7 +721,7 @@ namespace Queries.Tests.Renderers
                                 {
                                     Select = new IColumn[]
                                     {
-                                        new LiteralColumn {Value = 1},
+                                        new LiteralColumn {Value = 1}
                                     }
                                 }
                             }
@@ -743,7 +745,7 @@ namespace Queries.Tests.Renderers
                     {
                         Select = new IColumn[]
                         {
-                            new Concat("firstname".Field(), " ".Literal(), "lastname".Field()){Alias = "fullname"}, 
+                            new Concat("firstname".Field(), " ".Literal(), "lastname".Field()){Alias = "fullname"} 
                         },
                         From = new ITable[]
                         {
@@ -771,7 +773,7 @@ namespace Queries.Tests.Renderers
                 {
                     yield return new TestCaseData(new UpdateQuery()
                     {
-                        Table = new Table { Name = "Table" },
+                        Table = "Table".Table(),
                         Set = new[]
                                 {
                                     new UpdateFieldValue(){ Destination = "col2".Field(), Source = "col1".Field()}
@@ -829,70 +831,44 @@ namespace Queries.Tests.Renderers
                 {
                     yield return new TestCaseData(null, false)
                         .SetName("null")
-                        .Returns(String.Empty);
+                        .Returns(string.Empty);
 
                     yield return new TestCaseData(null, true)
                         .SetName("Pretty print null")
-                        .Returns(String.Empty);
+                        .Returns(string.Empty);
 
 
-                    yield return new TestCaseData(new CreateViewQuery(), false)
-                        .SetName("new CreateViewQuery(), false")
-                        .Returns(String.Empty);
+                    yield return new TestCaseData(QueryBuilder.CreateView(null), false)
+                        .SetName($"{nameof(QueryBuilder.CreateView)}(null).{nameof(Builders.CreateView.Build)}, false")
+                        .Returns(string.Empty);
 
-                    yield return new TestCaseData(new CreateViewQuery(), true)
-                        .SetName("Pretty print new CreateViewQuery(), true")
-                        .Returns(String.Empty);
 
-                    
-                    yield return new TestCaseData(new CreateViewQuery()
-                    {
-                        Name = "people",
-                        Select = new Select(new Concat(
-                                "Firstname".Field(),
-                                " ".Literal(),
-                                "Lastname".Field()
-                            ))
-                            .From("user".Table())
-                            .Build()
-                    }, false)
-                    .SetName("new CreateViewQuery()" +
-                             "{ " +
-                                "Name = \"people\", " +
-                                "Select = new Select(" +
-                                    "new Concat(" +
-                                        "\"Firstname\".Field(), " +
-                                        "\" \".Literal(), " +
-                                        "\"Lastname\".Field()))" +
-                                    ".From(\"user\".Table())" +
-                                    ".Build()}, Pretty print : false")
-                    .Returns("CREATE VIEW [people] AS SELECT [Firstname] + ' ' + [Lastname] FROM [user]");
+                    yield return new TestCaseData(
+                        QueryBuilder.CreateView("people")
+                            .As(
+                                QueryBuilder.Select(Concat("Firstname".Field(), " ".Literal(), "Lastname".Field()))
+                                    .From("user".Table())
+                                    .Build()), false)
+                        .SetName($"Pretty print {nameof(QueryBuilder.CreateView)}(\"people\")\r\n" +
+                                 $".{nameof(Builders.CreateView.As)}(\r\n" +
+                                 $"\t{nameof(QueryBuilder.Select)}({nameof(QueryBuilder.Concat)}(\"Firstname\".{nameof(StringExtensions.Field)}(), \" \".{nameof(LiteralExtensions.Literal)}(), \"Lastname\".{nameof(StringExtensions.Field)}())\r\n" +
+                                 $".{nameof(Builders.Fluent.Select.From)}(\"user\").{nameof(StringExtensions.Table)}()")
+                        .Returns("CREATE VIEW [people] AS SELECT [Firstname] + ' ' + [Lastname] FROM [user]");
 
-                    yield return new TestCaseData(new CreateViewQuery()
-                    {
-                        Name = "people",
-                        Select = new Select(new Concat(
-                                "Firstname".Field(),
-                                " ".Literal(),
-                                "Lastname".Field()
-                            ))
-                            .From("user".Table())
-                            .Build()
-                    }, true)
-                    .SetName("new CreateViewQuery()" +
-                             "{ " +
-                                "Name = \"people\", " +
-                                "Select = new Select(" +
-                                    "new Concat(" +
-                                        "\"Firstname\".Field(), " +
-                                        "\" \".Literal(), " +
-                                        "\"Lastname\".Field()))" +
-                                    ".From(\"user\".Table())" +
-                                    ".Build()}, Pretty print : true")
-                    .Returns("CREATE VIEW [people] \r\n" +
-                             "AS \r\n" +
-                             "SELECT [Firstname] + ' ' + [Lastname] \r\n" +
-                             "FROM [user]");
+                    yield return new TestCaseData(QueryBuilder.CreateView("people")
+                            .As(
+                                QueryBuilder.Select(Concat("Firstname".Field(), " ".Literal(), "Lastname".Field()))
+                                    .From("user".Table())
+                                    .Build()), true)
+                        .SetName($"Pretty print {nameof(QueryBuilder.CreateView)}(\"people\")\r\n" +
+                                 $".{nameof(Builders.CreateView.As)}(\r\n" +
+                                 $"\t{nameof(QueryBuilder.Select)}({nameof(QueryBuilder.Concat)}(\"Firstname\".{nameof(StringExtensions.Field)}(), \" \".{nameof(LiteralExtensions.Literal)}(), \"Lastname\".{nameof(StringExtensions.Field)}())\r\n" +
+                                 $".{nameof(Builders.Fluent.Select.From)}(\"user\").{nameof(StringExtensions.Table)}()")
+                        .Returns("CREATE VIEW [people] \r\n" +
+                                 "AS \r\n" +
+                                 "SELECT [Firstname] + ' ' + [Lastname] AS [Fullname] \r\n" +
+                                 "FROM [user]");
+
                 }
             }
         }
@@ -910,21 +886,21 @@ namespace Queries.Tests.Renderers
         }
 
 
-        [TestCaseSource(typeof(Cases), "SelectTestsCases")]
+        [TestCaseSource(typeof(Cases), nameof(Cases.SelectTestsCases))]
         public string Select(SelectQueryBase query, bool prettyPrint)
         {
             _renderer.PrettyPrint = prettyPrint;
             return _renderer.Render(query);
         }
 
-        [TestCaseSource(typeof(Cases), "UpdateTestCases")]
+        [TestCaseSource(typeof(Cases), nameof(Cases.UpdateTestCases))]
         public string Update(UpdateQuery query, bool prettyPrint)
         {
             _renderer.PrettyPrint = prettyPrint;
             return _renderer.Render(query);
         }
 
-        [TestCaseSource(typeof(Cases), "CreateViewTestCases")]
+        [TestCaseSource(typeof(Cases), nameof(Cases.CreateViewTestCases))]
         public string CreateView(CreateViewQuery query, bool prettyPrint)
         {
             _renderer.PrettyPrint = prettyPrint;

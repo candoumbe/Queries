@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Queries.Extensions;
 using Queries.Parts;
 using Queries.Parts.Clauses;
@@ -15,15 +14,16 @@ namespace Queries.Builders.Fluent
 
         #region Constructors
 
-        public Select()
+        internal Select()
         {
             _query = new SelectQuery();
         }
 
 
-        
 
-        public Select(params IColumn[] columns) : this()
+
+        internal Select(params IColumn[] columns)
+            : this()
         {
             foreach (IColumn column in columns)
             {
@@ -32,7 +32,8 @@ namespace Queries.Builders.Fluent
         }
 
 
-        public Select(params string[] columnNames) : this()
+        internal Select(params string[] columnNames)
+            : this()
         {
             foreach (string column in columnNames)
             {
@@ -59,10 +60,6 @@ namespace Queries.Builders.Fluent
             return this;
         }
 
-
-
-
-
         public IFromQuery<SelectQuery> From(params string[] tables)
         {
             foreach (string tablename in tables)
@@ -77,7 +74,7 @@ namespace Queries.Builders.Fluent
         {
             if (select == null)
             {
-                throw new ArgumentNullException("select", "select cannot be null");
+                throw new ArgumentNullException(nameof(@select), "select cannot be null");
             }
             _query.From.Add(@select);
 
@@ -91,13 +88,11 @@ namespace Queries.Builders.Fluent
             return this;
         }
 
-
-        
         public IWhereQuery<SelectQuery> Where(IWhereClause clause)
         {
             if (clause == null)
             {
-                throw new ArgumentNullException("clause", "clause cannot be null");
+                throw new ArgumentNullException(nameof(clause), "clause cannot be null");
             }
 
             _query.Where = clause;
@@ -109,12 +104,12 @@ namespace Queries.Builders.Fluent
         {
             if (table == null)
             {
-                throw new ArgumentNullException("table", "table cannot be null");
+                throw new ArgumentNullException(nameof(table), "table cannot be null");
             }
             
             if (clause == null)
             {
-                throw new ArgumentNullException("clause", "clause cannot be null");
+                throw new ArgumentNullException(nameof(clause), "clause cannot be null");
             }
 
             _query.Joins.Add(new InnerJoin(table, clause));
@@ -126,12 +121,12 @@ namespace Queries.Builders.Fluent
         {
             if (table == null)
             {
-                throw new ArgumentNullException("table", "table cannot be null");
+                throw new ArgumentNullException(nameof(table), "table cannot be null");
             }
 
             if (clause == null)
             {
-                throw new ArgumentNullException("clause", "clause cannot be null");
+                throw new ArgumentNullException(nameof(clause), "clause cannot be null");
             }
 
             _query.Joins.Add(new LeftOuterJoin(table, clause));
@@ -144,12 +139,12 @@ namespace Queries.Builders.Fluent
 
             if (table == null)
             {
-                throw new ArgumentNullException("table", "table cannot be null");
+                throw new ArgumentNullException(nameof(table), "table cannot be null");
             }
 
             if (clause == null)
             {
-                throw new ArgumentNullException("clause", "clause cannot be null");
+                throw new ArgumentNullException(nameof(clause), "clause cannot be null");
             }
 
             _query.Joins.Add(new RightOuterJoin(table, clause));
@@ -179,7 +174,6 @@ namespace Queries.Builders.Fluent
             }
             return this;
         }
-
 
     }
 }
