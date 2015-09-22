@@ -46,7 +46,7 @@ namespace Queries.Tests.Validators
         }
 
 
-        [TestCaseSource(typeof(Cases), "ValidateTestCases")]
+        [TestCaseSource(typeof(Cases), nameof(Cases.ValidateTestCases))]
         public bool Validate(DeleteQuery deleteQuery)
         {
             return _validator.IsValid(deleteQuery);

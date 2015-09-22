@@ -30,7 +30,7 @@ namespace Queries.Tests.Validators
             }
         }
 
-        [TestCaseSource(typeof(Cases), "IsValidTestCases")]
+        [TestCaseSource(typeof(Cases), nameof(Cases.IsValidTestCases))]
         public bool IsValid(TruncateQuery query)
         {
             return new TruncateQueryValidator().IsValid(query);

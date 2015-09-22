@@ -2,13 +2,7 @@
 {
     public class Table : INamable, ITable
     {
-        /// <summary>
-        /// Gets or sets the alias of the table
-        /// </summary>
-        /// <value>
-        /// The alias.
-        /// </value>
-        public string Alias { get; set; }
+        
 
         /// <summary>
         /// Gets or sets the name of the table in a query
@@ -16,6 +10,25 @@
         /// <value>
         /// The name.
         /// </value>
-        public string Name { get; set; }
+        public string Name { get;}
+
+
+        internal Table(string tablename, string alias = null)
+        {
+            Name = tablename;
+            Alias = alias;
+        }
+        
+
+        /// <summary>
+        /// Gets the alias of the table
+        /// </summary>
+        public string Alias { get; private set; }
+
+        public Table As(string alias)
+        {
+            Alias = alias;
+            return this;
+        }
     }
 }
