@@ -1,0 +1,18 @@
+﻿{
+  "version": "1.0.0-*",
+  "description": "Queries.Renderers.Postgres Class Library",
+  "authors": [ "Sai" ],
+  "tags": [ "" ],
+  "projectUrl": "",
+  "licenseUrl": "",
+
+  "dependencies": {
+    "Queries.Core": ""
+  },
+
+  "frameworks": {
+    "dnx451": { },
+    "dnx452": { },
+    "dnx46" : { }
+  }
+}

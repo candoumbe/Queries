@@ -1,0 +1,16 @@
+{
+  "locked": false,
+  "version": -9996,
+  "targets": {
+    "DNX,Version=v4.5.1": {},
+    "DNX,Version=v4.5.2": {},
+    "DNX,Version=v4.6": {}
+  },
+  "libraries": {},
+  "projectFileDependencyGroups": {
+    "": [],
+    "DNX,Version=v4.5.1": [],
+    "DNX,Version=v4.5.2": [],
+    "DNX,Version=v4.6": []
+  }
+}

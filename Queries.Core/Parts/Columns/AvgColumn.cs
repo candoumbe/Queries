@@ -1,0 +1,9 @@
+namespace Queries.Core.Parts.Columns
+{
+    public class AvgColumn : AggregateColumn
+    {
+        public AvgColumn(FieldColumn column)
+            : base(AggregateType.Average, column)
+        { }
+    }
+}
