@@ -6,13 +6,18 @@
   "projectUrl": "",
   "licenseUrl": "",
 
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/candoumbe/Queries"
+  },
+  
   "dependencies": {
-    "Queries.Core": ""
+    "Queries.Core": "1.0.0-*"
   },
 
   "frameworks": {
     "dnx451": { },
     "dnx452": { },
-    "dnx46" : { }
+    "dnx46": { }
   }
 }
