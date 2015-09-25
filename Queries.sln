@@ -11,6 +11,7 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Queries.Renderers.Postgres"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{852F1208-CA32-45FA-8E26-D8D4A2DCFC26}"
 	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
 		global.json = global.json
 	EndProjectSection
 EndProject
