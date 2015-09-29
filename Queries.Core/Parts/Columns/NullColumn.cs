@@ -18,7 +18,7 @@ namespace Queries.Core.Parts.Columns
         /// or
         /// defaultValue
         /// </exception>
-        public NullColumn(IColumn column, IColumn defaultValue)
+        internal NullColumn(IColumn column, IColumn defaultValue)
         {
             if (column == null)
             {

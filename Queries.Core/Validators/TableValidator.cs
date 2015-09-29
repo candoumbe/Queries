@@ -6,6 +6,8 @@ namespace Queries.Core.Validators
     public class TableValidator : IValidate<ITable>
     {
 
+
+
         public bool IsValid(ITable table)
         {
             Func<ITable, bool> validateFunc = t =>

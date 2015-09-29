@@ -4,16 +4,16 @@ namespace Queries.Renderers.SqlServer
 {
     public class SqlServerRenderer : QueryRendererBase
     {
-        public SqlServerRenderer() : base(DatabaseType.SqlServer)
+        public SqlServerRenderer(bool prettyPrint) : base(DatabaseType.SqlServer, prettyPrint)
         {}
 
 
-        protected override string GetBeginEscapeWordString() => "[";
+        protected override string BeginEscapeWordString => "[";
 
-        protected override string GetEndingEscapeWordString() => "]";
+        protected override string EndEscapeWordString => "]";
 
-        protected override string GetConcatOperator() => "+";
+        protected override string ConcatOperator => "+";
 
-        
+        protected override string LengthFunctionName => "LEN";
     }
 }

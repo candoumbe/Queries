@@ -1,9 +1,9 @@
 ﻿{
   "version": "1.0.0-*",
   "description": "Queries.Renderers.Postgres Class Library",
-  "authors": [ "Sai" ],
+  "authors": [ "Cyrille NDOUMBE" ],
   "tags": [ "" ],
-  "projectUrl": "",
+  "projectUrl": "https://github.com/candoumbe/Queries",
   "licenseUrl": "",
 
   "repository": {
@@ -17,7 +17,10 @@
 
   "frameworks": {
     "dnx451": { },
-    "dnx452": { },
-    "dnx46": { }
+    "dnxcore50": {
+      "dependencies": {
+        
+      }
+    }
   }
 }

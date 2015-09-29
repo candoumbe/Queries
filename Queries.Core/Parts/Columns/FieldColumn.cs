@@ -11,7 +11,7 @@ namespace Queries.Core.Parts.Columns
         public string Alias => _alias;
 
 
-        public FieldColumn(string columnName)
+        internal FieldColumn(string columnName)
         {
             if (columnName == null)
             {

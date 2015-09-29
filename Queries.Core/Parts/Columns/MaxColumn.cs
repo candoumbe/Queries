@@ -1,9 +1,16 @@
+using Queries.Core.Extensions;
+
 namespace Queries.Core.Parts.Columns
 {
     public class MaxColumn : AggregateColumn
     {
-        public MaxColumn(FieldColumn column)
+        internal MaxColumn(IColumn column)
             : base(AggregateType.Max, column)
         { }
+
+        internal MaxColumn(string columnName) : this(columnName?.Field())
+        {
+            
+        }
     }
 }

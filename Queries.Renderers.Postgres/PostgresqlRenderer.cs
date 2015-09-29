@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
+using Queries.Core;
 using Queries.Core.Parts.Columns;
 using Queries.Core.Renderers;
 
@@ -8,15 +9,21 @@ namespace Queries.Renderers.Postgres
 {
     public class PostgresqlRenderer : QueryRendererBase
     {
-        public PostgresqlRenderer() : base(DatabaseType.Postgres)
-        {
-            
-        }
+        /// <summary>
+        /// Creates a new renderer for Postgres. <br/>
+        /// 
+        /// <para>
+        ///     
+        /// </para>
+        /// </summary>
+        /// <param name="prettyPrint">Defines how to render <see cref="IQuery"/></param>
+        public PostgresqlRenderer(bool prettyPrint) : base(DatabaseType.Postgres, prettyPrint)
+        {}
 
 
-        protected override string GetEndingEscapeWordString() => @"""";
+        protected override string EndEscapeWordString => @"""";
 
-        protected override string GetConcatOperator() => "||";
+        protected override string ConcatOperator => "||";
 
         protected override string RenderColumnnameWithAlias(string columnName, string alias) => $"{columnName} {alias}";
 
@@ -34,7 +41,7 @@ namespace Queries.Renderers.Postgres
             return queryString;
         }
 
-        protected override string GetBeginEscapeWordString() => @"""";
+        protected override string BeginEscapeWordString => @"""";
     }
      
 }

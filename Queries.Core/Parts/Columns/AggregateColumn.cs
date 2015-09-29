@@ -4,11 +4,11 @@ namespace Queries.Core.Parts.Columns
 {
     public abstract class AggregateColumn : IAliasable<AggregateColumn>, IColumn
     {
-        public AggregateType Type { get; }
+        internal AggregateType Type { get; }
 
-        public FieldColumn Column { get; }
+        internal IColumn Column { get; }
 
-        protected AggregateColumn(AggregateType aggregate, FieldColumn column)
+        protected AggregateColumn(AggregateType aggregate, IColumn column)
         {
             if (column == null)
             {

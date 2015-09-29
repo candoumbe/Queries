@@ -17,7 +17,7 @@ namespace Queries.Core.Builders.Fluent
 
         IWhereQuery<T> Where(IWhereClause clause);
 
-
+        
 
     }
 }

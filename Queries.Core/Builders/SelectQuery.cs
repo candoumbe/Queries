@@ -11,7 +11,7 @@ using Queries.Core.Parts.Sorting;
 
 namespace Queries.Core.Builders
 {
-    public class SelectQuery : SelectQueryBase, ISelectQuery<SelectQuery>, IFromQuery<SelectQuery>, IWhereQuery<SelectQuery>, IJoinQuery<SelectQuery>, ISortQuery<SelectQuery>, IHavingQuery<SelectQuery>, IUnionQuery<SelectQuery>
+    public class SelectQuery : SelectQueryBase, ISelectQuery<SelectQuery>, IFromQuery<SelectQuery>, IWhereQuery<SelectQuery>, IJoinQuery<SelectQuery>, ISortQuery<SelectQuery>
     {
         private int? _limit;
 
@@ -40,7 +40,7 @@ namespace Queries.Core.Builders
 
         }
 
-        public IFromQuery<SelectQuery> Limit(int limit)
+        public ISelectQuery<SelectQuery> Limit(int limit)
         {
             _limit = limit;
             return this;
@@ -66,19 +66,7 @@ namespace Queries.Core.Builders
             return this;
         }
 
-        public IFromQuery<SelectQuery> From(SelectTable @select)
-        {
-            if (select == null)
-            {
-                throw new ArgumentNullException(nameof(@select), "select cannot be null");
-            }
-            Tables.Add(@select);
-
-            return this;
-        }
-
-        
-
+       
         public IWhereQuery<SelectQuery> Where(IWhereClause clause)
         {
             if (clause == null)
@@ -148,6 +136,8 @@ namespace Queries.Core.Builders
             return this;
         }
 
+        
+
         ISortQuery<SelectQuery> IWhereQuery<SelectQuery>.OrderBy(params ISort[] sorts)
         {
             foreach (ISort sort in sorts)
@@ -178,7 +168,14 @@ namespace Queries.Core.Builders
         {
             HavingCriteria = clause;
             return this;
-        } 
+        }
+
+        public string Alias { get; private set; }
+        public ITable As(string alias)
+        {
+            Alias = alias;
+            return this;
+        }
     }
 
 }

@@ -2,7 +2,7 @@ namespace Queries.Core.Parts.Columns
 {
     public class CountColumn : AggregateColumn
     {
-        public CountColumn(FieldColumn column)
+        internal CountColumn(FieldColumn column)
             : base(AggregateType.Count, column)
         { }
     }

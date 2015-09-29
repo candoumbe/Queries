@@ -7,7 +7,7 @@ namespace Queries.Core.Parts.Columns
     {
         public IList<IColumn> Columns { get; private set; }
 
-        public ConcatColumn(params IColumn[] columns)
+        internal ConcatColumn(params IColumn[] columns)
         {
             if (columns == null)
             {

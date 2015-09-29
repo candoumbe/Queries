@@ -5,14 +5,17 @@
   "tags": [ "" ],
   "projectUrl": "",
   "licenseUrl": "",
-  
 
-  "dependencies": {  },
+
+  "dependencies": { },
 
   "frameworks": {
     "dnx451": { },
-    "dnx452": { },
-    "dnx46": { }
+    "dnxcore50": {
+      "dependencies": {
+        "Microsoft.CSharp": "4.0.1-*"
+      }
+    }
   }
   
   

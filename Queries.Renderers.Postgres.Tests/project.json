@@ -1,16 +1,14 @@
 ﻿{
   "version": "1.0.0-*",
-  "description": "Queries.Core Class Library",
+  "description": "Queries.Renderers.Postgres.Tests Class Library",
   "authors": [ "Cyrille NDOUMBE" ],
-  "tags": [ "SQL", "Queries", "SQL Server" ],
-  "projectUrl": "https://github.com/candoumbe/Queries",
+  "tags": [ "" ],
+  "projectUrl": "",
   "licenseUrl": "",
-
-
 
   "dependencies": {
     "Queries.Core": "1.0.0-*",
-    "Queries.Renderers.SqlServer": "1.0.0-*",
+    "Queries.Renderers.Postgres": "1.0.0",
     "xunit": "2.1.0-beta3-build3029",
     "xunit.runner.dnx": "2.1.0-beta3-build99",
     "xunit.runner.visualstudio": "2.1.0-rc2-build1126"
@@ -27,5 +25,4 @@
       }
     }
   }
-
 }

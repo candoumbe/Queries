@@ -1,7 +1,7 @@
 ﻿{
   "version": "1.0.0-*",
   "description": "Queries.Renderers.SqlServer Class Library",
-  "authors": [ "Sai" ],
+  "authors": [ "Cyrille NDOUMBE" ],
   "tags": [ "" ],
   "projectUrl": "",
   "licenseUrl": "",
@@ -12,7 +12,10 @@
 
   "frameworks": {
     "dnx451": { },
-    "dnx452": { },
-    "dnx46": { }
+    "dnxcore50": {
+      "dependencies": {
+        "Microsoft.CSharp": "4.0.1-*"
+      }
+    }
   }
 }

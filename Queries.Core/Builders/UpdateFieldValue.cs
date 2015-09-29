@@ -7,5 +7,11 @@ namespace Queries.Core.Builders
         public ColumnBase Source { get; set; }
 
         public FieldColumn Destination { get; set; }
+
+        public UpdateFieldValue(FieldColumn destination, ColumnBase source)
+        {
+            Destination = destination;
+            Source = source;
+        }
     }
 }

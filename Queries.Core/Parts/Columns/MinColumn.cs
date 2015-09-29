@@ -5,12 +5,12 @@ namespace Queries.Core.Parts.Columns
     public class MinColumn : AggregateColumn
     {
 
-        public MinColumn(FieldColumn column)
+        internal MinColumn(IColumn column)
             : base(AggregateType.Min, column)
         {}
 
-        public MinColumn(string columnName)
-            : this(columnName.Field())
+        internal MinColumn(string columnName)
+            : this(columnName?.Field())
         {}
     }
 }
