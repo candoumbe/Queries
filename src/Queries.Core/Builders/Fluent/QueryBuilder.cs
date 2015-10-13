@@ -104,10 +104,10 @@ namespace Queries.Core.Builders.Fluent
         public static TruncateQuery Truncate(string tableName) => new TruncateQuery(tableName);
 
         /// <summary>
-        /// Creates a <see cref="TruncateQuery"/> object suitable to build <a href="http://www.w3schools.com/sql/sql_truncate.asp">SELECT</a> query
+        /// Creates a <see cref="InsertIntoQuery"/> object suitable to build <a href="http://www.w3schools.com/sql/sql_insert.asp">INSERT INTO</a> or <a href="http://www.w3schools.com/sql/sql_insert_into_select.asp">INSERT INTO SELECT</a> query
         /// </summary>
-        /// <param name="tableName">Name of the table the <see cref="TruncateQuery"/> is built for</param>
-        /// <returns><see cref="TruncateQuery"/></returns>
+        /// <param name="tableName">Name of the table the <see cref="InsertIntoQuery"/> is built for</param>
+        /// <returns><see cref="InsertIntoQuery"/></returns>
         public static InsertIntoQuery InsertInto(string tableName) => new InsertIntoQuery(tableName);
 
     }

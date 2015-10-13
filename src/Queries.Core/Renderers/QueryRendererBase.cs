@@ -92,10 +92,45 @@ namespace Queries.Core.Renderers
             {
                 result = Render((TruncateQuery)query);
             }
+            else if (query is InsertIntoQuery)
+            {
+                result = Render((InsertIntoQuery) query);
+            }
 
             return result;
         }
 
+        protected virtual string Render(InsertIntoQuery query)
+        {
+            if (query == null)
+            {
+                throw new ArgumentNullException(nameof(query), $"{nameof(query)} cannot be null");
+            }
+
+            string queryString = string.Empty;
+
+            if (query.InsertedValue is SelectQuery)
+            {
+                queryString = $"INSERT INTO {RenderTablename(query.TableName.Table(), renderAlias: false)} {(PrettyPrint ? Environment.NewLine : string.Empty)}{Render((SelectQuery)query.InsertedValue)}";
+            }
+            else if (query.InsertedValue is IEnumerable<InsertedValue>)
+            {
+                StringBuilder sbColumns = new StringBuilder();
+                StringBuilder sbValues = new StringBuilder();
+                IEnumerable<InsertedValue> values = (IEnumerable<InsertedValue>) query.InsertedValue;
+                foreach (InsertedValue insertedValue in values)
+                {
+                    sbValues.Append($"{(sbValues.Length > 0 ? ", " : string.Empty)}{RenderLiteralColumn(insertedValue.Value, renderAlias:false)}");
+                    sbColumns.Append($"{(sbColumns.Length > 0 ? ", " : string.Empty)}{RenderColumn(insertedValue.Column, renderAlias: false)}");
+
+                    queryString = $"INSERT INTO {RenderTablename(query.TableName.Table(), renderAlias: false)} ({sbColumns}) {(PrettyPrint ? Environment.NewLine : string.Empty)}VALUES ({sbValues})";
+                }
+            }
+
+            return queryString;
+        }
+
+        
 
 
         protected virtual string Render(SelectQueryBase query)

@@ -303,7 +303,28 @@ namespace Queries.Renderers.Postgres.Tests
                 {
                     InsertInto("members").Values(Select("Bruce".Literal(), "Wayne".Literal(), "Batman".Literal())),
                     false,
-                    @"INSERT INTO ""members"" VALUES ('Bruce', 'Wayne', 'Batman')"
+                    @"INSERT INTO ""members"" SELECT 'Bruce', 'Wayne', 'Batman'"
+                };
+
+                yield return new object[]
+                {
+                    InsertInto("members").Values(Select("Bruce".Literal(), "Wayne".Literal(), "Batman".Literal())),
+                    true,
+                    $@"INSERT INTO ""members"" {Environment.NewLine}SELECT 'Bruce', 'Wayne', 'Batman'"
+                };
+                
+                yield return new object[]
+                {
+                    InsertInto("members").Values("firstname".InsertValue("Bruce".Literal()), "lastname".InsertValue("Wayne".Literal()), "nickname".InsertValue("Batman".Literal())),
+                    false,
+                    @"INSERT INTO ""members"" (""firstname"", ""lastname"", ""nickname"") VALUES ('Bruce', 'Wayne', 'Batman')"
+                };
+
+                yield return new object[]
+                {
+                    InsertInto("members").Values("firstname".InsertValue("Bruce".Literal()), "lastname".InsertValue("Wayne".Literal()), "nickname".InsertValue("Batman".Literal())),
+                    true,
+                    $@"INSERT INTO ""members"" (""firstname"", ""lastname"", ""nickname"") {Environment.NewLine}VALUES ('Bruce', 'Wayne', 'Batman')"
                 };
             }
         }

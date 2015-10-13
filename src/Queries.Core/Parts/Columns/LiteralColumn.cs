@@ -1,6 +1,8 @@
-﻿namespace Queries.Core.Parts.Columns
+﻿using Queries.Core.Builders;
+
+namespace Queries.Core.Parts.Columns
 {
-    public class LiteralColumn : ColumnBase, IAliasable<LiteralColumn>
+    public class LiteralColumn : ColumnBase, IAliasable<LiteralColumn>, IInsertable
     {
         public object Value { get; set; }
 

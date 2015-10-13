@@ -1,8 +1,9 @@
 using System;
+using Queries.Core.Builders;
 
 namespace Queries.Core.Parts.Columns
 {
-    public class FieldColumn : ColumnBase, INamable, IAliasable<FieldColumn>
+    public class FieldColumn : ColumnBase, INamable, IAliasable<FieldColumn>, IInsertable
     {
         public string Name { get; }
 

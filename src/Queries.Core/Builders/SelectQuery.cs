@@ -11,10 +11,13 @@ using Queries.Core.Parts.Sorting;
 
 namespace Queries.Core.Builders
 {
-    public class SelectQuery : SelectQueryBase, ISelectQuery<SelectQuery>, IFromQuery<SelectQuery>, IWhereQuery<SelectQuery>, IJoinQuery<SelectQuery>, ISortQuery<SelectQuery>
+    public class SelectQuery : SelectQueryBase, ISelectQuery<SelectQuery>, IFromQuery<SelectQuery>, IWhereQuery<SelectQuery>, IJoinQuery<SelectQuery>, ISortQuery<SelectQuery>, IInsertable
     {
         private int? _limit;
 
+        /// <summary>
+        /// Defines the max number of records to retrieve
+        /// </summary>
         public int? NbRows => _limit;
        
 
