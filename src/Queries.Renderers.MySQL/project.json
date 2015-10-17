@@ -1,13 +1,14 @@
 ﻿{
   "version": "1.0.0-*",
-  "description": "Queries.Core Class Library",
+  "description": "Queries.Renderers.MySQL Class Library",
   "authors": [ "Cyrille NDOUMBE" ],
   "tags": [ "" ],
   "projectUrl": "",
   "licenseUrl": "",
 
-
-  "dependencies": { },
+  "dependencies": {
+    "Queries.Core": "1.0.0-*"
+  },
 
   "frameworks": {
     "dnx451": { },
@@ -17,8 +18,4 @@
       }
     }
   }
-  
-  
-
-
 }

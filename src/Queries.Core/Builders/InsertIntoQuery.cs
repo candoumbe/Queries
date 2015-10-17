@@ -7,7 +7,7 @@ using Queries.Core.Parts.Columns;
 
 namespace Queries.Core.Builders
 {
-    public class InsertIntoQuery : IQuery, IInsertIntoQuery<InsertIntoQuery>, IBuildableQuery<InsertIntoQuery>
+    public class InsertIntoQuery : IDataManipulationQuery, IInsertIntoQuery<InsertIntoQuery>, IBuildableQuery<InsertIntoQuery>
     {
         public IInsertable InsertedValue { get; set; }
 

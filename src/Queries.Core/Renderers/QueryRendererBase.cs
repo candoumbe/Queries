@@ -15,8 +15,17 @@ using Queries.Core.Validators;
 
 namespace Queries.Core.Renderers
 {
+    /// <summary>
+    /// Base class for query renderers
+    /// </summary>
     public abstract class QueryRendererBase : IQueryRenderer
     {
+        /// <summary>
+        /// Creates a new QueryRenderer instance.
+        /// 
+        /// </summary>
+        /// <param name="databaseType">The <see cref="DatabaseType"/> to target</param>
+        /// <param name="prettyPrint"><code>true</code> to render queries in a "pretty" fashion</param>
         protected QueryRendererBase(DatabaseType databaseType, bool prettyPrint)
         {
             DatabaseType = databaseType;
@@ -62,9 +71,7 @@ namespace Queries.Core.Renderers
 
                 escapedColumnName = sb.ToString();
             }
-
-
-
+            
             return escapedColumnName;
         }
 
@@ -95,6 +102,10 @@ namespace Queries.Core.Renderers
             else if (query is InsertIntoQuery)
             {
                 result = Render((InsertIntoQuery) query);
+            }
+            else if (query is BatchQuery)
+            {
+                result = Render((BatchQuery) query);
             }
 
             return result;
@@ -615,7 +626,7 @@ namespace Queries.Core.Renderers
             return queryString;
         }
 
-        protected string RenderConcatColumn(ConcatColumn concatColumn, bool renderAlias)
+        protected virtual string RenderConcatColumn(ConcatColumn concatColumn, bool renderAlias)
         {
             StringBuilder sbConcat = new StringBuilder();
             foreach (IColumn column in concatColumn.Columns)
@@ -710,7 +721,7 @@ namespace Queries.Core.Renderers
 
         protected virtual string RenderLiteralColumn(LiteralColumn literalColumn, bool renderAlias)
         {
-            string columnString = string.Empty;
+            string columnString;
             LiteralColumn lc = literalColumn;
             object value = lc.Value;
 
@@ -824,5 +835,39 @@ namespace Queries.Core.Renderers
             return sbQuery.ToString();
 
         }
+
+        /// <summary>
+        /// Renders 
+        /// </summary>
+        /// <param name="query"></param>
+        /// <returns></returns>
+        protected virtual string Render(BatchQuery query)
+        {
+            StringBuilder sbResult = new StringBuilder();
+
+            IEnumerable<IQuery> statements = query.Statements?.ToArray() ?? Enumerable.Empty<IQuery>().ToArray();
+            if (statements.Any())
+            {
+                IQuery previousStatement = null;
+                IQuery currentStatement = statements.First();
+                sbResult.Append(Render(currentStatement));
+                previousStatement = currentStatement;
+                for (int i = 1; i < statements.Count(); i++)
+                {
+                    currentStatement = statements.ElementAt(i);
+                    if (previousStatement is IDataManipulationQuery)
+                    {
+                        sbResult.Append(BatchStatementSeparator);
+                    }
+                    sbResult.Append(Render(currentStatement));
+                    previousStatement = currentStatement;
+                }
+                
+            }
+
+            return sbResult.ToString();
+        }
+
+        public virtual string BatchStatementSeparator => $";{Environment.NewLine}";
     }
 }

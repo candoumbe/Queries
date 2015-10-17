@@ -6,7 +6,7 @@ using Queries.Core.Parts.Columns;
 
 namespace Queries.Core.Builders
 {
-    public class DeleteQuery : IQuery, IBuildableQuery<DeleteQuery>
+    public class DeleteQuery : IDataManipulationQuery, IBuildableQuery<DeleteQuery>
     {
         public string Table { get; private set; }
 

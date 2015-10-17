@@ -2,7 +2,7 @@
 
 namespace Queries.Core.Builders
 {
-    public class TruncateQuery : IQuery
+    public class TruncateQuery : IDataManipulationQuery
     {
         /// <summary>
         /// Gets or sets the name of the table to truncate.

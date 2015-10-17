@@ -329,6 +329,22 @@ namespace Queries.Renderers.Postgres.Tests
             }
         }
 
+        public static IEnumerable<object[]> BatchTestCases
+        {
+            get
+            {
+                yield return new object[]
+                {
+                    new BatchQuery(
+                        Delete("members").Where(new WhereClause("firstname".Field(), IsNull)),
+                        Select("*").From("members")
+                    ),
+                    false,
+                    $@"DELETE FROM ""members"" WHERE (""firstname"" IS NULL);{Environment.NewLine}SELECT * FROM ""members"""
+                };
+            }
+        }
+
 
         [Theory]
         [MemberData(nameof(SelectTestCases))]
@@ -367,8 +383,10 @@ namespace Queries.Renderers.Postgres.Tests
         public void InsertIntoTest(InsertIntoQuery query, bool prettyPrint, string expectedString)
             => IsQueryOk(query, prettyPrint, expectedString);
 
-
-
+        [Theory]
+        [MemberData(nameof(BatchTestCases))]
+        public void BatchQueryTest(BatchQuery query, bool prettyPrint, string expectedString)
+            => IsQueryOk(query, prettyPrint, expectedString);
 
         private static void IsQueryOk(IQuery query, bool prettyPrint, string expectedString) => Assert.Equal(expectedString, query.ForPostgres(prettyPrint));
 

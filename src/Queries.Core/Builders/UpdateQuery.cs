@@ -5,7 +5,7 @@ using Queries.Core.Parts.Clauses;
 
 namespace Queries.Core.Builders
 {
-    public class UpdateQuery: IQuery
+    public class UpdateQuery: IDataManipulationQuery
     {
         public Table Table { get; set; }
         public IList<UpdateFieldValue> Values { get; set; }

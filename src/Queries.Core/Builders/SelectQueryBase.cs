@@ -7,7 +7,7 @@ using Queries.Core.Parts.Sorting;
 
 namespace Queries.Core.Builders
 {
-    public abstract class SelectQueryBase : IQuery, IInsertable
+    public abstract class SelectQueryBase : IDataManipulationQuery, IInsertable
     {
         internal IList<IColumn> Columns { get; set; }
         public IWhereClause WhereCriteria { get; set; }

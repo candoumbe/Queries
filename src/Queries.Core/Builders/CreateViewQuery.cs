@@ -3,7 +3,7 @@ using Queries.Core.Builders.Fluent;
 
 namespace Queries.Core.Builders
 {
-    public class CreateViewQuery : IQuery, IBuildableQuery<CreateViewQuery>
+    public class CreateViewQuery : IDataDefinitionQuery, IBuildableQuery<CreateViewQuery>
     {
         public string ViewName { get; private set; }
         
