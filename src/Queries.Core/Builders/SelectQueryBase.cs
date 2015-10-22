@@ -9,7 +9,7 @@ namespace Queries.Core.Builders
 {
     public abstract class SelectQueryBase : IDataManipulationQuery, IInsertable
     {
-        internal IList<IColumn> Columns { get; set; }
+        public IList<IColumn> Columns { get; set; }
         public IWhereClause WhereCriteria { get; set; }
         public IHavingClause HavingCriteria { get; set; }
         public IList<IJoin> Joins { get; set; }

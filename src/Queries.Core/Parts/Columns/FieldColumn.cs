@@ -5,7 +5,7 @@ namespace Queries.Core.Parts.Columns
 {
     public class FieldColumn : ColumnBase, INamable, IAliasable<FieldColumn>, IInsertable
     {
-        public string Name { get; }
+        public string Name { get; set; }
 
         private string _alias;
 

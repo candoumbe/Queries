@@ -11,6 +11,7 @@
         MariaDb,
         Postgres,
         Sqlite,
-        Oracle
+        Oracle,
+        Neo4J
     }
 }

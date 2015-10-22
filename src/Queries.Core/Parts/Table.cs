@@ -23,7 +23,7 @@
         /// <summary>
         /// Gets the alias of the table
         /// </summary>
-        public string Alias { get; private set; }
+        public string Alias { get; internal set; }
 
         public Table As(string alias)
         {

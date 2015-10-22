@@ -837,9 +837,9 @@ namespace Queries.Core.Renderers
         }
 
         /// <summary>
-        /// Renders 
+        /// Renders the batch queries
         /// </summary>
-        /// <param name="query"></param>
+        /// <param name="query">The batch query to execute</param>
         /// <returns></returns>
         protected virtual string Render(BatchQuery query)
         {
@@ -848,16 +848,15 @@ namespace Queries.Core.Renderers
             IEnumerable<IQuery> statements = query.Statements?.ToArray() ?? Enumerable.Empty<IQuery>().ToArray();
             if (statements.Any())
             {
-                IQuery previousStatement = null;
                 IQuery currentStatement = statements.First();
                 sbResult.Append(Render(currentStatement));
-                previousStatement = currentStatement;
+                IQuery previousStatement = currentStatement;
                 for (int i = 1; i < statements.Count(); i++)
                 {
                     currentStatement = statements.ElementAt(i);
                     if (previousStatement is IDataManipulationQuery)
                     {
-                        sbResult.Append(BatchStatementSeparator);
+                        sbResult.AppendLine(BatchStatementSeparator);
                     }
                     sbResult.Append(Render(currentStatement));
                     previousStatement = currentStatement;
@@ -868,6 +867,6 @@ namespace Queries.Core.Renderers
             return sbResult.ToString();
         }
 
-        public virtual string BatchStatementSeparator => $";{Environment.NewLine}";
+        public virtual string BatchStatementSeparator => ";";
     }
 }
