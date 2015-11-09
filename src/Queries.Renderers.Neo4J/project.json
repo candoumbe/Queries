@@ -1,9 +1,9 @@
 ﻿{
   "version": "1.0.0-*",
   "description": "Queries.Renderers.Neo4J Class Library",
-  "authors": [ "Sai" ],
-  "tags": [ "" ],
-  "projectUrl": "",
+  "authors": [ "Cyrille NDOUMBE" ],
+  "tags": [ "Query", "Builder", "SQL", "Neo4J" ],
+  "projectUrl": "https://github.com/candoumbe/Queries",
   "licenseUrl": "",
 
   
@@ -14,6 +14,7 @@
 
   "frameworks": {
     "dnx451": { },
+    "dotnet" : { },
     "dnxcore50": {
       "dependencies": {
         

@@ -31,9 +31,7 @@ namespace Queries.Core.Renderers
             DatabaseType = databaseType;
             PrettyPrint = prettyPrint;
         }
-
-        public IValidate<SelectQuery> SelectQueryValidator { get; private set; }
-
+        
         public DatabaseType DatabaseType { get; }
 
 

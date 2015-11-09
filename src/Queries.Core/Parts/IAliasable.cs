@@ -4,7 +4,7 @@
     /// Contract for elements that can be given an alias
     /// </summary>
     /// <typeparam name="T">Type of the element to put an alias on</typeparam>
-    public interface IAliasable<out T>
+    public interface    IAliasable<out T>
     {
         /// <summary>
         /// Gets the alias of the element

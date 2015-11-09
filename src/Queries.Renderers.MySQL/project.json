@@ -2,8 +2,8 @@
   "version": "1.0.0-*",
   "description": "Queries.Renderers.MySQL Class Library",
   "authors": [ "Cyrille NDOUMBE" ],
-  "tags": [ "" ],
-  "projectUrl": "",
+  "tags": [ "Query", "MySQL", "Builder" ],
+  "projectUrl": "https://github.com/candoumbe/Queries",
   "licenseUrl": "",
 
   "dependencies": {
@@ -12,6 +12,7 @@
 
   "frameworks": {
     "dnx451": { },
+    "dotnet" : { },
     "dnxcore50": {
       "dependencies": {
         "Microsoft.CSharp": "4.0.1-*"

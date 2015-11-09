@@ -3,7 +3,7 @@
   "description": "Queries.Renderers.SqlServer Class Library",
   "authors": [ "Cyrille NDOUMBE" ],
   "tags": [ "" ],
-  "projectUrl": "",
+  "projectUrl": "https://github.com/candoumbe/Queries",
   "licenseUrl": "",
 
   "dependencies": {
@@ -12,6 +12,7 @@
 
   "frameworks": {
     "dnx451": { },
+    "dotnet" : { },
     "dnxcore50": {
       "dependencies": {
         "Microsoft.CSharp": "4.0.1-*"
