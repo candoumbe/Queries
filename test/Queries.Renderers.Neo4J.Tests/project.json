@@ -1,7 +1,7 @@
 ﻿{
   "version": "1.0.0-*",
   "description": "Queries.Renderers.Neo4J.Tests Class Library",
-  "authors": [ "Sai" ],
+  "authors": [ "Cyrille NDOUMBE" ],
   "tags": [ "" ],
   "projectUrl": "https://github.com/candoumbe/Queries",
   "licenseUrl": "",

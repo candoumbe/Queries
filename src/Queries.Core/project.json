@@ -1,11 +1,11 @@
 ﻿{
   "version": "1.0.0-*",
-  "description": "Queries.Core Class Library",
+  "description": "Queries.Core Class Library \r\n.",
   "authors": [ "Cyrille NDOUMBE" ],
-  "tags": [ "" ],
+  "tags": [ "Queries", "Query", "SQL", "Builder"],
   "projectUrl": "https://github.com/candoumbe/Queries",
   "licenseUrl": "",
-
+  "title": "Queries.Core",
 
   "dependencies": { },
 

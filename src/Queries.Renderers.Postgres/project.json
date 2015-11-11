@@ -1,8 +1,8 @@
 ﻿{
   "version": "1.0.0-*",
-  "description": "Queries.Renderers.Postgres Class Library",
+  "description": "Queries.Renderers.Postgres Class Library\r\n",
   "authors": [ "Cyrille NDOUMBE" ],
-  "tags": [ "" ],
+  "tags": [ "Query", "Builder", "SQL", "Postgres" ],
   "projectUrl": "https://github.com/candoumbe/Queries",
   "licenseUrl": "",
 
