@@ -1,11 +1,12 @@
 ﻿{
-  "version": "1.0.0-*",
+  "version": "1.0.0-alpha1",
   "description": "Queries.Renderers.Neo4J is a Query builder for Neo4J.\r\nIt's allow to build Neo4J queries",
   "authors": [ "Cyrille NDOUMBE" ],
   "tags": [ "Query", "Builder", "SQL", "Neo4J" ],
   "projectUrl": "https://github.com/candoumbe/Queries",
   "licenseUrl": "",
-
+  "releaseNotes": "This is an alpha version",
+  
   
 
   "dependencies": {

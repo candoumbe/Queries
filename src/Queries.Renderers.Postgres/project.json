@@ -1,11 +1,12 @@
 ﻿{
-  "version": "1.0.0-*",
+  "version": "1.0.0-alpha1",
   "description": "Queries.Renderers.Postgres Class Library\r\n",
   "authors": [ "Cyrille NDOUMBE" ],
   "tags": [ "Query", "Builder", "SQL", "Postgres" ],
   "projectUrl": "https://github.com/candoumbe/Queries",
   "licenseUrl": "",
-
+  "releaseNotes": "This is an alpha version",
+  
   "repository": {
     "type": "git",
     "url": "git://github.com/candoumbe/Queries"

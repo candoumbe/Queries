@@ -1,11 +1,12 @@
 ﻿{
-  "version": "1.0.0-*",
+  "version": "1.0.0-alpha1",
   "description": "Queries.Renderers.MySQL Class Library",
   "authors": [ "Cyrille NDOUMBE" ],
   "tags": [ "Query", "Builder", "SQL", "MySQL" ],
   "projectUrl": "https://github.com/candoumbe/Queries",
   "licenseUrl": "",
-
+  
+  "releaseNotes": "This is an alpha version",
   "dependencies": {
     "Queries.Core": "1.0.0-*"
   },
