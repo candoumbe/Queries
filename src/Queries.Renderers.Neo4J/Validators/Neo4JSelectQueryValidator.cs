@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Queries.Core;
 using Queries.Core.Builders;
 using Queries.Core.Parts;
 using Queries.Core.Parts.Columns;

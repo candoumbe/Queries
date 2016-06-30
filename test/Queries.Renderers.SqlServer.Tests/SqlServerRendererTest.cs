@@ -283,6 +283,12 @@ namespace Queries.Renderers.SqlServer.Tests
                     false,
                     "SELECT SUBSTRING([firstname], 0, 1) + SUBSTRING([lastname], 0) AS [initials] FROM [members]"
                 };
+
+                yield return new object[]
+                {
+                    Select(Upper("firstname".Field())), false,
+                    "SELECT UPPER([firstname])"
+                };
             }
         }
 
@@ -306,7 +312,6 @@ namespace Queries.Renderers.SqlServer.Tests
 
         [Theory]
         [MemberData(nameof(SelectTestCases))]
-        //[TestCaseSource(typeof(Cases), nameof(Cases.SelectTestCases))]
         public void SelectTest(SelectQuery query, bool prettyPrint, string expectedString)
             => IsQueryOk(query, prettyPrint, expectedString);
 

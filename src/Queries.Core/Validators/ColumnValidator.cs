@@ -1,6 +1,7 @@
 ﻿using System;
 using Queries.Core.Parts.Columns;
 using System.Linq;
+using Queries.Core.Parts.Functions;
 
 namespace Queries.Core.Validators
 {

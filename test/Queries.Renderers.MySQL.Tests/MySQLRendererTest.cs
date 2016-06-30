@@ -1,6 +1,5 @@
 ﻿using Xunit;
 using static Queries.Core.Builders.Fluent.QueryBuilder;
-using static Queries.Core.Parts.Clauses.ClauseOperator;
 using System.Collections.Generic;
 using Queries.Core;
 using Queries.Core.Builders;

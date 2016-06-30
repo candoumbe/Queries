@@ -1,5 +1,6 @@
 ﻿using Queries.Core.Parts;
 using Queries.Core.Parts.Clauses;
+using Queries.Core.Parts.Columns;
 using Queries.Core.Parts.Sorting;
 
 namespace Queries.Core.Builders.Fluent
@@ -17,7 +18,8 @@ namespace Queries.Core.Builders.Fluent
 
         IWhereQuery<T> Where(IWhereClause clause);
 
-        
+        IWhereQuery<T> Where(IColumn column, ClauseOperator @operator, ColumnBase constraint);
+
 
     }
 }

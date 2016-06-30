@@ -1,6 +1,4 @@
-using System;
 using Queries.Core.Builders.Fluent;
-using Queries.Core.Parts;
 using Queries.Core.Parts.Clauses;
 using Queries.Core.Parts.Columns;
 

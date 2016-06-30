@@ -1,25 +1,20 @@
 ﻿{
-  "version": "1.0.0-alpha1",
+  "version": "3.0.0-alpha-01",
   "description": "Queries.Renderers.Neo4J is a Query builder for Neo4J.\r\nIt's allow to build Neo4J queries",
   "authors": [ "Cyrille NDOUMBE" ],
-  "tags": [ "Query", "Builder", "SQL", "Neo4J" ],
-  "projectUrl": "https://github.com/candoumbe/Queries",
-  "licenseUrl": "",
-  "releaseNotes": "This is an alpha version",
-  
+  "packOptions": {
+    "tags": [ "Query", "Builder", "SQL", "Neo4J" ],
+    "projectUrl": "https://github.com/candoumbe/Queries",
+    "licenseUrl": "",
+    "releaseNotes": "This is an alpha version",
+  },
   
 
   "dependencies": {
-    "Queries.Core": "1.0.0-*"
+    "Queries.Core": "3.0.0-*"
   },
 
   "frameworks": {
-    "dnx451": { },
-    "dotnet" : { },
-    "dnxcore50": {
-      "dependencies": {
-        
-      }
-    }
+    "netcoreapp1.0": {}
   }
 }

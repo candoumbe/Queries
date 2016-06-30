@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Queries.Core;
 using Queries.Core.Builders;
 using Queries.Core.Extensions;
 using Queries.Core.Parts.Clauses;
-using Queries.Core.Parts.Columns;
 using Queries.Core.Parts.Sorting;
 using Xunit;
 using static Queries.Core.Builders.Fluent.QueryBuilder;

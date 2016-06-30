@@ -1,5 +1,5 @@
-using Queries.Core.Parts;
 using Queries.Core.Parts.Columns;
+using Queries.Core.Parts.Functions;
 
 namespace Queries.Core.Builders.Fluent
 {
@@ -8,7 +8,11 @@ namespace Queries.Core.Builders.Fluent
         
 #region Columns conversions shortcuts
 
-        
+        /// <summary>
+        /// Applies the <see cref="LengthColumn"/> 
+        /// </summary>
+        /// <param name="column"></param>
+        /// <returns></returns>
         public static LengthColumn Length(IColumn column) => new LengthColumn(column);
 
 
@@ -30,6 +34,11 @@ namespace Queries.Core.Builders.Fluent
 
         public static AvgColumn Avg(IColumn column) => new AvgColumn(column);
 
+        /// <summary>
+        /// Applies the "Avg" function to the specified column
+        /// </summary>
+        /// <param name="columnName">Name of the column to applied the AVG column</param>
+        /// <returns></returns>
         public static AvgColumn Avg(string columnName) => new AvgColumn(columnName);
 
         /// <summary>
@@ -41,6 +50,12 @@ namespace Queries.Core.Builders.Fluent
         /// <returns><see cref="SubstringColumn"/></returns>
         public static SubstringColumn Substring(IColumn column, int start, int? length = null) => new SubstringColumn(column, start, length);
 
+        /// <summary>
+        /// Applies the "UPPER" function to the specified column
+        /// </summary>
+        /// <param name="column"></param>
+        /// <returns></returns>
+        public static UpperColumn Upper(IColumn column) => new UpperColumn(column);
 
         /// <summary>
         /// Wraps a <see cref="IColumn"/> into <see cref="MaxColumn"/> function

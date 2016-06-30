@@ -9,7 +9,7 @@
     <ProjectGuid>b9abf320-e40c-4d8c-aa73-f0e432b04c70</ProjectGuid>
     <RootNamespace>Queries.Renderers.Postgres.Tests</RootNamespace>
     <BaseIntermediateOutputPath Condition="'$(BaseIntermediateOutputPath)'=='' ">..\artifacts\obj\$(MSBuildProjectName)</BaseIntermediateOutputPath>
-    <OutputPath Condition="'$(OutputPath)'=='' ">..\artifacts\bin\$(MSBuildProjectName)\</OutputPath>
+    <OutputPath Condition="'$(OutputPath)'=='' ">.\bin\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <OutputType>Library</OutputType>
@@ -23,7 +23,7 @@
   <Import Project="$(VSToolsPath)\DNX\Microsoft.DNX.targets" Condition="'$(VSToolsPath)' != ''" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties project_1json__JSONSchema="http://json.schemastore.org/project-1.0.0-beta6" />
+      <UserProperties />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

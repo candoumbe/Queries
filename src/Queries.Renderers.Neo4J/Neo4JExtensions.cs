@@ -1,6 +1,4 @@
-﻿using System;
-using Queries.Core.Builders;
-using Queries.Renderers.Neo4J;
+﻿using Queries.Renderers.Neo4J;
 
 namespace Queries.Core.Builders
 {
@@ -11,8 +9,4 @@ namespace Queries.Core.Builders
         public static string ForNeo4J(this IQuery query, bool prettyPrint) => new Neo4JRenderer(prettyPrint).Render(query);
 
     }
-}
-
-namespace Queries.Renderers.Neo4J
-{
 }

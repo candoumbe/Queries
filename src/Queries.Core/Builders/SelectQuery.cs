@@ -74,7 +74,7 @@ namespace Queries.Core.Builders
         {
             if (clause == null)
             {
-                throw new ArgumentNullException(nameof(clause), "clause cannot be null");
+                throw new ArgumentNullException(nameof(clause), $"{clause} cannot be null");
             }
 
             WhereCriteria = clause;
@@ -82,16 +82,24 @@ namespace Queries.Core.Builders
             return this;
         }
 
+        public IWhereQuery<SelectQuery> Where(IColumn column, ClauseOperator @operator, ColumnBase constraint)
+        {
+            return Where(new WhereClause(column, @operator, constraint));
+        }
+
+
+
+
         public IJoinQuery<SelectQuery> InnerJoin(Table table, IWhereClause clause)
         {
             if (table == null)
             {
-                throw new ArgumentNullException(nameof(table), "table cannot be null");
+                throw new ArgumentNullException(nameof(table), $"{nameof(table)} cannot be null");
             }
             
             if (clause == null)
             {
-                throw new ArgumentNullException(nameof(clause), "clause cannot be null");
+                throw new ArgumentNullException(nameof(clause), $"{nameof(clause)} cannot be null");
             }
 
             Joins.Add(new InnerJoin(table, clause));
@@ -103,12 +111,12 @@ namespace Queries.Core.Builders
         {
             if (table == null)
             {
-                throw new ArgumentNullException(nameof(table), "table cannot be null");
+                throw new ArgumentNullException(nameof(table), $"{nameof(table)} cannot be null");
             }
 
             if (clause == null)
             {
-                throw new ArgumentNullException(nameof(clause), "clause cannot be null");
+                throw new ArgumentNullException(nameof(clause), $"{nameof(clause)} cannot be null");
             }
 
             Joins.Add(new LeftOuterJoin(table, clause));
@@ -121,12 +129,12 @@ namespace Queries.Core.Builders
 
             if (table == null)
             {
-                throw new ArgumentNullException(nameof(table), "table cannot be null");
+                throw new ArgumentNullException(nameof(table), $"{nameof(table)} cannot be null");
             }
 
             if (clause == null)
             {
-                throw new ArgumentNullException(nameof(clause), "clause cannot be null");
+                throw new ArgumentNullException(nameof(clause), $"{nameof(clause)} cannot be null");
             }
 
             Joins.Add(new RightOuterJoin(table, clause));

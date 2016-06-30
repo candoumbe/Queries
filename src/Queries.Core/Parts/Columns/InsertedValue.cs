@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Queries.Core.Builders;
+﻿using Queries.Core.Builders;
+using System;
 
 namespace Queries.Core.Parts.Columns
 {
@@ -10,10 +7,14 @@ namespace Queries.Core.Parts.Columns
     {
         public FieldColumn Column { get; set; }
 
-        public LiteralColumn Value { get; set; }
+        public IColumn Value { get; set; }
 
-        public InsertedValue(FieldColumn column, LiteralColumn value)
+        public InsertedValue(FieldColumn column, IColumn value)
         {
+            if (column == null)
+            {
+                throw new ArgumentNullException(nameof(column));
+            }
             Column = column;
             Value = value;
         }

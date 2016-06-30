@@ -1,0 +1,13 @@
+C:\Users\Sai\Documents\Visual Studio 2015\Projects\Queries\Queries.Renderers.SqlServer.Tests\bin\Debug\Queries.Renderers.SqlServer.Tests.dll
+C:\Users\Sai\Documents\Visual Studio 2015\Projects\Queries\Queries.Renderers.SqlServer.Tests\bin\Debug\Queries.Renderers.SqlServer.Tests.pdb
+C:\Users\Sai\Documents\Visual Studio 2015\Projects\Queries\Queries.Renderers.SqlServer.Tests\obj\Debug\Queries.Renderers.SqlServer.Tests.csprojResolveAssemblyReference.cache
+C:\Users\Sai\Documents\Visual Studio 2015\Projects\Queries\Queries.Renderers.SqlServer.Tests\obj\Debug\Queries.Renderers.SqlServer.Tests.dll
+C:\Users\Sai\Documents\Visual Studio 2015\Projects\Queries\Queries.Renderers.SqlServer.Tests\obj\Debug\Queries.Renderers.SqlServer.Tests.pdb
+C:\Users\Sai\Documents\Visual Studio 2015\Projects\Queries\Queries.Renderers.SqlServer.Tests\bin\Debug\nunit.framework.dll
+C:\Users\Sai\Documents\Visual Studio 2015\Projects\Queries\Queries.Renderers.SqlServer.Tests\bin\Debug\Queries.Core.dll
+C:\Users\Sai\Documents\Visual Studio 2015\Projects\Queries\Queries.Renderers.SqlServer.Tests\bin\Debug\Queries.Renderers.SqlServer.dll
+C:\Users\Sai\Documents\Visual Studio 2015\Projects\Queries\Queries.Renderers.SqlServer.Tests\bin\Debug\nunit.framework.xml
+C:\Users\Sai\Documents\Visual Studio 2015\Projects\Queries\Queries.Renderers.SqlServer.Tests\bin\Debug\Queries.Core.pdb
+C:\Users\Sai\Documents\Visual Studio 2015\Projects\Queries\Queries.Renderers.SqlServer.Tests\bin\Debug\Queries.Core.xml
+C:\Users\Sai\Documents\Visual Studio 2015\Projects\Queries\Queries.Renderers.SqlServer.Tests\bin\Debug\Queries.Renderers.SqlServer.pdb
+C:\Users\Sai\Documents\Visual Studio 2015\Projects\Queries\Queries.Renderers.SqlServer.Tests\bin\Debug\Queries.Renderers.SqlServer.xml

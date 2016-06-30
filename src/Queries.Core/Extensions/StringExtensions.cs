@@ -1,5 +1,4 @@
-﻿using Queries.Core.Builders;
-using Queries.Core.Parts;
+﻿using Queries.Core.Parts;
 using Queries.Core.Parts.Columns;
 
 namespace Queries.Core.Extensions
@@ -27,13 +26,12 @@ namespace Queries.Core.Extensions
             return new Table(tableName, alias);
         }
 
+        public static InsertedValue InsertValue(this string columnName, IColumn column)
+            => InsertValue(columnName.Field(), column);
 
-        public static InsertedValue InsertValue(this string columnName, LiteralColumn value)
-            => new InsertedValue(columnName.Field(), value);
 
-
-        public static InsertedValue InsertValue(this FieldColumn columnName, LiteralColumn value)
-            => new InsertedValue(columnName, value);
+        public static InsertedValue InsertValue(this FieldColumn columnName, IColumn column)
+            => new InsertedValue(columnName, column);
 
         
 

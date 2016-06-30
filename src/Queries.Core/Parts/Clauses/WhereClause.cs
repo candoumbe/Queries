@@ -8,7 +8,7 @@ namespace Queries.Core.Parts.Clauses
         public ClauseOperator Operator{ get; }
         public ColumnBase Constraint { get; }
 
-        public WhereClause(FieldColumn column, ClauseOperator @operator, ColumnBase constraint = null)
+        public WhereClause(IColumn column, ClauseOperator @operator, ColumnBase constraint = null)
         {
             Column = column;
             Operator = @operator;

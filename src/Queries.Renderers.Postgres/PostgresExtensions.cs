@@ -1,5 +1,4 @@
-﻿using Queries.Core;
-using Queries.Renderers.Postgres;
+﻿using Queries.Renderers.Postgres;
 
 // ReSharper disable once CheckNamespace
 namespace Queries.Core.Builders

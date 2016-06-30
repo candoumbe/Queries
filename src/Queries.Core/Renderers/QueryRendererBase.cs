@@ -12,6 +12,7 @@ using Queries.Core.Parts.Columns;
 using Queries.Core.Parts.Joins;
 using Queries.Core.Parts.Sorting;
 using Queries.Core.Validators;
+using Queries.Core.Parts.Functions;
 
 namespace Queries.Core.Renderers
 {
@@ -35,7 +36,9 @@ namespace Queries.Core.Renderers
         public DatabaseType DatabaseType { get; }
 
 
-
+        /// <summary>
+        /// Defines if queries will be pretty printed
+        /// </summary>
         public bool PrettyPrint { get; }
 
         /// <summary>
@@ -129,7 +132,7 @@ namespace Queries.Core.Renderers
                 IEnumerable<InsertedValue> values = (IEnumerable<InsertedValue>) query.InsertedValue;
                 foreach (InsertedValue insertedValue in values)
                 {
-                    sbValues.Append($"{(sbValues.Length > 0 ? ", " : string.Empty)}{RenderLiteralColumn(insertedValue.Value, renderAlias:false)}");
+                    sbValues.Append($"{(sbValues.Length > 0 ? ", " : string.Empty)}{RenderColumn(insertedValue.Value, renderAlias:false)}");
                     sbColumns.Append($"{(sbColumns.Length > 0 ? ", " : string.Empty)}{RenderColumn(insertedValue.Column, renderAlias: false)}");
 
                     queryString = $"INSERT INTO {RenderTablename(query.TableName.Table(), renderAlias: false)} ({sbColumns}) {(PrettyPrint ? Environment.NewLine : string.Empty)}VALUES ({sbValues})";
@@ -553,40 +556,54 @@ namespace Queries.Core.Renderers
                 LiteralColumn literalColumn = column as LiteralColumn;
                 columnString = RenderLiteralColumn(literalColumn, renderAlias);
             }
-            else if (column is AggregateColumn)
-            {
-                AggregateColumn aggregateColumn = column as AggregateColumn;
-                columnString = RenderAggregateColumn(aggregateColumn, renderAlias);
-            }
-            else if (column is SelectColumn)
+            else  if (column is SelectColumn)
             {
                 SelectColumn selectColumn = column as SelectColumn;
                 columnString = RenderInlineSelect(selectColumn, renderAlias);
             }
             else if (column is IFunctionColumn)
             {
-                if (column is ConcatColumn)
-                {
-                    ConcatColumn concatColumn = column as ConcatColumn;
-                    columnString = RenderConcatColumn(concatColumn, renderAlias);
-                }
-                else if (column is NullColumn)
-                {
-                    NullColumn nullColumn = column as NullColumn;
-                    columnString = RenderNullColumn(nullColumn, renderAlias);
-                }
-                else if (column is LengthColumn)
-                {
-                    LengthColumn lengthColumn = column as LengthColumn;
-                    columnString = RenderLengthColumn(lengthColumn, renderAlias);
-                }
-                else if (column is SubstringColumn)
-                {
-                    SubstringColumn substringColumn = column as SubstringColumn;
-                    columnString = RenderSubstringColumn(substringColumn, renderAlias);
-                }
+                columnString = RenderFunction(column, renderAlias);
             }
 
+
+            return columnString;
+        }
+
+        protected virtual string RenderFunction(IColumn column, bool renderAlias)
+        {
+
+            string columnString = string.Empty;
+            if (column is AggregateColumn)
+            {
+                AggregateColumn aggregateColumn = column as AggregateColumn;
+                columnString = RenderAggregateColumn(aggregateColumn, renderAlias);
+            }
+            else if (column is ConcatColumn)
+            {
+                ConcatColumn concatColumn = column as ConcatColumn;
+                columnString = RenderConcatColumn(concatColumn, renderAlias);
+            }
+            else if (column is NullColumn)
+            {
+                NullColumn nullColumn = column as NullColumn;
+                columnString = RenderNullColumn(nullColumn, renderAlias);
+            }
+            else if (column is LengthColumn)
+            {
+                LengthColumn lengthColumn = column as LengthColumn;
+                columnString = RenderLengthColumn(lengthColumn, renderAlias);
+            }
+            else if (column is SubstringColumn)
+            {
+                SubstringColumn substringColumn = column as SubstringColumn;
+                columnString = RenderSubstringColumn(substringColumn, renderAlias);
+            }
+            else if (column is UpperColumn)
+            {
+                UpperColumn upperColumn = column as UpperColumn;
+                columnString = RenderUpperColumn(upperColumn, renderAlias);
+            }
 
             return columnString;
         }
@@ -601,6 +618,11 @@ namespace Queries.Core.Renderers
         /// Gets the name of the "SUBSTRING" function
         /// </summary>
         protected virtual string SubstringFunctionName => "SUBSTRING";
+
+        /// <summary>
+        /// Gets the name of the "UPPER" function
+        /// </summary>
+        protected virtual string UpperFunctionName => "UPPER";
 
         protected virtual string RenderLengthColumn(LengthColumn lengthColumn, bool renderAlias)
         {
@@ -619,6 +641,17 @@ namespace Queries.Core.Renderers
 
             string queryString = renderAlias && !string.IsNullOrWhiteSpace(substringColumn.Alias)
                 ? RenderColumnnameWithAlias(sbLengthColumn, EscapeName(substringColumn.Alias))
+                : sbLengthColumn;
+
+            return queryString;
+        }
+
+        protected virtual string RenderUpperColumn(UpperColumn upperColumn, bool renderAlias)
+        {
+            string sbLengthColumn = $"{UpperFunctionName}({RenderColumn(upperColumn.Column, false)})";
+
+            string queryString = renderAlias && !string.IsNullOrWhiteSpace(upperColumn.Alias)
+                ? RenderColumnnameWithAlias(sbLengthColumn, EscapeName(upperColumn.Alias))
                 : sbLengthColumn;
 
             return queryString;

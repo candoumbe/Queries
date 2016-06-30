@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Linq;
 using System.Text;
-using Queries.Core;
-using Queries.Core.Parts.Columns;
 using Queries.Core.Renderers;
+using Queries.Core.Parts.Functions;
 
 namespace Queries.Renderers.Postgres
 {

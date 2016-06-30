@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Queries.Core.Builders.Fluent;
+﻿using Queries.Core.Builders.Fluent;
 using Queries.Core.Parts.Columns;
 
 namespace Queries.Core.Builders

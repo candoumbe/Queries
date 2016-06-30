@@ -1,4 +1,5 @@
 using Queries.Core.Parts.Columns;
+using Queries.Core.Parts.Functions;
 
 namespace Queries.Core.Parts.Clauses
 {

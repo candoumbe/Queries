@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Queries.Core;
 using Queries.Core.Builders;
 using Queries.Core.Parts;
 using Queries.Core.Parts.Columns;
@@ -41,6 +40,7 @@ namespace Queries.Renderers.Neo4J
             
 
             sbQuery.Append($"MATCH {RenderTables(tables)} {(PrettyPrint ? Environment.NewLine : string.Empty)}" +
+                           $"{(query.WhereCriteria != null ? $"WHERE {RenderWhere(query.WhereCriteria)} {(PrettyPrint ? Environment.NewLine : string.Empty)}" : string.Empty)}" +
                            $"RETURN {RenderColumns(columns)}{BatchStatementSeparator}");
             
             return sbQuery.ToString();
@@ -88,22 +88,6 @@ namespace Queries.Renderers.Neo4J
             }
         }
 
-        protected override string RenderTables(IEnumerable<ITable> tables)
-        {
-            StringBuilder sbTables = new StringBuilder();
-
-            foreach (ITable table in tables)
-            {
-                if (table is Table)
-                {
-                    sbTables.Append(RenderTablename((Table) table, true));
-                }
-                
-            }
-
-            return sbTables.ToString();
-        }
-
 
         protected override string RenderTablename(Table table, bool renderAlias) 
             => $"({table.Alias}:{table.Name})";
@@ -116,19 +100,6 @@ namespace Queries.Renderers.Neo4J
                 (current, column) => current.Append($"{(current.Length > 0 ? ", " : string.Empty)}{RenderColumn(column, true)}"));
 
             return $"{sbColumns}";
-        }
-
-
-        protected override string RenderColumn(IColumn column, bool renderAlias)
-        {
-            string columnString = string.Empty;
-            if (column is FieldColumn)
-            {
-                FieldColumn fc = (FieldColumn) column;
-                columnString = RenderColumnnameWithAlias(fc.Name, fc.Alias);
-            }
-
-            return columnString;
         }
 
 
@@ -145,18 +116,47 @@ namespace Queries.Renderers.Neo4J
             {
                 IEnumerable<InsertedValue> values = (IEnumerable<InsertedValue>) query.InsertedValue;
 
-                IDictionary<string, LiteralColumn> map = values.ToDictionary(val => val.Column.Name, val => val.Value);
+                IDictionary<string, IColumn> map = values
+                    .ToDictionary(val => val.Column.Name, val => val.Value);
                 StringBuilder sbCreate = new StringBuilder();
-                foreach (KeyValuePair<string, LiteralColumn> kv in map)
+                foreach (KeyValuePair<string, IColumn> kv in map)
                 {
-                    string valueString = (kv.Value.Value as DateTime?)?.ToString("O") ?? kv.Value.Value?.ToString();
-                    sbCreate.Append($"{(sbCreate.Length > 0 ? ", " : string.Empty)}{kv.Key} : '{valueString}'");
+                    IColumn columnValue = kv.Value;
+                    string valueString = RenderColumn(columnValue, false);
+                    sbCreate.Append($"{(sbCreate.Length > 0 ? ", " : string.Empty)}{kv.Key} : {(valueString == null ? "NULL" : valueString )}");
                 }
 
                 sbQuery.Append($"CREATE ({query.TableName?.Substring(0, 1)?.ToLower()}:{query.TableName} {{{sbCreate}}})");
             }
 
             return sbQuery.ToString();
+        }
+
+
+        protected override string Render(DeleteQuery query)
+        {
+            if (query == null)
+            {
+                throw new ArgumentNullException(nameof(query));
+            }
+
+            StringBuilder sbQuery = new StringBuilder();
+            string tableAlias = query.Table?.Substring(0, 1)?.ToLower();
+            sbQuery.Append($"MATCH {RenderTablenameWithAlias(query.Table, tableAlias)} {(PrettyPrint ? Environment.NewLine : string.Empty)}");
+
+            if (query.Criteria != null)
+            {
+                sbQuery = sbQuery.Append($"WHERE {RenderWhere(query.Criteria)} {(PrettyPrint ? Environment.NewLine : string.Empty)}");
+            }
+            sbQuery.Append($"DELETE {tableAlias}");
+
+            return sbQuery.ToString();
+        }
+
+
+        protected override string RenderTablenameWithAlias(string tableName, string alias)
+        {
+            return $"({alias}:{tableName})";
         }
 
         protected override string RenderColumnnameWithAlias(string columnName, string alias) 

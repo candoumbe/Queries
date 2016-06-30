@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Queries.Core.Extensions;
 using Queries.Core.Parts.Columns;
 using Xunit;
+using Queries.Core.Parts.Functions;
 
 namespace Queries.Core.Tests.Columns
 {

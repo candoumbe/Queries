@@ -1,24 +1,24 @@
 ﻿{
-  "version": "1.0.0-alpha1",
+  "version": "3.0.0-alpha-01",
   "description": "Queries.Renderers.Postgres Class Library\r\n",
   "authors": [ "Cyrille NDOUMBE" ],
-  "tags": [ "Query", "Builder", "SQL", "Postgres" ],
-  "projectUrl": "https://github.com/candoumbe/Queries",
-  "licenseUrl": "",
-  "releaseNotes": "This is an alpha version",
-  
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/candoumbe/Queries"
+  "packOptions": {
+    "tags": [ "Query", "Builder", "SQL", "Postgres" ],
+    "projectUrl": "https://github.com/candoumbe/Queries",
+    "licenseUrl": "",
+    "releaseNotes": "This is an alpha version",
+
+    "repository": {
+      "type": "git",
+      "url": "git://github.com/candoumbe/Queries"
+    },
   },
   
   "dependencies": {
-    "Queries.Core": "1.0.0-*"
+    "Queries.Core": "3.0.0-*"
   },
 
   "frameworks": {
-    "dnx451": { },
-    "dotnet" : { },
-    "dnxcore50": { }
+    "netcoreapp1.0": {}
   }
 }
