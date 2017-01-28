@@ -4,9 +4,6 @@ namespace Queries.Core.Validators
 {
     public class SelectTableValidator : IValidate<SelectTable>
     {
-        public bool IsValid(SelectTable table)
-        {
-            return table != null;
-        }
+        public bool IsValid(SelectTable table) => table != null;
     }
 }

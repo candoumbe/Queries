@@ -8,7 +8,7 @@ using Queries.Core.Parts.Sorting;
 using Xunit;
 using static Queries.Core.Builders.Fluent.QueryBuilder;
 using static Queries.Core.Parts.Clauses.ClauseOperator;
-
+using static Queries.Core.Parts.Columns.SelectColumn;
 namespace Queries.Renderers.Postgres.Tests
 {
     public class PostgresRendererTest
@@ -40,6 +40,8 @@ namespace Queries.Renderers.Postgres.Tests
         {
             get
             {
+                yield return new object[] { Select(UUID()), false, "SELECT uuid_generate_v4()" };
+
 
                 yield return new object[] { Select(1.Literal()), false, "SELECT 1"};
 
@@ -346,7 +348,6 @@ namespace Queries.Renderers.Postgres.Tests
 
         [Theory]
         [MemberData(nameof(SelectTestCases))]
-        //[TestCaseSource(typeof(Cases), nameof(Cases.SelectTestCases))]
         public void SelectTest(SelectQuery query, bool prettyPrint, string expectedString)
             => IsQueryOk(query, prettyPrint, expectedString);
 
@@ -365,19 +366,16 @@ namespace Queries.Renderers.Postgres.Tests
 
         [Theory]
         [MemberData(nameof(SelectIntoTestCases))]
-        //[TestCaseSource(typeof(Cases), nameof(Cases.SelectTestCases))]
         public void SelectIntoTest(SelectIntoQuery query, bool prettyPrint, string expectedString)
             => IsQueryOk(query, prettyPrint, expectedString);
 
         [Theory]
         [MemberData(nameof(TruncateTestCases))]
-        //[TestCaseSource(typeof(Cases), nameof(Cases.SelectTestCases))]
         public void TruncateTest(TruncateQuery query, bool prettyPrint, string expectedString)
             => IsQueryOk(query, prettyPrint, expectedString);
 
         [Theory]
         [MemberData(nameof(InsertIntoTestCases))]
-        //[TestCaseSource(typeof(Cases), nameof(Cases.SelectTestCases))]
         public void InsertIntoTest(InsertIntoQuery query, bool prettyPrint, string expectedString)
             => IsQueryOk(query, prettyPrint, expectedString);
 

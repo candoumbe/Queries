@@ -8,7 +8,7 @@
     ".NETCoreApp,Version=v1.0": {
       "Queries.Renderers.Postgres.Tests/1.0.0": {
         "dependencies": {
-          "Queries.Core": "3.0.0-alpha-01",
+          "Queries.Core": "4.0.0",
           "Queries.Renderers.Postgres": "3.0.0-alpha-01",
           "xunit": "2.2.0-beta2-build3300",
           "dotnet-test-xunit": "2.2.0-preview2-build1029",
@@ -223,14 +223,14 @@
           "lib/netstandard1.1/xunit.runner.utility.dotnet.dll": {}
         }
       },
-      "Queries.Core/3.0.0-alpha-01": {
+      "Queries.Core/4.0.0": {
         "runtime": {
           "Queries.Core.dll": {}
         }
       },
       "Queries.Renderers.Postgres/3.0.0-alpha-01": {
         "dependencies": {
-          "Queries.Core": "3.0.0-alpha-01"
+          "Queries.Core": "4.0.0"
         },
         "runtime": {
           "Queries.Renderers.Postgres.dll": {}
@@ -369,7 +369,7 @@
       "serviceable": true,
       "sha512": "sha512-lotqjLPg8NnjZHlRpj0Yj5TI3z/7hzK7+tb6R7qRAREDoH9P88EDCWJyy2xJh/R6PfbS9KYTaT/Z2ob9gx6PgQ=="
     },
-    "Queries.Core/3.0.0-alpha-01": {
+    "Queries.Core/4.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

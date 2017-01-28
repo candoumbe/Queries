@@ -8,6 +8,8 @@ using Queries.Core.Parts.Sorting;
 using Xunit;
 using static Queries.Core.Builders.Fluent.QueryBuilder;
 using static Queries.Core.Parts.Clauses.ClauseOperator;
+using static Queries.Core.Parts.Columns.SelectColumn;
+using FluentAssertions;
 
 namespace Queries.Renderers.SqlServer.Tests
 {
@@ -98,6 +100,7 @@ namespace Queries.Renderers.SqlServer.Tests
         {
             get
             {
+                yield return new object[] { Select(UUID()), false, "SELECT NEWID()" };
 
                 yield return new object[] { Select(1.Literal()), false, "SELECT 1" };
 
@@ -298,6 +301,11 @@ namespace Queries.Renderers.SqlServer.Tests
             {
                 yield return new object[]
                 {
+                    Update("members").Set("UUID".Field().EqualTo(UUID())), false,
+                    "UPDATE [members] SET [UUID] = NEWID()"
+                };
+                yield return new object[]
+                {
                     Update("members").Set("firstname".Field().EqualTo("")).Where("firstname".Field().IsNull()), false,
                     "UPDATE [members] SET [firstname] = '' WHERE ([firstname] IS NULL)"
                 };
@@ -322,7 +330,7 @@ namespace Queries.Renderers.SqlServer.Tests
 
 
         private static void IsQueryOk(IQuery query, bool prettyPrint, string expectedString) 
-            => Assert.Equal(expectedString, query.ForSqlServer(prettyPrint));
+            => query.ForSqlServer(prettyPrint).Should().Be(expectedString);
 
     }
 }

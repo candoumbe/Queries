@@ -31,5 +31,6 @@ namespace Queries.Core.Parts.Columns
 
             return this;
         }
+
     }
 }

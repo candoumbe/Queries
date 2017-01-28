@@ -2,25 +2,26 @@
   "version": "1.0.0-*",
   "description": "Queries.Renderers.SqlServer.Tests Class Library",
   "authors": [ "Cyrille NDOUMBE" ],
-
+  "testRunner": "xunit",
   "dependencies": {
-    "Queries.Core": "3.0.0-*",
-    "Queries.Renderers.SqlServer": "3.0.0-*",
+    "Queries.Core": "4.0.0-*",
+    "Queries.Renderers.SqlServer": {
+      "version": "3.0.0-*",
+      "target": "project"
+    },
     "xunit": "2.2.0-beta2-build3300",
     "dotnet-test-xunit": "2.2.0-preview2-build1029",
     "FluentAssertions": "4.9.1"
   },
   "frameworks": {
     "netcoreapp1.0": {
-      "dependencies": {
-        "Microsoft.NETCore.App": {
-          "type": "platform",
-          "version": "1.0.0"
-        }
-      },
       "imports": [
+        "dnxcore50",
         "portable-net45+win8"
       ]
     }
+  },
+  "runtimes": {
+    "win10-x64": {}
   }
 }

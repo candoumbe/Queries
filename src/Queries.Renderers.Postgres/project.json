@@ -11,14 +11,14 @@
     "repository": {
       "type": "git",
       "url": "git://github.com/candoumbe/Queries"
-    },
+    }
   },
   
   "dependencies": {
-    "Queries.Core": "3.0.0-*"
+    "Queries.Core": "4.0.0-*"
   },
 
   "frameworks": {
-    "netcoreapp1.0": {}
+    "netstandard1.0": {}
   }
 }

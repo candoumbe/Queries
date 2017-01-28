@@ -20,6 +20,6 @@ namespace Queries.Core.Parts.Columns
 
         public SelectQuery SelectQuery { get; set; }
 
-
+        public static UniqueIdentifierValue UUID() => new UniqueIdentifierValue();
     }
 }

@@ -22,7 +22,7 @@ namespace Queries.Core.Renderers
     public abstract class QueryRendererBase : IQueryRenderer
     {
         /// <summary>
-        /// Creates a new QueryRenderer instance.
+        /// Builds a new <see cref="QueryRendererBase"/> instance.
         /// 
         /// </summary>
         /// <param name="databaseType">The <see cref="DatabaseType"/> to target</param>
@@ -39,6 +39,8 @@ namespace Queries.Core.Renderers
         /// <summary>
         /// Defines if queries will be pretty printed
         /// </summary>
+        /// <remarks
+        /// </remarks>
         public bool PrettyPrint { get; }
 
         /// <summary>
@@ -523,12 +525,9 @@ namespace Queries.Core.Renderers
             return sbHaving.Insert(0, '(').Insert(sbHaving.Length, ')').ToString();
         }
 
-        protected virtual string RenderTablename(Table table, bool renderAlias)
-        {
-            return !renderAlias || string.IsNullOrWhiteSpace(table.Alias)
-                ? EscapeName(table.Name)
-                : $"{EscapeName(table.Name)} {EscapeName(table.Alias)}";
-        }
+        protected virtual string RenderTablename(Table table, bool renderAlias) => !renderAlias || string.IsNullOrWhiteSpace(table.Alias)
+    ? EscapeName(table.Name)
+    : $"{EscapeName(table.Name)} {EscapeName(table.Alias)}";
 
         /// <summary>
         /// Renders the column.
@@ -561,6 +560,10 @@ namespace Queries.Core.Renderers
                 SelectColumn selectColumn = column as SelectColumn;
                 columnString = RenderInlineSelect(selectColumn, renderAlias);
             }
+            else if (column is UniqueIdentifierValue)
+            {
+                columnString = RenderUUIDValue();
+            }
             else if (column is IFunctionColumn)
             {
                 columnString = RenderFunction(column, renderAlias);
@@ -569,6 +572,9 @@ namespace Queries.Core.Renderers
 
             return columnString;
         }
+
+
+        protected virtual string RenderUUIDValue() => $"NEWID()";
 
         protected virtual string RenderFunction(IColumn column, bool renderAlias)
         {

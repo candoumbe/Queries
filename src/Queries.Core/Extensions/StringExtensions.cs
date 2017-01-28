@@ -10,11 +10,8 @@ namespace Queries.Core.Extensions
         /// </summary>
         /// <param name="columnName">Name of the field</param>
         /// <returns></returns>
-        public static FieldColumn Field(this string columnName)
-        {
-            return new FieldColumn(columnName);
-        }
-        
+        public static FieldColumn Field(this string columnName) => new FieldColumn(columnName);
+
         /// <summary>
         /// Turns the specified <paramref name="tableName"/> into a <see cref="Parts.Table"/>
         /// </summary>

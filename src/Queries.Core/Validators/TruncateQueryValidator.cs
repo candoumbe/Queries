@@ -5,9 +5,6 @@ namespace Queries.Core.Validators
 {
     public class TruncateQueryValidator : IValidate<TruncateQuery>
     {
-        public bool IsValid(TruncateQuery query)
-        {
-            return query != null && new TableValidator().IsValid(query.Name.Table());
-        }
+        public bool IsValid(TruncateQuery query) => query != null && new TableValidator().IsValid(query.Name.Table());
     }
 }

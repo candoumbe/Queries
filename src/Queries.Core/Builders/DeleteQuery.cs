@@ -25,10 +25,7 @@ namespace Queries.Core.Builders
         }
 
 
-        public IBuildableQuery<DeleteQuery> Where(FieldColumn column, ClauseOperator @operator, ColumnBase columnBase)
-        {
-            return Where(new WhereClause(column, @operator, columnBase));
-        } 
+        public IBuildableQuery<DeleteQuery> Where(FieldColumn column, ClauseOperator @operator, ColumnBase columnBase) => Where(new WhereClause(column, @operator, columnBase));
 
         public DeleteQuery Build() => this;
 

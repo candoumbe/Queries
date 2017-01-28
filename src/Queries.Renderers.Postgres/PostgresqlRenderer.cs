@@ -24,7 +24,8 @@ namespace Queries.Renderers.Postgres
         protected override string ConcatOperator => "||";
 
         protected override string RenderColumnnameWithAlias(string columnName, string alias) => $"{columnName} {alias}";
-
+        
+        protected override string RenderUUIDValue() => $"uuid_generate_v4()";
 
         protected override string RenderNullColumn(NullColumn nullColumn, bool renderAlias)
         {

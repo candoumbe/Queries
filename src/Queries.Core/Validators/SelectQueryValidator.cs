@@ -19,10 +19,7 @@ namespace Queries.Core.Validators
         }
 
 
-        public override bool IsValid(SelectQuery query)
-        {
-            return query != null && (query.Columns?.Any() ?? false)
-                && query.Columns.All(col => ColumnValidator.IsValid(col)) && (query.Tables?.All(table => (table is Table && TableValidator.IsValid((Table)table)) || (table is SelectTable)) ?? false);    
-        }
+        public override bool IsValid(SelectQuery query) => query != null && (query.Columns?.Any() ?? false)
+    && query.Columns.All(col => ColumnValidator.IsValid(col)) && (query.Tables?.All(table => (table is Table && TableValidator.IsValid((Table)table)) || (table is SelectTable)) ?? false);
     }
 }

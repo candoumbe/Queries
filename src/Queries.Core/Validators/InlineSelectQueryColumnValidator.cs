@@ -4,10 +4,7 @@ namespace Queries.Core.Validators
 {
     public class InlineSelectQueryColumnValidator : IValidate<SelectColumn>
     {
-        public bool IsValid(SelectColumn query)
-        {
 
-            return false;
-        }
+        public bool IsValid(SelectColumn query) => false;
     }
 }

@@ -82,10 +82,7 @@ namespace Queries.Core.Builders
             return this;
         }
 
-        public IWhereQuery<SelectQuery> Where(IColumn column, ClauseOperator @operator, ColumnBase constraint)
-        {
-            return Where(new WhereClause(column, @operator, constraint));
-        }
+        public IWhereQuery<SelectQuery> Where(IColumn column, ClauseOperator @operator, ColumnBase constraint) => Where(new WhereClause(column, @operator, constraint));
 
 
 
@@ -142,12 +139,9 @@ namespace Queries.Core.Builders
             return this;
         }
 
-        public SelectQuery Build()
-        {
-            return this;
-        }
+        public SelectQuery Build() => this;
 
-        
+
 
         ISortQuery<SelectQuery> IWhereQuery<SelectQuery>.OrderBy(params ISort[] sorts)
         {

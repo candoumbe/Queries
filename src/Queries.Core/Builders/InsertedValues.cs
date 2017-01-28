@@ -21,14 +21,8 @@ namespace Queries.Core.Builders
             _columns.Add(column);
         }
 
-        public IEnumerator<InsertedValue> GetEnumerator()
-        {
-            return Columns.GetEnumerator();
-        }
+        public IEnumerator<InsertedValue> GetEnumerator() => Columns.GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return ((IEnumerable) Columns).GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)Columns).GetEnumerator();
     }
 }

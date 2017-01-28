@@ -72,7 +72,7 @@ namespace Queries.Renderers.Neo4J.Tests
                     true,
                     $"MATCH (h1:Heroe), (h2:Heroe) {Environment.NewLine}" +
                     $"WHERE ((h1.Lastname = 'Wayne') AND (h2.Lastname = 'Kent')) {Environment.NewLine}" +
-                    "RETURN h1, h2"
+                    "RETURN h1, h2;"
                 };
             }
         }
