@@ -1,0 +1,18 @@
+﻿{
+  "version": "3.0.0-alpha-01",
+  "description": "Queries.Renderers.MySQL Class Library",
+  "authors": [ "Cyrille NDOUMBE" ],
+  "packOptions": {
+    "licenseUrl": "",
+    "projectUrl": "https://github.com/candoumbe/Queries",
+    "tags": [ "Query", "Builder", "SQL", "MySQL" ],
+  "releaseNotes": "This is an alpha version",
+  },
+  "dependencies": {
+    "Queries.Core": "4.0.0-*"
+  },
+
+  "frameworks": {
+    "netstandard1.0" : {}
+  }
+}
