@@ -1,0 +1,29 @@
+--temp-output:C:\Users\ndoum\Documents\Visual Studio 2015\Projects\Queries\src\Queries.Renderers.MySQL\obj\Release\netstandard1.0\
+--out:C:\Users\ndoum\Documents\Visual Studio 2015\Projects\Queries\src\Queries.Renderers.MySQL\bin\Release\netstandard1.0\Queries.Renderers.MySQL.dll
+--define:RELEASE
+--define:TRACE
+--define:NETSTANDARD1_0
+--suppress-warning:CS1701
+--suppress-warning:CS1702
+--suppress-warning:CS1705
+--optimize:True
+--output-name:Queries.Renderers.MySQL
+--description:Queries.Renderers.MySQL Class Library
+--file-version:3.0.0.0
+--version:3.0.0.0
+--informational-version:3.0.0-alpha-01
+--target-framework:.NETStandard,Version=v1.0
+--reference:C:\Users\ndoum\.nuget\packages\System.Collections\4.3.0\ref\netstandard1.0\System.Collections.dll
+--reference:C:\Users\ndoum\.nuget\packages\System.IO\4.3.0\ref\netstandard1.0\System.IO.dll
+--reference:C:\Users\ndoum\.nuget\packages\System.Linq\4.3.0\ref\netstandard1.0\System.Linq.dll
+--reference:C:\Users\ndoum\.nuget\packages\System.Linq.Expressions\4.3.0\ref\netstandard1.0\System.Linq.Expressions.dll
+--reference:C:\Users\ndoum\.nuget\packages\System.Linq.Queryable\4.3.0\ref\netstandard1.0\System.Linq.Queryable.dll
+--reference:C:\Users\ndoum\.nuget\packages\System.Reflection\4.3.0\ref\netstandard1.0\System.Reflection.dll
+--reference:C:\Users\ndoum\.nuget\packages\System.Reflection.Primitives\4.3.0\ref\netstandard1.0\System.Reflection.Primitives.dll
+--reference:C:\Users\ndoum\.nuget\packages\System.Runtime\4.3.0\ref\netstandard1.0\System.Runtime.dll
+--reference:C:\Users\ndoum\.nuget\packages\System.Runtime.Extensions\4.3.0\ref\netstandard1.0\System.Runtime.Extensions.dll
+--reference:C:\Users\ndoum\.nuget\packages\System.Text.Encoding\4.3.0\ref\netstandard1.0\System.Text.Encoding.dll
+--reference:C:\Users\ndoum\.nuget\packages\System.Threading.Tasks\4.3.0\ref\netstandard1.0\System.Threading.Tasks.dll
+--reference:C:\Users\ndoum\Documents\Visual Studio 2015\Projects\Queries\src\Queries.Core\bin\Release\netstandard1.0\Queries.Core.dll
+C:\Users\ndoum\Documents\Visual Studio 2015\Projects\Queries\src\Queries.Renderers.MySQL\MySQLExtensions.cs
+C:\Users\ndoum\Documents\Visual Studio 2015\Projects\Queries\src\Queries.Renderers.MySQL\MySQLRenderer.cs

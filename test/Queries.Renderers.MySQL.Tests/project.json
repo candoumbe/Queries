@@ -1,4 +1,4 @@
-﻿{
+{
   "version": "1.0.0-*",
   "description": "Queries.Renderers.MySQL.Tests Class Library",
   "authors": [ "Cyrille NDOUMBE" ],
@@ -8,9 +8,9 @@
   "dependencies": {
     "Queries.Core": "4.0.0-*",
     "Queries.Renderers.MySQL": "3.0.0-*",
-    "xunit": "2.2.0-beta2-build3300",
+    "xunit": "2.2.0-beta5-build3474",
     "dotnet-test-xunit": "2.2.0-preview2-build1029",
-    "FluentAssertions": "4.9.1"
+    "FluentAssertions": "4.18.0"
   },
   "frameworks": {
     "netcoreapp1.0": {
