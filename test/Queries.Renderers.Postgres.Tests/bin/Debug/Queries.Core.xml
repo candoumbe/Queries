@@ -1,0 +1,142 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Queries.Core</name>
+    </assembly>
+    <members>
+        <member name="P:Queries.Core.Builders.TruncateQuery.Name">
+            <summary>
+            Gets or sets the name of the table to truncate.
+            </summary>
+            <value>
+            The name.
+            </value>
+        </member>
+        <member name="M:Queries.Core.Builders.Fluent.QueryBuilder.Select(Queries.Core.Parts.Columns.IColumn[])">
+             <summary>
+            Creates a new <see cref="T:Queries.Core.Builders.SelectQuery"/>
+             </summary>
+             <param name="columns">The columns.</param>
+             <returns></returns>
+        </member>
+        <member name="M:Queries.Core.Builders.Fluent.QueryBuilder.Select(System.String[])">
+             <summary>
+            Creates a new <see cref="T:Queries.Core.Builders.SelectQuery"/>
+             </summary>
+             <param name="columnNames">The column names.</param>
+             <returns></returns>
+        </member>
+        <member name="M:Queries.Core.Builders.Fluent.QueryBuilder.Delete(System.String)">
+            <summary>
+            Creates a <see cref="T:Queries.Core.Builders.DeleteQuery"/>
+            </summary>
+            <param name="tableName">Name of the table to be deleted</param>
+            <returns></returns>
+        </member>
+        <member name="M:Queries.Core.Extensions.StringExtensions.Field(System.String,System.String)">
+            <summary>
+            Turns the specified <paramref name="columnName"/> into <see cref="T:Queries.Core.Parts.Columns.FieldColumn"/>
+            </summary>
+            <param name="columnName">Name of the field</param>
+            <param name="alias">Alias of the field</param>
+            <returns></returns>
+        </member>
+        <member name="M:Queries.Core.Extensions.StringExtensions.Table(System.String,System.String)">
+            <summary>
+            Turns the specified <paramref name="tableName"/> into a <see cref="T:Queries.Core.Parts.Table"/>
+            </summary>
+            <param name="tableName">Name of the table</param>
+            <param name="alias">Alias of the table</param>
+            <returns><see cref="M:Queries.Core.Extensions.StringExtensions.Table(System.String,System.String)"/></returns>
+        </member>
+        <member name="P:Queries.Core.Parts.IAliasable`1.Alias">
+            <summary>
+            Gets the alias
+            </summary>
+        </member>
+        <member name="M:Queries.Core.Parts.IAliasable`1.As(System.String)">
+            <summary>
+            Defines the alias of the element
+            </summary>
+            <param name="alias"></param>
+        </member>
+        <member name="P:Queries.Core.Parts.Table.Name">
+            <summary>
+            Gets or sets the name of the table in a query
+            </summary>
+            <value>
+            The name.
+            </value>
+        </member>
+        <member name="P:Queries.Core.Parts.Table.Alias">
+            <summary>
+            Gets the alias of the table
+            </summary>
+        </member>
+        <member name="M:Queries.Core.Parts.Columns.NullColumn.#ctor(Queries.Core.Parts.Columns.IColumn,Queries.Core.Parts.Columns.IColumn)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Queries.Core.Parts.Columns.NullColumn"/> class.
+            </summary>
+            <param name="column">The column.</param>
+            <param name="defaultValue">The default value.</param>
+            <param name="alias">The alias.</param>
+            <exception cref="T:System.ArgumentNullException">
+            column
+            or
+            defaultValue
+            </exception>
+        </member>
+        <member name="T:Queries.Core.Parts.Columns.SelectColumn">
+            <summary>
+            An instanc of this class represents a <see cref="P:Queries.Core.Parts.Columns.SelectColumn.SelectQuery"/> that can be used as <see cref="T:Queries.Core.Parts.Columns.IColumn"/> in a <see cref="P:Queries.Core.Parts.Columns.SelectColumn.SelectQuery"/>
+            </summary>
+        </member>
+        <member name="T:Queries.Core.Renderers.DatabaseType">
+            <summary>
+            Types of databases currently supported
+            </summary>
+        </member>
+        <member name="M:Queries.Core.Renderers.QueryRendererBase.EscapeName(System.String)">
+            <summary>
+            <para>
+            Escapes the given objectName using specific syntax.
+            </para>
+            </summary>
+            <param name="rawName">Name of the object to escape</param>
+            <returns>Escaped object name</returns>
+        </member>
+        <member name="M:Queries.Core.Renderers.QueryRendererBase.RenderColumn(Queries.Core.Parts.Columns.IColumn,System.Boolean)">
+            <summary>
+            Renders the column.
+            </summary>
+            <param name="column">The column.</param>
+            <param name="renderAlias"></param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentOutOfRangeException"></exception>
+        </member>
+        <member name="M:Queries.Core.Renderers.QueryRendererBase.GetBeginEscapeWordString">
+            <summary>
+            Gets the string that can be used to start escaping a reserved word
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Queries.Core.Renderers.QueryRendererBase.GetEndingEscapeWordString">
+            <summary>
+            Gets the string that can be used to indicate the word was escaped properly
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Queries.Core.Renderers.QueryRendererBase.GetConcatOperator">
+            <summary>
+            Gets the operator used to concatenates to columns
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Queries.Core.Validators.IValidate`1">
+            <summary>
+            
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+    </members>
+</doc>

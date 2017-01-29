@@ -1,6 +1,7 @@
 *.user
 *.dll
 *.pdb
-*.csproj
 *.suo
 *.pdb
+artifacts/
+.vs/

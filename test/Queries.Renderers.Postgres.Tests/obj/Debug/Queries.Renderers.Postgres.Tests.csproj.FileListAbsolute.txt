@@ -1,0 +1,13 @@
+C:\Users\Sai\Documents\Visual Studio 2015\Projects\Queries\Queries.Renderers.Postgres.Tests\bin\Debug\Queries.Renderers.Postgres.Tests.dll
+C:\Users\Sai\Documents\Visual Studio 2015\Projects\Queries\Queries.Renderers.Postgres.Tests\bin\Debug\Queries.Renderers.Postgres.Tests.pdb
+C:\Users\Sai\Documents\Visual Studio 2015\Projects\Queries\Queries.Renderers.Postgres.Tests\bin\Debug\nunit.framework.dll
+C:\Users\Sai\Documents\Visual Studio 2015\Projects\Queries\Queries.Renderers.Postgres.Tests\bin\Debug\Queries.Renderers.Postgres.dll
+C:\Users\Sai\Documents\Visual Studio 2015\Projects\Queries\Queries.Renderers.Postgres.Tests\bin\Debug\nunit.framework.xml
+C:\Users\Sai\Documents\Visual Studio 2015\Projects\Queries\Queries.Renderers.Postgres.Tests\bin\Debug\Queries.Renderers.Postgres.pdb
+C:\Users\Sai\Documents\Visual Studio 2015\Projects\Queries\Queries.Renderers.Postgres.Tests\bin\Debug\Queries.Renderers.Postgres.xml
+C:\Users\Sai\Documents\Visual Studio 2015\Projects\Queries\Queries.Renderers.Postgres.Tests\obj\Debug\Queries.Renderers.Postgres.Tests.csprojResolveAssemblyReference.cache
+C:\Users\Sai\Documents\Visual Studio 2015\Projects\Queries\Queries.Renderers.Postgres.Tests\obj\Debug\Queries.Renderers.Postgres.Tests.dll
+C:\Users\Sai\Documents\Visual Studio 2015\Projects\Queries\Queries.Renderers.Postgres.Tests\obj\Debug\Queries.Renderers.Postgres.Tests.pdb
+C:\Users\Sai\Documents\Visual Studio 2015\Projects\Queries\Queries.Renderers.Postgres.Tests\bin\Debug\Queries.Core.dll
+C:\Users\Sai\Documents\Visual Studio 2015\Projects\Queries\Queries.Renderers.Postgres.Tests\bin\Debug\Queries.Core.pdb
+C:\Users\Sai\Documents\Visual Studio 2015\Projects\Queries\Queries.Renderers.Postgres.Tests\bin\Debug\Queries.Core.xml

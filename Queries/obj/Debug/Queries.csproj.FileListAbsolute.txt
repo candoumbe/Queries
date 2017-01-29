@@ -1,9 +1,0 @@
-c:\users\candoumbe\documents\visual studio 2012\Projects\Queries\Queries\bin\Debug\Queries.dll
-c:\users\candoumbe\documents\visual studio 2012\Projects\Queries\Queries\bin\Debug\Queries.pdb
-c:\users\candoumbe\documents\visual studio 2012\Projects\Queries\Queries\obj\Debug\Queries.dll
-c:\users\candoumbe\documents\visual studio 2012\Projects\Queries\Queries\obj\Debug\Queries.pdb
-C:\Users\candoumbe\Documents\GitHub\Queries\Queries\obj\Debug\Queries.dll
-C:\Users\candoumbe\Documents\GitHub\Queries\Queries\obj\Debug\Queries.pdb
-C:\Users\candoumbe\Documents\GitHub\Queries\Queries\bin\Debug\Queries.dll
-C:\Users\candoumbe\Documents\GitHub\Queries\Queries\bin\Debug\Queries.pdb
-C:\Users\candoumbe\Documents\GitHub\Queries\Queries\obj\Debug\Queries.csprojResolveAssemblyReference.cache
