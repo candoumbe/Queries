@@ -1,4 +1,4 @@
-#Queries
+#Queries [![queries MyGet Build Status](https://www.myget.org/BuildSource/Badge/queries?identifier=7c22f979-1c83-44eb-88dc-871c872b76f9)](https://www.myget.org/)
 
 This is a "basic" database agnostic query builder.
 
@@ -28,18 +28,18 @@ is tightly coupled to SQL Server engine and won't work if dealing with Postgres 
 ```csharp
     //For SQL SERVER
     string sqlServerString = query.ForSqlServer();
-    Console.Writeline(sqlServerString); // will output : SELECT [Firstname] + ' ' + [Lastname] AS [fullname] FROM [members]
+    Console.Writeline(sqlServerString); // SELECT [Firstname] + ' ' + [Lastname] AS [fullname] FROM [members]
 ```
 ```csharp
     //For Postgres
     string postgresSqlString = query.ForPostgres(); 
-    Console.Writeline(postgresSqlString);// will output "SELECT "Firstname" + ' ' + "Lastname" "fullname" FROM "members"
+    Console.Writeline(postgresSqlString);// SELECT "Firstname" + ' ' + "Lastname" "fullname" FROM "members"
 ```
 
 ##How to install ?
 
-1.  Download the Queries.Core package
-    From this point you can already build queries
+1.  Download the Queries.Core package.
+    From this point you can already build queries.
 2.  Download the Queries.Renderers.XXXXX that is specific to the database you're targeting.
     This will add extensions methods ForXXXX to all <code>IQuery</code> instances that produces SQL statements
 3.  Enjoy !!!
