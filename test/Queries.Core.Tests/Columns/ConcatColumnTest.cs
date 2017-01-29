@@ -4,6 +4,7 @@ using Queries.Core.Extensions;
 using Queries.Core.Parts.Columns;
 using Xunit;
 using Queries.Core.Parts.Functions;
+using FluentAssertions;
 
 namespace Queries.Core.Tests.Columns
 {
@@ -16,13 +17,13 @@ namespace Queries.Core.Tests.Columns
             {
                 yield return new object[]
                 {
-                    new ConcatColumn("firstname".Literal(), " ".Literal(), "lastname".Literal()).As(null),
+                    new ConcatFunction("firstname".Literal(), " ".Literal(), "lastname".Literal()).As(null),
                     null,
                 };
 
                 yield return new object[]
                 {
-                    new ConcatColumn("firstname".Literal(), " ".Literal(), "lastname".Literal()).As(string.Empty),
+                    new ConcatFunction("firstname".Literal(), " ".Literal(), "lastname".Literal()).As(string.Empty),
                     string.Empty, 
                 };
             }
@@ -33,24 +34,24 @@ namespace Queries.Core.Tests.Columns
         {
             Assert.Throws<ArgumentOutOfRangeException>(() =>
             {
-                var column = new ConcatColumn();
+                var column = new ConcatFunction();
             });
         }
 
         [Fact]
-        public void ConstructorWithOneColumn()
+        public void ConstructorWithOneColumn_Should_Throw_ArgumentOutOfRangeException()
         {
             Assert.Throws<ArgumentOutOfRangeException>(() =>
             {
-                var column = new ConcatColumn(new LiteralColumn());
+                var column = new ConcatFunction(new LiteralColumn());
             });
         }
 
 
         [Theory]
         [MemberData(nameof(AsTestCases))]
-        public void SettingAliasTest(ConcatColumn concatColumn, string expectedAlias)
-            => Assert.Equal(expectedAlias, concatColumn.Alias);
+        public void SettingAliasTest(ConcatFunction concatColumn, string expectedAlias)
+            => concatColumn.Alias.Should().Be(expectedAlias);
 
     }
 }

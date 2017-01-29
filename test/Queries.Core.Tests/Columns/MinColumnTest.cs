@@ -14,7 +14,7 @@ namespace Queries.Core.Tests.Columns
         {
             Assert.Throws<ArgumentNullException>(() =>
             {
-                var column = new MinColumn((string)null);
+                var column = new MinFunction((string)null);
             });
         }
 
@@ -23,7 +23,7 @@ namespace Queries.Core.Tests.Columns
         {
             Assert.Throws<ArgumentOutOfRangeException>(() =>
             {
-                var column = new MinColumn(string.Empty);
+                var column = new MinFunction(string.Empty);
             });
         }
 
@@ -32,7 +32,7 @@ namespace Queries.Core.Tests.Columns
         {
             Assert.Throws<ArgumentOutOfRangeException>(() =>
             {
-                var column = new MinColumn(" ");
+                var column = new MinFunction(" ");
             });
         }
 
@@ -41,14 +41,14 @@ namespace Queries.Core.Tests.Columns
         {
             Assert.Throws<ArgumentNullException>(() =>
             {
-                var column = new MinColumn((IColumn)null);
+                var column = new MinFunction((IColumn)null);
             });
         }
 
         [Fact]
         public void ConstructorTestColumnArgument()
         {
-            Assert.Equal(AggregateType.Min, new MinColumn("age").Type);
+            Assert.Equal(AggregateType.Min, new MinFunction("age").Type);
         }
 
         public static IEnumerable<object[]> AsTestCases
@@ -57,13 +57,13 @@ namespace Queries.Core.Tests.Columns
             {
                 yield return new object[]
                 {
-                    new MinColumn("age".Field()),
+                    new MinFunction("age".Field()),
                     null,
                 };
 
                 yield return new object[]
                 {
-                    new MinColumn("age".Field()).As(string.Empty),
+                    new MinFunction("age".Field()).As(string.Empty),
                     string.Empty,
                 };
             }
@@ -71,7 +71,7 @@ namespace Queries.Core.Tests.Columns
 
         [Theory]
         [MemberData(nameof(AsTestCases))]
-        public void SettingAliasTest(MinColumn concatColumn, string expectedAlias)
+        public void SettingAliasTest(MinFunction concatColumn, string expectedAlias)
             => Assert.Equal(expectedAlias, concatColumn.Alias);
     }
 }

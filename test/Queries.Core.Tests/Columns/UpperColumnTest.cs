@@ -15,7 +15,7 @@ namespace Queries.Core.Tests.Columns
         {
             Assert.Throws<ArgumentNullException>(() =>
             {
-                var column = new UpperColumn((string)null);
+                var column = new UpperFunction((string)null);
             });
         }
 
@@ -25,13 +25,13 @@ namespace Queries.Core.Tests.Columns
         {
             Assert.Throws<ArgumentNullException>(() =>
             {
-                var column = new UpperColumn((IColumn)null);
+                var column = new UpperFunction((IColumn)null);
             });
         }
         
         [Theory]
         [MemberData(nameof(AsTestCases))]
-        public void SettingAliasTest(UpperColumn upperColumn, string expectedAlias)
+        public void SettingAliasTest(UpperFunction upperColumn, string expectedAlias)
             => Assert.Equal(expectedAlias, upperColumn.Alias);
 
 
@@ -42,13 +42,13 @@ namespace Queries.Core.Tests.Columns
             {
                 yield return new object[]
                 {
-                    new UpperColumn("firstname".Field()),
+                    new UpperFunction("firstname".Field()),
                     null,
                 };
 
                 yield return new object[]
                 {
-                    new UpperColumn("firstname".Field()).As(string.Empty),
+                    new UpperFunction("firstname".Field()).As(string.Empty),
                     string.Empty,
                 };
             }

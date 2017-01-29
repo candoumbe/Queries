@@ -7,8 +7,6 @@ namespace Queries.Core.Validators
 {
     public class ColumnValidator : IValidate<IColumn>
     {
-        
-
         public bool IsValid(IColumn column)
         {
 
@@ -22,11 +20,11 @@ namespace Queries.Core.Validators
             else if (column is FieldColumn)
             {
                 FieldColumn tc = (FieldColumn) column;
-                valid = !String.IsNullOrWhiteSpace(tc.Name);
+                valid = !string.IsNullOrWhiteSpace(tc.Name);
             }
-            else if (column is AggregateColumn)
+            else if (column is AggregateFunction)
             {
-                AggregateColumn ac = (AggregateColumn)column;
+                AggregateFunction ac = (AggregateFunction)column;
                 valid = IsValid(ac.Column);
             } 
             else if (column is SelectColumn)
@@ -37,20 +35,20 @@ namespace Queries.Core.Validators
             }
             else if (column is IFunctionColumn)
             {
-                if (column is NullColumn)
+                if (column is NullFunction)
                 {
-                    NullColumn nullColumn = column as NullColumn;
+                    NullFunction nullColumn = column as NullFunction;
                     valid = IsValid(nullColumn.Column) && IsValid(nullColumn.DefaultValue);
                     
                 } 
-                else if (column is ConcatColumn)
+                else if (column is ConcatFunction)
                 {
-                    ConcatColumn concatColumn = column as ConcatColumn;
+                    ConcatFunction concatColumn = column as ConcatFunction;
                     valid = concatColumn.Columns.All(IsValid);
                 } 
-                else if (column is LengthColumn)
+                else if (column is LengthFunction)
                 {
-                    LengthColumn lengthColumn = column as LengthColumn;
+                    LengthFunction lengthColumn = column as LengthFunction;
                     valid = IsValid(lengthColumn.Column);
                 }
             }

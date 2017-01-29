@@ -13,7 +13,7 @@ namespace Queries.Core.Tests.Columns
         {
             Assert.Throws<ArgumentNullException>(() =>
             {
-                var countColumn = new CountColumn(null);
+                var countColumn = new CountFunction(null);
             });
         }
 
@@ -23,13 +23,13 @@ namespace Queries.Core.Tests.Columns
             {
                 yield return new object[]
                 {
-                    new CountColumn("firstname".Field()),
+                    new CountFunction("firstname".Field()),
                     null,
                 };
 
                 yield return new object[]
                 {
-                    new CountColumn("firstname".Field()).As(string.Empty),
+                    new CountFunction("firstname".Field()).As(string.Empty),
                     string.Empty,
                 };
             }
@@ -37,7 +37,7 @@ namespace Queries.Core.Tests.Columns
 
         [Theory]
         [MemberData(nameof(AsTestCases))]
-        public void SettingAliasTest(CountColumn concatColumn, string expectedAlias)
+        public void SettingAliasTest(CountFunction concatColumn, string expectedAlias)
             => Assert.Equal(expectedAlias, concatColumn.Alias);
     }
 }

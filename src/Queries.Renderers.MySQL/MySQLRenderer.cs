@@ -19,7 +19,7 @@ namespace Queries.Renderers.MySQL
         protected override string ConcatOperator => "||";
 
 
-        protected override string RenderConcatColumn(ConcatColumn concatColumn, bool renderAlias)
+        protected override string RenderConcatColumn(ConcatFunction concatColumn, bool renderAlias)
         {
             if (concatColumn == null)
             {

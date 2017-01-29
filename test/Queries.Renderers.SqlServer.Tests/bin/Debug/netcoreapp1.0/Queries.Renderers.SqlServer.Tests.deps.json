@@ -1,7 +1,7 @@
 {
   "runtimeTarget": {
     "name": ".NETCoreApp,Version=v1.0",
-    "signature": "97cf5e89c5523860ecd0a7cd3a5de1688d103fd8"
+    "signature": "ebf3bdf06aa48e20f699c678fd5c11300f89a2ad"
   },
   "compilationOptions": {},
   "targets": {
@@ -10,9 +10,9 @@
         "dependencies": {
           "Queries.Core": "4.0.0",
           "Queries.Renderers.SqlServer": "3.0.0-alpha1",
-          "xunit": "2.2.0-beta2-build3300",
+          "xunit": "2.2.0-beta5-build3474",
           "dotnet-test-xunit": "2.2.0-preview2-build1029",
-          "FluentAssertions": "4.9.1"
+          "FluentAssertions": "4.18.0"
         },
         "runtime": {
           "Queries.Renderers.SqlServer.Tests.dll": {}
@@ -27,26 +27,13 @@
           "lib/netcoreapp1.0/dotnet-test-xunit.dll": {}
         }
       },
-      "FluentAssertions/4.9.1": {
+      "FluentAssertions/4.18.0": {
         "dependencies": {
-          "System.Collections": "4.3.0",
-          "System.Diagnostics.Debug": "4.3.0",
-          "System.Globalization": "4.3.0",
-          "System.Linq": "4.3.0",
-          "System.Linq.Expressions": "4.3.0",
-          "System.ObjectModel": "4.3.0",
-          "System.Reflection": "4.3.0",
-          "System.Reflection.Extensions": "4.3.0",
-          "System.Reflection.Primitives": "4.3.0",
-          "System.Reflection.TypeExtensions": "4.3.0",
-          "System.Runtime": "4.3.0",
-          "System.Runtime.Extensions": "4.3.0",
-          "System.Threading": "4.3.0",
-          "System.Threading.Tasks": "4.3.0"
+          "System.Reflection.TypeExtensions": "4.3.0"
         },
         "runtime": {
-          "lib/dotnet/FluentAssertions.Core.dll": {},
-          "lib/dotnet/FluentAssertions.dll": {}
+          "lib/netstandard1.3/FluentAssertions.Core.dll": {},
+          "lib/netstandard1.3/FluentAssertions.dll": {}
         }
       },
       "Microsoft.DiaSymReader/1.0.8": {
@@ -424,44 +411,39 @@
           "System.Runtime": "4.3.0"
         }
       },
-      "xunit/2.2.0-beta2-build3300": {
+      "xunit/2.2.0-beta5-build3474": {
         "dependencies": {
-          "xunit.assert": "2.2.0-beta2-build3300",
-          "xunit.core": "2.2.0-beta2-build3300"
+          "xunit.assert": "2.2.0-beta5-build3474",
+          "xunit.core": "2.2.0-beta5-build3474"
         }
       },
-      "xunit.abstractions/2.0.1-rc2": {
-        "dependencies": {
-          "System.Collections": "4.3.0",
-          "System.Reflection": "4.3.0",
-          "System.Runtime": "4.3.0"
-        },
+      "xunit.abstractions/2.0.1": {
         "runtime": {
           "lib/netstandard1.0/xunit.abstractions.dll": {}
         }
       },
-      "xunit.assert/2.2.0-beta2-build3300": {
+      "xunit.assert/2.2.0-beta5-build3474": {
         "runtime": {
           "lib/netstandard1.0/xunit.assert.dll": {}
         }
       },
-      "xunit.core/2.2.0-beta2-build3300": {
+      "xunit.core/2.2.0-beta5-build3474": {
         "dependencies": {
-          "xunit.extensibility.core": "2.2.0-beta2-build3300",
-          "xunit.extensibility.execution": "2.2.0-beta2-build3300"
+          "xunit.extensibility.core": "2.2.0-beta5-build3474",
+          "xunit.extensibility.execution": "2.2.0-beta5-build3474"
         }
       },
-      "xunit.extensibility.core/2.2.0-beta2-build3300": {
+      "xunit.extensibility.core/2.2.0-beta5-build3474": {
         "dependencies": {
-          "xunit.abstractions": "2.0.1-rc2"
+          "xunit.abstractions": "2.0.1"
         },
         "runtime": {
           "lib/netstandard1.0/xunit.core.dll": {}
         }
       },
-      "xunit.extensibility.execution/2.2.0-beta2-build3300": {
+      "xunit.extensibility.execution/2.2.0-beta5-build3474": {
         "dependencies": {
-          "xunit.extensibility.core": "2.2.0-beta2-build3300"
+          "xunit.extensibility.core": "2.2.0-beta5-build3474"
         },
         "runtime": {
           "lib/netstandard1.0/xunit.execution.dotnet.dll": {}
@@ -478,7 +460,7 @@
       },
       "xunit.runner.utility/2.2.0-beta2-build3300": {
         "dependencies": {
-          "xunit.abstractions": "2.0.1-rc2"
+          "xunit.abstractions": "2.0.1"
         },
         "runtime": {
           "lib/netstandard1.1/xunit.runner.utility.dotnet.dll": {}
@@ -515,10 +497,10 @@
       "serviceable": true,
       "sha512": "sha512-mPl4HHGcXsE4ljw3sHCOUvlyhXHDpfFO6qz0HbTQrhrFT8Tgm/HFLfz6TpMXUfch7rRL23kR8i0yjQPYdsl6EQ=="
     },
-    "FluentAssertions/4.9.1": {
+    "FluentAssertions/4.18.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-uSFjhP7Q5aIIWl0lCa0UokN4Uwe00DDfQ2Nngkp7Wb+9drw07yldT8Jnhep9VOhzxw2XiTE2LiiFi3GpXJfxgw=="
+      "sha512": "sha512-Eeltbh9ROI5kgLk4C5vrSqkrhOARGCnlmKc8MplzxjwG+c4UO3Z6X5APNHRqtEOwk6/lDUO/Yi5lGZH5VwJAOg=="
     },
     "Microsoft.DiaSymReader/1.0.8": {
       "type": "package",
@@ -710,35 +692,35 @@
       "serviceable": true,
       "sha512": "sha512-LbSxKEdOUhVe8BezB/9uOGGppt+nZf6e1VFyw6v3DN6lqitm0OSn2uXMOdtP0M3W4iMcqcivm2J6UgqiwwnXiA=="
     },
-    "xunit/2.2.0-beta2-build3300": {
+    "xunit/2.2.0-beta5-build3474": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-jUMf+Hrw8+XZN56TfO+JjoibR5L806/kgDIkwCg9OXLlfnA4li4JTmH342ifYj1QMR10is8hfYYFTyjHq0+aQg=="
+      "sha512": "sha512-nkcTT3ClVVoSaGkbyuYDhDo+WmhvwsAQOMpk/j19YJQwe9pRPh8BeZgysdOuCyQ8eeiWEEBxHsq7A+9AklZnOA=="
     },
-    "xunit.abstractions/2.0.1-rc2": {
+    "xunit.abstractions/2.0.1": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-iUHMlyMDaXJ8N8qozg19tRlW0QiZPJ47ZJyV1fnpppGWdmukyq89/pg4HqpxQ52Co3Leo8NmiiYkB/gN48pZ+A=="
+      "sha512": "sha512-bDm/zdG5rnRDsobKuKwrvL4HccBdC0uvT12be6fG12P3d1U7u9Wkvfoq/PM2GeyIeb0Dtcmm/7k2oaawiqQ2Dg=="
     },
-    "xunit.assert/2.2.0-beta2-build3300": {
+    "xunit.assert/2.2.0-beta5-build3474": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-5zsV2UhRQV5Ldme1N/NDhIBvQQTYdxmK87FXWWou1x3z7qpsZwe1YOjb0CY4F+1oXag8i9uTh/nZwv8jM66onA=="
+      "sha512": "sha512-l4HNVTFaVfAEwAZs7VjAlxb7DW6QkoGYoh0QaCB397IYBX/vZdJ5AhqrxmtcNSFbh0RwrXrKmI48JN+LUV1rdA=="
     },
-    "xunit.core/2.2.0-beta2-build3300": {
+    "xunit.core/2.2.0-beta5-build3474": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-HgKP6+FUKcIcVFMDgoTCANRKOgGeEDvg2a2AL3mOyBHE//grWL1EO0KybxUw26S8fnNJrhmI5LBWyVUIsPxI5Q=="
+      "sha512": "sha512-DcOHVkAwkP5jp9I60uEBOOmkJ7Aocg7TYBw8+nEgcBUoR4Smb66RaYQuzkW1BCq/5xY0kQMRiJrIzuk3XPx2XA=="
     },
-    "xunit.extensibility.core/2.2.0-beta2-build3300": {
+    "xunit.extensibility.core/2.2.0-beta5-build3474": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-d+UCqIL8Je3tSdhF7w6NZdzH2jYzNh2LhsMp0gUVAD3NgVEo2oK/3Xr7ZlYZM40Y6fJWoO46UntzrpNlix75mg=="
+      "sha512": "sha512-G1s2W/DYEf2xVxItEdEL51e81Epc0TB/vAZ+9/Vp30/wUTP9Fgt9cb+DfuhGTvcppGW8uVXybpkMA9o/KI5Rrg=="
     },
-    "xunit.extensibility.execution/2.2.0-beta2-build3300": {
+    "xunit.extensibility.execution/2.2.0-beta5-build3474": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-z0DgzvWxQtXaj2qebFkW5f69ZItvY/YRWEbKwL0yIbvhiCViiuHlP+qvvloVlrlsOuo+Y/vfjQb/3Cz+ok/+5A=="
+      "sha512": "sha512-LLIrjFggA2dl7HsJqsJCRcZjrRjIYsu5dRERNqWx2J61OeKdwlIsEj1i/D7DprMJUOIS6+MqRGo5htuQKdUm2A=="
     },
     "xunit.runner.reporters/2.2.0-beta2-build3300": {
       "type": "package",

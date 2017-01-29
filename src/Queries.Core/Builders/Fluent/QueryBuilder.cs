@@ -9,60 +9,60 @@ namespace Queries.Core.Builders.Fluent
 #region Columns conversions shortcuts
 
         /// <summary>
-        /// Applies the <see cref="LengthColumn"/> 
+        /// Applies the <see cref="LengthFunction"/> 
         /// </summary>
         /// <param name="column"></param>
         /// <returns></returns>
-        public static LengthColumn Length(IColumn column) => new LengthColumn(column);
+        public static LengthFunction Length(IColumn column) => new LengthFunction(column);
 
 
-        public static ConcatColumn Concat(params IColumn[] columns) => new ConcatColumn(columns);
+        public static ConcatFunction Concat(params IColumn[] columns) => new ConcatFunction(columns);
 
 
-        public static NullColumn Null(FieldColumn column, ColumnBase defaultValue) => new NullColumn(column, defaultValue);
+        public static NullFunction Null(FieldColumn column, ColumnBase defaultValue) => new NullFunction(column, defaultValue);
 
 
-        public static CountColumn Count(FieldColumn column) => new CountColumn(column);
+        public static CountFunction Count(FieldColumn column) => new CountFunction(column);
 
-        public static NullColumn Null(LiteralColumn column, ColumnBase defaultValue) => new NullColumn(column, defaultValue);
+        public static NullFunction Null(LiteralColumn column, ColumnBase defaultValue) => new NullFunction(column, defaultValue);
 
 
         
-        public static MinColumn Min(IColumn column) => new MinColumn(column);
+        public static MinFunction Min(IColumn column) => new MinFunction(column);
 
-        public static MinColumn Min(string columnName) => new MinColumn(columnName);
+        public static MinFunction Min(string columnName) => new MinFunction(columnName);
 
-        public static AvgColumn Avg(IColumn column) => new AvgColumn(column);
+        public static AvgFunction Avg(IColumn column) => new AvgFunction(column);
 
         /// <summary>
         /// Applies the "Avg" function to the specified column
         /// </summary>
         /// <param name="columnName">Name of the column to applied the AVG column</param>
         /// <returns></returns>
-        public static AvgColumn Avg(string columnName) => new AvgColumn(columnName);
+        public static AvgFunction Avg(string columnName) => new AvgFunction(columnName);
 
         /// <summary>
-        /// Creates a new <see cref="SubstringColumn"/>
+        /// Creates a new <see cref="SubstringFunction"/>
         /// </summary>
         /// <param name="column">Column to which the function will be applied</param>
         /// <param name="start">position where the substring will start</param>
         /// <param name="length">position where the substring will end</param>
-        /// <returns><see cref="SubstringColumn"/></returns>
-        public static SubstringColumn Substring(IColumn column, int start, int? length = null) => new SubstringColumn(column, start, length);
+        /// <returns><see cref="SubstringFunction"/></returns>
+        public static SubstringFunction Substring(IColumn column, int start, int? length = null) => new SubstringFunction(column, start, length);
 
         /// <summary>
         /// Applies the "UPPER" function to the specified column
         /// </summary>
         /// <param name="column"></param>
         /// <returns></returns>
-        public static UpperColumn Upper(IColumn column) => new UpperColumn(column);
+        public static UpperFunction Upper(IColumn column) => new UpperFunction(column);
 
         /// <summary>
-        /// Wraps a <see cref="IColumn"/> into <see cref="MaxColumn"/> function
+        /// Wraps a <see cref="IColumn"/> into <see cref="MaxFunction"/> function
         /// </summary>
         /// <param name="column"></param>
-        /// <returns><see cref="MaxColumn"/></returns>
-        public static MaxColumn Max(IColumn column) => new MaxColumn(column);
+        /// <returns><see cref="MaxFunction"/></returns>
+        public static MaxFunction Max(IColumn column) => new MaxFunction(column);
 
         #endregion
 

@@ -14,7 +14,7 @@ namespace Queries.Core.Tests.Columns
         {
             Assert.Throws<ArgumentNullException>(() =>
             {
-                var column = new AvgColumn((string)null);
+                var column = new AvgFunction((string)null);
             });
         }
 
@@ -23,7 +23,7 @@ namespace Queries.Core.Tests.Columns
         {
             Assert.Throws<ArgumentOutOfRangeException>(() =>
             {
-                var column = new AvgColumn(string.Empty);
+                var column = new AvgFunction(string.Empty);
             });
         }
 
@@ -32,7 +32,7 @@ namespace Queries.Core.Tests.Columns
         {
             Assert.Throws<ArgumentOutOfRangeException>(() =>
             {
-                var column = new AvgColumn(" ");
+                var column = new AvgFunction(" ");
             });
         }
 
@@ -41,14 +41,14 @@ namespace Queries.Core.Tests.Columns
         {
             Assert.Throws<ArgumentNullException>(() =>
             {
-                var column = new AvgColumn((IColumn)null);
+                var column = new AvgFunction((IColumn)null);
             });
         }
 
         [Fact]
         public void ConstructorTestColumnArgument()
         {
-            Assert.Equal(AggregateType.Average, new AvgColumn("age").Type);
+            Assert.Equal(AggregateType.Average, new AvgFunction("age").Type);
         }
 
         public static IEnumerable<object[]> AsTestCases
@@ -57,13 +57,13 @@ namespace Queries.Core.Tests.Columns
             {
                 yield return new object[]
                 {
-                    new AvgColumn("age".Field()),
+                    new AvgFunction("age".Field()),
                     null,
                 };
 
                 yield return new object[]
                 {
-                    new AvgColumn("age".Field()).As(string.Empty),
+                    new AvgFunction("age".Field()).As(string.Empty),
                     string.Empty,
                 };
             }
@@ -71,7 +71,7 @@ namespace Queries.Core.Tests.Columns
 
         [Theory]
         [MemberData(nameof(AsTestCases))]
-        public void SettingAliasTest(AvgColumn concatColumn, string expectedAlias)
+        public void SettingAliasTest(AvgFunction concatColumn, string expectedAlias)
             => Assert.Equal(expectedAlias, concatColumn.Alias);
     }
 }

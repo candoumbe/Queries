@@ -27,7 +27,7 @@ namespace Queries.Renderers.Postgres
         
         protected override string RenderUUIDValue() => $"uuid_generate_v4()";
 
-        protected override string RenderNullColumn(NullColumn nullColumn, bool renderAlias)
+        protected override string RenderNullColumn(NullFunction nullColumn, bool renderAlias)
         {
             StringBuilder sbNullColumn = new StringBuilder();
 
@@ -43,7 +43,7 @@ namespace Queries.Renderers.Postgres
         protected override string BeginEscapeWordString => @"""";
 
 
-        protected override string RenderSubstringColumn(SubstringColumn substringColumn, bool renderAlias) => $"SUBSTRING({RenderColumn(substringColumn.Column, false)} FROM {substringColumn.Start}{(substringColumn.Length.HasValue ? $" FOR {substringColumn.Length.Value}" : string.Empty)})";
+        protected override string RenderSubstringColumn(SubstringFunction substringColumn, bool renderAlias) => $"SUBSTRING({RenderColumn(substringColumn.Column, false)} FROM {substringColumn.Start}{(substringColumn.Length.HasValue ? $" FOR {substringColumn.Length.Value}" : string.Empty)})";
     }
      
 }

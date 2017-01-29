@@ -4,19 +4,27 @@ using Queries.Core.Extensions;
 
 namespace Queries.Core.Parts.Functions
 {
-    public class UpperColumn : IFunctionColumn, IAliasable<UpperColumn> 
+    /// <summary>
+    /// "UPPER" function.
+    /// </summary>
+    public class UpperFunction : IFunctionColumn, IAliasable<UpperFunction> 
     {
+        /// <summary>
+        /// Column onto wich the function applies
+        /// </summary>
+        public IColumn Column { get; }
 
-        public IColumn Column { get; private set; }
-
+        /// <summary>
+        /// Alias of the result of the function
+        /// </summary>
         public string Alias { get; private set; }
         
         /// <summary>
-        /// Applies the "UPPER" function to the specified column
+        /// Builds a new <see cref="UpperFunction"/> instance
         /// </summary>
         /// <param name="column">Column the function will be applied on</param>
         /// <exception cref="ArgumentNullException">if <paramref name="column"/> is <code>null</code></exception>
-        public UpperColumn(IColumn column)
+        public UpperFunction(IColumn column)
         {
             if (column == null)
             {
@@ -27,11 +35,11 @@ namespace Queries.Core.Parts.Functions
         }
 
         /// <summary>
-        /// Applies the "UPPER" function to the specified value
+        /// Builds a new <see cref="UpperFunction"/> instance.
         /// </summary>
         /// <param name="value">the value the function will be applied on</param>
         /// <exception cref="ArgumentNullException">if <paramref name="value"/> is <code>null</code></exception>
-        public UpperColumn(string value)
+        public UpperFunction(string value)
         {
             if (value == null)
             {
@@ -43,7 +51,7 @@ namespace Queries.Core.Parts.Functions
 
         }
 
-        public UpperColumn As(string alias)
+        public UpperFunction As(string alias)
         {
             Alias = alias;
 

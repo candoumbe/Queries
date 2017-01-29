@@ -18,10 +18,7 @@ namespace Queries.Core.Extensions
         /// <param name="tableName">Name of the table</param>
         /// <param name="alias">Alias of the table</param>
         /// <returns><see cref="Table"/></returns>
-        public static Table Table(this string tableName, string alias = null)
-        {
-            return new Table(tableName, alias);
-        }
+        public static Table Table(this string tableName, string alias = null) => new Table(tableName, alias);
 
         public static InsertedValue InsertValue(this string columnName, IColumn column)
             => InsertValue(columnName.Field(), column);

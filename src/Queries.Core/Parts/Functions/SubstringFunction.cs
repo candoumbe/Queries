@@ -3,7 +3,10 @@ using Queries.Core.Parts.Columns;
 
 namespace Queries.Core.Parts.Functions
 {
-    public class SubstringColumn : IFunctionColumn, IAliasable<SubstringColumn>
+    /// <summary>
+    /// "SUBSTRING" function.
+    /// </summary>
+    public class SubstringFunction : IFunctionColumn, IAliasable<SubstringFunction>
     {
         /// <summary>
         /// Gets/Sets the column the function will be applied to
@@ -13,17 +16,26 @@ namespace Queries.Core.Parts.Functions
         /// <summary>
         /// Defines where the substring extraction will start
         /// </summary>
-        public int Start { get; set; }
+        public int Start { get; }
 
-        public int? Length { get; set; }
 
         /// <summary>
-        /// Creates a new SubstringColumn based on the
+        /// Defines the length of the extracted substring
         /// </summary>
-        /// <param name="column"></param>
+        public int? Length { get; }
+
+        /// <summary>
+        /// Builds a new <see cref="SubstringFunction"/> instance.
+        /// </summary>
+        /// <param name="column">Column onto which the </param>
         /// <param name="start">index of the position where to start the substring</param>
         /// <param name="length">positive integer</param>
-        public SubstringColumn(IColumn column, int start, int? length = null)
+        /// <exception cref="ArgumentNullException">if <paramref name="column"/> is <c>null</c>.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">if either :
+        ///     - <paramref name="start"/> is less than <c>0</c> <c>null</c>,
+        ///     - <paramref name="length"/> is less than <c>0</c>.
+        /// </exception>
+        public SubstringFunction(IColumn column, int start, int? length = null)
         {
             if (column == null)
             {
@@ -47,7 +59,8 @@ namespace Queries.Core.Parts.Functions
 
         public string Alias { get; private set; }
 
-        public SubstringColumn As(string alias)
+
+        public SubstringFunction As(string alias)
         {
             Alias = alias;
             return this;

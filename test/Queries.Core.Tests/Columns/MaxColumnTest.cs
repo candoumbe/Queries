@@ -14,7 +14,7 @@ namespace Queries.Core.Tests.Functions
         {
             Assert.Throws<ArgumentNullException>(() =>
             {
-                var column = new MaxColumn((string)null);
+                var column = new MaxFunction((string)null);
             });
         }
 
@@ -23,7 +23,7 @@ namespace Queries.Core.Tests.Functions
         {
             Assert.Throws<ArgumentOutOfRangeException>(() =>
             {
-                var column = new MaxColumn(string.Empty);
+                var column = new MaxFunction(string.Empty);
             });
         }
 
@@ -32,7 +32,7 @@ namespace Queries.Core.Tests.Functions
         {
             Assert.Throws<ArgumentOutOfRangeException>(() =>
             {
-                var column = new MaxColumn(" ");
+                var column = new MaxFunction(" ");
             });
         }
 
@@ -41,14 +41,14 @@ namespace Queries.Core.Tests.Functions
         {
             Assert.Throws<ArgumentNullException>(() =>
             {
-                var column = new MaxColumn((IColumn)null);
+                var column = new MaxFunction((IColumn)null);
             });
         }
 
         [Fact]
         public void ConstructorTestColumnArgument()
         {
-            Assert.Equal(AggregateType.Max, new MaxColumn("age").Type);
+            Assert.Equal(AggregateType.Max, new MaxFunction("age").Type);
         }
 
         public static IEnumerable<object[]> AsTestCases
@@ -57,13 +57,13 @@ namespace Queries.Core.Tests.Functions
             {
                 yield return new object[]
                 {
-                    new MaxColumn("age".Field()),
+                    new MaxFunction("age".Field()),
                     null,
                 };
 
                 yield return new object[]
                 {
-                    new MaxColumn("age".Field()).As(string.Empty),
+                    new MaxFunction("age".Field()).As(string.Empty),
                     string.Empty,
                 };
             }
@@ -71,7 +71,7 @@ namespace Queries.Core.Tests.Functions
 
         [Theory]
         [MemberData(nameof(AsTestCases))]
-        public void SettingAliasTest(MaxColumn column, string expectedAlias)
+        public void SettingAliasTest(MaxFunction column, string expectedAlias)
             => Assert.Equal(expectedAlias, column.Alias);
     }
 }

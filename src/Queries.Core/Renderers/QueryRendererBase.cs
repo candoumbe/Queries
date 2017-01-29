@@ -227,7 +227,7 @@ namespace Queries.Core.Renderers
 
                 if (query.Columns != null)
                 {
-                    IEnumerable<AggregateColumn> aggregatedColumns = query.Columns.OfType<AggregateColumn>();
+                    IEnumerable<AggregateFunction> aggregatedColumns = query.Columns.OfType<AggregateFunction>();
                     IEnumerable<FieldColumn> tableColumns = query.Columns.OfType<FieldColumn>();
                     if (aggregatedColumns.Any() && tableColumns.Any())
                     {
@@ -580,34 +580,34 @@ namespace Queries.Core.Renderers
         {
 
             string columnString = string.Empty;
-            if (column is AggregateColumn)
+            if (column is AggregateFunction)
             {
-                AggregateColumn aggregateColumn = column as AggregateColumn;
+                AggregateFunction aggregateColumn = column as AggregateFunction;
                 columnString = RenderAggregateColumn(aggregateColumn, renderAlias);
             }
-            else if (column is ConcatColumn)
+            else if (column is ConcatFunction)
             {
-                ConcatColumn concatColumn = column as ConcatColumn;
+                ConcatFunction concatColumn = column as ConcatFunction;
                 columnString = RenderConcatColumn(concatColumn, renderAlias);
             }
-            else if (column is NullColumn)
+            else if (column is NullFunction)
             {
-                NullColumn nullColumn = column as NullColumn;
+                NullFunction nullColumn = column as NullFunction;
                 columnString = RenderNullColumn(nullColumn, renderAlias);
             }
-            else if (column is LengthColumn)
+            else if (column is LengthFunction)
             {
-                LengthColumn lengthColumn = column as LengthColumn;
+                LengthFunction lengthColumn = column as LengthFunction;
                 columnString = RenderLengthColumn(lengthColumn, renderAlias);
             }
-            else if (column is SubstringColumn)
+            else if (column is SubstringFunction)
             {
-                SubstringColumn substringColumn = column as SubstringColumn;
+                SubstringFunction substringColumn = column as SubstringFunction;
                 columnString = RenderSubstringColumn(substringColumn, renderAlias);
             }
-            else if (column is UpperColumn)
+            else if (column is UpperFunction)
             {
-                UpperColumn upperColumn = column as UpperColumn;
+                UpperFunction upperColumn = column as UpperFunction;
                 columnString = RenderUpperColumn(upperColumn, renderAlias);
             }
 
@@ -630,7 +630,7 @@ namespace Queries.Core.Renderers
         /// </summary>
         protected virtual string UpperFunctionName => "UPPER";
 
-        protected virtual string RenderLengthColumn(LengthColumn lengthColumn, bool renderAlias)
+        protected virtual string RenderLengthColumn(LengthFunction lengthColumn, bool renderAlias)
         {
             string sbLengthColumn = $"{LengthFunctionName}({RenderColumn(lengthColumn.Column, false)})";
 
@@ -641,7 +641,7 @@ namespace Queries.Core.Renderers
             return queryString;
         }
 
-        protected virtual string RenderSubstringColumn(SubstringColumn substringColumn, bool renderAlias)
+        protected virtual string RenderSubstringColumn(SubstringFunction substringColumn, bool renderAlias)
         {
             string sbLengthColumn = $"{SubstringFunctionName}({RenderColumn(substringColumn.Column, false)}, {substringColumn.Start}{(substringColumn.Length.HasValue ? $", {substringColumn.Length.Value}" : "")})";
 
@@ -652,7 +652,7 @@ namespace Queries.Core.Renderers
             return queryString;
         }
 
-        protected virtual string RenderUpperColumn(UpperColumn upperColumn, bool renderAlias)
+        protected virtual string RenderUpperColumn(UpperFunction upperColumn, bool renderAlias)
         {
             string sbLengthColumn = $"{UpperFunctionName}({RenderColumn(upperColumn.Column, false)})";
 
@@ -663,7 +663,7 @@ namespace Queries.Core.Renderers
             return queryString;
         }
 
-        protected virtual string RenderConcatColumn(ConcatColumn concatColumn, bool renderAlias)
+        protected virtual string RenderConcatColumn(ConcatFunction concatColumn, bool renderAlias)
         {
             StringBuilder sbConcat = new StringBuilder();
             foreach (IColumn column in concatColumn.Columns)
@@ -683,7 +683,7 @@ namespace Queries.Core.Renderers
 
         }
 
-        protected virtual string RenderNullColumn(NullColumn nullColumn, bool renderAlias)
+        protected virtual string RenderNullColumn(NullFunction nullColumn, bool renderAlias)
         {
             string sbNullColumn = $"ISNULL({RenderColumn(nullColumn.Column, false)}, {RenderColumn(nullColumn.DefaultValue, false)})";
 
@@ -725,7 +725,7 @@ namespace Queries.Core.Renderers
 
         protected virtual string RenderColumnnameWithAlias(string columnName, string alias) => $"{columnName} AS {alias}";
 
-        protected virtual string RenderAggregateColumn(AggregateColumn ac, bool renderAlias)
+        protected virtual string RenderAggregateColumn(AggregateFunction ac, bool renderAlias)
         {
             string columnString;
             switch (ac.Type)
@@ -828,7 +828,6 @@ namespace Queries.Core.Renderers
                 sb = sb.AppendFormat("CREATE VIEW {0} ", RenderTables(new ITable[] { query.ViewName.Table() }))
 
                     .Append(PrettyPrint ? Environment.NewLine : string.Empty)
-
                     .AppendFormat("AS ")
                     .Append(PrettyPrint ? Environment.NewLine : string.Empty)
                     .Append(Render(query.SelectQuery));
