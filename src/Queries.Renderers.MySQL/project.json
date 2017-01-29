@@ -6,13 +6,19 @@
     "licenseUrl": "",
     "projectUrl": "https://github.com/candoumbe/Queries",
     "tags": [ "Query", "Builder", "SQL", "MySQL" ],
-  "releaseNotes": "This is an alpha version",
+    "releaseNotes": "This is an alpha version",
+    "summary": "This library allows to render queries in MySQL specific format."
   },
   "dependencies": {
     "Queries.Core": "4.0.0-*"
   },
 
+  "scripts": {
+    "postcompile": [
+      "dotnet pack --no-build"
+    ]
+  },
   "frameworks": {
-    "netstandard1.0" : {}
+    "netstandard1.0": {}
   }
 }

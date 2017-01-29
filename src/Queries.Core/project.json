@@ -6,10 +6,14 @@
     "tags": [ "Queries", "Query", "SQL", "Builder" ],
     "projectUrl": "https://github.com/candoumbe/Queries",
     "releaseNotes": "This is an alpha version",
-    "licenseUrl": ""
+    "licenseUrl": "",
+    "summary": "This library allows to build various database agnostic queries."
+
 
   },
   "title": "Queries.Core",
+  
+  
 
   "dependencies": {
     "System.Linq.Queryable": "4.3.0",
@@ -17,7 +21,15 @@
     "System.Runtime.Extensions": "4.3.0"
   },
 
+  "scripts": {
+    "postcompile": [
+      "dotnet pack --no-build"
+    ]
+  },
+  
   "frameworks": {
-    "netstandard1.0": {}
+    "netstandard1.0": {
+
+    }
   }
 }

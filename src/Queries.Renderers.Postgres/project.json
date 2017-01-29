@@ -13,10 +13,17 @@
       "url": "git://github.com/candoumbe/Queries"
     }
   },
-  
+
   "dependencies": {
     "Queries.Core": "4.0.0-*"
   },
+
+  "scripts": {
+    "postcompile": [
+      "dotnet pack --no-build"
+    ]
+  },
+
 
   "frameworks": {
     "netstandard1.0": {}
