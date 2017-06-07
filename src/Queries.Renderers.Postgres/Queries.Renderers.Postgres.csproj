@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>Queries.Renderers.Postgres Class Library
+</Description>
+    <VersionPrefix>3.0.0-alpha-01</VersionPrefix>
+    <Authors>Cyrille NDOUMBE</Authors>
+    <TargetFramework>netstandard1.0</TargetFramework>
+    <AssemblyName>Queries.Renderers.Postgres</AssemblyName>
+    <PackageId>Queries.Renderers.Postgres</PackageId>
+    <PackageTags>Query;Builder;SQL;Postgres</PackageTags>
+    <PackageReleaseNotes>This is an alpha version</PackageReleaseNotes>
+    <PackageProjectUrl>https://github.com/candoumbe/Queries</PackageProjectUrl>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>git://github.com/candoumbe/Queries</RepositoryUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Queries.Core\Queries.Core.csproj" />
+  </ItemGroup>
+
+  <Target Name="PostcompileScript" AfterTargets="Build">
+    <Exec Command="dotnet pack --no-build" />
+  </Target>
+
+</Project>
