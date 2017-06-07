@@ -5,10 +5,13 @@ using Queries.Core.Parts.Clauses;
 
 namespace Queries.Core.Builders
 {
+    /// <summary>
+    /// A query to update a table
+    /// </summary>
     public class UpdateQuery: IDataManipulationQuery
     {
-        public Table Table { get; set; }
-        public IList<UpdateFieldValue> Values { get; set; }
+        public Table Table { get; }
+        public IList<UpdateFieldValue> Values { get; private set; }
         public IWhereClause Criteria { get; set; }
 
         public UpdateQuery(string tableName) : this(tableName?.Table())

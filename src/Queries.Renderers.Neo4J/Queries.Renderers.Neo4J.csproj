@@ -16,9 +16,4 @@ It's allow to build Neo4J queries</Description>
   <ItemGroup>
     <ProjectReference Include="..\Queries.Core\Queries.Core.csproj" />
   </ItemGroup>
-
-  <Target Name="PostcompileScript" AfterTargets="Build">
-    <Exec Command="dotnet pack --no-build" />
-  </Target>
-
 </Project>

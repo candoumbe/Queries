@@ -203,10 +203,8 @@ namespace Queries.Core.Renderers
                         sb.AppendFormat("SELECT {0}", fieldsString);
                     }
                 }
-                else if (query is SelectIntoQuery)
+                else if (query is SelectIntoQuery selectInto)
                 {
-                    SelectIntoQuery selectInto = (SelectIntoQuery)query;
-
                     sb.Append(
                         $"SELECT {fieldsString} {(PrettyPrint ? Environment.NewLine : string.Empty)}INTO {RenderTablename(selectInto.Destination, false)} {(PrettyPrint ? Environment.NewLine : string.Empty)}FROM {RenderTables(new[] { selectInto.Source })}");
 
@@ -321,7 +319,7 @@ namespace Queries.Core.Renderers
             StringBuilder sbJoins = new StringBuilder();
             if (joins.Any())
             {
-                foreach (var @join in joins)
+                foreach (IJoin @join in joins)
                 {
                     if (sbJoins.Length > 0)
                     {
@@ -361,16 +359,14 @@ namespace Queries.Core.Renderers
                     sbTables = sbTables.Append(", ");
                 }
 
-                if (item is Table)
+                if (item is Table table)
                 {
-                    Table table = (Table)item;
                     sbTables = string.IsNullOrWhiteSpace(table.Alias)
                         ? sbTables.Append(EscapeName(table.Name))
                         : sbTables.Append(RenderTablenameWithAlias(EscapeName(table.Name), EscapeName(table.Alias)));
                 }
-                else if (item is SelectQuery)
+                else if (item is SelectQuery selectTable)
                 {
-                    SelectQuery selectTable = (SelectQuery)item;
                     sbTables = string.IsNullOrWhiteSpace(selectTable.Alias)
                         ? sbTables.Append($"({Render(selectTable)})")
                         : sbTables.Append($"({Render(selectTable)}) {EscapeName(selectTable.Alias)}");
@@ -445,13 +441,12 @@ namespace Queries.Core.Renderers
         {
             StringBuilder sbWhere = new StringBuilder();
 
-            if (clause is WhereClause)
+            if (clause is WhereClause whereClause)
             {
-                sbWhere.Append(RenderClause((WhereClause)clause));
+                sbWhere.Append(RenderClause(whereClause));
             }
-            else if (clause is CompositeWhereClause)
+            else if (clause is CompositeWhereClause compositeClause)
             {
-                CompositeWhereClause compositeClause = (CompositeWhereClause)clause;
                 switch (compositeClause.Logic)
                 {
                     case ClauseLogic.And:
@@ -487,13 +482,12 @@ namespace Queries.Core.Renderers
         {
             StringBuilder sbHaving = new StringBuilder();
 
-            if (clause is HavingClause)
+            if (clause is HavingClause havingClause)
             {
-                sbHaving.Append(RenderClause((HavingClause)clause));
+                sbHaving.Append(RenderClause(havingClause));
             }
-            else if (clause is CompositeHavingClause)
+            else if (clause is CompositeHavingClause compositeClause)
             {
-                CompositeHavingClause compositeClause = (CompositeHavingClause)clause;
                 switch (compositeClause.Logic)
                 {
                     case ClauseLogic.And:
@@ -542,22 +536,18 @@ namespace Queries.Core.Renderers
             {
                 columnString = "NULL";
             }
-            else if (column is FieldColumn)
+            else if (column is FieldColumn fieldColumn)
             {
-                FieldColumn tc = column as FieldColumn;
-                columnString = !renderAlias || string.IsNullOrWhiteSpace(tc.Alias)
-                    ? EscapeName(tc.Name)
-                    : RenderColumnnameWithAlias(EscapeName(tc.Name), EscapeName(tc.Alias));
+                columnString = !renderAlias || string.IsNullOrWhiteSpace(fieldColumn.Alias)
+                    ? EscapeName(fieldColumn.Name)
+                    : RenderColumnnameWithAlias(EscapeName(fieldColumn.Name), EscapeName(fieldColumn.Alias));
             }
-            else if (column is LiteralColumn)
+            else if (column is LiteralColumn literalColumn)
             {
-
-                LiteralColumn literalColumn = column as LiteralColumn;
                 columnString = RenderLiteralColumn(literalColumn, renderAlias);
             }
-            else  if (column is SelectColumn)
+            else  if (column is SelectColumn selectColumn)
             {
-                SelectColumn selectColumn = column as SelectColumn;
                 columnString = RenderInlineSelect(selectColumn, renderAlias);
             }
             else if (column is UniqueIdentifierValue)
@@ -580,34 +570,28 @@ namespace Queries.Core.Renderers
         {
 
             string columnString = string.Empty;
-            if (column is AggregateFunction)
+            if (column is AggregateFunction aggregateColumn)
             {
-                AggregateFunction aggregateColumn = column as AggregateFunction;
                 columnString = RenderAggregateColumn(aggregateColumn, renderAlias);
             }
-            else if (column is ConcatFunction)
+            else if (column is ConcatFunction concatColumn)
             {
-                ConcatFunction concatColumn = column as ConcatFunction;
                 columnString = RenderConcatColumn(concatColumn, renderAlias);
             }
-            else if (column is NullFunction)
+            else if (column is NullFunction nullColumn)
             {
-                NullFunction nullColumn = column as NullFunction;
                 columnString = RenderNullColumn(nullColumn, renderAlias);
             }
-            else if (column is LengthFunction)
+            else if (column is LengthFunction lengthColumn)
             {
-                LengthFunction lengthColumn = column as LengthFunction;
                 columnString = RenderLengthColumn(lengthColumn, renderAlias);
             }
-            else if (column is SubstringFunction)
+            else if (column is SubstringFunction substringColumn)
             {
-                SubstringFunction substringColumn = column as SubstringFunction;
                 columnString = RenderSubstringColumn(substringColumn, renderAlias);
             }
-            else if (column is UpperFunction)
+            else if (column is UpperFunction upperColumn)
             {
-                UpperFunction upperColumn = column as UpperFunction;
                 columnString = RenderUpperColumn(upperColumn, renderAlias);
             }
 
@@ -762,11 +746,11 @@ namespace Queries.Core.Renderers
             LiteralColumn lc = literalColumn;
             object value = lc.Value;
 
-            if (value is string)
+            if (value is string stringValue)
             {
                 columnString = renderAlias && !string.IsNullOrWhiteSpace(lc.Alias)
-                    ? $"'{EscapeString((string)value)}' AS {EscapeName(lc.Alias)}"
-                    : $"'{EscapeString((string)value)}'";
+                    ? $"'{EscapeString(stringValue)}' AS {EscapeName(lc.Alias)}"
+                    : $"'{EscapeString(stringValue)}'";
             }
             else
             {

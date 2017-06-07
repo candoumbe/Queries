@@ -9,29 +9,63 @@ namespace Queries.Core.Builders.Fluent
 #region Columns conversions shortcuts
 
         /// <summary>
-        /// Applies the <see cref="LengthFunction"/> 
+        /// Applies <see cref="LengthFunction"/> to <paramref name="column"/>.
         /// </summary>
-        /// <param name="column"></param>
-        /// <returns></returns>
+        /// <param name="column">column onto which the function will be applied.</param>
+        /// <returns><see cref="LengthFunction"/></returns>
         public static LengthFunction Length(IColumn column) => new LengthFunction(column);
 
-
+        /// <summary>
+        /// Concatenates <paramref name="columns"/>.
+        /// </summary>
+        /// <param name="columns">Columns to concatenate</param>
+        /// <returns></returns>
         public static ConcatFunction Concat(params IColumn[] columns) => new ConcatFunction(columns);
 
-
+        /// <summary>
+        /// Applies <see cref="NullFunction"/> to <paramref name="column"/>.
+        /// </summary>
+        /// <param name="column">Column onto which aoply <see cref="NullFunction"/>.</param>
+        /// <param name="defaultValue">Result value to use if <paramref name="column"/>'s value is <c>null</c></param>
+        /// <returns></returns>
         public static NullFunction Null(FieldColumn column, ColumnBase defaultValue) => new NullFunction(column, defaultValue);
 
-
+        /// <summary>
+        /// Applies <see cref="CountFunction"/> to <paramref name="column"/>.
+        /// </summary>
+        /// <param name="column">Column onto which apply <see cref="CountFunction"/>.</param>
+        /// <returns></returns>
         public static CountFunction Count(FieldColumn column) => new CountFunction(column);
 
+        /// <summary>
+        /// Applies <see cref="NullFunction"/> to <paramref name="column"/>.
+        /// </summary>
+        /// <param name="column">Column onto which aoply <see cref="NullFunction"/>.</param>
+        /// <param name="defaultValue">Result value to use if <paramref name="column"/>'s value is <c>null</c></param>
+        /// <returns></returns>
         public static NullFunction Null(LiteralColumn column, ColumnBase defaultValue) => new NullFunction(column, defaultValue);
 
 
-        
+
+        /// <summary>
+        /// Applies <see cref="MinFunction"/> to <paramref name="column"/>.
+        /// </summary>
+        /// <param name="column">Column onto which aoply <see cref="MinFunction"/>.</param>
+        /// <returns></returns>
         public static MinFunction Min(IColumn column) => new MinFunction(column);
 
+        /// <summary>
+        /// Applies <see cref="MinFunction"/> to <paramref name="column"/>.
+        /// </summary>
+        /// <param name="columnName">Name of the column onto which aoply <see cref="MinFunction"/>.</param>
+        /// <returns></returns>
         public static MinFunction Min(string columnName) => new MinFunction(columnName);
 
+        /// <summary>
+        /// Applies <see cref="AvgFunction"/> to <paramref name="column"/>.
+        /// </summary>
+        /// <param name="column">Column onto which aoply <see cref="AvgFunction"/>.</param>
+        /// <returns></returns>
         public static AvgFunction Avg(IColumn column) => new AvgFunction(column);
 
         /// <summary>

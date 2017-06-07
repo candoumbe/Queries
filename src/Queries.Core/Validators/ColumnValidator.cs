@@ -17,42 +17,36 @@ namespace Queries.Core.Validators
             {
                 valid = true;
             } 
-            else if (column is FieldColumn)
+            else if (column is FieldColumn tc)
             {
-                FieldColumn tc = (FieldColumn) column;
                 valid = !string.IsNullOrWhiteSpace(tc.Name);
             }
-            else if (column is AggregateFunction)
+            else if (column is AggregateFunction ac)
             {
-                AggregateFunction ac = (AggregateFunction)column;
                 valid = IsValid(ac.Column);
-            } 
-            else if (column is SelectColumn)
+            }
+            else if (column is SelectColumn inlineSelectQuery)
             {
-                SelectColumn inlineSelectQuery = (SelectColumn) column;
                 SelectQueryValidator validator = new SelectQueryValidator();
                 valid = validator.IsValid(inlineSelectQuery.SelectQuery);
             }
             else if (column is IFunctionColumn)
             {
-                if (column is NullFunction)
+                if (column is NullFunction nullColumn)
                 {
-                    NullFunction nullColumn = column as NullFunction;
                     valid = IsValid(nullColumn.Column) && IsValid(nullColumn.DefaultValue);
-                    
-                } 
-                else if (column is ConcatFunction)
+
+                }
+                else if (column is ConcatFunction concatColumn)
                 {
-                    ConcatFunction concatColumn = column as ConcatFunction;
                     valid = concatColumn.Columns.All(IsValid);
-                } 
-                else if (column is LengthFunction)
+                }
+                else if (column is LengthFunction lengthColumn)
                 {
-                    LengthFunction lengthColumn = column as LengthFunction;
                     valid = IsValid(lengthColumn.Column);
                 }
             }
-           
+
             return valid;
         }
     }

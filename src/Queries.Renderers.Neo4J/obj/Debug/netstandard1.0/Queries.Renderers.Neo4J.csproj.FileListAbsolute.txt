@@ -1,0 +1,9 @@
+C:\Users\ndoum\Documents\Visual Studio 2017\Projects\Queries\src\Queries.Renderers.Neo4J\bin\Debug\netstandard1.0\Queries.Renderers.Neo4J.deps.json
+C:\Users\ndoum\Documents\Visual Studio 2017\Projects\Queries\src\Queries.Renderers.Neo4J\obj\Debug\netstandard1.0\Queries.Renderers.Neo4J.csprojResolveAssemblyReference.cache
+C:\Users\ndoum\Documents\Visual Studio 2017\Projects\Queries\src\Queries.Renderers.Neo4J\obj\Debug\netstandard1.0\Queries.Renderers.Neo4J.AssemblyInfo.cs
+C:\Users\ndoum\Documents\Visual Studio 2017\Projects\Queries\src\Queries.Renderers.Neo4J\bin\Debug\netstandard1.0\Queries.Renderers.Neo4J.dll
+C:\Users\ndoum\Documents\Visual Studio 2017\Projects\Queries\src\Queries.Renderers.Neo4J\bin\Debug\netstandard1.0\Queries.Renderers.Neo4J.pdb
+C:\Users\ndoum\Documents\Visual Studio 2017\Projects\Queries\src\Queries.Renderers.Neo4J\bin\Debug\netstandard1.0\Queries.Core.dll
+C:\Users\ndoum\Documents\Visual Studio 2017\Projects\Queries\src\Queries.Renderers.Neo4J\bin\Debug\netstandard1.0\Queries.Core.pdb
+C:\Users\ndoum\Documents\Visual Studio 2017\Projects\Queries\src\Queries.Renderers.Neo4J\obj\Debug\netstandard1.0\Queries.Renderers.Neo4J.dll
+C:\Users\ndoum\Documents\Visual Studio 2017\Projects\Queries\src\Queries.Renderers.Neo4J\obj\Debug\netstandard1.0\Queries.Renderers.Neo4J.pdb

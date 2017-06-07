@@ -1,0 +1,7 @@
+C:\Users\ndoum\Documents\Visual Studio 2017\Projects\Queries\src\Queries.Core\bin\Debug\netstandard1.0\Queries.Core.deps.json
+C:\Users\ndoum\Documents\Visual Studio 2017\Projects\Queries\src\Queries.Core\obj\Debug\netstandard1.0\Queries.Core.csprojResolveAssemblyReference.cache
+C:\Users\ndoum\Documents\Visual Studio 2017\Projects\Queries\src\Queries.Core\obj\Debug\netstandard1.0\Queries.Core.AssemblyInfo.cs
+C:\Users\ndoum\Documents\Visual Studio 2017\Projects\Queries\src\Queries.Core\bin\Debug\netstandard1.0\Queries.Core.dll
+C:\Users\ndoum\Documents\Visual Studio 2017\Projects\Queries\src\Queries.Core\bin\Debug\netstandard1.0\Queries.Core.pdb
+C:\Users\ndoum\Documents\Visual Studio 2017\Projects\Queries\src\Queries.Core\obj\Debug\netstandard1.0\Queries.Core.dll
+C:\Users\ndoum\Documents\Visual Studio 2017\Projects\Queries\src\Queries.Core\obj\Debug\netstandard1.0\Queries.Core.pdb

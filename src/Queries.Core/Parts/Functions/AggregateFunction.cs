@@ -26,13 +26,8 @@ namespace Queries.Core.Parts.Functions
         /// <exception cref="ArgumentNullException">if <paramref name="column"/> is null.</exception>
         protected AggregateFunction(AggregateType aggregate, IColumn column)
         {
-            if (column == null)
-            {
-                throw new ArgumentNullException(nameof(column));
-            }
-
             Type = aggregate;
-            Column = column;
+            Column = column ?? throw new ArgumentNullException(nameof(column));
         }
 
 

@@ -1,0 +1,16 @@
+C:\Users\ndoum\Documents\Visual Studio 2017\Projects\Queries\test\Queries.Renderers.SqlServer.Tests\bin\Debug\netcoreapp1.0\Queries.Renderers.SqlServer.Tests.deps.json
+C:\Users\ndoum\Documents\Visual Studio 2017\Projects\Queries\test\Queries.Renderers.SqlServer.Tests\bin\Debug\netcoreapp1.0\Queries.Renderers.SqlServer.Tests.runtimeconfig.json
+C:\Users\ndoum\Documents\Visual Studio 2017\Projects\Queries\test\Queries.Renderers.SqlServer.Tests\bin\Debug\netcoreapp1.0\Queries.Renderers.SqlServer.Tests.runtimeconfig.dev.json
+C:\Users\ndoum\Documents\Visual Studio 2017\Projects\Queries\test\Queries.Renderers.SqlServer.Tests\obj\Debug\netcoreapp1.0\Queries.Renderers.SqlServer.Tests.csprojResolveAssemblyReference.cache
+C:\Users\ndoum\Documents\Visual Studio 2017\Projects\Queries\test\Queries.Renderers.SqlServer.Tests\obj\Debug\netcoreapp1.0\Queries.Renderers.SqlServer.Tests.AssemblyInfo.cs
+C:\Users\ndoum\Documents\Visual Studio 2017\Projects\Queries\test\Queries.Renderers.SqlServer.Tests\bin\Debug\netcoreapp1.0\xunit.runner.visualstudio.dotnetcore.testadapter.dll
+C:\Users\ndoum\Documents\Visual Studio 2017\Projects\Queries\test\Queries.Renderers.SqlServer.Tests\bin\Debug\netcoreapp1.0\xunit.runner.utility.dotnet.dll
+C:\Users\ndoum\Documents\Visual Studio 2017\Projects\Queries\test\Queries.Renderers.SqlServer.Tests\bin\Debug\netcoreapp1.0\xunit.runner.reporters.dotnet.dll
+C:\Users\ndoum\Documents\Visual Studio 2017\Projects\Queries\test\Queries.Renderers.SqlServer.Tests\bin\Debug\netcoreapp1.0\Queries.Renderers.SqlServer.Tests.dll
+C:\Users\ndoum\Documents\Visual Studio 2017\Projects\Queries\test\Queries.Renderers.SqlServer.Tests\bin\Debug\netcoreapp1.0\Queries.Renderers.SqlServer.Tests.pdb
+C:\Users\ndoum\Documents\Visual Studio 2017\Projects\Queries\test\Queries.Renderers.SqlServer.Tests\bin\Debug\netcoreapp1.0\Queries.Core.dll
+C:\Users\ndoum\Documents\Visual Studio 2017\Projects\Queries\test\Queries.Renderers.SqlServer.Tests\bin\Debug\netcoreapp1.0\Queries.Renderers.SqlServer.dll
+C:\Users\ndoum\Documents\Visual Studio 2017\Projects\Queries\test\Queries.Renderers.SqlServer.Tests\bin\Debug\netcoreapp1.0\Queries.Core.pdb
+C:\Users\ndoum\Documents\Visual Studio 2017\Projects\Queries\test\Queries.Renderers.SqlServer.Tests\bin\Debug\netcoreapp1.0\Queries.Renderers.SqlServer.pdb
+C:\Users\ndoum\Documents\Visual Studio 2017\Projects\Queries\test\Queries.Renderers.SqlServer.Tests\obj\Debug\netcoreapp1.0\Queries.Renderers.SqlServer.Tests.dll
+C:\Users\ndoum\Documents\Visual Studio 2017\Projects\Queries\test\Queries.Renderers.SqlServer.Tests\obj\Debug\netcoreapp1.0\Queries.Renderers.SqlServer.Tests.pdb

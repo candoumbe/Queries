@@ -37,11 +37,6 @@ namespace Queries.Core.Parts.Functions
         /// </exception>
         public SubstringFunction(IColumn column, int start, int? length = null)
         {
-            if (column == null)
-            {
-                throw new ArgumentNullException(nameof(column), $"{nameof(column)} cannot be null");
-            }
-
             if (start < 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(start), $"{nameof(start)} must be greater or equal to 0");
@@ -52,7 +47,7 @@ namespace Queries.Core.Parts.Functions
                 throw new ArgumentOutOfRangeException(nameof(length), $"{nameof(length)} must be greater or equal to 0");
             }
 
-            Column = column;
+            Column = column ?? throw new ArgumentNullException(nameof(column), $"{nameof(column)} cannot be null");
             Start = start;
             Length = length;
         }

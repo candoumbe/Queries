@@ -26,12 +26,7 @@ namespace Queries.Core.Parts.Functions
         /// <exception cref="ArgumentNullException">if <paramref name="column"/> is <code>null</code></exception>
         public UpperFunction(IColumn column)
         {
-            if (column == null)
-            {
-                throw new ArgumentNullException(nameof(column));
-            }
-
-            Column = column;
+            Column = column ?? throw new ArgumentNullException(nameof(column));
         }
 
         /// <summary>

@@ -8,8 +8,8 @@ namespace Queries.Core.Validators
     public class SelectQueryValidator : SelectQueryBaseValidator<SelectQuery>
     {
 
-        public IValidate<IColumn> ColumnValidator { get; private set; }
-        public IValidate<Table> TableValidator { get; private set; }
+        public IValidate<IColumn> ColumnValidator { get;}
+        public IValidate<Table> TableValidator { get; }
 
 
         public SelectQueryValidator()
@@ -19,7 +19,9 @@ namespace Queries.Core.Validators
         }
 
 
-        public override bool IsValid(SelectQuery query) => query != null && (query.Columns?.Any() ?? false)
-    && query.Columns.All(col => ColumnValidator.IsValid(col)) && (query.Tables?.All(table => (table is Table && TableValidator.IsValid((Table)table)) || (table is SelectTable)) ?? false);
+        public override bool IsValid(SelectQuery query) => 
+            query != null && (query.Columns?.Any() ?? false)
+            && query.Columns.All(col => ColumnValidator.IsValid(col)) 
+                && (query.Tables?.All(t => (t is Table table && TableValidator.IsValid((Table)t)) || (t is SelectTable)) ?? false);
     }
 }
