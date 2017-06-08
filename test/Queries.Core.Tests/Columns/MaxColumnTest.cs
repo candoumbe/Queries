@@ -4,6 +4,7 @@ using Queries.Core.Extensions;
 using Queries.Core.Parts.Columns;
 using Xunit;
 using Queries.Core.Parts.Functions;
+using FluentAssertions;
 
 namespace Queries.Core.Tests.Functions
 {
@@ -12,44 +13,46 @@ namespace Queries.Core.Tests.Functions
         [Fact]
         public void ConstructorTestWithNullStringArgument()
         {
-            Assert.Throws<ArgumentNullException>(() =>
-            {
-                var column = new MaxFunction((string)null);
-            });
+            Action action = () => new MaxFunction((string)null);
+
+            action.ShouldThrowExactly<ArgumentNullException>().Which
+                .ParamName.Should()
+                .NotBeNullOrWhiteSpace();
         }
 
         [Fact]
         public void ConstructorTestWithEmptyStringArgument()
         {
-            Assert.Throws<ArgumentOutOfRangeException>(() =>
-            {
-                var column = new MaxFunction(string.Empty);
-            });
+            Action action = () => new MaxFunction(string.Empty);
+
+            action.ShouldThrowExactly<ArgumentOutOfRangeException>().Which
+                .ParamName.Should()
+                .NotBeNullOrWhiteSpace();
         }
 
         [Fact]
         public void ConstructorTestWithWhitespaceStringArgument()
         {
-            Assert.Throws<ArgumentOutOfRangeException>(() =>
-            {
-                var column = new MaxFunction(" ");
-            });
+            Action action = () => new MaxFunction("   ");
+
+            action.ShouldThrowExactly<ArgumentOutOfRangeException>().Which
+                .ParamName.Should()
+                .NotBeNullOrWhiteSpace();
         }
 
         [Fact]
         public void ConstructorTestWithNullColumnArgument()
         {
-            Assert.Throws<ArgumentNullException>(() =>
-            {
-                var column = new MaxFunction((IColumn)null);
-            });
+            Action action = () => new MaxFunction((IColumn)null);
+
+            action.ShouldThrowExactly<ArgumentNullException>().Which
+                .ParamName.Should()
+                .NotBeNullOrWhiteSpace();
         }
 
         [Fact]
-        public void ConstructorTestColumnArgument()
-        {
-            Assert.Equal(AggregateType.Max, new MaxFunction("age").Type);
-        }
+        public void ConstructorTestColumnArgument() => new MaxFunction("age").Type.Should().Be(AggregateType.Max);
+
 
         public static IEnumerable<object[]> AsTestCases
         {
@@ -72,6 +75,6 @@ namespace Queries.Core.Tests.Functions
         [Theory]
         [MemberData(nameof(AsTestCases))]
         public void SettingAliasTest(MaxFunction column, string expectedAlias)
-            => Assert.Equal(expectedAlias, column.Alias);
+            => column.Alias.Should().Be(expectedAlias);
     }
 }

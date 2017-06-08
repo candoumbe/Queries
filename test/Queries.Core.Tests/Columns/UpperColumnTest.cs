@@ -4,6 +4,7 @@ using Queries.Core.Extensions;
 using Queries.Core.Parts.Columns;
 using Xunit;
 using Queries.Core.Parts.Functions;
+using FluentAssertions;
 
 namespace Queries.Core.Tests.Columns
 {
@@ -13,26 +14,28 @@ namespace Queries.Core.Tests.Columns
         [Fact]
         public void ConstructorTestWithNullStringArgument()
         {
-            Assert.Throws<ArgumentNullException>(() =>
-            {
-                var column = new UpperFunction((string)null);
-            });
+            Action action = () => new UpperFunction((string)null);
+
+            action.ShouldThrowExactly<ArgumentNullException>().Which
+                .ParamName.Should()
+                .NotBeNullOrWhiteSpace();
         }
 
         
         [Fact]
         public void ConstructorTestWithNullColumnArgument()
         {
-            Assert.Throws<ArgumentNullException>(() =>
-            {
-                var column = new UpperFunction((IColumn)null);
-            });
+            Action action = () => new UpperFunction((IColumn) null);
+
+            action.ShouldThrowExactly<ArgumentNullException>().Which
+                .ParamName.Should()
+                .NotBeNullOrWhiteSpace();
         }
         
         [Theory]
         [MemberData(nameof(AsTestCases))]
-        public void SettingAliasTest(UpperFunction upperColumn, string expectedAlias)
-            => Assert.Equal(expectedAlias, upperColumn.Alias);
+        public void SettingAliasTest(UpperFunction column, string expectedAlias)
+            => column.Alias.Should().Be(expectedAlias);
 
 
 

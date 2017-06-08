@@ -4,7 +4,7 @@ using Queries.Core.Extensions;
 using Queries.Core.Parts.Columns;
 using Xunit;
 using Queries.Core.Parts.Functions;
-
+using FluentAssertions;
 namespace Queries.Core.Tests.Columns
 {
     public class AvgColumnTest
@@ -12,37 +12,43 @@ namespace Queries.Core.Tests.Columns
         [Fact]
         public void ConstructorTestWithNullStringArgument()
         {
-            Assert.Throws<ArgumentNullException>(() =>
-            {
-                var column = new AvgFunction((string)null);
-            });
+            Action action = () => new AvgFunction((string)null);
+
+            action.ShouldThrowExactly<ArgumentNullException>()
+                .Which
+                .ParamName.Should()
+                    .NotBeNullOrWhiteSpace();
         }
 
         [Fact]
         public void ConstructorTestWithEmptyStringArgument()
         {
-            Assert.Throws<ArgumentOutOfRangeException>(() =>
-            {
-                var column = new AvgFunction(string.Empty);
-            });
+            Action action = () => new AvgFunction(string.Empty);
+
+            action.ShouldThrowExactly<ArgumentOutOfRangeException>().Which
+                .ParamName.Should()
+                .NotBeNullOrWhiteSpace();
+
         }
 
         [Fact]
         public void ConstructorTestWithWhitespaceStringArgument()
         {
-            Assert.Throws<ArgumentOutOfRangeException>(() =>
-            {
-                var column = new AvgFunction(" ");
-            });
+            Action action = () => new AvgFunction("   ");
+
+            action.ShouldThrowExactly<ArgumentOutOfRangeException>().Which
+                .ParamName.Should()
+                .NotBeNullOrWhiteSpace();
         }
 
         [Fact]
         public void ConstructorTestWithNullColumnArgument()
         {
-            Assert.Throws<ArgumentNullException>(() =>
-            {
-                var column = new AvgFunction((IColumn)null);
-            });
+            Action action = () => new AvgFunction((IColumn) null);
+
+            action.ShouldThrowExactly<ArgumentNullException>().Which
+                .ParamName.Should()
+                .NotBeNullOrWhiteSpace();
         }
 
         [Fact]
@@ -71,7 +77,7 @@ namespace Queries.Core.Tests.Columns
 
         [Theory]
         [MemberData(nameof(AsTestCases))]
-        public void SettingAliasTest(AvgFunction concatColumn, string expectedAlias)
-            => Assert.Equal(expectedAlias, concatColumn.Alias);
+        public void SettingAliasTest(AvgFunction column, string expectedAlias)
+            => column.Alias.Should().Be(expectedAlias);
     }
 }

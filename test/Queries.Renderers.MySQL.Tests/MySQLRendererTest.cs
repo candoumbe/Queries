@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Queries.Core;
 using Queries.Core.Builders;
 using Queries.Core.Extensions;
-
+using FluentAssertions;
 
 namespace Queries.Renderers.MySQL.Tests
 {
@@ -34,6 +34,7 @@ namespace Queries.Renderers.MySQL.Tests
             => IsQueryOk(query, prettyPrint, expectedString);
 
 
-        private static void IsQueryOk(IQuery query, bool prettyPrint, string expectedString) => Assert.Equal(expectedString, query.ForMySQL(prettyPrint));
+        private static void IsQueryOk(IQuery query, bool prettyPrint, string expectedString) => 
+            query.ForMySQL(prettyPrint).Should().Be(expectedString);
     }
 }

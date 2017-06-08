@@ -7,10 +7,10 @@
   "targets": {
     ".NETStandard,Version=v1.0": {},
     ".NETStandard,Version=v1.0/": {
-      "queries.renderers.mysql/3.0.0-alpha-01": {
+      "queries.renderers.mysql/3.0.1-alpha-01": {
         "dependencies": {
           "NETStandard.Library": "1.6.1",
-          "Queries.Core": "4.0.0"
+          "Queries.Core": "4.0.1"
         },
         "runtime": {
           "Queries.Renderers.MySQL.dll": {}
@@ -207,7 +207,7 @@
           "System.Xml.ReaderWriter": "4.3.0"
         }
       },
-      "queries.core/4.0.0": {
+      "queries.core/4.0.1": {
         "dependencies": {
           "NETStandard.Library": "1.6.1",
           "System.Linq.Queryable": "4.3.0",
@@ -221,7 +221,7 @@
     }
   },
   "libraries": {
-    "queries.renderers.mysql/3.0.0-alpha-01": {
+    "queries.renderers.mysql/3.0.1-alpha-01": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
@@ -408,7 +408,7 @@
       "path": "system.xml.xdocument/4.3.0",
       "hashPath": "system.xml.xdocument.4.3.0.nupkg.sha512"
     },
-    "queries.core/4.0.0": {
+    "queries.core/4.0.1": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

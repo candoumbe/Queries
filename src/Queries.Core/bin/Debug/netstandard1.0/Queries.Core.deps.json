@@ -7,7 +7,7 @@
   "targets": {
     ".NETStandard,Version=v1.0": {},
     ".NETStandard,Version=v1.0/": {
-      "queries.core/4.0.0": {
+      "queries.core/4.0.1": {
         "dependencies": {
           "NETStandard.Library": "1.6.1",
           "System.Linq.Queryable": "4.3.0",
@@ -212,7 +212,7 @@
     }
   },
   "libraries": {
-    "queries.core/4.0.0": {
+    "queries.core/4.0.1": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

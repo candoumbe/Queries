@@ -10,6 +10,7 @@
     <PackageTags>Queries;Query;SQL;Builder;SQL Server</PackageTags>
     <PackageReleaseNotes>This is an alpha version</PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/candoumbe/Queries</PackageProjectUrl>
+    <Version>3.0.1-alpha1</Version>
   </PropertyGroup>
 
   <ItemGroup>

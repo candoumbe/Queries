@@ -10,6 +10,7 @@
     <PackageTags>Query;Builder;SQL;MySQL</PackageTags>
     <PackageReleaseNotes>This is an alpha version</PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/candoumbe/Queries</PackageProjectUrl>
+    <Version>3.0.1-alpha-01</Version>
   </PropertyGroup>
 
   <ItemGroup>

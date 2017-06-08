@@ -14,11 +14,11 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Cyrille NDOUMBE")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyDescriptionAttribute("Queries.Renderers.MySQL Class Library")]
-[assembly: System.Reflection.AssemblyFileVersionAttribute("3.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("3.0.0-alpha-01")]
+[assembly: System.Reflection.AssemblyFileVersionAttribute("3.0.1.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("3.0.1-alpha-01")]
 [assembly: System.Reflection.AssemblyProductAttribute("Queries.Renderers.MySQL")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Queries.Renderers.MySQL")]
-[assembly: System.Reflection.AssemblyVersionAttribute("3.0.0.0")]
+[assembly: System.Reflection.AssemblyVersionAttribute("3.0.1.0")]
 
 // Généré par la classe MSBuild WriteCodeFragment.
 

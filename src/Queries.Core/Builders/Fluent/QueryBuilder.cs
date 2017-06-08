@@ -20,7 +20,8 @@ namespace Queries.Core.Builders.Fluent
         /// </summary>
         /// <param name="columns">Columns to concatenate</param>
         /// <returns></returns>
-        public static ConcatFunction Concat(params IColumn[] columns) => new ConcatFunction(columns);
+        /// <exception cref="System.ArgumentNullException">if either <paramref name="first"/> or <paramref name="second"/> is <c>null</c> </exception>
+        public static ConcatFunction Concat(IColumn first, IColumn second, params IColumn[] columns) => new ConcatFunction(first, second, columns);
 
         /// <summary>
         /// Applies <see cref="NullFunction"/> to <paramref name="column"/>.

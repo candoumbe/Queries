@@ -1941,7 +1941,7 @@
     "C:\\Users\\ndoum\\.nuget\\packages\\": {}
   },
   "project": {
-    "version": "4.0.0",
+    "version": "4.0.1",
     "restore": {
       "projectUniqueName": "C:\\Users\\ndoum\\Documents\\Visual Studio 2017\\Projects\\Queries\\src\\Queries.Core\\Queries.Core.csproj",
       "projectName": "Queries.Core",

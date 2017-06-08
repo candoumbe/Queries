@@ -302,7 +302,7 @@
           "ref/netstandard1.0/System.Xml.XDocument.dll": {}
         }
       },
-      "Queries.Core/4.0.0": {
+      "Queries.Core/4.0.1": {
         "type": "project",
         "framework": ".NETStandard,Version=v1.0",
         "dependencies": {
@@ -1938,7 +1938,7 @@
         "system.xml.xdocument.nuspec"
       ]
     },
-    "Queries.Core/4.0.0": {
+    "Queries.Core/4.0.1": {
       "type": "project",
       "path": "../Queries.Core/Queries.Core.csproj",
       "msbuildProject": "../Queries.Core/Queries.Core.csproj"
@@ -1947,14 +1947,14 @@
   "projectFileDependencyGroups": {
     ".NETStandard,Version=v1.0": [
       "NETStandard.Library >= 1.6.1",
-      "Queries.Core >= 4.0.0"
+      "Queries.Core >= 4.0.1"
     ]
   },
   "packageFolders": {
     "C:\\Users\\ndoum\\.nuget\\packages\\": {}
   },
   "project": {
-    "version": "3.0.0-alpha1",
+    "version": "3.0.1-alpha1",
     "restore": {
       "projectUniqueName": "C:\\Users\\ndoum\\Documents\\Visual Studio 2017\\Projects\\Queries\\src\\Queries.Renderers.SqlServer\\Queries.Renderers.SqlServer.csproj",
       "projectName": "Queries.Renderers.SqlServer",

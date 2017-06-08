@@ -13,6 +13,7 @@
     <PackageProjectUrl>https://github.com/candoumbe/Queries</PackageProjectUrl>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>git://github.com/candoumbe/Queries</RepositoryUrl>
+    <Version>3.0.1-alpha-01</Version>
   </PropertyGroup>
 
   <ItemGroup>

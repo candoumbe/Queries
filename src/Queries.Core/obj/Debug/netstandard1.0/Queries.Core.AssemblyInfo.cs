@@ -13,12 +13,12 @@ using System.Reflection;
 
 [assembly: System.Reflection.AssemblyCompanyAttribute("Cyrille NDOUMBE")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
-[assembly: System.Reflection.AssemblyDescriptionAttribute("Queries.Core Class Library")]
-[assembly: System.Reflection.AssemblyFileVersionAttribute("4.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("4.0.0")]
+[assembly: System.Reflection.AssemblyDescriptionAttribute("Contains the core classes to build queries.")]
+[assembly: System.Reflection.AssemblyFileVersionAttribute("4.0.1.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("4.0.1")]
 [assembly: System.Reflection.AssemblyProductAttribute("Queries.Core")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Queries.Core")]
-[assembly: System.Reflection.AssemblyVersionAttribute("4.0.0.0")]
+[assembly: System.Reflection.AssemblyVersionAttribute("4.0.1.0")]
 
 // Généré par la classe MSBuild WriteCodeFragment.
 

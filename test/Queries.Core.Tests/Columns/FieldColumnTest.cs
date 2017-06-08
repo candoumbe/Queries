@@ -4,6 +4,7 @@ using Queries.Core.Extensions;
 using Queries.Core.Parts.Columns;
 using Xunit;
 using Queries.Core.Parts.Functions;
+using FluentAssertions;
 
 namespace Queries.Core.Tests.Columns
 {
@@ -56,7 +57,7 @@ namespace Queries.Core.Tests.Columns
 
         [Theory]
         [MemberData(nameof(AsTestCases))]
-        public void SettingAliasTest(CountFunction concatColumn, string expectedAlias)
-            => Assert.Equal(expectedAlias, concatColumn.Alias);
+        public void SettingAliasTest(CountFunction column, string expectedAlias)
+            => column.Alias.Should().Be(expectedAlias);
     }
 }
