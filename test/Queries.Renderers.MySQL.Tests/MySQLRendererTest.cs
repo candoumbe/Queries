@@ -22,6 +22,14 @@ namespace Queries.Renderers.MySQL.Tests
                     false,
                     @"SELECT CONCAT(""firstname"", ' ', ""lastname"")"
                 };
+
+
+                yield return new object[]
+                {
+                    new SelectQuery(Concat("firstname".Field(), " ".Literal(), "lastname".Field())),
+                    false,
+                    @"SELECT CONCAT(""firstname"", ' ', ""lastname"")"
+                };
             }
         }
 

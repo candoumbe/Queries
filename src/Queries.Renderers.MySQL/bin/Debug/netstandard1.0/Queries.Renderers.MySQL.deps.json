@@ -1,7 +1,7 @@
 {
   "runtimeTarget": {
     "name": ".NETStandard,Version=v1.0/",
-    "signature": "a3d6978b3a22659a7c032dae0fb5849a63b65c9e"
+    "signature": "8cf0bb76510a3f4d3320dde018f90cc11306c959"
   },
   "compilationOptions": {},
   "targets": {
@@ -14,6 +14,14 @@
         },
         "runtime": {
           "Queries.Renderers.MySQL.dll": {}
+        }
+      },
+      "fluentvalidation/7.1.1": {
+        "dependencies": {
+          "NETStandard.Library": "1.6.1"
+        },
+        "runtime": {
+          "lib/netstandard1.0/FluentValidation.dll": {}
         }
       },
       "microsoft.netcore.platforms/1.1.0": {},
@@ -209,6 +217,7 @@
       },
       "queries.core/4.0.1": {
         "dependencies": {
+          "FluentValidation": "7.1.1",
           "NETStandard.Library": "1.6.1",
           "System.Linq.Queryable": "4.3.0",
           "System.Runtime": "4.3.0",
@@ -225,6 +234,13 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
+    },
+    "fluentvalidation/7.1.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-+EOmm3XjvgSuPWqVDqCT807cPwerhJTK2qNi2+CfCvbSn5Jq4+3aRcB6buUJeeOwRLJxFAvYpTZyJTx6w6RAoQ==",
+      "path": "fluentvalidation/7.1.1",
+      "hashPath": "fluentvalidation.7.1.1.nupkg.sha512"
     },
     "microsoft.netcore.platforms/1.1.0": {
       "type": "package",

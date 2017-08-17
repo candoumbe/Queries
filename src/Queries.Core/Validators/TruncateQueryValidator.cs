@@ -1,10 +1,14 @@
-﻿using Queries.Core.Builders;
+﻿using FluentValidation;
+using Queries.Core.Builders;
 using Queries.Core.Extensions;
 
 namespace Queries.Core.Validators
 {
-    public class TruncateQueryValidator : IValidate<TruncateQuery>
+    /// <summary>
+    /// Validates <see cref="TruncateQuery"/> instances.
+    /// </summary>
+    public class TruncateQueryValidator : AbstractValidator<TruncateQuery>
     {
-        public bool IsValid(TruncateQuery query) => query != null && new TableValidator().IsValid(query.Name.Table());
+        
     }
 }

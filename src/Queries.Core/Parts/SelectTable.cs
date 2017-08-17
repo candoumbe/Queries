@@ -1,4 +1,5 @@
 using Queries.Core.Builders;
+using System;
 
 namespace Queries.Core.Parts
 {
@@ -24,15 +25,13 @@ namespace Queries.Core.Parts
             return this;
         }
 
-        // TODO Write unit tests !!!!
-
         /// <summary>
         /// Builds a new <see cref="SelectTable"/> instance.
         /// </summary>
-        /// <param name="query"></param>
+        /// <param name="query">the select query to wrap as an <see cref="ITable"/></param>
         public SelectTable(SelectQuery query)
         {
-            Select = query;
+            Select = query ?? throw new ArgumentNullException(nameof(query));
         }
     }
 }

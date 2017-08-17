@@ -13,6 +13,8 @@ namespace Queries.Core.Extensions
 
         public static NumericColumn Literal(this double obj) => new NumericColumn(obj);
 
+        public static NumericColumn Literal(this long obj) => new NumericColumn(obj);
+
         public static DateTimeColumn Literal(this DateTime value) => new DateTimeColumn(value);
     }
 }

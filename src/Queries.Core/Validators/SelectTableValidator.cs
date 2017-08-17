@@ -1,9 +1,10 @@
+using FluentValidation;
 using Queries.Core.Parts;
 
 namespace Queries.Core.Validators
 {
-    public class SelectTableValidator : IValidate<SelectTable>
+    public class SelectTableValidator : AbstractValidator<SelectTable>
     {
-        public bool IsValid(SelectTable table) => table != null;
+        
     }
 }

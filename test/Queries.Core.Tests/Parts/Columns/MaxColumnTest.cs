@@ -5,36 +5,35 @@ using Queries.Core.Parts.Columns;
 using Xunit;
 using Queries.Core.Parts.Functions;
 using FluentAssertions;
-namespace Queries.Core.Tests.Columns
+
+namespace Queries.Core.Tests.Parts.Functions
 {
-    public class AvgColumnTest
+    public class MaxColumnTest
     {
         [Fact]
         public void ConstructorTestWithNullStringArgument()
         {
-            Action action = () => new AvgFunction((string)null);
+            Action action = () => new MaxFunction((string)null);
 
-            action.ShouldThrowExactly<ArgumentNullException>()
-                .Which
+            action.ShouldThrowExactly<ArgumentNullException>().Which
                 .ParamName.Should()
-                    .NotBeNullOrWhiteSpace();
+                .NotBeNullOrWhiteSpace();
         }
 
         [Fact]
         public void ConstructorTestWithEmptyStringArgument()
         {
-            Action action = () => new AvgFunction(string.Empty);
+            Action action = () => new MaxFunction(string.Empty);
 
             action.ShouldThrowExactly<ArgumentOutOfRangeException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
-
         }
 
         [Fact]
         public void ConstructorTestWithWhitespaceStringArgument()
         {
-            Action action = () => new AvgFunction("   ");
+            Action action = () => new MaxFunction("   ");
 
             action.ShouldThrowExactly<ArgumentOutOfRangeException>().Which
                 .ParamName.Should()
@@ -44,7 +43,7 @@ namespace Queries.Core.Tests.Columns
         [Fact]
         public void ConstructorTestWithNullColumnArgument()
         {
-            Action action = () => new AvgFunction((IColumn) null);
+            Action action = () => new MaxFunction((IColumn)null);
 
             action.ShouldThrowExactly<ArgumentNullException>().Which
                 .ParamName.Should()
@@ -52,10 +51,8 @@ namespace Queries.Core.Tests.Columns
         }
 
         [Fact]
-        public void ConstructorTestColumnArgument()
-        {
-            Assert.Equal(AggregateType.Average, new AvgFunction("age").Type);
-        }
+        public void ConstructorTestColumnArgument() => new MaxFunction("age").Type.Should().Be(AggregateType.Max);
+
 
         public static IEnumerable<object[]> AsTestCases
         {
@@ -63,13 +60,13 @@ namespace Queries.Core.Tests.Columns
             {
                 yield return new object[]
                 {
-                    new AvgFunction("age".Field()),
+                    new MaxFunction("age".Field()),
                     null,
                 };
 
                 yield return new object[]
                 {
-                    new AvgFunction("age".Field()).As(string.Empty),
+                    new MaxFunction("age".Field()).As(string.Empty),
                     string.Empty,
                 };
             }
@@ -77,7 +74,7 @@ namespace Queries.Core.Tests.Columns
 
         [Theory]
         [MemberData(nameof(AsTestCases))]
-        public void SettingAliasTest(AvgFunction column, string expectedAlias)
+        public void SettingAliasTest(MaxFunction column, string expectedAlias)
             => column.Alias.Should().Be(expectedAlias);
     }
 }

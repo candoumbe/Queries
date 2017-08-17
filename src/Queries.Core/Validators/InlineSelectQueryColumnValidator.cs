@@ -1,10 +1,11 @@
-﻿using Queries.Core.Parts.Columns;
+﻿using FluentValidation;
+using Queries.Core.Parts.Columns;
 
 namespace Queries.Core.Validators
 {
-    public class InlineSelectQueryColumnValidator : IValidate<SelectColumn>
+    public class InlineSelectQueryColumnValidator : AbstractValidator<SelectColumn>
     {
 
-        public bool IsValid(SelectColumn query) => false;
+       
     }
 }

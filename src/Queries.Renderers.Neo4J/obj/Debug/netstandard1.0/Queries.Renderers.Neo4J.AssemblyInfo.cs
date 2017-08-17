@@ -15,11 +15,11 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyDescriptionAttribute("Queries.Renderers.Neo4J is a Query builder for Neo4J.\r\nIt\'s allow to build Neo4J " +
     "queries")]
-[assembly: System.Reflection.AssemblyFileVersionAttribute("3.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("3.0.0-alpha-01")]
+[assembly: System.Reflection.AssemblyFileVersionAttribute("3.0.1.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("3.0.1-alpha-01")]
 [assembly: System.Reflection.AssemblyProductAttribute("Queries.Renderers.Neo4J")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Queries.Renderers.Neo4J")]
-[assembly: System.Reflection.AssemblyVersionAttribute("3.0.0.0")]
+[assembly: System.Reflection.AssemblyVersionAttribute("3.0.1.0")]
 
 // Généré par la classe MSBuild WriteCodeFragment.
 

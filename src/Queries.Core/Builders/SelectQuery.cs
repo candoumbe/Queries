@@ -25,22 +25,15 @@ namespace Queries.Core.Builders
         public IList<IUnionQuery<SelectQuery>> Unions { get; set; }
 
         
-        internal SelectQuery(params IColumn[] columns)
+        public SelectQuery(params IColumn[] columns)
         {
             Columns = columns;
             Tables = new List<ITable>();
             Unions = new List<IUnionQuery<SelectQuery>>();
         }
 
-
-        
-
-        internal SelectQuery(params string[] columnNames)
+        internal SelectQuery(params string[] columnNames) : this(columnNames.Select(colName => colName.Field()).Cast<IColumn>().ToArray())
         {
-            Columns = columnNames.Select(colName => colName.Field()).Cast<IColumn>().ToList();
-            Tables = new List<ITable>();
-            Unions = new List<IUnionQuery<SelectQuery>>();
-
         }
 
         public ISelectQuery<SelectQuery> Limit(int limit)
@@ -72,17 +65,13 @@ namespace Queries.Core.Builders
        
         public IWhereQuery<SelectQuery> Where(IWhereClause clause)
         {
-            if (clause == null)
-            {
-                throw new ArgumentNullException(nameof(clause), $"{clause} cannot be null");
-            }
-
-            WhereCriteria = clause;
+            WhereCriteria = clause ?? throw new ArgumentNullException(nameof(clause), $"{clause} cannot be null");
 
             return this;
         }
 
-        public IWhereQuery<SelectQuery> Where(IColumn column, ClauseOperator @operator, ColumnBase constraint) => Where(new WhereClause(column, @operator, constraint));
+        public IWhereQuery<SelectQuery> Where(IColumn column, ClauseOperator @operator, ColumnBase constraint) 
+            => Where(new WhereClause(column, @operator, constraint));
 
 
 

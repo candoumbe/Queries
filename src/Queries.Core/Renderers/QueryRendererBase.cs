@@ -32,7 +32,7 @@ namespace Queries.Core.Renderers
             DatabaseType = databaseType;
             PrettyPrint = prettyPrint;
         }
-        
+
         public DatabaseType DatabaseType { get; }
 
 
@@ -74,7 +74,7 @@ namespace Queries.Core.Renderers
 
                 escapedColumnName = sb.ToString();
             }
-            
+
             return escapedColumnName;
         }
 
@@ -104,11 +104,11 @@ namespace Queries.Core.Renderers
             }
             else if (query is InsertIntoQuery)
             {
-                result = Render((InsertIntoQuery) query);
+                result = Render((InsertIntoQuery)query);
             }
             else if (query is BatchQuery)
             {
-                result = Render((BatchQuery) query);
+                result = Render((BatchQuery)query);
             }
 
             return result;
@@ -131,10 +131,10 @@ namespace Queries.Core.Renderers
             {
                 StringBuilder sbColumns = new StringBuilder();
                 StringBuilder sbValues = new StringBuilder();
-                IEnumerable<InsertedValue> values = (IEnumerable<InsertedValue>) query.InsertedValue;
+                IEnumerable<InsertedValue> values = (IEnumerable<InsertedValue>)query.InsertedValue;
                 foreach (InsertedValue insertedValue in values)
                 {
-                    sbValues.Append($"{(sbValues.Length > 0 ? ", " : string.Empty)}{RenderColumn(insertedValue.Value, renderAlias:false)}");
+                    sbValues.Append($"{(sbValues.Length > 0 ? ", " : string.Empty)}{RenderColumn(insertedValue.Value, renderAlias: false)}");
                     sbColumns.Append($"{(sbColumns.Length > 0 ? ", " : string.Empty)}{RenderColumn(insertedValue.Column, renderAlias: false)}");
 
                     queryString = $"INSERT INTO {RenderTablename(query.TableName.Table(), renderAlias: false)} ({sbColumns}) {(PrettyPrint ? Environment.NewLine : string.Empty)}VALUES ({sbValues})";
@@ -144,7 +144,7 @@ namespace Queries.Core.Renderers
             return queryString;
         }
 
-        
+
 
 
         protected virtual string Render(SelectQueryBase query)
@@ -546,7 +546,7 @@ namespace Queries.Core.Renderers
             {
                 columnString = RenderLiteralColumn(literalColumn, renderAlias);
             }
-            else  if (column is SelectColumn selectColumn)
+            else if (column is SelectColumn selectColumn)
             {
                 columnString = RenderInlineSelect(selectColumn, renderAlias);
             }
@@ -807,15 +807,13 @@ namespace Queries.Core.Renderers
         {
             StringBuilder sb = new StringBuilder();
 
-            if (query != null && new CreateViewQueryValidator().IsValid(query))
-            {
-                sb = sb.AppendFormat("CREATE VIEW {0} ", RenderTables(new ITable[] { query.ViewName.Table() }))
+            sb = sb.AppendFormat("CREATE VIEW {0} ", RenderTables(new ITable[] { query.ViewName.Table() }))
 
-                    .Append(PrettyPrint ? Environment.NewLine : string.Empty)
-                    .AppendFormat("AS ")
-                    .Append(PrettyPrint ? Environment.NewLine : string.Empty)
-                    .Append(Render(query.SelectQuery));
-            }
+                .Append(PrettyPrint ? Environment.NewLine : string.Empty)
+                .AppendFormat("AS ")
+                .Append(PrettyPrint ? Environment.NewLine : string.Empty)
+                .Append(Render(query.SelectQuery));
+
 
             return sb.ToString();
         }
@@ -833,10 +831,7 @@ namespace Queries.Core.Renderers
 
         protected virtual string Render(DeleteQuery deleteQuery)
         {
-            if (!new DeleteQueryValidator().IsValid(deleteQuery))
-            {
-                throw new InvalidQueryException($"{nameof(deleteQuery)} is not valid");
-            }
+            
 
             StringBuilder sbQuery = new StringBuilder();
 
@@ -881,7 +876,7 @@ namespace Queries.Core.Renderers
                     sbResult.Append(Render(currentStatement));
                     previousStatement = currentStatement;
                 }
-                
+
             }
 
             return sbResult.ToString();

@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "targets": {
     ".NETCoreApp,Version=v1.0": {
       "FluentAssertions/4.18.0": {
@@ -15,6 +15,18 @@
         "runtime": {
           "lib/netstandard1.3/FluentAssertions.Core.dll": {},
           "lib/netstandard1.3/FluentAssertions.dll": {}
+        }
+      },
+      "FluentValidation/7.1.1": {
+        "type": "package",
+        "dependencies": {
+          "NETStandard.Library": "1.6.1"
+        },
+        "compile": {
+          "lib/netstandard1.0/FluentValidation.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard1.0/FluentValidation.dll": {}
         }
       },
       "Libuv/1.9.1": {
@@ -2982,10 +2994,17 @@
         "type": "project",
         "framework": ".NETStandard,Version=v1.0",
         "dependencies": {
+          "FluentValidation": "7.1.1",
           "NETStandard.Library": "1.6.1",
           "System.Linq.Queryable": "4.3.0",
           "System.Runtime": "4.3.0",
           "System.Runtime.Extensions": "4.3.0"
+        },
+        "compile": {
+          "bin/placeholder/Queries.Core.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Queries.Core.dll": {}
         }
       },
       "Queries.Renderers.MySQL/3.0.1-alpha-01": {
@@ -2994,6 +3013,12 @@
         "dependencies": {
           "NETStandard.Library": "1.6.1",
           "Queries.Core": "4.0.1"
+        },
+        "compile": {
+          "bin/placeholder/Queries.Renderers.MySQL.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Queries.Renderers.MySQL.dll": {}
         }
       }
     },
@@ -3011,6 +3036,18 @@
         "runtime": {
           "lib/netstandard1.3/FluentAssertions.Core.dll": {},
           "lib/netstandard1.3/FluentAssertions.dll": {}
+        }
+      },
+      "FluentValidation/7.1.1": {
+        "type": "package",
+        "dependencies": {
+          "NETStandard.Library": "1.6.1"
+        },
+        "compile": {
+          "lib/netstandard1.0/FluentValidation.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard1.0/FluentValidation.dll": {}
         }
       },
       "Libuv/1.9.1": {
@@ -6105,10 +6142,17 @@
         "type": "project",
         "framework": ".NETStandard,Version=v1.0",
         "dependencies": {
+          "FluentValidation": "7.1.1",
           "NETStandard.Library": "1.6.1",
           "System.Linq.Queryable": "4.3.0",
           "System.Runtime": "4.3.0",
           "System.Runtime.Extensions": "4.3.0"
+        },
+        "compile": {
+          "bin/placeholder/Queries.Core.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Queries.Core.dll": {}
         }
       },
       "Queries.Renderers.MySQL/3.0.1-alpha-01": {
@@ -6117,6 +6161,12 @@
         "dependencies": {
           "NETStandard.Library": "1.6.1",
           "Queries.Core": "4.0.1"
+        },
+        "compile": {
+          "bin/placeholder/Queries.Renderers.MySQL.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Queries.Renderers.MySQL.dll": {}
         }
       }
     }
@@ -6216,6 +6266,19 @@
         "lib/wpa81/FluentAssertions.pdb",
         "lib/wpa81/FluentAssertions.pri",
         "lib/wpa81/FluentAssertions.xml"
+      ]
+    },
+    "FluentValidation/7.1.1": {
+      "sha512": "+EOmm3XjvgSuPWqVDqCT807cPwerhJTK2qNi2+CfCvbSn5Jq4+3aRcB6buUJeeOwRLJxFAvYpTZyJTx6w6RAoQ==",
+      "type": "package",
+      "path": "fluentvalidation/7.1.1",
+      "files": [
+        "fluentvalidation.7.1.1.nupkg.sha512",
+        "fluentvalidation.nuspec",
+        "lib/net45/FluentValidation.dll",
+        "lib/net45/FluentValidation.xml",
+        "lib/netstandard1.0/FluentValidation.dll",
+        "lib/netstandard1.0/FluentValidation.xml"
       ]
     },
     "Libuv/1.9.1": {
@@ -12689,15 +12752,29 @@
   },
   "project": {
     "version": "1.0.0",
+    "restoreSettings": {
+      "hideWarningsAndErrors": true
+    },
     "restore": {
       "projectUniqueName": "C:\\Users\\ndoum\\Documents\\Visual Studio 2017\\Projects\\Queries\\test\\Queries.Renderers.MySQL.Tests\\Queries.Renderers.MySQL.Tests.csproj",
       "projectName": "Queries.Renderers.MySQL.Tests",
       "projectPath": "C:\\Users\\ndoum\\Documents\\Visual Studio 2017\\Projects\\Queries\\test\\Queries.Renderers.MySQL.Tests\\Queries.Renderers.MySQL.Tests.csproj",
+      "packagesPath": "C:\\Users\\ndoum\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\ndoum\\Documents\\Visual Studio 2017\\Projects\\Queries\\test\\Queries.Renderers.MySQL.Tests\\obj\\",
       "projectStyle": "PackageReference",
+      "configFilePaths": [
+        "C:\\Users\\ndoum\\Documents\\Visual Studio 2017\\Projects\\Queries\\NuGet.Config",
+        "C:\\Users\\ndoum\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+      ],
       "originalTargetFrameworks": [
         "netcoreapp1.0"
       ],
+      "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "https://api.nuget.org/v3/index.json": {},
+        "https://www.myget.org/F/aspnet-contrib/api/v3/index.json": {}
+      },
       "frameworks": {
         "netcoreapp1.0": {
           "projectReferences": {

@@ -7,3 +7,4 @@ C:\Users\ndoum\Documents\Visual Studio 2017\Projects\Queries\src\Queries.Rendere
 C:\Users\ndoum\Documents\Visual Studio 2017\Projects\Queries\src\Queries.Renderers.Postgres\bin\Debug\netstandard1.0\Queries.Core.pdb
 C:\Users\ndoum\Documents\Visual Studio 2017\Projects\Queries\src\Queries.Renderers.Postgres\obj\Debug\netstandard1.0\Queries.Renderers.Postgres.dll
 C:\Users\ndoum\Documents\Visual Studio 2017\Projects\Queries\src\Queries.Renderers.Postgres\obj\Debug\netstandard1.0\Queries.Renderers.Postgres.pdb
+C:\Users\ndoum\Documents\Visual Studio 2017\Projects\Queries\src\Queries.Renderers.Postgres\obj\Debug\netstandard1.0\Queries.Renderers.Postgres.csproj.CoreCompileInputs.cache

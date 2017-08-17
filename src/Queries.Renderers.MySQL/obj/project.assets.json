@@ -1,7 +1,19 @@
 {
-  "version": 2,
+  "version": 3,
   "targets": {
     ".NETStandard,Version=v1.0": {
+      "FluentValidation/7.1.1": {
+        "type": "package",
+        "dependencies": {
+          "NETStandard.Library": "1.6.1"
+        },
+        "compile": {
+          "lib/netstandard1.0/FluentValidation.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard1.0/FluentValidation.dll": {}
+        }
+      },
       "Microsoft.NETCore.Platforms/1.1.0": {
         "type": "package",
         "compile": {
@@ -306,15 +318,35 @@
         "type": "project",
         "framework": ".NETStandard,Version=v1.0",
         "dependencies": {
+          "FluentValidation": "7.1.1",
           "NETStandard.Library": "1.6.1",
           "System.Linq.Queryable": "4.3.0",
           "System.Runtime": "4.3.0",
           "System.Runtime.Extensions": "4.3.0"
+        },
+        "compile": {
+          "bin/placeholder/Queries.Core.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Queries.Core.dll": {}
         }
       }
     }
   },
   "libraries": {
+    "FluentValidation/7.1.1": {
+      "sha512": "+EOmm3XjvgSuPWqVDqCT807cPwerhJTK2qNi2+CfCvbSn5Jq4+3aRcB6buUJeeOwRLJxFAvYpTZyJTx6w6RAoQ==",
+      "type": "package",
+      "path": "fluentvalidation/7.1.1",
+      "files": [
+        "fluentvalidation.7.1.1.nupkg.sha512",
+        "fluentvalidation.nuspec",
+        "lib/net45/FluentValidation.dll",
+        "lib/net45/FluentValidation.xml",
+        "lib/netstandard1.0/FluentValidation.dll",
+        "lib/netstandard1.0/FluentValidation.xml"
+      ]
+    },
     "Microsoft.NETCore.Platforms/1.1.0": {
       "sha512": "kz0PEW2lhqygehI/d6XsPCQzD7ff7gUJaVGPVETX611eadGsA3A877GdSlU0LRVMCTH/+P3o2iDTak+S08V2+A==",
       "type": "package",
@@ -1955,15 +1987,29 @@
   },
   "project": {
     "version": "3.0.1-alpha-01",
+    "restoreSettings": {
+      "hideWarningsAndErrors": true
+    },
     "restore": {
       "projectUniqueName": "C:\\Users\\ndoum\\Documents\\Visual Studio 2017\\Projects\\Queries\\src\\Queries.Renderers.MySQL\\Queries.Renderers.MySQL.csproj",
       "projectName": "Queries.Renderers.MySQL",
       "projectPath": "C:\\Users\\ndoum\\Documents\\Visual Studio 2017\\Projects\\Queries\\src\\Queries.Renderers.MySQL\\Queries.Renderers.MySQL.csproj",
+      "packagesPath": "C:\\Users\\ndoum\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\ndoum\\Documents\\Visual Studio 2017\\Projects\\Queries\\src\\Queries.Renderers.MySQL\\obj\\",
       "projectStyle": "PackageReference",
+      "configFilePaths": [
+        "C:\\Users\\ndoum\\Documents\\Visual Studio 2017\\Projects\\Queries\\NuGet.Config",
+        "C:\\Users\\ndoum\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+      ],
       "originalTargetFrameworks": [
         "netstandard1.0"
       ],
+      "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "https://api.nuget.org/v3/index.json": {},
+        "https://www.myget.org/F/aspnet-contrib/api/v3/index.json": {}
+      },
       "frameworks": {
         "netstandard1.0": {
           "projectReferences": {

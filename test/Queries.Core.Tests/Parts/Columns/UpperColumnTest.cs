@@ -6,7 +6,7 @@ using Xunit;
 using Queries.Core.Parts.Functions;
 using FluentAssertions;
 
-namespace Queries.Core.Tests.Columns
+namespace Queries.Core.Tests.Parts.Columns
 {
     public class UpperColumnTest
     {
