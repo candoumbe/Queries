@@ -1,4 +1,4 @@
-#Queries [![queries MyGet Build Status](https://www.myget.org/BuildSource/Badge/queries?identifier=7c22f979-1c83-44eb-88dc-871c872b76f9)](https://www.myget.org/)
+#Queries
 
 This is a "basic" database agnostic query builder.
 
