@@ -1,4 +1,4 @@
-using Queries.Core.Extensions;
+using System;
 using Queries.Core.Parts.Columns;
 
 namespace Queries.Core.Parts.Functions
@@ -6,6 +6,7 @@ namespace Queries.Core.Parts.Functions
     /// <summary>
     /// "MIN" function.
     /// </summary>
+    [Function]
     public class MinFunction : AggregateFunction
     {
 

@@ -1,20 +1,53 @@
 ﻿using System;
 using Queries.Core.Parts.Columns;
 
-namespace Queries.Core.Extensions
+namespace System
 {
     public static class LiteralExtensions
     {
-        public static StringColumn Literal(this string obj) => new StringColumn(obj);
+        /// <summary>
+        /// Converts a <see cref="string"/> to <see cref="StringColumn"/>.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static StringColumn Literal(this string value) => new StringColumn(value);
 
-        public static NumericColumn Literal(this int obj) => new NumericColumn(obj);
+        /// <summary>
+        /// Converts an <see cref="int"/> to <see cref="NumericColumn"/>
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static NumericColumn Literal(this int value) => new NumericColumn(value);
 
-        public static NumericColumn Literal(this float obj) => new NumericColumn(obj);
+        /// <summary>
+        /// Converts an <see cref="float"/> to <see cref="NumericColumn"/>
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static NumericColumn Literal(this float value) => new NumericColumn(value);
 
-        public static NumericColumn Literal(this double obj) => new NumericColumn(obj);
+        /// <summary>
+        /// Converts an <see cref="double"/> to <see cref="NumericColumn"/>
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static NumericColumn Literal(this double value) => new NumericColumn(value);
 
-        public static NumericColumn Literal(this long obj) => new NumericColumn(obj);
+        /// <summary>
+        /// Converts an <see cref="long"/> to <see cref="NumericColumn"/>
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static NumericColumn Literal(this long value) => new NumericColumn(value);
 
-        public static DateTimeColumn Literal(this DateTime value) => new DateTimeColumn(value);
+        /// <summary>
+        /// Converts an <see cref="DateTime"/> to <see cref="DateTimeColumn"/>
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="format">format to use when converting <paramref name="value"/> to its string representation</param>
+        /// <returns></returns>
+        public static DateTimeColumn Literal(this DateTime value, string format = default) => format == default 
+            ? new DateTimeColumn(value)
+            : new DateTimeColumn(value, format);
     }
 }

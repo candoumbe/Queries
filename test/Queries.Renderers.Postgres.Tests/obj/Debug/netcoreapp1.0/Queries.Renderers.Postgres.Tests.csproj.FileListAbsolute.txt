@@ -15,3 +15,4 @@ C:\Users\ndoum\Documents\Visual Studio 2017\Projects\Queries\test\Queries.Render
 C:\Users\ndoum\Documents\Visual Studio 2017\Projects\Queries\test\Queries.Renderers.Postgres.Tests\bin\Debug\netcoreapp1.0\xunit.runner.utility.netstandard15.dll
 C:\Users\ndoum\Documents\Visual Studio 2017\Projects\Queries\test\Queries.Renderers.Postgres.Tests\bin\Debug\netcoreapp1.0\xunit.runner.reporters.netstandard15.dll
 C:\Users\ndoum\Documents\Visual Studio 2017\Projects\Queries\test\Queries.Renderers.Postgres.Tests\obj\Debug\netcoreapp1.0\Queries.Renderers.Postgres.Tests.csproj.CoreCompileInputs.cache
+C:\Users\ndoum\Documents\Visual Studio 2017\Projects\Queries\test\Queries.Renderers.Postgres.Tests\obj\Debug\netcoreapp1.0\Queries.Renderers.Postgres.Tests.AssemblyInfoInputs.cache

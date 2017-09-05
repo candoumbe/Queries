@@ -1,14 +1,15 @@
 ﻿using Queries.Core.Builders;
 using System;
+using System.Collections.Generic;
 
 namespace Queries.Core.Parts.Columns
 {
     /// <summary>
     /// A column that render is content as is with no interpretation.
     /// </summary>
-    public class LiteralColumn : ColumnBase, IAliasable<LiteralColumn>, IInsertable
+    public class LiteralColumn : ColumnBase, IAliasable<LiteralColumn>, IInsertable, IEquatable<LiteralColumn>
     {
-        public object Value { get; set; }
+        public object Value { get; }
 
         /// <summary>
         /// Builds a <see cref="LiteralColumn"/> instance.
@@ -61,7 +62,15 @@ namespace Queries.Core.Parts.Columns
             return this;
         }
 
+        public override bool Equals(object obj) => Equals(obj as LiteralColumn);
+        public bool Equals(LiteralColumn other) => other != null && EqualityComparer<object>.Default.Equals(Value, other.Value) && Alias == other.Alias;
 
-
+        public override int GetHashCode()
+        {
+            int hashCode = -1351936271;
+            hashCode = hashCode * -1521134295 + EqualityComparer<object>.Default.GetHashCode(Value);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Alias);
+            return hashCode;
+        }
     }
 }

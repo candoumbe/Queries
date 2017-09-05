@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Queries.Core.Builders
 {
@@ -15,7 +16,7 @@ namespace Queries.Core.Builders
         /// <param name="queries">queries of the batch.</param>
         public BatchQuery(params IQuery[] queries)
         {
-            Statements = queries;
+            Statements = queries.Where(x => x != null);
         }
     }
 }

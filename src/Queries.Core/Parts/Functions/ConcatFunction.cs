@@ -1,14 +1,19 @@
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Queries.Core.Parts.Columns;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using static Newtonsoft.Json.JsonConvert;
 
 namespace Queries.Core.Parts.Functions
 {
     /// <summary>
     /// Concat two or more columns.
     /// </summary>
-    public class ConcatFunction : IAliasable<ConcatFunction>, IFunctionColumn
+    [Function]
+    [JsonObject(ItemReferenceLoopHandling = ReferenceLoopHandling.Ignore)]
+    public class ConcatFunction : IAliasable<ConcatFunction>, IFunctionColumn, IEquatable<ConcatFunction>
     {
         /// <summary>
         /// List of columns to concat
@@ -57,6 +62,30 @@ namespace Queries.Core.Parts.Functions
             _alias = alias;
 
             return this;
+        }
+
+        public override bool Equals(object obj) => Equals(obj as ConcatFunction);
+
+        public bool Equals(ConcatFunction other) => other != null 
+            && Columns.SequenceEqual(other.Columns) && Alias == other.Alias;
+
+        public override int GetHashCode()
+        {
+            int hashCode = -1367283405;
+            hashCode = hashCode * -1521134295 + EqualityComparer<IEnumerable<IColumn>>.Default.GetHashCode(Columns);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Alias);
+            return hashCode;
+        }
+
+        public override string ToString()
+        {
+            JObject jObj = new JObject
+            {
+                ["Type"] = nameof(ConcatFunction),
+                [nameof(Columns)] = JToken.FromObject(Columns),
+                [nameof(Alias)] = Alias
+            };
+            return jObj.ToString();
         }
     }
 }

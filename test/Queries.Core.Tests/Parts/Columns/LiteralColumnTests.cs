@@ -4,11 +4,19 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Xunit;
+using Xunit.Abstractions;
+using static Newtonsoft.Json.JsonConvert;
 
 namespace Queries.Core.Tests.Parts.Columns
 {
-    public class LiteralColumnTests
+    public class LiteralColumnTests : IDisposable
     {
+        private ITestOutputHelper _outputHelper;
+
+        public LiteralColumnTests(ITestOutputHelper outputHelper) => _outputHelper = outputHelper;
+
+        public void Dispose() => _outputHelper = null;
+
         [Fact]
         public void CtorWithNullArgumentDoesNotThrowArgumentNullException()
         {
@@ -80,13 +88,43 @@ namespace Queries.Core.Tests.Parts.Columns
         {
             // Arrange
             LiteralColumn column = new LiteralColumn("column");
-            
+
             // Act
             column = column.As(newAlias);
 
 
             // Assert
             column.Alias.Should().Be(newAlias);
-}
+        }
+
+        public static IEnumerable<object[]> EqualsCases
+        {
+            get
+            {
+                yield return new object[] { new LiteralColumn("firstname"), null, false, "object is null" };
+                yield return new object[] { new LiteralColumn("firstname"), new LiteralColumn("firstname"), true, $"object is a {nameof(LiteralColumn)} with exactly the same {nameof(LiteralColumn.Value)} and {nameof(LiteralColumn.Alias)}" };
+                yield return new object[] { new LiteralColumn("firstname"), new SelectColumn(), false, $"{nameof(LiteralColumn)} is always != exactly the same {nameof(SelectColumn)}" };
+
+                {
+                    LiteralColumn column = new LiteralColumn("firstname");
+                    yield return new object[] { column, column, true, "Equals with same instance" };
+                }
+
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(EqualsCases))]
+        public void EqualTests(LiteralColumn first, object second, bool expectedResult, string reason)
+        {
+            _outputHelper.WriteLine($"{nameof(first)} : {first}");
+            _outputHelper.WriteLine($"{nameof(second)} : {second}");
+
+            // Act
+            bool actualResult = first.Equals(second);
+
+            // Assert
+            actualResult.Should().Be(expectedResult, reason);
+        }
     }
 }

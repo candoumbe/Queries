@@ -12,7 +12,7 @@ namespace Queries.Core.Builders
         /// <summary>
         /// Values to insert
         /// </summary>
-        public IInsertable InsertedValue { get; set; }
+        public IInsertable InsertedValue { get; private set; }
 
         /// <summary>
         /// Name of the element where to insert <see cref="InsertedValue"/>

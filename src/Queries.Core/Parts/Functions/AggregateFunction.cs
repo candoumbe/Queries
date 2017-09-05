@@ -6,6 +6,7 @@ namespace Queries.Core.Parts.Functions
     /// <summary>
     /// Base class for all aggregate function.
     /// </summary>
+    [Function]
     public abstract class AggregateFunction : IAliasable<AggregateFunction>, IFunctionColumn
     {
         /// <summary>

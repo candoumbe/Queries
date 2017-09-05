@@ -6,10 +6,11 @@ namespace Queries.Core.Parts.Functions
     /// <summary>
     /// "SUBSTRING" function.
     /// </summary>
+    [Function]
     public class SubstringFunction : IFunctionColumn, IAliasable<SubstringFunction>
     {
         /// <summary>
-        /// Gets/Sets the column the function will be applied to
+        /// Column the function will be applied to
         /// </summary>
         public IColumn Column { get;  }
 

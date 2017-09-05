@@ -18,11 +18,7 @@ namespace Queries.Core.Parts.Clauses
         /// <exception cref="ArgumentNullException">if <paramref name="column"/> is <c>null</c>.</exception>
         public WhereClause(IColumn column, ClauseOperator @operator, ColumnBase constraint = null)
         {
-            if (column == null)
-            {
-                throw new ArgumentNullException(nameof(column));
-            }
-            Column = column;
+            Column = column ?? throw new ArgumentNullException(nameof(column));
             Operator = @operator;
             if (@operator != ClauseOperator.IsNull && @operator != ClauseOperator.IsNotNull)
             {

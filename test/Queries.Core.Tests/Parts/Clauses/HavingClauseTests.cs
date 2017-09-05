@@ -40,6 +40,9 @@ namespace Queries.Core.Tests.Parts.Clauses
         {
             get
             {
+
+
+
                 ClauseOperator[] @operators = new[]
                 {
                     EqualTo,
@@ -52,7 +55,7 @@ namespace Queries.Core.Tests.Parts.Clauses
                 };
 
                 return operators
-                    .Select(op => new object[] { new MaxFunction("age"), EqualTo, 18 });
+                    .Select(op => new object[] { new MaxFunction("age"), op, 18 });
             }
         }
 
@@ -68,6 +71,9 @@ namespace Queries.Core.Tests.Parts.Clauses
             clause.Operator.Should().Be(@operator);
             clause.Constraint.Should().Be(constraint);
         }
+
+
+
 
 
         

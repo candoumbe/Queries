@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using Queries.Core.Extensions;
 using Queries.Core.Parts;
 using Queries.Core.Parts.Clauses;
+using System;
 
 namespace Queries.Core.Builders
 {

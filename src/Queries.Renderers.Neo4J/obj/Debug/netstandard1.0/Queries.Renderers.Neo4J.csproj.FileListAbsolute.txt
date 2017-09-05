@@ -8,3 +8,4 @@ C:\Users\ndoum\Documents\Visual Studio 2017\Projects\Queries\src\Queries.Rendere
 C:\Users\ndoum\Documents\Visual Studio 2017\Projects\Queries\src\Queries.Renderers.Neo4J\obj\Debug\netstandard1.0\Queries.Renderers.Neo4J.dll
 C:\Users\ndoum\Documents\Visual Studio 2017\Projects\Queries\src\Queries.Renderers.Neo4J\obj\Debug\netstandard1.0\Queries.Renderers.Neo4J.pdb
 C:\Users\ndoum\Documents\Visual Studio 2017\Projects\Queries\src\Queries.Renderers.Neo4J\obj\Debug\netstandard1.0\Queries.Renderers.Neo4J.csproj.CoreCompileInputs.cache
+C:\Users\ndoum\Documents\Visual Studio 2017\Projects\Queries\src\Queries.Renderers.Neo4J\obj\Debug\netstandard1.0\Queries.Renderers.Neo4J.AssemblyInfoInputs.cache

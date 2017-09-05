@@ -6,12 +6,16 @@ namespace Queries.Core.Parts.Functions
     /// <summary>
     /// "ISNULL" function
     /// </summary>
+    [Function]
     public class NullFunction : IAliasable<NullFunction>, IFunctionColumn
     {
         /// <summary>
-        /// 
+        /// Column onto which the function must be applied.
         /// </summary>
         public IColumn Column { get;  }
+        /// <summary>
+        /// Value to use as replacement when <see cref="Column"/>'s value is <c>null</c>
+        /// </summary>
         public IColumn DefaultValue { get; }
 
         /// <summary>
@@ -22,16 +26,8 @@ namespace Queries.Core.Parts.Functions
         /// <exception cref="ArgumentNullException"> if either <paramref name="column"/> or <paramref name="defaultValue"/> is <c>null</c></exception>
         public NullFunction(IColumn column, IColumn defaultValue)
         {
-            if (column == null)
-            {
-                throw new ArgumentNullException(nameof(column));
-            }
-            if (defaultValue == null)
-            {
-                throw new ArgumentNullException(nameof(defaultValue));
-            }
-            Column = column;
-            DefaultValue = defaultValue;
+            Column = column ?? throw new ArgumentNullException(nameof(column));
+            DefaultValue = defaultValue ?? throw new ArgumentNullException(nameof(defaultValue));
         }
 
         private string _alias;

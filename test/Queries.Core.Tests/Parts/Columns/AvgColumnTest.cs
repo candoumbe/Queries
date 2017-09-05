@@ -76,5 +76,6 @@ namespace Queries.Core.Tests.Parts.Columns
         [MemberData(nameof(AsTestCases))]
         public void SettingAliasTest(AvgFunction column, string expectedAlias)
             => column.Alias.Should().Be(expectedAlias);
+
     }
 }

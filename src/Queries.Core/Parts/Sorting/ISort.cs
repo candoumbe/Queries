@@ -4,7 +4,14 @@ namespace Queries.Core.Parts.Sorting
 {
     public interface ISort
     {
-        ColumnBase Column { get; set; }
-        SortDirection Direction { get; set; }
+        /// <summary>
+        /// Column onto which the sort expression will be applied
+        /// </summary>
+        ColumnBase Column { get; }
+
+        /// <summary>
+        /// Sort direction
+        /// </summary>
+        SortDirection Direction { get; }
     }
 }

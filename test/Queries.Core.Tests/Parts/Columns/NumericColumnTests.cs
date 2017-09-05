@@ -139,5 +139,35 @@ namespace Queries.Core.Tests.Parts.Columns
                 .BeNull($"{nameof(NumericColumn)}.{nameof(NumericColumn.Value)} should be equal to the ctor input");
         }
 
+        public static IEnumerable<object[]> EqualsCases
+        {
+            get
+            {
+                yield return new object[] { new NumericColumn(1), null, false, "object is null" };
+                yield return new object[] { new NumericColumn(1), new NumericColumn(1), true, $"object is a {nameof(NumericColumn)} with exactly the same {nameof(NumericColumn.Value)} and {nameof(NumericColumn.Alias)}" };
+                yield return new object[] { new NumericColumn(1), new SelectColumn(), false, $"{nameof(NumericColumn)} is always != from {nameof(SelectColumn)}" };
+
+                {
+                    NumericColumn column = new NumericColumn(1);
+                    yield return new object[] { column, column, true, "Equals with same instance" };
+                }
+
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(EqualsCases))]
+        public void EqualTests(NumericColumn first, object second, bool expectedResult, string reason)
+        {
+            _outputHelper.WriteLine($"{nameof(first)} : {first}");
+            _outputHelper.WriteLine($"{nameof(second)} : {second}");
+
+            // Act
+            bool actualResult = first.Equals(second);
+
+            // Assert
+            actualResult.Should().Be(expectedResult, reason);
+        }
+
     }
 }

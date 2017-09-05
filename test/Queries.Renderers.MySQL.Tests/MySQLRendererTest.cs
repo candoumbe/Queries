@@ -5,6 +5,7 @@ using Queries.Core;
 using Queries.Core.Builders;
 using Queries.Core.Extensions;
 using FluentAssertions;
+using System;
 
 namespace Queries.Renderers.MySQL.Tests
 {

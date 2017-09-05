@@ -1,4 +1,4 @@
-using Queries.Core.Extensions;
+using System;
 using Queries.Core.Parts.Columns;
 
 namespace Queries.Core.Parts.Functions

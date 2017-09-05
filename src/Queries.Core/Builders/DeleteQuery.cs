@@ -27,7 +27,7 @@ namespace Queries.Core.Builders
         /// Builds a new <see cref="DeleteQuery"/> instance
         /// </summary>
         /// <param name="tableName">Name of the table to delete data from</param>
-        internal DeleteQuery(string tableName)
+        public DeleteQuery(string tableName)
         {
             Table = tableName ?? throw new ArgumentNullException(nameof(tableName), $"{nameof(tableName)} cannot be null");
         }
