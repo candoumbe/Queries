@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Queries.Core.Parts.Functions
+namespace Queries.Core.Attributes
 {
     /// <summary>
     /// Marks a class as a Function

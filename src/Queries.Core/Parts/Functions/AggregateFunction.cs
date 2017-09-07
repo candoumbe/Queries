@@ -1,4 +1,5 @@
-﻿using Queries.Core.Parts.Columns;
+﻿using Queries.Core.Attributes;
+using Queries.Core.Parts.Columns;
 using System;
 
 namespace Queries.Core.Parts.Functions

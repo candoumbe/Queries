@@ -7,7 +7,7 @@ namespace Queries.Core.Builders
     /// <summary>
     /// A query to insert data 
     /// </summary>
-    public class InsertIntoQuery : IDataManipulationQuery, IInsertIntoQuery<InsertIntoQuery>, IBuildableQuery<InsertIntoQuery>
+    public class InsertIntoQuery : IInsertIntoQuery<InsertIntoQuery>, IBuildableQuery<InsertIntoQuery>
     {
         /// <summary>
         /// Values to insert

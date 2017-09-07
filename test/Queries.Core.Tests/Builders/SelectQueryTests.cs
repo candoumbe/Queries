@@ -1,7 +1,9 @@
 ﻿using FluentAssertions;
 using Queries.Core.Builders;
+using Queries.Core.Parts.Columns;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Xunit;
 using Xunit.Abstractions;
@@ -43,6 +45,28 @@ namespace Queries.Core.Tests.Builders
 
             // Assert
             actualResult.Should().Be(expectedResult, reason);
+        }
+
+
+        public static IEnumerable<object[]> CtorThrowsArgumentOutOfRangeExceptionCases {
+            get
+            {
+                yield return new object[] { Enumerable.Empty<IColumn>().ToArray(), $"empty array of {nameof(IColumn)}s" };
+                yield return new object[] { Enumerable.Repeat<IColumn>(null, 5).ToArray(), $"array of 5 null {nameof(IColumn)}s" };
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(CtorThrowsArgumentOutOfRangeExceptionCases))]
+        public void CtorThrowsArgumentOutOfRangeException(IEnumerable<IColumn> columns, string reason)
+        {
+            // Act
+            Action action = () => new SelectQuery(columns.ToArray());
+
+            // Assert
+            action.ShouldThrow<ArgumentOutOfRangeException>("no columns set").Which
+                .ParamName.Should()
+                .NotBeNullOrWhiteSpace();
         }
     }
 }

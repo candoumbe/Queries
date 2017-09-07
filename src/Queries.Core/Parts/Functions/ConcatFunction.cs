@@ -1,5 +1,6 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Queries.Core.Attributes;
 using Queries.Core.Parts.Columns;
 using System;
 using System.Collections.Generic;

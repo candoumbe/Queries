@@ -1,8 +1,10 @@
 ﻿using FluentAssertions;
+using Queries.Core.Attributes;
 using Queries.Core.Builders;
 using Queries.Core.Parts.Columns;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using Xunit;
 using Xunit.Abstractions;
 using static Queries.Core.Builders.Fluent.QueryBuilder;
@@ -100,5 +102,22 @@ namespace Queries.Core.Tests.Builders
             // Assert
             actualResult.Should().Be(expectedResult, reason);
         }
+
+        [Fact]
+        public void IsMarkedWithDataDefinitionQueryAttribute()
+        {
+            // Arrange
+            TypeInfo typeInfo = typeof(CreateViewQuery).GetTypeInfo();
+
+            // Act
+            DataManipulationLanguageAttribute attr = typeInfo.GetCustomAttribute<DataManipulationLanguageAttribute>();
+
+            // Arrange
+            attr.Should()
+                .NotBeNull($"{nameof(CreateViewQuery)} must be marked with {nameof(DataManipulationLanguageAttribute)}");
+        }
+
+
+
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using Queries.Core.Parts.Columns;
+using Queries.Core.Attributes;
 
 namespace Queries.Core.Parts.Functions
 {

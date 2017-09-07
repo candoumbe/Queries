@@ -3,6 +3,9 @@ using Queries.Core.Parts.Functions;
 
 namespace Queries.Core.Builders.Fluent
 {
+    /// <summary>
+    /// Helper to create <see cref="IQuery"/> instances.
+    /// </summary>
     public static class QueryBuilder
     {
         
@@ -136,7 +139,8 @@ namespace Queries.Core.Builders.Fluent
         /// Creates a <see cref="SelectQuery"/> object suitable to build <a href="http://www.w3schools.com/sql/sql_select.asp">SELECT</a> query
         /// </summary>
         /// <param name="columnNames">The column names.</param>
-        /// <returns></returns>
+        /// <returns><see cref="SelectQuery"/></returns>
+        /// <exception cref="System.ArgumentOutOfRangeException">if <see cref="columnNames"/> is empty or contains only <c>null</c> elements.</exception>
         public static SelectQuery Select(params string[] columnNames) => new SelectQuery(columnNames);
 
         /// <summary>
@@ -144,6 +148,7 @@ namespace Queries.Core.Builders.Fluent
         /// </summary>
         /// <param name="columns">The columns.</param>
         /// <returns><see cref="SelectQuery"/></returns>
+        /// <exception cref="System.ArgumentOutOfRangeException">if <see cref="columns"/> is empty or contains only <c>null</c> elements.</exception>
         public static SelectQuery Select(params IColumn[] columns) => new SelectQuery(columns);
 
         /// <summary>
@@ -151,6 +156,8 @@ namespace Queries.Core.Builders.Fluent
         /// </summary>
         /// <param name="tableName">Name of the table the <see cref="TruncateQuery"/> is built for</param>
         /// <returns><see cref="TruncateQuery"/></returns>
+        /// <exception cref="System.ArgumentNullException">if <paramref name="tableName"/> is <c>null</c>.</exception>
+        /// <exception cref="System.ArgumentOutOfRangeException">if <paramref name="tableName"/> is empty or whitespace.</exception>
         public static TruncateQuery Truncate(string tableName) => new TruncateQuery(tableName);
 
         /// <summary>

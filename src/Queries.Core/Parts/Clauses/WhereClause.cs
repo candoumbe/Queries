@@ -1,9 +1,10 @@
 ﻿using Queries.Core.Parts.Columns;
 using System;
+using System.Collections.Generic;
 
 namespace Queries.Core.Parts.Clauses
 {
-    public class WhereClause : IWhereClause, IClause<IColumn>
+    public class WhereClause : IWhereClause, IClause<IColumn>, IEquatable<WhereClause>
     {
         public IColumn Column { get; }
         public ClauseOperator Operator{ get; }
@@ -24,6 +25,22 @@ namespace Queries.Core.Parts.Clauses
             {
                 Constraint = constraint;
             }
+        }
+
+        public override bool Equals(object obj) => Equals(obj as WhereClause);
+        public bool Equals(WhereClause other) => 
+            other != null 
+            && Column.Equals(other.Column)
+            && Operator == other.Operator 
+            && (Constraint == null && other.Constraint == null || Constraint.Equals(other.Constraint));
+
+        public override int GetHashCode()
+        {
+            int hashCode = -300605098;
+            hashCode = hashCode * -1521134295 + EqualityComparer<IColumn>.Default.GetHashCode(Column);
+            hashCode = hashCode * -1521134295 + Operator.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<ColumnBase>.Default.GetHashCode(Constraint);
+            return hashCode;
         }
     }
 }

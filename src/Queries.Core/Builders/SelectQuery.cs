@@ -27,9 +27,20 @@ namespace Queries.Core.Builders
         public IList<ITable> Tables { get; }
         public IList<IUnionQuery<SelectQuery>> Unions { get; set; }
 
-
+        /// <summary>
+        /// Builds a new <see cref="SelectQuery"/> instance.
+        /// </summary>
+        /// <param name="columns">columns of the query</param>
+        /// <remarks>
+        /// This constructor filters out <c>null</c> value from <paramref name="columns"/>.
+        /// </remarks>
         public SelectQuery(params IColumn[] columns)
         {
+            if (!columns.Any(x => x != null))
+            {
+                throw new ArgumentOutOfRangeException(nameof(columns), "at least one column must be provided");
+            }
+
             Columns = columns;
             Tables = new List<ITable>();
             Unions = new List<IUnionQuery<SelectQuery>>();

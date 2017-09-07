@@ -1,3 +1,4 @@
+using Queries.Core.Attributes;
 using Queries.Core.Builders.Fluent;
 using Queries.Core.Parts.Clauses;
 using Queries.Core.Parts.Columns;
@@ -11,7 +12,8 @@ namespace Queries.Core.Builders
     /// <remarks>
     /// 
     /// </remarks>
-    public class DeleteQuery : IDataManipulationQuery, IBuildableQuery<DeleteQuery>
+    [DataManipulationLanguage]
+    public class DeleteQuery : IBuildableQuery<DeleteQuery>
     {
         /// <summary>
         /// Name of the table where to delete data from

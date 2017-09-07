@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using Queries.Core.Attributes;
 using Queries.Core.Extensions;
 using Queries.Core.Parts.Columns;
 using Queries.Core.Parts.Functions;
@@ -58,12 +59,11 @@ namespace Queries.Core.Tests.Parts.Functions
             TypeInfo typeInfo = typeof(SubstringFunction).GetTypeInfo();
 
             // Act
-            IEnumerable<CustomAttributeData> customAttributes = typeInfo.CustomAttributes;
+            FunctionAttribute attr = typeInfo.GetCustomAttribute<FunctionAttribute>();
 
 
             // Arrange
-            customAttributes.Should()
-                .ContainSingle(attr => attr.AttributeType == typeof(FunctionAttribute));
+            attr.Should().NotBeNull($"{nameof(SubstringFunction)} must be marked with {nameof(FunctionAttribute)}");
         }
     }
 }

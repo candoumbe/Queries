@@ -1,5 +1,7 @@
+using Queries.Core.Attributes;
 using Queries.Core.Parts.Columns;
 using System;
+using System.Collections.Generic;
 
 namespace Queries.Core.Parts.Functions
 {
@@ -7,7 +9,7 @@ namespace Queries.Core.Parts.Functions
     /// "ISNULL" function
     /// </summary>
     [Function]
-    public class NullFunction : IAliasable<NullFunction>, IFunctionColumn
+    public class NullFunction : IAliasable<NullFunction>, IFunctionColumn, IEquatable<NullFunction>
     {
         /// <summary>
         /// Column onto which the function must be applied.
@@ -46,5 +48,19 @@ namespace Queries.Core.Parts.Functions
             return this;
         }
 
+        public override bool Equals(object obj) => Equals(obj as NullFunction);
+        public bool Equals(NullFunction other) => other != null 
+            && Column.Equals(other.Column) 
+            && DefaultValue.Equals(other.DefaultValue)
+            && Alias == other.Alias;
+
+        public override int GetHashCode()
+        {
+            int hashCode = 1755619493;
+            hashCode = hashCode * -1521134295 + EqualityComparer<IColumn>.Default.GetHashCode(Column);
+            hashCode = hashCode * -1521134295 + EqualityComparer<IColumn>.Default.GetHashCode(DefaultValue);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Alias);
+            return hashCode;
+        }
     }
 }

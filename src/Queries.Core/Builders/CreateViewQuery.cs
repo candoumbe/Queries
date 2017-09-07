@@ -2,14 +2,16 @@
 using Queries.Core.Builders.Fluent;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using Queries.Core.Attributes;
 
 namespace Queries.Core.Builders
 {
     /// <summary>
     /// Query which result in creating a View.
     /// </summary>
+    [DataManipulationLanguage]
     [JsonObject(ItemReferenceLoopHandling = ReferenceLoopHandling.Ignore)]
-    public class CreateViewQuery : IDataDefinitionQuery, IBuildableQuery<CreateViewQuery>, IEquatable<CreateViewQuery>
+    public class CreateViewQuery : IBuildableQuery<CreateViewQuery>, IEquatable<CreateViewQuery>
     {
         /// <summary>
         /// Name of the view

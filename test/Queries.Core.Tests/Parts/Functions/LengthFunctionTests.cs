@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using Queries.Core.Attributes;
 using Queries.Core.Parts.Functions;
 using System;
 using System.Collections.Generic;
@@ -31,11 +32,11 @@ namespace Queries.Core.Tests.Parts.Functions
                 .GetTypeInfo();
 
             // Act
-            IEnumerable<CustomAttributeData> customAttributes = lengthFunctionType.CustomAttributes;
+            FunctionAttribute attr = lengthFunctionType.GetCustomAttribute<FunctionAttribute>();
 
             // Assert
-            customAttributes.Should()
-                .ContainSingle(attr => attr.AttributeType.Equals(typeof(FunctionAttribute)));
+            attr.Should()
+                .NotBeNull($"{nameof(LengthFunction)} must be marked with {nameof(FunctionAttribute)}");
         }
     }
 }

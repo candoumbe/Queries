@@ -1,20 +1,27 @@
 ﻿using FluentAssertions;
-using Queries.Core.Extensions;
+using Queries.Core.Attributes;
 using Queries.Core.Parts.Columns;
 using Queries.Core.Parts.Functions;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 using Xunit;
+using Xunit.Abstractions;
+using static Queries.Core.Builders.Fluent.QueryBuilder;
 
 namespace Queries.Core.Tests.Parts.Functions
 {
     /// <summary>
     /// Unit tests for <see cref="NullFunction"/>
     /// </summary>
-    public class NullFunctionTests
+    public class NullFunctionTests : IDisposable
     {
+        private ITestOutputHelper _outputHelper;
+
+        public NullFunctionTests(ITestOutputHelper outputHelper) => _outputHelper = outputHelper;
+
+        public void Dispose() => _outputHelper = null;
+
         public static IEnumerable<object[]> CtorThrowsArgumentNullExceptionCases
         {
             get
@@ -64,18 +71,55 @@ namespace Queries.Core.Tests.Parts.Functions
         }
 
         [Fact]
-        public void IsMarkedWithFunctionAttribute()
+        public void HasFunctionFunctionAttribute()
         {
             // Arrange
             TypeInfo typeInfo = typeof(NullFunction).GetTypeInfo();
 
             // Act
-            IEnumerable<CustomAttributeData> customAttributes = typeInfo.CustomAttributes;
-
+            FunctionAttribute attr = typeInfo.GetCustomAttribute<FunctionAttribute>();
 
             // Arrange
-            customAttributes.Should()
-                .ContainSingle(attr => attr.AttributeType == typeof(FunctionAttribute));
+            attr.Should().NotBeNull($"{nameof(NullFunction)} must be marked with {nameof(FunctionAttribute)}");
+        }
+
+        public static IEnumerable<object[]> EqualsCases
+        {
+            get
+            {
+                yield return new object[] {
+                    new NullFunction("nickname".Field(), "Unknown".Literal()),
+                    null,
+                    false, $"comparing {nameof(NullFunction)} instance with a null"
+                };
+                yield return new object[] {
+                    new NullFunction("nickname".Field(), "Unknown".Literal()),
+                    new NullFunction("nickname".Field(), "Unknown".Literal()),
+                    true, $"comparing two {nameof(NullFunction)} instances with same inputs" };
+                yield return new object[] {
+                    new NullFunction("nickname".Field(), 1.Literal()),
+                    new NullFunction("nickname".Field(), "Unknown".Literal()),
+                    false, $"comparing two {nameof(NullFunction)} instances with same inputs but different types of {nameof(NullFunction.DefaultValue)}" };
+                yield return new object[] {
+                    new NullFunction("nickname".Field(), "Unknown".Literal()),
+                    Select(1.Literal()),
+                    false, "comparing two different types of query" };
+            }
+        }
+
+
+        [Theory]
+        [MemberData(nameof(EqualsCases))]
+        public void EqualTests(NullFunction first, object second, bool expectedResult, string reason)
+        {
+            _outputHelper.WriteLine($"{nameof(first)} : {first}");
+            _outputHelper.WriteLine($"{nameof(second)} : {second}");
+
+            // Act
+            bool actualResult = first.Equals(second);
+
+            // Assert
+            actualResult.Should().Be(expectedResult, reason);
         }
     }
 }

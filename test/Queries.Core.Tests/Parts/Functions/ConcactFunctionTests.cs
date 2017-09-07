@@ -9,6 +9,7 @@ using Xunit;
 using Xunit.Abstractions;
 using static Queries.Core.Builders.Fluent.QueryBuilder;
 using static Newtonsoft.Json.JsonConvert;
+using Queries.Core.Attributes;
 
 namespace Queries.Core.Tests.Parts.Functions
 {
@@ -56,11 +57,11 @@ namespace Queries.Core.Tests.Parts.Functions
                 .GetTypeInfo();
 
             // Act
-            IEnumerable<CustomAttributeData> customAttributes = lengthFunctionType.CustomAttributes;
+            FunctionAttribute attr = lengthFunctionType.GetCustomAttribute<FunctionAttribute>();
 
             // Assert
-            customAttributes.Should()
-                .ContainSingle(attr => attr.AttributeType.Equals(typeof(FunctionAttribute)));
+            attr.Should()
+                .NotBeNull($"{nameof(ConcatFunction)} must be marked with {nameof(FunctionAttribute)}");
         }
 
 

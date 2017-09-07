@@ -30,10 +30,12 @@ namespace Queries.Core.Tests.Parts.Columns
                 .NotBeNullOrWhiteSpace();
         }
 
-        [Fact]
-        public void ConstructorTestWithWhitespaceStringArgument()
+        [Theory]
+        [InlineData("")]
+        [InlineData("  ")]
+        public void ConstructorTestWithWhitespaceStringArgument(string columnName)
         {
-            Action action = () => new MinFunction("   ");
+            Action action = () => new MinFunction(columnName);
 
             action.ShouldThrowExactly<ArgumentOutOfRangeException>().Which
                 .ParamName.Should()
@@ -51,7 +53,8 @@ namespace Queries.Core.Tests.Parts.Columns
         }
 
         [Fact]
-        public void ConstructorTestColumnArgument() => new MinFunction("age").Type.Should().Be(AggregateType.Min);
+        public void ConstructorTestColumnArgument() => 
+            new MinFunction("age").Type.Should().Be(AggregateType.Min);
         
         
         public static IEnumerable<object[]> AsTestCases

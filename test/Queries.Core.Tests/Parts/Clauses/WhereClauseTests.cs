@@ -1,12 +1,12 @@
 ﻿using FluentAssertions;
-using Queries.Core.Extensions;
 using Queries.Core.Parts.Clauses;
 using Queries.Core.Parts.Columns;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Xunit;
 using Xunit.Abstractions;
+using static Queries.Core.Parts.Clauses.ClauseOperator;
+using static Queries.Core.Builders.Fluent.QueryBuilder;
 
 namespace Queries.Core.Tests.Parts.Clauses
 {
@@ -40,12 +40,12 @@ namespace Queries.Core.Tests.Parts.Clauses
             {
                 yield return new object[]
                 {
-                    new LiteralColumn(1), ClauseOperator.EqualTo, 1
+                    new LiteralColumn(1), EqualTo, 1
                 };
 
                 yield return new object[]
                 {
-                    new NumericColumn(1), ClauseOperator.EqualTo, "a"
+                    new NumericColumn(1), EqualTo, "a"
                 };
             }
         }
@@ -78,10 +78,36 @@ namespace Queries.Core.Tests.Parts.Clauses
         public void CtorShouldIgnoreConstraintWhenUsingIsNotNullOperator()
         {
             // Act
-            WhereClause clause = new WhereClause("firstname".Field(), ClauseOperator.IsNotNull, 1);
+            WhereClause clause = new WhereClause("firstname".Field(), IsNotNull, 1);
 
             // Assert
             clause.Constraint.Should().BeNull();
+        }
+
+        public static IEnumerable<object[]> EqualsCases
+        {
+            get
+            {
+                yield return new object[] { new WhereClause("firstname".Field(), EqualTo, "Bruce"), null, false, "comparing with a null instance" };
+                yield return new object[] { new WhereClause("firstname".Field(), EqualTo, "Bruce"), new WhereClause("firstname".Field(), EqualTo, "Bruce"), true, "comparing two instances with same tableName" };
+                yield return new object[] { new WhereClause("firstname".Field(), EqualTo, "Bruce"), new WhereClause("Firstname".Field(), EqualTo, "Bruce"), false, "comparing two instances with same criteria" };
+                yield return new object[] { new WhereClause("firstname".Field(), EqualTo, "Bruce"), Select(1.Literal()), false, "comparing two different types of query" };
+            }
+        }
+
+
+        [Theory]
+        [MemberData(nameof(EqualsCases))]
+        public void EqualTests(WhereClause first, object second, bool expectedResult, string reason)
+        {
+            _outputHelper.WriteLine($"{nameof(first)} : {first}");
+            _outputHelper.WriteLine($"{nameof(second)} : {second}");
+
+            // Act
+            bool actualResult = first.Equals(second);
+
+            // Assert
+            actualResult.Should().Be(expectedResult, reason);
         }
 
     }

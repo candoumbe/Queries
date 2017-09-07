@@ -2,26 +2,44 @@ using System.Collections.Generic;
 using Queries.Core.Parts;
 using Queries.Core.Parts.Clauses;
 using System;
+using Queries.Core.Attributes;
+using System.Linq;
+using Newtonsoft.Json;
+using static Newtonsoft.Json.JsonConvert;
 
 namespace Queries.Core.Builders
 {
     /// <summary>
     /// A query to update a table
     /// </summary>
-    public class UpdateQuery: IDataManipulationQuery
+    [JsonObject]
+    [DataManipulationLanguage]
+    public class UpdateQuery : IQuery, IEquatable<UpdateQuery>
     {
         public Table Table { get; }
         public IList<UpdateFieldValue> Values { get; private set; }
         public IWhereClause Criteria { get; set; }
 
-        public UpdateQuery(string tableName) : this(tableName?.Table())
-        { }
+        public UpdateQuery(string tableName)
+        {
+            if (tableName == null)
+            {
+                throw new ArgumentNullException(nameof(tableName), $"{nameof(tableName)} cannot be null");
+            }
+
+            if (string.IsNullOrWhiteSpace(tableName))
+            {
+                throw new ArgumentOutOfRangeException(nameof(tableName), $"{nameof(tableName)} cannot be empty or whitespace");
+            }
+
+            Table = tableName.Table();
+            Values = new List<UpdateFieldValue>();
+        }
         
 
-        public UpdateQuery(Table table)
+        public UpdateQuery(Table table) : this(table?.Name)
         {
-            Table = table;
-            Values = new List<UpdateFieldValue>();
+            
         }
 
 
@@ -36,5 +54,23 @@ namespace Queries.Core.Builders
             Criteria = clause;
             return this;
         }
+
+        public override bool Equals(object obj) => Equals(obj as UpdateQuery);
+        public bool Equals(UpdateQuery other) => other != null
+                && (Table == null && other.Table == null || Table.Equals(other.Table))
+                && Values.SequenceEqual(other.Values)
+                && (Criteria == null && other.Criteria == null || Criteria.Equals(other.Criteria));
+
+
+        public override int GetHashCode()
+        {
+            int hashCode = -1291674402;
+            hashCode = hashCode * -1521134295 + EqualityComparer<Table>.Default.GetHashCode(Table);
+            hashCode = hashCode * -1521134295 + EqualityComparer<IList<UpdateFieldValue>>.Default.GetHashCode(Values);
+            hashCode = hashCode * -1521134295 + EqualityComparer<IWhereClause>.Default.GetHashCode(Criteria);
+            return hashCode;
+        }
+
+        public override string ToString() => SerializeObject(this, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
     }
 }

@@ -21,8 +21,8 @@ namespace Queries.Core.Parts.Columns
         /// <summary>
         /// Builds a new <see cref="InsertedValue"/>
         /// </summary>
-        /// <param name="column"></param>
-        /// <param name="value"></param>
+        /// <param name="column">column where the <paramref name="value"/> will be inserted.</param>
+        /// <param name="value">value to insert</param>
         /// <exception cref="ArgumentNullException"><paramref name="column"/> is <c>null</c>.</exception>
         public InsertedValue(FieldColumn column, IColumn value)
         {

@@ -1,4 +1,5 @@
-﻿using Queries.Core.Parts.Columns;
+﻿using Queries.Core.Attributes;
+using Queries.Core.Parts.Columns;
 using System;
 
 namespace Queries.Core.Parts.Functions
@@ -15,6 +16,9 @@ namespace Queries.Core.Parts.Functions
         public IColumn Column { get; }
         private string _alias;
 
+        /// <summary>
+        /// Alias sets for the function.
+        /// </summary>
         public string Alias => _alias;
 
         /// <summary>

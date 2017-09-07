@@ -13,6 +13,8 @@ using Queries.Core.Parts.Joins;
 using Queries.Core.Parts.Sorting;
 using Queries.Core.Validators;
 using Queries.Core.Parts.Functions;
+using System.Reflection;
+using Queries.Core.Attributes;
 
 namespace Queries.Core.Renderers
 {
@@ -519,9 +521,10 @@ namespace Queries.Core.Renderers
             return sbHaving.Insert(0, '(').Insert(sbHaving.Length, ')').ToString();
         }
 
-        protected virtual string RenderTablename(Table table, bool renderAlias) => !renderAlias || string.IsNullOrWhiteSpace(table.Alias)
-    ? EscapeName(table.Name)
-    : $"{EscapeName(table.Name)} {EscapeName(table.Alias)}";
+        protected virtual string RenderTablename(Table table, bool renderAlias)
+            => !renderAlias || string.IsNullOrWhiteSpace(table.Alias)
+                ? EscapeName(table.Name)
+                : $"{EscapeName(table.Name)} {EscapeName(table.Alias)}";
 
         /// <summary>
         /// Renders the column.
@@ -831,7 +834,7 @@ namespace Queries.Core.Renderers
 
         protected virtual string Render(DeleteQuery deleteQuery)
         {
-            
+
 
             StringBuilder sbQuery = new StringBuilder();
 
@@ -859,7 +862,6 @@ namespace Queries.Core.Renderers
         protected virtual string Render(BatchQuery query)
         {
             StringBuilder sbResult = new StringBuilder();
-
             IEnumerable<IQuery> statements = query.Statements?.ToArray() ?? Enumerable.Empty<IQuery>().ToArray();
             if (statements.Any())
             {
@@ -869,7 +871,7 @@ namespace Queries.Core.Renderers
                 for (int i = 1; i < statements.Count(); i++)
                 {
                     currentStatement = statements.ElementAt(i);
-                    if (previousStatement is IDataManipulationQuery)
+                    if (isDataManipulationQuery(previousStatement))
                     {
                         sbResult.AppendLine(BatchStatementSeparator);
                     }
@@ -878,6 +880,9 @@ namespace Queries.Core.Renderers
                 }
 
             }
+            bool isDataManipulationQuery(IQuery q) => typeof(IQuery)
+                .GetTypeInfo()
+                .GetCustomAttribute<DataManipulationLanguageAttribute>() != null;
 
             return sbResult.ToString();
         }
