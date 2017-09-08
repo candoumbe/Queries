@@ -6,3 +6,4 @@ C:\Users\ndoum\Documents\Visual Studio 2017\Projects\Queries\src\Queries.Core\ob
 C:\Users\ndoum\Documents\Visual Studio 2017\Projects\Queries\src\Queries.Core\obj\Debug\netstandard1.0\Queries.Core.pdb
 C:\Users\ndoum\Documents\Visual Studio 2017\Projects\Queries\src\Queries.Core\obj\Debug\netstandard1.0\Queries.Core.csproj.CoreCompileInputs.cache
 C:\Users\ndoum\Documents\Visual Studio 2017\Projects\Queries\src\Queries.Core\obj\Debug\netstandard1.0\Queries.Core.AssemblyInfoInputs.cache
+C:\Users\ndoum\Documents\Visual Studio 2017\Projects\Queries\src\Queries.Core\obj\Debug\netstandard1.0\Queries.Core.csprojResolveAssemblyReference.cache

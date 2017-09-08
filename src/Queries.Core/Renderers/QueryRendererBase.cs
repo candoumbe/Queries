@@ -880,7 +880,7 @@ namespace Queries.Core.Renderers
                 }
 
             }
-            bool isDataManipulationQuery(IQuery q) => typeof(IQuery)
+            bool isDataManipulationQuery(IQuery q) => q.GetType()
                 .GetTypeInfo()
                 .GetCustomAttribute<DataManipulationLanguageAttribute>() != null;
 
