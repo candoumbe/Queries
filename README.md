@@ -1,4 +1,4 @@
-# Queries
+# Queries <img src='https://candoumbe.visualstudio.com/_apis/public/build/definitions/c46372c6-db92-4b5d-88d5-3ec50e332749/7/badge'/>
 
 This is a "basic" database agnostic query builder.
 
