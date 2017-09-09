@@ -22,5 +22,7 @@ namespace Queries.Core.Parts.Functions
         /// </summary>
         /// <param name="column">The name of the column onto which the "average" function will be applied.</param>
         public AvgFunction(string columnName) : this(columnName?.Field()) { }
+
+
     }
 }

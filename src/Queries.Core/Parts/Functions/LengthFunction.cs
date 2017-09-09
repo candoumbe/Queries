@@ -8,7 +8,7 @@ namespace Queries.Core.Parts.Functions
     /// Function that computes the length of a column
     /// </summary>
     [Function]
-    public class LengthFunction : IAliasable<LengthFunction>, IFunctionColumn
+    public class LengthFunction : IAliasable<LengthFunction>, IColumn
     {
         /// <summary>
         /// The column onto which <see cref="LengthFunction"/> will be applied

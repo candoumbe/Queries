@@ -557,11 +557,10 @@ namespace Queries.Core.Renderers
             {
                 columnString = RenderUUIDValue();
             }
-            else if (column is IFunctionColumn)
+            else if (column.GetType().GetTypeInfo().GetCustomAttribute<FunctionAttribute>() != null)
             {
                 columnString = RenderFunction(column, renderAlias);
             }
-
 
             return columnString;
         }
@@ -571,31 +570,27 @@ namespace Queries.Core.Renderers
 
         protected virtual string RenderFunction(IColumn column, bool renderAlias)
         {
-
             string columnString = string.Empty;
-            if (column is AggregateFunction aggregateColumn)
+            switch (column)
             {
-                columnString = RenderAggregateColumn(aggregateColumn, renderAlias);
-            }
-            else if (column is ConcatFunction concatColumn)
-            {
-                columnString = RenderConcatColumn(concatColumn, renderAlias);
-            }
-            else if (column is NullFunction nullColumn)
-            {
-                columnString = RenderNullColumn(nullColumn, renderAlias);
-            }
-            else if (column is LengthFunction lengthColumn)
-            {
-                columnString = RenderLengthColumn(lengthColumn, renderAlias);
-            }
-            else if (column is SubstringFunction substringColumn)
-            {
-                columnString = RenderSubstringColumn(substringColumn, renderAlias);
-            }
-            else if (column is UpperFunction upperColumn)
-            {
-                columnString = RenderUpperColumn(upperColumn, renderAlias);
+                case AggregateFunction aggregateColumn:
+                    columnString = RenderAggregateColumn(aggregateColumn, renderAlias);
+                    break;
+                case ConcatFunction concatColumn:
+                    columnString = RenderConcatColumn(concatColumn, renderAlias);
+                    break;
+                case NullFunction nullColumn:
+                    columnString = RenderNullColumn(nullColumn, renderAlias);
+                    break;
+                case LengthFunction lengthColumn:
+                    columnString = RenderLengthColumn(lengthColumn, renderAlias);
+                    break;
+                case SubstringFunction substringColumn:
+                    columnString = RenderSubstringColumn(substringColumn, renderAlias);
+                    break;
+                case UpperFunction upperColumn:
+                    columnString = RenderUpperColumn(upperColumn, renderAlias);
+                    break;
             }
 
             return columnString;

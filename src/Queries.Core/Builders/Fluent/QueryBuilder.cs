@@ -167,5 +167,7 @@ namespace Queries.Core.Builders.Fluent
         /// <returns><see cref="InsertIntoQuery"/></returns>
         public static InsertIntoQuery InsertInto(string tableName) => new InsertIntoQuery(tableName);
 
+        
+
     }
 }

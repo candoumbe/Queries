@@ -14,7 +14,7 @@ namespace Queries.Core.Parts.Functions
     /// </summary>
     [Function]
     [JsonObject(ItemReferenceLoopHandling = ReferenceLoopHandling.Ignore)]
-    public class ConcatFunction : IAliasable<ConcatFunction>, IFunctionColumn, IEquatable<ConcatFunction>
+    public class ConcatFunction : IAliasable<ConcatFunction>, IColumn, IEquatable<ConcatFunction>
     {
         /// <summary>
         /// List of columns to concat

@@ -77,13 +77,13 @@ namespace Queries.Core.Tests.Builders
                     false,
                     $"{nameof(CreateViewQuery)} is always != exactly the same {nameof(SelectColumn)}" };
                 {
-                    CreateViewQuery column = CreateView("SuperHero")
+                    CreateViewQuery query = CreateView("SuperHero")
                         .As(
                             Select(Concat("Firstname".Field(), "Lastname".Field()))
                             .From("DC_Comics")
                             .Build())
                             .Build();
-                    yield return new object[] { column, column, true, "Equals with same instance" };
+                    yield return new object[] { query, query, true, "Equals with same instance" };
                 }
 
             }

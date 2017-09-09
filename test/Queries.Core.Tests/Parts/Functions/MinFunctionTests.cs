@@ -5,15 +5,17 @@ using Queries.Core.Parts.Columns;
 using Xunit;
 using Queries.Core.Parts.Functions;
 using FluentAssertions;
+using System.Reflection;
+using Queries.Core.Attributes;
 
-namespace Queries.Core.Tests.Parts.Functions
+namespace Queries.Core.Tests.Parts.Columns
 {
-    public class MaxColumnTest
+    public class MinFunctionTests
     {
         [Fact]
         public void ConstructorTestWithNullStringArgument()
         {
-            Action action = () => new MaxFunction((string)null);
+            Action action = () => new MinFunction((string)null);
 
             action.ShouldThrowExactly<ArgumentNullException>().Which
                 .ParamName.Should()
@@ -23,17 +25,19 @@ namespace Queries.Core.Tests.Parts.Functions
         [Fact]
         public void ConstructorTestWithEmptyStringArgument()
         {
-            Action action = () => new MaxFunction(string.Empty);
+            Action action = () => new MinFunction(string.Empty);
 
             action.ShouldThrowExactly<ArgumentOutOfRangeException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }
 
-        [Fact]
-        public void ConstructorTestWithWhitespaceStringArgument()
+        [Theory]
+        [InlineData("")]
+        [InlineData("  ")]
+        public void ConstructorTestWithWhitespaceStringArgument(string columnName)
         {
-            Action action = () => new MaxFunction("   ");
+            Action action = () => new MinFunction(columnName);
 
             action.ShouldThrowExactly<ArgumentOutOfRangeException>().Which
                 .ParamName.Should()
@@ -43,7 +47,7 @@ namespace Queries.Core.Tests.Parts.Functions
         [Fact]
         public void ConstructorTestWithNullColumnArgument()
         {
-            Action action = () => new MaxFunction((IColumn)null);
+            Action action = () => new MinFunction((IColumn) null);
 
             action.ShouldThrowExactly<ArgumentNullException>().Which
                 .ParamName.Should()
@@ -51,22 +55,23 @@ namespace Queries.Core.Tests.Parts.Functions
         }
 
         [Fact]
-        public void ConstructorTestColumnArgument() => new MaxFunction("age").Type.Should().Be(AggregateType.Max);
-
-
+        public void ConstructorTestColumnArgument() => 
+            new MinFunction("age").Type.Should().Be(AggregateType.Min);
+        
+        
         public static IEnumerable<object[]> AsTestCases
         {
             get
             {
                 yield return new object[]
                 {
-                    new MaxFunction("age".Field()),
+                    new MinFunction("age".Field()),
                     null,
                 };
 
                 yield return new object[]
                 {
-                    new MaxFunction("age".Field()).As(string.Empty),
+                    new MinFunction("age".Field()).As(string.Empty),
                     string.Empty,
                 };
             }
@@ -74,7 +79,22 @@ namespace Queries.Core.Tests.Parts.Functions
 
         [Theory]
         [MemberData(nameof(AsTestCases))]
-        public void SettingAliasTest(MaxFunction column, string expectedAlias)
+        public void SettingAliasTest(MinFunction column, string expectedAlias)
             => column.Alias.Should().Be(expectedAlias);
+
+        [Fact]
+        public void HasFunctionAttribute()
+        {
+            // Arrange 
+            TypeInfo lengthFunctionType = typeof(MinFunction)
+                .GetTypeInfo();
+
+            // Act
+            FunctionAttribute attr = lengthFunctionType.GetCustomAttribute<FunctionAttribute>();
+
+            // Assert
+            attr.Should()
+                .NotBeNull($"{nameof(MinFunction)} must be marked with {nameof(FunctionAttribute)}");
+        }
     }
 }

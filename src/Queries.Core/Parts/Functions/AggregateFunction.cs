@@ -1,6 +1,9 @@
-﻿using Queries.Core.Attributes;
+﻿using Newtonsoft.Json;
+using Queries.Core.Attributes;
 using Queries.Core.Parts.Columns;
 using System;
+using System.Collections.Generic;
+using static Newtonsoft.Json.JsonConvert;
 
 namespace Queries.Core.Parts.Functions
 {
@@ -8,7 +11,8 @@ namespace Queries.Core.Parts.Functions
     /// Base class for all aggregate function.
     /// </summary>
     [Function]
-    public abstract class AggregateFunction : IAliasable<AggregateFunction>, IFunctionColumn
+    [JsonObject]
+    public abstract class AggregateFunction : IAliasable<AggregateFunction>, IEquatable<AggregateFunction>, IColumn
     {
         /// <summary>
         /// The type of aggregate the current instance represents
@@ -47,6 +51,21 @@ namespace Queries.Core.Parts.Functions
             return this;
         }
 
+        public override bool Equals(object obj) => Equals(obj as AggregateFunction);
+        public bool Equals(AggregateFunction other) => 
+            other != null 
+            && Type == other.Type 
+            && EqualityComparer<IColumn>.Default.Equals(Column, other.Column) && Alias == other.Alias;
 
+        public override int GetHashCode()
+        {
+            int hashCode = 211458323;
+            hashCode = hashCode * -1521134295 + Type.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<IColumn>.Default.GetHashCode(Column);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Alias);
+            return hashCode;
+        }
+
+        public override string ToString() => SerializeObject(this);
     }
 }

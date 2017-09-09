@@ -5,10 +5,12 @@ using Queries.Core.Parts.Columns;
 using Xunit;
 using Queries.Core.Parts.Functions;
 using FluentAssertions;
+using System.Reflection;
+using Queries.Core.Attributes;
 
 namespace Queries.Core.Tests.Parts.Columns
 {
-    public class UpperColumnTest
+    public class UpperFunctionTests
     {
 
         [Fact]
@@ -55,6 +57,21 @@ namespace Queries.Core.Tests.Parts.Columns
                     string.Empty,
                 };
             }
+        }
+
+        [Fact]
+        public void HasFunctionAttribute()
+        {
+            // Arrange 
+            TypeInfo lengthFunctionType = typeof(UpperFunction)
+                .GetTypeInfo();
+
+            // Act
+            FunctionAttribute attr = lengthFunctionType.GetCustomAttribute<FunctionAttribute>();
+
+            // Assert
+            attr.Should()
+                .NotBeNull($"{nameof(UpperFunction)} must be marked with {nameof(FunctionAttribute)}");
         }
     }
 }

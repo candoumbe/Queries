@@ -8,7 +8,7 @@ namespace Queries.Core.Parts.Functions
     /// "SUBSTRING" function.
     /// </summary>
     [Function]
-    public class SubstringFunction : IFunctionColumn, IAliasable<SubstringFunction>
+    public class SubstringFunction : IColumn, IAliasable<SubstringFunction>
     {
         /// <summary>
         /// Column the function will be applied to

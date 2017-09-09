@@ -17,7 +17,7 @@ using Newtonsoft.Json;
 
 namespace Queries.Renderers.SqlServer.Tests
 {
-    
+
     public class SqlServerRendererTest : IDisposable
     {
         private ITestOutputHelper _outputHelper;
@@ -135,7 +135,7 @@ namespace Queries.Renderers.SqlServer.Tests
 
                 };
 
-                
+
                 yield return new object[]
                 {
                     Select("firstname".Field(), "lastname".Field())
@@ -349,6 +349,11 @@ namespace Queries.Renderers.SqlServer.Tests
             }
         }
 
+        [Theory]
+        [MemberData(nameof(SelectTestCases))]
+        public void SelectTest(SelectQuery query, bool prettyPrint, string expectedString)
+            => IsQueryOk(query, prettyPrint, expectedString);
+
         public static IEnumerable<object[]> UpdateTestCases
         {
             get
@@ -370,17 +375,34 @@ namespace Queries.Renderers.SqlServer.Tests
                 };
             }
         }
-
-
-        [Theory]
-        [MemberData(nameof(SelectTestCases))]
-        public void SelectTest(SelectQuery query, bool prettyPrint, string expectedString)
-            => IsQueryOk(query, prettyPrint, expectedString);
-
         [Theory]
         [MemberData(nameof(UpdateTestCases))]
         public void UpdateTest(UpdateQuery query, bool prettyPrint, string expectedString)
             => IsQueryOk(query, prettyPrint, expectedString);
+
+
+        public static IEnumerable<object[]> BatchQueryCases
+        {
+            get
+            {
+                yield return new object[]
+                {
+                    new BatchQuery(
+                        Delete("members").Where(new WhereClause("firstname".Field(), IsNull)),
+                        Select("*").From("members")
+                    ),
+                    false,
+                    $"DELETE FROM [members] WHERE ([firstname] IS NULL);{Environment.NewLine}" +
+                    $"SELECT * FROM [members]"
+                };
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(BatchQueryCases))]
+        public void BatchQueryTest(BatchQuery query, bool prettyPrint, string expectedString)
+            => IsQueryOk(query, prettyPrint, expectedString);
+
 
 
         private void IsQueryOk(IQuery query, bool prettyPrint, string expectedString)
@@ -389,7 +411,7 @@ namespace Queries.Renderers.SqlServer.Tests
             _outputHelper.WriteLine($"{nameof(prettyPrint)} : {prettyPrint}");
             // Act
             string result = query.ForSqlServer(prettyPrint);
-            
+
             // Assert
             result.Should().Be(expectedString);
         }

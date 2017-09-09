@@ -3,6 +3,7 @@ using Queries.Core.Builders.Fluent;
 using Queries.Core.Parts.Clauses;
 using Queries.Core.Parts.Columns;
 using System;
+using System.Collections.Generic;
 
 namespace Queries.Core.Builders
 {
@@ -13,7 +14,7 @@ namespace Queries.Core.Builders
     /// 
     /// </remarks>
     [DataManipulationLanguage]
-    public class DeleteQuery : IBuildableQuery<DeleteQuery>
+    public class DeleteQuery : IBuildableQuery<DeleteQuery>, IEquatable<DeleteQuery>
     {
         /// <summary>
         /// Name of the table where to delete data from
@@ -52,6 +53,18 @@ namespace Queries.Core.Builders
 
 
         public DeleteQuery Build() => this;
+        public override bool Equals(object obj) => Equals(obj as DeleteQuery);
+        public bool Equals(DeleteQuery other) => 
+            other != null 
+            && (Table == null && other.Table == null || Table.Equals(other.Table)) 
+            && (Criteria == null && other.Criteria == null || Criteria.Equals(other.Criteria));
 
+        public override int GetHashCode()
+        {
+            int hashCode = -2032950093;
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Table);
+            hashCode = hashCode * -1521134295 + EqualityComparer<IWhereClause>.Default.GetHashCode(Criteria);
+            return hashCode;
+        }
     }
 }

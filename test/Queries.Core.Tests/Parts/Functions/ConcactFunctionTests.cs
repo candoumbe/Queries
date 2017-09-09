@@ -50,7 +50,7 @@ namespace Queries.Core.Tests.Parts.Functions
         }
 
         [Fact]
-        public void HaveFunctionAttribute()
+        public void HasFunctionAttribute()
         {
             // Arrange 
             TypeInfo lengthFunctionType = typeof(ConcatFunction)
@@ -122,5 +122,29 @@ namespace Queries.Core.Tests.Parts.Functions
             // Assert 
             actualString.Should().Be(expectedString);
         }
+
+        public static IEnumerable<object[]> AsTestCases
+        {
+            get
+            {
+                yield return new object[]
+                {
+                    new ConcatFunction("firstname".Literal(), " ".Literal(), "lastname".Literal()).As(null),
+                    null,
+                };
+
+                yield return new object[]
+                {
+                    new ConcatFunction("firstname".Literal(), " ".Literal(), "lastname".Literal()).As(string.Empty),
+                    string.Empty,
+                };
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(AsTestCases))]
+        public void SettingAliasTest(ConcatFunction column, string expectedAlias)
+            => column.Alias.Should().Be(expectedAlias);
+
     }
 }

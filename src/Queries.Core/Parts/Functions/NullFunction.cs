@@ -9,7 +9,7 @@ namespace Queries.Core.Parts.Functions
     /// "ISNULL" function
     /// </summary>
     [Function]
-    public class NullFunction : IAliasable<NullFunction>, IFunctionColumn, IEquatable<NullFunction>
+    public class NullFunction : IAliasable<NullFunction>, IColumn, IEquatable<NullFunction>
     {
         /// <summary>
         /// Column onto which the function must be applied.
