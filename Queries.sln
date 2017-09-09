@@ -1,38 +1,39 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{852F1208-CA32-45FA-8E26-D8D4A2DCFC26}"
 	ProjectSection(SolutionItems) = preProject
+		.gitattributes = .gitattributes
 		.gitignore = .gitignore
-		global.json = global.json
+		CONTRIBUTING.md = CONTRIBUTING.md
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Queries.Core", "src\Queries.Core\Queries.Core.xproj", "{A6749F70-2E7C-4030-AA1B-F48FF036ADFB}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{4EAF8F5E-4703-416F-ACD9-277726BD78EF}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Queries.Renderers.Postgres", "src\Queries.Renderers.Postgres\Queries.Renderers.Postgres.xproj", "{3566F415-9DC3-49F0-9485-1DADCC78DE9E}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Queries.Renderers.SqlServer", "src\Queries.Renderers.SqlServer\Queries.Renderers.SqlServer.xproj", "{2EFB4C29-143B-453C-A4A9-1DDD00DAE593}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{357A11A7-39EE-4782-85BB-0B5B9E6DBD9A}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Queries.Core.Tests", "test\Queries.Core.Tests\Queries.Core.Tests.xproj", "{B550FF56-E9E8-4285-B82B-51287E903619}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Queries.Core", "src\Queries.Core\Queries.Core.csproj", "{A6749F70-2E7C-4030-AA1B-F48FF036ADFB}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Queries.Renderers.Postgres.Tests", "test\Queries.Renderers.Postgres.Tests\Queries.Renderers.Postgres.Tests.xproj", "{B9ABF320-E40C-4D8C-AA73-F0E432B04C70}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Queries.Renderers.Postgres", "src\Queries.Renderers.Postgres\Queries.Renderers.Postgres.csproj", "{3566F415-9DC3-49F0-9485-1DADCC78DE9E}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Queries.Renderers.SqlServer.Tests", "test\Queries.Renderers.SqlServer.Tests\Queries.Renderers.SqlServer.Tests.xproj", "{7A928810-514B-4F21-80AB-8559B069B2DA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Queries.Renderers.SqlServer", "src\Queries.Renderers.SqlServer\Queries.Renderers.SqlServer.csproj", "{2EFB4C29-143B-453C-A4A9-1DDD00DAE593}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Queries.Renderers.Neo4J", "src\Queries.Renderers.Neo4J\Queries.Renderers.Neo4J.xproj", "{2935AD7D-0A29-4D09-A1E7-FE03A8CB400A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Queries.Core.Tests", "test\Queries.Core.Tests\Queries.Core.Tests.csproj", "{B550FF56-E9E8-4285-B82B-51287E903619}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Queries.Renderers.MySQL", "src\Queries.Renderers.MySQL\Queries.Renderers.MySQL.xproj", "{069EFD2C-9AAF-469F-B085-DE509139DE07}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Queries.Renderers.Postgres.Tests", "test\Queries.Renderers.Postgres.Tests\Queries.Renderers.Postgres.Tests.csproj", "{B9ABF320-E40C-4D8C-AA73-F0E432B04C70}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Queries.Renderers.MySQL.Tests", "test\Queries.Renderers.MySQL.Tests\Queries.Renderers.MySQL.Tests.xproj", "{E2F270F8-42A5-4BBB-A96F-A9D7EEB36A57}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Queries.Renderers.SqlServer.Tests", "test\Queries.Renderers.SqlServer.Tests\Queries.Renderers.SqlServer.Tests.csproj", "{7A928810-514B-4F21-80AB-8559B069B2DA}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Queries.Renderers.Neo4J.Tests", "test\Queries.Renderers.Neo4J.Tests\Queries.Renderers.Neo4J.Tests.xproj", "{3F69E0B3-13AD-41AC-988C-7112F2B330F4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Queries.Renderers.Neo4J", "src\Queries.Renderers.Neo4J\Queries.Renderers.Neo4J.csproj", "{2935AD7D-0A29-4D09-A1E7-FE03A8CB400A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Queries.Renderers.MySQL", "src\Queries.Renderers.MySQL\Queries.Renderers.MySQL.csproj", "{069EFD2C-9AAF-469F-B085-DE509139DE07}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Queries.Renderers.MySQL.Tests", "test\Queries.Renderers.MySQL.Tests\Queries.Renderers.MySQL.Tests.csproj", "{E2F270F8-42A5-4BBB-A96F-A9D7EEB36A57}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Queries.Renderers.Neo4J.Tests", "test\Queries.Renderers.Neo4J.Tests\Queries.Renderers.Neo4J.Tests.csproj", "{3F69E0B3-13AD-41AC-988C-7112F2B330F4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -95,5 +96,8 @@ Global
 		{069EFD2C-9AAF-469F-B085-DE509139DE07} = {4EAF8F5E-4703-416F-ACD9-277726BD78EF}
 		{E2F270F8-42A5-4BBB-A96F-A9D7EEB36A57} = {357A11A7-39EE-4782-85BB-0B5B9E6DBD9A}
 		{3F69E0B3-13AD-41AC-988C-7112F2B330F4} = {357A11A7-39EE-4782-85BB-0B5B9E6DBD9A}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A80F3874-CE69-426F-BEEB-F241B73D3A1D}
 	EndGlobalSection
 EndGlobal

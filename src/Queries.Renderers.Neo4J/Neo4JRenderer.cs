@@ -59,9 +59,8 @@ namespace Queries.Renderers.Neo4J
                     {
                         Table table = (Table) tabs.Single();
 
-                        if (column is FieldColumn)
+                        if (column is FieldColumn fc)
                         {
-                            FieldColumn fc = (FieldColumn) column;
                             if ("*".Equals(fc.Name))
                             {
                                 if (string.IsNullOrWhiteSpace(table.Alias))
@@ -80,7 +79,7 @@ namespace Queries.Renderers.Neo4J
                                 {
                                     table.As(table.Name.Substring(0, 1).ToLower());
                                 }
-                                lc.Value = table.Alias;
+                                lc = new LiteralColumn(table.Alias).As(lc.Alias);
                             }
                         }
                     }

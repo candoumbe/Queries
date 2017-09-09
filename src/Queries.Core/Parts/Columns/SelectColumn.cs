@@ -3,7 +3,8 @@
 namespace Queries.Core.Parts.Columns
 {
     /// <summary>
-    /// An instanc of this class represents a <see cref="SelectQuery"/> that can be used as <see cref="IColumn"/> in a <see cref="SelectQuery"/>
+    /// An instanc of this class represents a <see cref="Builders.SelectQuery"/> that can be used as 
+    /// <see cref="IColumn"/> in a <see cref="Builders.SelectQuery"/>.
     /// </summary>
     public class SelectColumn : IAliasable<SelectColumn>, IColumn
     {

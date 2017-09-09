@@ -10,13 +10,27 @@ using static Queries.Core.Builders.Fluent.QueryBuilder;
 using static Queries.Core.Parts.Clauses.ClauseOperator;
 using static Queries.Core.Parts.Columns.SelectColumn;
 using FluentAssertions;
+using Queries.Core.Parts.Columns;
+using Xunit.Abstractions;
+using static Newtonsoft.Json.JsonConvert;
+using Newtonsoft.Json;
 
 namespace Queries.Renderers.SqlServer.Tests
 {
-    
-    public class SqlServerRendererTest
-    {
 
+    public class SqlServerRendererTest : IDisposable
+    {
+        private ITestOutputHelper _outputHelper;
+
+        public SqlServerRendererTest(ITestOutputHelper outputHelper)
+        {
+            _outputHelper = outputHelper;
+        }
+
+        public void Dispose()
+        {
+            _outputHelper = null;
+        }
 
         //private class Cases
         //{
@@ -104,9 +118,49 @@ namespace Queries.Renderers.SqlServer.Tests
 
                 yield return new object[] { Select(1.Literal()), false, "SELECT 1" };
 
+                yield return new object[] { Select(1L.Literal()), false, "SELECT 1" };
+
                 yield return new object[] { Select(1.Literal()).Union(Select(2.Literal())), false, "SELECT 1 UNION SELECT 2" };
 
                 yield return new object[] { Select(1.Literal()).Union(Select(2.Literal())), true, $"SELECT 1 {Environment.NewLine}UNION {Environment.NewLine}SELECT 2" };
+
+                yield return new object[]
+                {
+                    Select("fullname")
+                    .From(
+                        Select(Concat("firstname".Field(), " ".Literal(),  "lastname".Field()).As("fullname"))
+                        .From("people").As("p")),
+                    false,
+                    "SELECT [fullname] FROM (SELECT [firstname] + ' ' + [lastname] AS [fullname] FROM [people]) [p]"
+
+                };
+
+
+                yield return new object[]
+                {
+                    Select("firstname".Field(), "lastname".Field())
+                        .From("people")
+                        .Where("firstname".Field().IsNotNull()),
+                    false,
+                    "SELECT [firstname], [lastname] FROM [people] WHERE ([firstname] IS NOT NULL)"
+
+                };
+
+                yield return new object[]
+                {
+                    Select(1.2f.Literal()),
+                    false,
+                    $"SELECT {1.2f}"
+
+                };
+
+                yield return new object[]
+                {
+                    Select(double.MaxValue.Literal()),
+                    false,
+                    $"SELECT {double.MaxValue}"
+
+                };
 
                 yield return new object[]
                 {
@@ -295,6 +349,11 @@ namespace Queries.Renderers.SqlServer.Tests
             }
         }
 
+        [Theory]
+        [MemberData(nameof(SelectTestCases))]
+        public void SelectTest(SelectQuery query, bool prettyPrint, string expectedString)
+            => IsQueryOk(query, prettyPrint, expectedString);
+
         public static IEnumerable<object[]> UpdateTestCases
         {
             get
@@ -316,21 +375,45 @@ namespace Queries.Renderers.SqlServer.Tests
                 };
             }
         }
-
-
-        [Theory]
-        [MemberData(nameof(SelectTestCases))]
-        public void SelectTest(SelectQuery query, bool prettyPrint, string expectedString)
-            => IsQueryOk(query, prettyPrint, expectedString);
-
         [Theory]
         [MemberData(nameof(UpdateTestCases))]
         public void UpdateTest(UpdateQuery query, bool prettyPrint, string expectedString)
             => IsQueryOk(query, prettyPrint, expectedString);
 
 
-        private static void IsQueryOk(IQuery query, bool prettyPrint, string expectedString) 
-            => query.ForSqlServer(prettyPrint).Should().Be(expectedString);
+        public static IEnumerable<object[]> BatchQueryCases
+        {
+            get
+            {
+                yield return new object[]
+                {
+                    new BatchQuery(
+                        Delete("members").Where(new WhereClause("firstname".Field(), IsNull)),
+                        Select("*").From("members")
+                    ),
+                    false,
+                    $"DELETE FROM [members] WHERE ([firstname] IS NULL);{Environment.NewLine}" +
+                    $"SELECT * FROM [members]"
+                };
+            }
+        }
 
+        [Theory]
+        [MemberData(nameof(BatchQueryCases))]
+        public void BatchQueryTest(BatchQuery query, bool prettyPrint, string expectedString)
+            => IsQueryOk(query, prettyPrint, expectedString);
+
+
+
+        private void IsQueryOk(IQuery query, bool prettyPrint, string expectedString)
+        {
+            _outputHelper.WriteLine($"{nameof(query)} : {SerializeObject(query, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore })}");
+            _outputHelper.WriteLine($"{nameof(prettyPrint)} : {prettyPrint}");
+            // Act
+            string result = query.ForSqlServer(prettyPrint);
+
+            // Assert
+            result.Should().Be(expectedString);
+        }
     }
 }

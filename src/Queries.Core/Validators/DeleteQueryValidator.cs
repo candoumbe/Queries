@@ -1,9 +1,13 @@
-﻿using Queries.Core.Builders;
+﻿using FluentValidation;
+using Queries.Core.Builders;
 
 namespace Queries.Core.Validators
 {
-    public class DeleteQueryValidator : IValidate<DeleteQuery>
+    /// <summary>
+    /// Validator for <see cref="DeleteQuery"/> instances.
+    /// </summary>
+    public class DeleteQueryValidator : AbstractValidator<DeleteQuery>
     {
-        public bool IsValid(DeleteQuery element) => !string.IsNullOrWhiteSpace(element?.Table);
+       
     }
 }

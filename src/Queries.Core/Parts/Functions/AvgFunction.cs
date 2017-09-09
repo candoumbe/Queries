@@ -1,4 +1,4 @@
-using Queries.Core.Extensions;
+using System;
 using Queries.Core.Parts.Columns;
 
 namespace Queries.Core.Parts.Functions
@@ -22,5 +22,7 @@ namespace Queries.Core.Parts.Functions
         /// </summary>
         /// <param name="column">The name of the column onto which the "average" function will be applied.</param>
         public AvgFunction(string columnName) : this(columnName?.Field()) { }
+
+
     }
 }

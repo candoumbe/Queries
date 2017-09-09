@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>Queries.Renderers.SqlServer Class Library</Description>
+    <VersionPrefix>3.0.0-alpha1</VersionPrefix>
+    <Authors>Cyrille NDOUMBE</Authors>
+    <TargetFramework>netstandard1.0</TargetFramework>
+    <AssemblyName>Queries.Renderers.SqlServer</AssemblyName>
+    <PackageId>Queries.Renderers.SqlServer</PackageId>
+    <PackageTags>Queries;Query;SQL;Builder;SQL Server</PackageTags>
+    <PackageReleaseNotes>This is an alpha version</PackageReleaseNotes>
+    <PackageProjectUrl>https://github.com/candoumbe/Queries</PackageProjectUrl>
+    <Version>3.0.1-alpha1</Version>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <LangVersion>7.1</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <LangVersion>7.1</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Queries.Core\Queries.Core.csproj" />
+  </ItemGroup>
+</Project>

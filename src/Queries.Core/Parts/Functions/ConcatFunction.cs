@@ -1,13 +1,20 @@
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Queries.Core.Attributes;
 using Queries.Core.Parts.Columns;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using static Newtonsoft.Json.JsonConvert;
 
 namespace Queries.Core.Parts.Functions
 {
     /// <summary>
-    /// Function which concat to or more columns.
+    /// Concat two or more columns.
     /// </summary>
-    public class ConcatFunction : IAliasable<ConcatFunction>, IFunctionColumn
+    [Function]
+    [JsonObject(ItemReferenceLoopHandling = ReferenceLoopHandling.Ignore)]
+    public class ConcatFunction : IAliasable<ConcatFunction>, IColumn, IEquatable<ConcatFunction>
     {
         /// <summary>
         /// List of columns to concat
@@ -17,20 +24,26 @@ namespace Queries.Core.Parts.Functions
         /// <summary>
         /// Builds a new <see cref="ConcatFunction"/> instance.
         /// </summary>
-        /// <param name="columns">Columns to concat</param>
-        /// <exception cref="ArgumentNullException">if <paramref name="columns"/> is <c>null</c>.</exception>
-        /// <exception cref="ArgumentOutOfRangeException">if <paramref name="columns"/> contains less than two elements.</exception>
-        public ConcatFunction(params IColumn[] columns)
+        /// <param name="first">First column to concatenate</param>
+        /// <param name="second">Second column to concatenate</param>
+        /// <param name="columns">Additional columns to concatenate.</param>
+        /// <exception cref="ArgumentNullException">if either <paramref name="first"/> or <paramref name="second"/> is <c>null</c>.</exception>
+        public ConcatFunction(IColumn first, IColumn second, params IColumn[] columns)
         {
-            if (columns == null)
+            if (first == null)
             {
-                throw new ArgumentNullException();
+                throw new ArgumentNullException(nameof(first));
             }
-            if (columns.Length < 2)
+            if (second == null)
             {
-                throw new ArgumentOutOfRangeException(nameof(columns), $"{nameof(columns)} must be at least two columns to concatenate");
+                throw new ArgumentNullException(nameof(second));
             }
-            Columns = columns;
+
+            IEnumerable<IColumn> localColumns = (columns ?? Enumerable.Empty<IColumn>())
+                .Where(x => x != null)
+                .ToList();
+            
+            Columns = new[] { first, second }.Union(localColumns);
         }
 
         private string _alias;
@@ -50,6 +63,30 @@ namespace Queries.Core.Parts.Functions
             _alias = alias;
 
             return this;
+        }
+
+        public override bool Equals(object obj) => Equals(obj as ConcatFunction);
+
+        public bool Equals(ConcatFunction other) => other != null 
+            && Columns.SequenceEqual(other.Columns) && Alias == other.Alias;
+
+        public override int GetHashCode()
+        {
+            int hashCode = -1367283405;
+            hashCode = hashCode * -1521134295 + EqualityComparer<IEnumerable<IColumn>>.Default.GetHashCode(Columns);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Alias);
+            return hashCode;
+        }
+
+        public override string ToString()
+        {
+            JObject jObj = new JObject
+            {
+                ["Type"] = nameof(ConcatFunction),
+                [nameof(Columns)] = JToken.FromObject(Columns),
+                [nameof(Alias)] = Alias
+            };
+            return jObj.ToString();
         }
     }
 }

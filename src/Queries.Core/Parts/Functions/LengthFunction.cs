@@ -1,11 +1,14 @@
-﻿using Queries.Core.Parts.Columns;
+﻿using Queries.Core.Attributes;
+using Queries.Core.Parts.Columns;
+using System;
 
 namespace Queries.Core.Parts.Functions
 {
     /// <summary>
     /// Function that computes the length of a column
     /// </summary>
-    public class LengthFunction : IAliasable<LengthFunction>, IFunctionColumn
+    [Function]
+    public class LengthFunction : IAliasable<LengthFunction>, IColumn
     {
         /// <summary>
         /// The column onto which <see cref="LengthFunction"/> will be applied
@@ -13,6 +16,9 @@ namespace Queries.Core.Parts.Functions
         public IColumn Column { get; }
         private string _alias;
 
+        /// <summary>
+        /// Alias sets for the function.
+        /// </summary>
         public string Alias => _alias;
 
         /// <summary>
@@ -20,9 +26,10 @@ namespace Queries.Core.Parts.Functions
         /// </summary>
         /// <param name="column">The column onto which the function must be applied.</param>
         /// <see cref="IFunctionColumn"/>
-        internal LengthFunction(IColumn column)
+        /// <exception cref="ArgumentNullException">if <paramref name="column"/> is <c>nulll</c></exception>
+        public LengthFunction(IColumn column)
         {
-            Column = column;
+            Column = column ?? throw new ArgumentNullException(nameof(column));
         }
         
         /// <summary>

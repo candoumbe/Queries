@@ -6,14 +6,20 @@ using Queries.Core.Parts.Sorting;
 
 namespace Queries.Core.Builders
 {
-    public abstract class SelectQueryBase : IDataManipulationQuery, IInsertable
+    /// <summary>
+    /// Base class for queries that select data
+    /// </summary>
+    public abstract class SelectQueryBase : IInsertable, IQuery
     {
-        public IList<IColumn> Columns { get; set; }
-        public IWhereClause WhereCriteria { get; set; }
-        public IHavingClause HavingCriteria { get; set; }
-        public IList<IJoin> Joins { get; set; }
-        public IList<ISort> Sorts { get; set; } 
+        public IList<IColumn> Columns { get; protected set; }
+        public IWhereClause WhereCriteria { get; protected set; }
+        public IHavingClause HavingCriteria { get; protected set; }
+        public IList<IJoin> Joins { get; protected set; }
+        public IList<ISort> Sorts { get; protected set; } 
         
+        /// <summary>
+        /// Builds a new <see cref="SelectQueryBase"/> instance.
+        /// </summary>
         protected SelectQueryBase()
         {
             Columns = new List<IColumn>();

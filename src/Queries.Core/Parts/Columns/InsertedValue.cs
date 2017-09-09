@@ -3,19 +3,30 @@ using System;
 
 namespace Queries.Core.Parts.Columns
 {
+    /// <summary>
+    /// Maps a <see cref="FieldColumn"/> with its <see cref="Value"/> in an <see cref="InsertIntoQuery"/>
+    /// </summary>
     public class InsertedValue : IInsertable
     {
-        public FieldColumn Column { get; set; }
+        /// <summary>
+        /// Column where the value will be inserted
+        /// </summary>
+        public FieldColumn Column { get; }
 
-        public IColumn Value { get; set; }
+        /// <summary>
+        /// Value to insert
+        /// </summary>
+        public IColumn Value { get; }
 
+        /// <summary>
+        /// Builds a new <see cref="InsertedValue"/>
+        /// </summary>
+        /// <param name="column">column where the <paramref name="value"/> will be inserted.</param>
+        /// <param name="value">value to insert</param>
+        /// <exception cref="ArgumentNullException"><paramref name="column"/> is <c>null</c>.</exception>
         public InsertedValue(FieldColumn column, IColumn value)
         {
-            if (column == null)
-            {
-                throw new ArgumentNullException(nameof(column));
-            }
-            Column = column;
+            Column = column ?? throw new ArgumentNullException(nameof(column));
             Value = value;
         }
     }

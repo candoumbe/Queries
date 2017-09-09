@@ -1,13 +1,14 @@
 using System;
 using Queries.Core.Parts.Columns;
-using Queries.Core.Extensions;
+using Queries.Core.Attributes;
 
 namespace Queries.Core.Parts.Functions
 {
     /// <summary>
     /// "UPPER" function.
     /// </summary>
-    public class UpperFunction : IFunctionColumn, IAliasable<UpperFunction> 
+    [Function]
+    public class UpperFunction : IColumn, IAliasable<UpperFunction> 
     {
         /// <summary>
         /// Column onto wich the function applies
@@ -26,12 +27,7 @@ namespace Queries.Core.Parts.Functions
         /// <exception cref="ArgumentNullException">if <paramref name="column"/> is <code>null</code></exception>
         public UpperFunction(IColumn column)
         {
-            if (column == null)
-            {
-                throw new ArgumentNullException(nameof(column));
-            }
-
-            Column = column;
+            Column = column ?? throw new ArgumentNullException(nameof(column));
         }
 
         /// <summary>

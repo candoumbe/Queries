@@ -26,7 +26,7 @@ namespace Queries.Renderers.Postgres
         protected override string RenderColumnnameWithAlias(string columnName, string alias) => $"{columnName} {alias}";
         
         protected override string RenderUUIDValue() => $"uuid_generate_v4()";
-
+        
         protected override string RenderNullColumn(NullFunction nullColumn, bool renderAlias)
         {
             StringBuilder sbNullColumn = new StringBuilder();

@@ -1,14 +1,25 @@
 using System;
 using Queries.Core.Builders;
+using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
+using static Newtonsoft.Json.JsonConvert;
 
 namespace Queries.Core.Parts.Columns
 {
-    public class FieldColumn : ColumnBase, INamable, IAliasable<FieldColumn>, IInsertable
+    [JsonObject(ItemReferenceLoopHandling = ReferenceLoopHandling.Ignore)]
+    public class FieldColumn : ColumnBase, INamable, IAliasable<FieldColumn>, IInsertable, IEquatable<FieldColumn>
     {
+        /// <summary>
+        /// Name of the column
+        /// </summary>
         public string Name { get; set; }
 
         private string _alias;
 
+        /// <summary>
+        /// Alias of the column
+        /// </summary>
         public string Alias => _alias;
 
 
@@ -32,5 +43,20 @@ namespace Queries.Core.Parts.Columns
             return this;
         }
 
+
+        public override bool Equals(object obj) =>
+            ReferenceEquals(obj, this) || obj is FieldColumn fc && this.Equals(fc);
+
+        public bool Equals(FieldColumn other) => other != null && Name == other.Name && Alias == other.Alias;
+
+        public override int GetHashCode()
+        {
+            int hashCode = 1124293869;
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Name);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Alias);
+            return hashCode;
+        }
+
+        public override string ToString() => SerializeObject(this);
     }
 }

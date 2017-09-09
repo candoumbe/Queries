@@ -9,33 +9,14 @@ using Xunit;
 using static Queries.Core.Builders.Fluent.QueryBuilder;
 using static Queries.Core.Parts.Clauses.ClauseOperator;
 using static Queries.Core.Parts.Columns.SelectColumn;
+using FluentAssertions;
+using Queries.Core.Parts.Columns;
+
 namespace Queries.Renderers.Postgres.Tests
 {
     public class PostgresRendererTest
     {
-        private class Cases
-        {
-            //public IEnumerable<TestCaseData> SelectTestCases
-            //{
-            //    get
-            //    {
-            //        yield return new TestCaseData(Select("*").From("Table"))
-            //            .SetName($@"{nameof(Select)}(""*"").{nameof(SelectQuery.From)}(""Table"")")
-            //            .Returns(@"SELECT * FROM ""Table""");
 
-            //        yield return new TestCaseData(Select("Employees.*").From("Table"))
-            //            .SetName($@"{nameof(Select)}(""Employees.*"").{nameof(SelectQuery.From)}(""Table"")")
-            //            .Returns(@"SELECT ""Employees"".* FROM ""Table""");
-
-            //        yield return new TestCaseData(Select("*").From("Table".Table("t")))
-            //            .SetName($@"{nameof(Select)}(""*"").{nameof(SelectQuery.From)}(""Table"".{nameof(StringExtensions.Table)}(""t""))")
-            //            .Returns(@"SELECT * FROM ""Table"" ""t""");
-
-
-
-            //    }
-            //}
-        }
         public static IEnumerable<object[]> SelectTestCases
         {
             get
@@ -384,7 +365,8 @@ namespace Queries.Renderers.Postgres.Tests
         public void BatchQueryTest(BatchQuery query, bool prettyPrint, string expectedString)
             => IsQueryOk(query, prettyPrint, expectedString);
 
-        private static void IsQueryOk(IQuery query, bool prettyPrint, string expectedString) => Assert.Equal(expectedString, query.ForPostgres(prettyPrint));
+        private static void IsQueryOk(IQuery query, bool prettyPrint, string expectedString) => 
+            query.ForPostgres(prettyPrint).Should().Be(expectedString);
 
     }
 }

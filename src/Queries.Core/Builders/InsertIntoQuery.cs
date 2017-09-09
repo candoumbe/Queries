@@ -1,12 +1,22 @@
 ﻿using Queries.Core.Builders.Fluent;
 using Queries.Core.Parts.Columns;
+using System;
 
 namespace Queries.Core.Builders
 {
-    public class InsertIntoQuery : IDataManipulationQuery, IInsertIntoQuery<InsertIntoQuery>, IBuildableQuery<InsertIntoQuery>
+    /// <summary>
+    /// A query to insert data 
+    /// </summary>
+    public class InsertIntoQuery : IInsertIntoQuery<InsertIntoQuery>, IBuildableQuery<InsertIntoQuery>
     {
-        public IInsertable InsertedValue { get; set; }
+        /// <summary>
+        /// Values to insert
+        /// </summary>
+        public IInsertable InsertedValue { get; private set; }
 
+        /// <summary>
+        /// Name of the element where to insert <see cref="InsertedValue"/>
+        /// </summary>
         public string TableName { get; }
 
 
@@ -14,9 +24,10 @@ namespace Queries.Core.Builders
         /// Creates a new <see cref="InsertIntoQuery"/>
         /// </summary>
         /// <param name="tableName">name of the table the INSERT INTO will be made for</param>
+        /// <exception cref="ArgumentNullException">if <paramref name="tableName"/> is <c>null</c>.</exception>
         public InsertIntoQuery(string tableName)
         {
-            TableName = tableName;
+            TableName = tableName ?? throw new ArgumentNullException(nameof(tableName));
         }
 
 

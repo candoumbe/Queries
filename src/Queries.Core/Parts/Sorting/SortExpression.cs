@@ -1,5 +1,6 @@
 ﻿using Queries.Core.Extensions;
 using Queries.Core.Parts.Columns;
+using System;
 
 namespace Queries.Core.Parts.Sorting
 {
@@ -8,22 +9,25 @@ namespace Queries.Core.Parts.Sorting
     /// </summary>
     public class SortExpression : ISort
     {
-        public ColumnBase Column { get; set; }
+        /// <summary>
+        /// Column which the sort expression will be applied onto
+        /// </summary>
+        public ColumnBase Column { get; }
 
         /// <summary>
         /// The <see cref="SortDirection"/>.
         /// </summary>
-        public SortDirection Direction { get; set; }
+        public SortDirection Direction { get; }
 
-        // TODO unit tests !!!
         /// <summary>
         /// Builds a new <see cref="SortExpression"/> instance.
         /// </summary>
         /// <param name="column">Column onto which the sort will be applied</param>
         /// <param name="direction">sort direction (<see cref="SortDirection.Ascending"/> by default).</param>
+        /// <exception cref="ArgumentNullException"><paramref name="column"/> is <c>null</c>.</exception>
         public SortExpression(ColumnBase column, SortDirection direction = SortDirection.Ascending)
         {
-            Column = column;
+            Column = column ?? throw new ArgumentNullException(nameof(column));
             Direction = direction;
         }
 
@@ -32,6 +36,7 @@ namespace Queries.Core.Parts.Sorting
         /// </summary>
         /// <param name="columnNameOrAlias">column name/alias onto wich the sort will be applied.</param>
         /// <param name="direction">sort direction (<see cref="SortDirection.Ascending"/> by default).</param>
+        /// <exception cref="ArgumentNullException"><paramref name="columnNameOrAlias"/> is <c>null</c>.</exception>
         public SortExpression(string columnNameOrAlias, SortDirection direction = SortDirection.Ascending) : this(columnNameOrAlias.Field(), direction)
         {}
         

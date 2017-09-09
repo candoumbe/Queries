@@ -3,35 +3,73 @@ using Queries.Core.Parts.Functions;
 
 namespace Queries.Core.Builders.Fluent
 {
+    /// <summary>
+    /// Helper to create <see cref="IQuery"/> instances.
+    /// </summary>
     public static class QueryBuilder
     {
         
 #region Columns conversions shortcuts
 
         /// <summary>
-        /// Applies the <see cref="LengthFunction"/> 
+        /// Applies <see cref="LengthFunction"/> to <paramref name="column"/>.
         /// </summary>
-        /// <param name="column"></param>
-        /// <returns></returns>
+        /// <param name="column">column onto which the function will be applied.</param>
+        /// <returns><see cref="LengthFunction"/></returns>
         public static LengthFunction Length(IColumn column) => new LengthFunction(column);
 
+        /// <summary>
+        /// Concatenates <paramref name="columns"/>.
+        /// </summary>
+        /// <param name="columns">Columns to concatenate</param>
+        /// <returns></returns>
+        /// <exception cref="System.ArgumentNullException">if either <paramref name="first"/> or <paramref name="second"/> is <c>null</c> </exception>
+        public static ConcatFunction Concat(IColumn first, IColumn second, params IColumn[] columns) => new ConcatFunction(first, second, columns);
 
-        public static ConcatFunction Concat(params IColumn[] columns) => new ConcatFunction(columns);
-
-
+        /// <summary>
+        /// Applies <see cref="NullFunction"/> to <paramref name="column"/>.
+        /// </summary>
+        /// <param name="column">Column onto which aoply <see cref="NullFunction"/>.</param>
+        /// <param name="defaultValue">Result value to use if <paramref name="column"/>'s value is <c>null</c></param>
+        /// <returns></returns>
         public static NullFunction Null(FieldColumn column, ColumnBase defaultValue) => new NullFunction(column, defaultValue);
 
-
+        /// <summary>
+        /// Applies <see cref="CountFunction"/> to <paramref name="column"/>.
+        /// </summary>
+        /// <param name="column">Column onto which apply <see cref="CountFunction"/>.</param>
+        /// <returns></returns>
         public static CountFunction Count(FieldColumn column) => new CountFunction(column);
 
+        /// <summary>
+        /// Applies <see cref="NullFunction"/> to <paramref name="column"/>.
+        /// </summary>
+        /// <param name="column">Column onto which aoply <see cref="NullFunction"/>.</param>
+        /// <param name="defaultValue">Result value to use if <paramref name="column"/>'s value is <c>null</c></param>
+        /// <returns></returns>
         public static NullFunction Null(LiteralColumn column, ColumnBase defaultValue) => new NullFunction(column, defaultValue);
 
 
-        
+
+        /// <summary>
+        /// Applies <see cref="MinFunction"/> to <paramref name="column"/>.
+        /// </summary>
+        /// <param name="column">Column onto which aoply <see cref="MinFunction"/>.</param>
+        /// <returns></returns>
         public static MinFunction Min(IColumn column) => new MinFunction(column);
 
+        /// <summary>
+        /// Applies <see cref="MinFunction"/> to <paramref name="column"/>.
+        /// </summary>
+        /// <param name="columnName">Name of the column onto which aoply <see cref="MinFunction"/>.</param>
+        /// <returns></returns>
         public static MinFunction Min(string columnName) => new MinFunction(columnName);
 
+        /// <summary>
+        /// Applies <see cref="AvgFunction"/> to <paramref name="column"/>.
+        /// </summary>
+        /// <param name="column">Column onto which aoply <see cref="AvgFunction"/>.</param>
+        /// <returns></returns>
         public static AvgFunction Avg(IColumn column) => new AvgFunction(column);
 
         /// <summary>
@@ -101,7 +139,8 @@ namespace Queries.Core.Builders.Fluent
         /// Creates a <see cref="SelectQuery"/> object suitable to build <a href="http://www.w3schools.com/sql/sql_select.asp">SELECT</a> query
         /// </summary>
         /// <param name="columnNames">The column names.</param>
-        /// <returns></returns>
+        /// <returns><see cref="SelectQuery"/></returns>
+        /// <exception cref="System.ArgumentOutOfRangeException">if <see cref="columnNames"/> is empty or contains only <c>null</c> elements.</exception>
         public static SelectQuery Select(params string[] columnNames) => new SelectQuery(columnNames);
 
         /// <summary>
@@ -109,6 +148,7 @@ namespace Queries.Core.Builders.Fluent
         /// </summary>
         /// <param name="columns">The columns.</param>
         /// <returns><see cref="SelectQuery"/></returns>
+        /// <exception cref="System.ArgumentOutOfRangeException">if <see cref="columns"/> is empty or contains only <c>null</c> elements.</exception>
         public static SelectQuery Select(params IColumn[] columns) => new SelectQuery(columns);
 
         /// <summary>
@@ -116,6 +156,8 @@ namespace Queries.Core.Builders.Fluent
         /// </summary>
         /// <param name="tableName">Name of the table the <see cref="TruncateQuery"/> is built for</param>
         /// <returns><see cref="TruncateQuery"/></returns>
+        /// <exception cref="System.ArgumentNullException">if <paramref name="tableName"/> is <c>null</c>.</exception>
+        /// <exception cref="System.ArgumentOutOfRangeException">if <paramref name="tableName"/> is empty or whitespace.</exception>
         public static TruncateQuery Truncate(string tableName) => new TruncateQuery(tableName);
 
         /// <summary>
@@ -124,6 +166,8 @@ namespace Queries.Core.Builders.Fluent
         /// <param name="tableName">Name of the table the <see cref="InsertIntoQuery"/> is built for</param>
         /// <returns><see cref="InsertIntoQuery"/></returns>
         public static InsertIntoQuery InsertInto(string tableName) => new InsertIntoQuery(tableName);
+
+        
 
     }
 }
