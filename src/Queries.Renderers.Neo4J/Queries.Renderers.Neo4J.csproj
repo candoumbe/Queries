@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>Queries.Renderers.Neo4J is a Query builder for Neo4J.
+It's allow to build Neo4J queries</Description>
+    <VersionPrefix>3.0.0-alpha-01</VersionPrefix>
+    <Authors>Cyrille NDOUMBE</Authors>
+    <TargetFramework>netstandard1.0</TargetFramework>
+    <AssemblyName>Queries.Renderers.Neo4J</AssemblyName>
+    <PackageId>Queries.Renderers.Neo4J</PackageId>
+    <PackageTags>Query;Builder;SQL;Neo4J</PackageTags>
+    <PackageReleaseNotes>This is an alpha version</PackageReleaseNotes>
+    <PackageProjectUrl>https://github.com/candoumbe/Queries</PackageProjectUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Queries.Core\Queries.Core.csproj" />
+  </ItemGroup>
+
+  <Target Name="PostcompileScript" AfterTargets="Build">
+    <Exec Command="dotnet pack --no-build" />
+  </Target>
+
+</Project>
