@@ -3,22 +3,16 @@
   <PropertyGroup>
     <Description>Queries.Core.Tests Class Library</Description>
     <Authors>Cyrille NDOUMBE</Authors>
-    <TargetFramework>netcoreapp1.0</TargetFramework>
+    <TargetFrameworks>netcoreapp1.0</TargetFrameworks>
     <AssemblyName>Queries.Core.Tests</AssemblyName>
     <PackageId>Queries.Core.Tests</PackageId>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
     <RuntimeIdentifiers>win10-x64</RuntimeIdentifiers>
     <PackageTargetFallback>$(PackageTargetFallback);dnxcore50;portable-net45+win8</PackageTargetFallback>
     <RuntimeFrameworkVersion>1.0.4</RuntimeFrameworkVersion>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <LangVersion>7.1</LangVersion>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <LangVersion>7.1</LangVersion>
-  </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Queries.Core\Queries.Core.csproj" />

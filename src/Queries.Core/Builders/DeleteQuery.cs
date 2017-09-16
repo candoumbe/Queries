@@ -14,7 +14,7 @@ namespace Queries.Core.Builders
     /// 
     /// </remarks>
     [DataManipulationLanguage]
-    public class DeleteQuery : IBuildableQuery<DeleteQuery>, IEquatable<DeleteQuery>
+    public class DeleteQuery : IBuild<DeleteQuery>, IEquatable<DeleteQuery>
     {
         /// <summary>
         /// Name of the table where to delete data from
@@ -40,7 +40,7 @@ namespace Queries.Core.Builders
         /// </summary>
         /// <param name="clause"></param>
         /// <returns></returns>
-        public IBuildableQuery<DeleteQuery> Where(IWhereClause clause)
+        public IBuild<DeleteQuery> Where(IWhereClause clause)
         {
             Criteria = clause;
 
@@ -48,7 +48,7 @@ namespace Queries.Core.Builders
         }
 
 
-        public IBuildableQuery<DeleteQuery> Where(FieldColumn column, ClauseOperator @operator, ColumnBase columnBase) =>
+        public IBuild<DeleteQuery> Where(FieldColumn column, ClauseOperator @operator, ColumnBase columnBase) =>
             Where(new WhereClause(column, @operator, columnBase));
 
 

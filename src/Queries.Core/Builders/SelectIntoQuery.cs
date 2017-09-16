@@ -8,7 +8,7 @@ namespace Queries.Core.Builders
     /// <summary>
     /// A query to create a new collection of data from a <see cref="SelectQuery"/>.
     /// </summary>
-    public class SelectIntoQuery : SelectQueryBase, IBuildableQuery<SelectIntoQuery>
+    public class SelectIntoQuery : SelectQueryBase, IBuild<SelectIntoQuery>
     {
        
         /// <summary>
@@ -36,7 +36,7 @@ namespace Queries.Core.Builders
             Destination = table ?? throw new ArgumentNullException(nameof(table), "table cannot be null");
         }
 
-        public IBuildableQuery<SelectIntoQuery> From(ITable select)
+        public IBuild<SelectIntoQuery> From(ITable select)
         {
             Source = select;
             return this;

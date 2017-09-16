@@ -7,7 +7,7 @@ namespace Queries.Core.Builders
     /// <summary>
     /// A query to insert data 
     /// </summary>
-    public class InsertIntoQuery : IInsertIntoQuery<InsertIntoQuery>, IBuildableQuery<InsertIntoQuery>
+    public class InsertIntoQuery : IInsertIntoQuery<InsertIntoQuery>, IBuild<InsertIntoQuery>
     {
         /// <summary>
         /// Values to insert
@@ -31,7 +31,7 @@ namespace Queries.Core.Builders
         }
 
 
-        public IBuildableQuery<InsertIntoQuery> Values(SelectQuery values)
+        public IBuild<InsertIntoQuery> Values(SelectQuery values)
         {
             InsertedValue = values;
 
@@ -39,7 +39,7 @@ namespace Queries.Core.Builders
         }
 
         
-        public IBuildableQuery<InsertIntoQuery> Values(params InsertedValue[] values)
+        public IBuild<InsertIntoQuery> Values(params InsertedValue[] values)
         {
             InsertedValues insertedValues = new InsertedValues();
             foreach (InsertedValue insertedValue in values)

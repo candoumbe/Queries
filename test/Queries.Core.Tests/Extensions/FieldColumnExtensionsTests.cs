@@ -154,7 +154,7 @@ namespace Queries.Core.Parts.Columns.Tests
             clause.Column.ShouldBeEquivalentTo(fc);
             clause.Operator.Should().Be(ClauseOperator.LessThan);
             clause.Constraint.Should()
-                .BeOfType<LiteralColumn>().Which
+                .BeOfType<NumericColumn>().Which
                 .Value.Should()
                 .Be(18);
         }
@@ -187,7 +187,7 @@ namespace Queries.Core.Parts.Columns.Tests
             clause.Column.ShouldBeEquivalentTo(fc);
             clause.Operator.Should().Be(ClauseOperator.GreaterThan);
             clause.Constraint.Should()
-                .BeOfType<LiteralColumn>().Which
+                .BeAssignableTo<NumericColumn>().Which
                 .Value.Should()
                 .Be(18);
         }
@@ -220,7 +220,7 @@ namespace Queries.Core.Parts.Columns.Tests
             clause.Column.ShouldBeEquivalentTo(fc);
             clause.Operator.Should().Be(ClauseOperator.GreaterThanOrEqualTo);
             clause.Constraint.Should()
-                .BeOfType<LiteralColumn>().Which
+                .BeOfType<NumericColumn>().Which
                 .Value.Should()
                 .Be(18);
         }
@@ -253,7 +253,7 @@ namespace Queries.Core.Parts.Columns.Tests
             clause.Column.ShouldBeEquivalentTo(fc);
             clause.Operator.Should().Be(ClauseOperator.LessThanOrEqualTo);
             clause.Constraint.Should()
-                .BeOfType<LiteralColumn>().Which
+                .BeOfType<NumericColumn>().Which
                 .Value.Should()
                 .Be(18);
         }

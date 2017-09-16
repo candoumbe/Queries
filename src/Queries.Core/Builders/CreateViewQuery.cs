@@ -11,7 +11,7 @@ namespace Queries.Core.Builders
     /// </summary>
     [DataManipulationLanguage]
     [JsonObject(ItemReferenceLoopHandling = ReferenceLoopHandling.Ignore)]
-    public class CreateViewQuery : IBuildableQuery<CreateViewQuery>, IEquatable<CreateViewQuery>
+    public class CreateViewQuery : IBuild<CreateViewQuery>, IEquatable<CreateViewQuery>
     {
         /// <summary>
         /// Name of the view
@@ -42,7 +42,7 @@ namespace Queries.Core.Builders
             ViewName = viewName;
         }
 
-        public IBuildableQuery<CreateViewQuery> As(SelectQuery select)
+        public IBuild<CreateViewQuery> As(SelectQuery select)
         {
             SelectQuery = select ?? throw new ArgumentNullException(nameof(select));
 

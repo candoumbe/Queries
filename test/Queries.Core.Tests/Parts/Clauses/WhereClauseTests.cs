@@ -7,6 +7,7 @@ using Xunit;
 using Xunit.Abstractions;
 using static Queries.Core.Parts.Clauses.ClauseOperator;
 using static Queries.Core.Builders.Fluent.QueryBuilder;
+using System.Linq.Expressions;
 
 namespace Queries.Core.Tests.Parts.Clauses
 {
@@ -40,27 +41,49 @@ namespace Queries.Core.Tests.Parts.Clauses
             {
                 yield return new object[]
                 {
-                    new LiteralColumn(1), EqualTo, 1
+                    new LiteralColumn(1), EqualTo, 1,
+                    ((Expression<Func<WhereClause, bool>>)(clause =>
+                        1.Literal().Equals(clause.Column)
+                        && EqualTo == clause.Operator
+                        && 1.Literal().Equals(clause.Constraint)
+                        && clause.IsParameterized
+                    ))
                 };
 
                 yield return new object[]
                 {
-                    new NumericColumn(1), EqualTo, "a"
+                    new NumericColumn(1), EqualTo, "a",
+                    ((Expression<Func<WhereClause, bool>>)(clause =>
+                        1.Literal().Equals(clause.Column)
+                        && EqualTo == clause.Operator
+                        && "a".Literal().Equals(clause.Constraint)
+                        && clause.IsParameterized
+                    ))
+                };
+
+                yield return new object[]
+                {
+                    "Firstname".Field(), LessThan, $"{"Bruce"}",
+                    ((Expression<Func<WhereClause, bool>>)(clause =>
+                        "Firstname".Field().Equals(clause.Column)
+                        && LessThan == clause.Operator
+                        && "Bruce".Literal().Equals(clause.Constraint)
+                        && clause.IsParameterized
+                    ))
                 };
             }
         }
 
         [Theory]
         [MemberData(nameof(ObjectShouldBeInCorrectStateAfterBeingBuiltCases))]
-        public void ObjectShouldBeInCorrectStateAfterBeingBuilt(IColumn column, ClauseOperator @operator, ColumnBase constraint)
+        public void ObjectShouldBeInCorrectStateAfterBeingBuilt(IColumn column, ClauseOperator @operator, ColumnBase constraint,
+            Expression<Func<WhereClause, bool>> expectation)
         {
             // Act
             WhereClause clause = new WhereClause(column, @operator, constraint);
 
             // Assert
-            clause.Column.Should().Be(column);
-            clause.Operator.Should().Be(@operator);
-            clause.Constraint.Should().Be(constraint);
+            clause.Should().Match(expectation);
         }
 
 

@@ -4,11 +4,17 @@ using System.Collections.Generic;
 
 namespace Queries.Core.Parts.Clauses
 {
+    /// <summary>
+    /// a criterion to apply to a <see cref="Column"/>.
+    /// </summary>
     public class WhereClause : IWhereClause, IClause<IColumn>, IEquatable<WhereClause>
     {
+        public Guid UniqueId { get; }
         public IColumn Column { get; }
         public ClauseOperator Operator{ get; }
-        public ColumnBase Constraint { get; }
+        public ColumnBase Constraint { get; set; }
+
+        public bool IsParameterized { get; }
 
         /// <summary>
         /// Builds a new <see cref="WhereClause"/> instance.
@@ -20,10 +26,12 @@ namespace Queries.Core.Parts.Clauses
         public WhereClause(IColumn column, ClauseOperator @operator, ColumnBase constraint = null)
         {
             Column = column ?? throw new ArgumentNullException(nameof(column));
+            UniqueId = Guid.NewGuid();
             Operator = @operator;
             if (@operator != ClauseOperator.IsNull && @operator != ClauseOperator.IsNotNull)
             {
                 Constraint = constraint;
+                IsParameterized = constraint is LiteralColumn lc && lc.Value != null; 
             }
         }
 

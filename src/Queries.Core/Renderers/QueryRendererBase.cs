@@ -83,34 +83,29 @@ namespace Queries.Core.Renderers
         public string Render(IQuery query)
         {
             string result = string.Empty;
-
-            if (query is SelectQueryBase)
+            switch (query)
             {
-                result = Render((SelectQueryBase)query);
-            }
-            else if (query is CreateViewQuery)
-            {
-                result = Render((CreateViewQuery)query);
-            }
-            else if (query is DeleteQuery)
-            {
-                result = Render((DeleteQuery)query);
-            }
-            else if (query is UpdateQuery)
-            {
-                result = Render((UpdateQuery)query);
-            }
-            else if (query is TruncateQuery)
-            {
-                result = Render((TruncateQuery)query);
-            }
-            else if (query is InsertIntoQuery)
-            {
-                result = Render((InsertIntoQuery)query);
-            }
-            else if (query is BatchQuery)
-            {
-                result = Render((BatchQuery)query);
+                case SelectQueryBase selectQueryBase:
+                    result = Render(selectQueryBase);
+                    break;
+                case CreateViewQuery createViewQuery:
+                    result = Render(createViewQuery);
+                    break;
+                case DeleteQuery deleteQuery:
+                    result = Render(deleteQuery);
+                    break;
+                case UpdateQuery updateQuery:
+                    result = Render(updateQuery);
+                    break;
+                case TruncateQuery truncateQuery:
+                    result = Render(truncateQuery);
+                    break;
+                case InsertIntoQuery insertIntoQuery:
+                    result = Render(insertIntoQuery);
+                    break;
+                case BatchQuery batchQuery:
+                    result = Render(batchQuery);
+                    break;
             }
 
             return result;
@@ -125,21 +120,22 @@ namespace Queries.Core.Renderers
 
             string queryString = string.Empty;
 
-            if (query.InsertedValue is SelectQuery)
+            if (query.InsertedValue is SelectQuery selectQuery)
             {
-                queryString = $"INSERT INTO {RenderTablename(query.TableName.Table(), renderAlias: false)} {(PrettyPrint ? Environment.NewLine : string.Empty)}{Render((SelectQuery)query.InsertedValue)}";
+                queryString = $"INSERT INTO {RenderTablename(query.TableName.Table(), renderAlias: false)} {(PrettyPrint ? Environment.NewLine : string.Empty)}" +
+                    $"{Render(selectQuery)}";
             }
-            else if (query.InsertedValue is IEnumerable<InsertedValue>)
+            else if (query.InsertedValue is IEnumerable<InsertedValue> values)
             {
                 StringBuilder sbColumns = new StringBuilder();
                 StringBuilder sbValues = new StringBuilder();
-                IEnumerable<InsertedValue> values = (IEnumerable<InsertedValue>)query.InsertedValue;
                 foreach (InsertedValue insertedValue in values)
                 {
                     sbValues.Append($"{(sbValues.Length > 0 ? ", " : string.Empty)}{RenderColumn(insertedValue.Value, renderAlias: false)}");
                     sbColumns.Append($"{(sbColumns.Length > 0 ? ", " : string.Empty)}{RenderColumn(insertedValue.Column, renderAlias: false)}");
 
-                    queryString = $"INSERT INTO {RenderTablename(query.TableName.Table(), renderAlias: false)} ({sbColumns}) {(PrettyPrint ? Environment.NewLine : string.Empty)}VALUES ({sbValues})";
+                    queryString = $"INSERT INTO {RenderTablename(query.TableName.Table(), renderAlias: false)} ({sbColumns}) {(PrettyPrint ? Environment.NewLine : string.Empty)}" +
+                        $"VALUES ({sbValues})";
                 }
             }
 
@@ -208,7 +204,9 @@ namespace Queries.Core.Renderers
                 else if (query is SelectIntoQuery selectInto)
                 {
                     sb.Append(
-                        $"SELECT {fieldsString} {(PrettyPrint ? Environment.NewLine : string.Empty)}INTO {RenderTablename(selectInto.Destination, false)} {(PrettyPrint ? Environment.NewLine : string.Empty)}FROM {RenderTables(new[] { selectInto.Source })}");
+                        $"SELECT {fieldsString} {(PrettyPrint ? Environment.NewLine : string.Empty)}" +
+                        $"INTO {RenderTablename(selectInto.Destination, false)} {(PrettyPrint ? Environment.NewLine : string.Empty)}" +
+                        $"FROM {RenderTables(new[] { selectInto.Source })}");
 
                 }
 
@@ -243,7 +241,8 @@ namespace Queries.Core.Renderers
                             }
                             sbGroupBy = sbGroupBy.Append(EscapeName(column.Name));
                         }
-                        sb = sb.Append($" {(PrettyPrint ? Environment.NewLine : string.Empty)}GROUP BY {sbGroupBy}");
+                        sb = sb.Append($" {(PrettyPrint ? Environment.NewLine : string.Empty)}" +
+                            $"GROUP BY {sbGroupBy}");
                     }
                 }
 
@@ -738,13 +737,13 @@ namespace Queries.Core.Renderers
             return columnString;
         }
 
-        protected virtual string RenderLiteralColumn(LiteralColumn literalColumn, bool renderAlias)
+        protected virtual string RenderLiteralColumn<T>(T lc, bool renderAlias) where  T : LiteralColumn
         {
             string columnString;
-            LiteralColumn lc = literalColumn;
+            
             object value = lc.Value;
-
-            if (value is string stringValue)
+            string stringValue = value.ToString();
+            if (lc is StringColumn)
             {
                 columnString = renderAlias && !string.IsNullOrWhiteSpace(lc.Alias)
                     ? $"'{EscapeString(stringValue)}' AS {EscapeName(lc.Alias)}"

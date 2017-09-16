@@ -1,5 +1,5 @@
 ﻿namespace Queries.Core.Builders.Fluent
 {
-    public interface ISortQuery<out T> : IBuildableQuery<T>
+    public interface ISortQuery<out T> : IBuild<T>
     {}
 }

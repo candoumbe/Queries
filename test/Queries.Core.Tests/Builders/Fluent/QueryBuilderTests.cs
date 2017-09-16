@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using Queries.Core.Builders;
 using Queries.Core.Builders.Fluent;
+using Queries.Core.Parts.Clauses;
 using Queries.Core.Parts.Columns;
 using System;
 using System.Collections.Generic;
@@ -65,12 +66,45 @@ namespace Queries.Core.Tests.Builders.Fluent
 
         [Theory]
         [MemberData(nameof(SelectQueryFluentCases))]
-        public void SelectQueryBuildTests(IBuildableQuery<SelectQuery> queryBuilder, Expression<Func<SelectQuery, bool>> queryExpectation)
+        public void SelectQueryBuildTests(IBuild<SelectQuery> queryBuilder, Expression<Func<SelectQuery, bool>> queryExpectation)
+            => BuildTests(queryBuilder, queryExpectation);
+
+
+        public static IEnumerable<object[]> DeclareVariableFluentCases
+        {
+            get
+            {
+                yield return new object[]
+                {
+                    Declare("p").WithValue(3).Numeric(),
+                    ((Expression<Func<Variable, bool>>)(variable => 
+                        variable.Name == "p" 
+                        && variable.Type == VariableType.Numeric
+                        && 3.Equals(variable.Value)
+                    )),
+                };
+
+                yield return new object[]
+                {
+                    Declare("p").Numeric(),
+                    ((Expression<Func<Variable, bool>>)(variable =>
+                        variable.Name == "p"
+                        && variable.Type == VariableType.Numeric
+                        && variable.Value == null
+                    )),
+                };
+            }
+        }
+
+
+        [Theory]
+        [MemberData(nameof(DeclareVariableFluentCases))]
+        public void DeclareVariableBuildTests(IBuild<Variable> queryBuilder, Expression<Func<Variable, bool>> queryExpectation)
             => BuildTests(queryBuilder, queryExpectation);
 
 
 
-        private void BuildTests<T>(IBuildableQuery<T> queryBuilder, Expression<Func<T, bool>> queryExpectation)
+        private void BuildTests<T>(IBuild<T> queryBuilder, Expression<Func<T, bool>> queryExpectation)
         {
             _outputHelper.WriteLine($"{nameof(queryBuilder)} : {queryBuilder}");
 
