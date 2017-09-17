@@ -39,7 +39,7 @@ namespace Queries.Core.Builders
 
         /// <summary>
         /// Set the type of <see cref="Variable"/> the current instance of <see cref="DeclareVariableQuery"/>
-        /// is building.
+        /// is building as <see cref="VariableType.Numeric"/>.
         /// </summary>
         /// <returns></returns>
         public IBuild<Variable> Numeric()
@@ -48,9 +48,17 @@ namespace Queries.Core.Builders
             return this;
         }
 
+        /// <summary>
+        /// Set the type of <see cref="Variable"/> the current instance of <see cref="DeclareVariableQuery"/>
+        /// is building as <see cref="VariableType.String"/>.
+        /// </summary>
+        /// <returns></returns>
+        public IBuild<Variable> String()
+        {
+            _type = VariableType.String;
+            return this;
+        }
 
         public Variable Build() => new Variable(_name, _type, _value);
-
-
     }
 }

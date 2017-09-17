@@ -1,4 +1,5 @@
-﻿using Queries.Renderers.Postgres;
+﻿using Queries.Core.Renderers;
+using Queries.Renderers.Postgres;
 
 // ReSharper disable once CheckNamespace
 namespace Queries.Core.Builders
@@ -9,9 +10,9 @@ namespace Queries.Core.Builders
         /// Builds the SQL string suitable for <a href="www.postgres.com">Postgres</a> databases
         /// </summary>
         /// <param name="query">The query to render</param>
-        /// <param name="prettyPrint"><code>true</code> to render a "prettier" SQL string</param>
+        /// <param name="settings">Defines how to render <paramref name="query"/></param>
         /// <returns></returns>
-        public static string ForPostgres(this IQuery query, bool prettyPrint) => new PostgresqlRenderer(prettyPrint).Render(query);
+        public static string ForPostgres(this IQuery query, QueryRendererSettings settings) => new PostgresqlRenderer(settings).Render(query);
 
         
 

@@ -167,7 +167,11 @@ namespace Queries.Core.Builders.Fluent
         /// <returns><see cref="InsertIntoQuery"/></returns>
         public static InsertIntoQuery InsertInto(string tableName) => new InsertIntoQuery(tableName);
 
-
+        /// <summary>
+        /// Creates a <see cref="DeclareVariableQuery"/> object suitable to create a variable in a script
+        /// </summary>
+        /// <param name="variableName"></param>
+        /// <returns></returns>
         public static DeclareVariableQuery Declare(string variableName) => new DeclareVariableQuery(variableName);
 
     }

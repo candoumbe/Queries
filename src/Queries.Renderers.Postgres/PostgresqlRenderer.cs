@@ -14,8 +14,8 @@ namespace Queries.Renderers.Postgres
         ///     
         /// </para>
         /// </summary>
-        /// <param name="prettyPrint">Defines how to render <see cref="IQuery"/></param>
-        public PostgresqlRenderer(bool prettyPrint) : base(DatabaseType.Postgres, prettyPrint)
+        /// <param name="settings">Defines how to render <see cref="IQuery"/></param>
+        public PostgresqlRenderer(QueryRendererSettings settings) : base(settings)
         {}
 
 

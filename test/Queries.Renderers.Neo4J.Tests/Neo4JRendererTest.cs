@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using FluentAssertions;
+using Newtonsoft.Json;
 using Queries.Core;
 using Queries.Core.Builders;
-using Queries.Core.Extensions;
-using Xunit;
-
-using static Queries.Core.Parts.Clauses.ClauseOperator;
-using static Queries.Core.Builders.Fluent.QueryBuilder;
-using Xunit.Abstractions;
-using FluentAssertions;
-using Newtonsoft.Json;
 using Queries.Core.Parts.Clauses;
+using Queries.Core.Renderers;
+using System;
+using System.Collections.Generic;
+using Xunit;
+using Xunit.Abstractions;
+using static Newtonsoft.Json.JsonConvert;
+using static Queries.Core.Builders.Fluent.QueryBuilder;
+using static Queries.Core.Parts.Clauses.ClauseOperator;
 
 namespace Queries.Renderers.Neo4J.Tests
 {
@@ -27,7 +27,7 @@ namespace Queries.Renderers.Neo4J.Tests
                 yield return new object[]
                 {
                     Select("*").From("Hero".Table("h")),
-                    false,
+                    new QueryRendererSettings{ PrettyPrint = false },
                     "MATCH (h:Hero) RETURN h;"
                 };
 
@@ -37,14 +37,14 @@ namespace Queries.Renderers.Neo4J.Tests
                         .From("Hero".Table("h"))
                         .Where(new WhereClause("Firstname".Field(), EqualTo, "Wayne"))
                     ,
-                    false,
+                    new QueryRendererSettings{ PrettyPrint = false },
                     "MATCH (h:Hero) WHERE (Firstname = 'Wayne') RETURN h;"
                 };
 
                 yield return new object[]
                 {
                     Select("*").From("Hero".Table("h")),
-                    true,
+                    new QueryRendererSettings{ PrettyPrint = true },
                     $"MATCH (h:Hero) {Environment.NewLine}" +
                     "RETURN h;"
                 };
@@ -53,7 +53,7 @@ namespace Queries.Renderers.Neo4J.Tests
                 yield return new object[]
                 {
                     Select("*").From("Hero"),
-                    false,
+                    new QueryRendererSettings{ PrettyPrint = false },
                     "MATCH (h:Hero) RETURN h;"
                 };
 
@@ -69,7 +69,7 @@ namespace Queries.Renderers.Neo4J.Tests
                                 new WhereClause("h2.Lastname".Field(), EqualTo, "Kent")
                             }
                         }),
-                    true,
+                    new QueryRendererSettings{ PrettyPrint = true },
                     $"MATCH (h1:Heroe), (h2:Heroe) {Environment.NewLine}" +
                     $"WHERE ((h1.Lastname = 'Wayne') AND (h2.Lastname = 'Kent')) {Environment.NewLine}" +
                     "RETURN h1, h2;"
@@ -89,7 +89,7 @@ namespace Queries.Renderers.Neo4J.Tests
                             "firstname".InsertValue("Bruce".Literal()),
                             "lastname".InsertValue("Wayne".Literal()),
                             "nickname".InsertValue("Batman".Literal())),
-                    false,
+                    new QueryRendererSettings{ PrettyPrint = false },
                     "CREATE (h:Hero {firstname : 'Bruce', lastname : 'Wayne', nickname : 'Batman'})"
                 };
 
@@ -101,7 +101,7 @@ namespace Queries.Renderers.Neo4J.Tests
                             "lastname".InsertValue("Wayne".Literal()),
                             "nickname".InsertValue("Batman".Literal()),
                             "superpowers".InsertValue(null)),
-                    false,
+                    new QueryRendererSettings{ PrettyPrint = false },
                     "CREATE (h:Hero {firstname : 'Bruce', lastname : 'Wayne', nickname : 'Batman', superpowers : NULL})"
                 };
 
@@ -113,7 +113,7 @@ namespace Queries.Renderers.Neo4J.Tests
                             "firstname".InsertValue("Bruce".Literal()),
                             "lastname".InsertValue("Wayne".Literal()),
                             "nickname".InsertValue(Upper("Batman".Literal()))),
-                    false,
+                    new QueryRendererSettings{ PrettyPrint = false },
                     @"CREATE (h:Hero {firstname : 'Bruce', lastname : 'Wayne', nickname : UPPER('Batman')})"
                 };
             }
@@ -127,7 +127,7 @@ namespace Queries.Renderers.Neo4J.Tests
                 yield return new object[]
                 {
                     Delete("Heroes").Where("Firstname".Field(), EqualTo, "Wayne"),
-                    false,
+                    new QueryRendererSettings{ PrettyPrint = false },
                     "MATCH (h:Heroes) WHERE (Firstname = 'Wayne') DELETE h"
                 };
             }
@@ -166,30 +166,27 @@ namespace Queries.Renderers.Neo4J.Tests
 
         [Theory]
         [MemberData(nameof(SelectCases))]
-        //[TestCaseSource(typeof(Cases), nameof(Cases.SelectTestCases))]
-        public void SelectTest(SelectQuery query, bool prettyPrint, string expectedString)
-            => IsQueryOk(query, prettyPrint, expectedString);
+        public void SelectTest(SelectQuery query, QueryRendererSettings settings, string expectedString)
+            => IsQueryOk(query, settings, expectedString);
 
         [Theory]
         [MemberData(nameof(InsertCases))]
-        //[TestCaseSource(typeof(Cases), nameof(Cases.SelectTestCases))]
-        public void InsertTest(InsertIntoQuery query, bool prettyPrint, string expectedString)
-            => IsQueryOk(query, prettyPrint, expectedString);
+        public void InsertTest(InsertIntoQuery query, QueryRendererSettings settings, string expectedString)
+            => IsQueryOk(query, settings, expectedString);
 
 
         [Theory]
         [MemberData(nameof(DeleteCases))]
-        //[TestCaseSource(typeof(Cases), nameof(Cases.SelectTestCases))]
-        public void DeleteTest(DeleteQuery query, bool prettyPrint, string expectedString)
-            => IsQueryOk(query, prettyPrint, expectedString);
+        public void DeleteTest(DeleteQuery query, QueryRendererSettings settings, string expectedString)
+            => IsQueryOk(query, settings, expectedString);
 
 
-        private void IsQueryOk(IQuery query, bool prettyPrint, string expectedString)
+        private void IsQueryOk(IQuery query, QueryRendererSettings settings, string expectedString)
         {
             _output.WriteLine(
-                $"Building : {JsonConvert.SerializeObject(query, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore, Formatting = Formatting.Indented })}{Environment.NewLine}" +
-                $"Pretting print : {prettyPrint}");
-            query.ForNeo4J(prettyPrint).Should().Be(expectedString);
+                $"Building : {SerializeObject(query, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore, Formatting = Formatting.Indented })}{Environment.NewLine}" +
+                $"{nameof(settings)} : {SerializeObject(settings)}");
+            query.ForNeo4J(settings).Should().Be(expectedString);
         }
     }
 

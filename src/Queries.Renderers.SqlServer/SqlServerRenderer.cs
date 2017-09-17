@@ -22,9 +22,13 @@ namespace Queries.Renderers.SqlServer
         ///     the <paramref name="prettyPrint"/> parameter defines how the queries will be rendered. When set to <c>true</c>,
         ///     each part of a staemtn will be layed in onto a newline.
         /// </remarks>
-        public SqlServerRenderer(bool prettyPrint) : base(DatabaseType.SqlServer, prettyPrint)
+        public SqlServerRenderer(QueryRendererSettings settings) : base(settings)
         { }
 
+        public SqlServerRenderer() : this (new QueryRendererSettings { DateFormatString = "yyyy-MM-dd", PrettyPrint = true })
+        {
+
+        }
 
         protected override string BeginEscapeWordString => "[";
 
@@ -114,7 +118,7 @@ namespace Queries.Renderers.SqlServer
                 {
                     sbResult.Append(BatchStatementSeparator);
                 }
-                if (PrettyPrint && sbResult.Length > 0)
+                if (Settings.PrettyPrint && sbResult.Length > 0)
                 {
                     sbResult.AppendLine();
                 }

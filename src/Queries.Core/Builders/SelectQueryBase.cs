@@ -3,12 +3,14 @@ using Queries.Core.Parts.Clauses;
 using Queries.Core.Parts.Columns;
 using Queries.Core.Parts.Joins;
 using Queries.Core.Parts.Sorting;
+using Queries.Core.Attributes;
 
 namespace Queries.Core.Builders
 {
     /// <summary>
     /// Base class for queries that select data
     /// </summary>
+    [DataManipulationLanguage]
     public abstract class SelectQueryBase : IInsertable, IQuery
     {
         public IList<IColumn> Columns { get; protected set; }

@@ -23,27 +23,20 @@ namespace Queries.Core.Renderers
     /// </summary>
     public abstract class QueryRendererBase : IQueryRenderer
     {
+
+        public QueryRendererSettings Settings { get; }
+
         /// <summary>
         /// Builds a new <see cref="QueryRendererBase"/> instance.
         /// 
         /// </summary>
         /// <param name="databaseType">The <see cref="DatabaseType"/> to target</param>
         /// <param name="prettyPrint"><code>true</code> to render queries in a "pretty" fashion</param>
-        protected QueryRendererBase(DatabaseType databaseType, bool prettyPrint)
+        protected QueryRendererBase(QueryRendererSettings settings)
         {
-            DatabaseType = databaseType;
-            PrettyPrint = prettyPrint;
+            Settings = settings;
         }
 
-        public DatabaseType DatabaseType { get; }
-
-
-        /// <summary>
-        /// Defines if queries will be pretty printed
-        /// </summary>
-        /// <remarks
-        /// </remarks>
-        public bool PrettyPrint { get; }
 
         /// <summary>
         /// <para>
@@ -122,7 +115,7 @@ namespace Queries.Core.Renderers
 
             if (query.InsertedValue is SelectQuery selectQuery)
             {
-                queryString = $"INSERT INTO {RenderTablename(query.TableName.Table(), renderAlias: false)} {(PrettyPrint ? Environment.NewLine : string.Empty)}" +
+                queryString = $"INSERT INTO {RenderTablename(query.TableName.Table(), renderAlias: false)} {(Settings.PrettyPrint ? Environment.NewLine : string.Empty)}" +
                     $"{Render(selectQuery)}";
             }
             else if (query.InsertedValue is IEnumerable<InsertedValue> values)
@@ -134,7 +127,7 @@ namespace Queries.Core.Renderers
                     sbValues.Append($"{(sbValues.Length > 0 ? ", " : string.Empty)}{RenderColumn(insertedValue.Value, renderAlias: false)}");
                     sbColumns.Append($"{(sbColumns.Length > 0 ? ", " : string.Empty)}{RenderColumn(insertedValue.Column, renderAlias: false)}");
 
-                    queryString = $"INSERT INTO {RenderTablename(query.TableName.Table(), renderAlias: false)} ({sbColumns}) {(PrettyPrint ? Environment.NewLine : string.Empty)}" +
+                    queryString = $"INSERT INTO {RenderTablename(query.TableName.Table(), renderAlias: false)} ({sbColumns}) {(Settings.PrettyPrint ? Environment.NewLine : string.Empty)}" +
                         $"VALUES ({sbValues})";
                 }
             }
@@ -148,7 +141,7 @@ namespace Queries.Core.Renderers
         protected virtual string Render(SelectQueryBase query)
         {
             string queryString = string.Empty;
-
+            
             if (query != null)
             {
                 StringBuilder sb = new StringBuilder();
@@ -169,30 +162,17 @@ namespace Queries.Core.Renderers
 
                         if (limit.HasValue)
                         {
-                            switch (DatabaseType)
-                            {
-                                case DatabaseType.SqlServer:
-                                case DatabaseType.SqlServerCompact:
-                                    sb.Append($"SELECT TOP {limit.Value} {fieldsString} ")
-                                        .Append(PrettyPrint ? Environment.NewLine : string.Empty)
-                                        .AppendFormat("FROM {0}", tableString);
-                                    break;
-                                case DatabaseType.Mysql:
-                                case DatabaseType.MariaDb:
-                                case DatabaseType.Postgres:
-                                case DatabaseType.Sqlite:
-                                case DatabaseType.Oracle:
-                                    sb.Append($"SELECT {fieldsString} ")
-                                        .Append(PrettyPrint ? Environment.NewLine : string.Empty)
-                                        .Append($"FROM {tableString}");
-                                    break;
-                            }
+
+                            sb.Append($"SELECT TOP {limit.Value} {fieldsString} ")
+                                .Append(Settings.PrettyPrint ? Environment.NewLine : string.Empty)
+                                .AppendFormat("FROM {0}", tableString);
+
                         }
                         else
                         {
                             sb
                                 .AppendFormat("SELECT {0} ", fieldsString)
-                                .Append(PrettyPrint ? Environment.NewLine : string.Empty)
+                                .Append(Settings.PrettyPrint ? Environment.NewLine : string.Empty)
                                 .AppendFormat("FROM {0}", tableString);
                         }
                     }
@@ -204,8 +184,8 @@ namespace Queries.Core.Renderers
                 else if (query is SelectIntoQuery selectInto)
                 {
                     sb.Append(
-                        $"SELECT {fieldsString} {(PrettyPrint ? Environment.NewLine : string.Empty)}" +
-                        $"INTO {RenderTablename(selectInto.Destination, false)} {(PrettyPrint ? Environment.NewLine : string.Empty)}" +
+                        $"SELECT {fieldsString} {(Settings.PrettyPrint ? Environment.NewLine : string.Empty)}" +
+                        $"INTO {RenderTablename(selectInto.Destination, false)} {(Settings.PrettyPrint ? Environment.NewLine : string.Empty)}" +
                         $"FROM {RenderTables(new[] { selectInto.Source })}");
 
                 }
@@ -214,13 +194,13 @@ namespace Queries.Core.Renderers
                 if (query.Joins.Any())
                 {
                     string joinString = RenderJoins(query.Joins);
-                    sb = sb.Append($" {(PrettyPrint ? Environment.NewLine : string.Empty)}{joinString}");
+                    sb = sb.Append($" {(Settings.PrettyPrint ? Environment.NewLine : string.Empty)}{joinString}");
                 }
 
 
                 if (query.WhereCriteria != null)
                 {
-                    sb = sb.Append($" {(PrettyPrint ? Environment.NewLine : "")}WHERE {RenderWhere(query.WhereCriteria)}");
+                    sb = sb.Append($" {(Settings.PrettyPrint ? Environment.NewLine : "")}WHERE {RenderWhere(query.WhereCriteria)}");
                 }
 
                 if (query.Columns != null)
@@ -241,7 +221,7 @@ namespace Queries.Core.Renderers
                             }
                             sbGroupBy = sbGroupBy.Append(EscapeName(column.Name));
                         }
-                        sb = sb.Append($" {(PrettyPrint ? Environment.NewLine : string.Empty)}" +
+                        sb = sb.Append($" {(Settings.PrettyPrint ? Environment.NewLine : string.Empty)}" +
                             $"GROUP BY {sbGroupBy}");
                     }
                 }
@@ -249,7 +229,7 @@ namespace Queries.Core.Renderers
                 if (query.HavingCriteria != null)
                 {
                     sb.Append(
-                        $" {(PrettyPrint ? Environment.NewLine : string.Empty)}HAVING {RenderHaving(query.HavingCriteria)}");
+                        $" {(Settings.PrettyPrint ? Environment.NewLine : string.Empty)}HAVING {RenderHaving(query.HavingCriteria)}");
 
                 }
 
@@ -270,7 +250,7 @@ namespace Queries.Core.Renderers
                             : sbOrderBy.Append(RenderColumn(sort.Column, false));
                     }
                     sb.Append(" ")
-                            .Append(PrettyPrint ? Environment.NewLine : string.Empty)
+                            .Append(Settings.PrettyPrint ? Environment.NewLine : string.Empty)
                             .Append($"ORDER BY {sbOrderBy}");
 
                 }
@@ -280,16 +260,6 @@ namespace Queries.Core.Renderers
                 {
                     SelectQuery selectQuery = (SelectQuery)query;
 
-                    if (selectQuery.NbRows.HasValue &&
-                        (DatabaseType == DatabaseType.Postgres || DatabaseType == DatabaseType.Mysql ||
-                         DatabaseType == DatabaseType.MariaDb))
-                    {
-                        sb
-                            .Append(' ')
-                            .Append(PrettyPrint ? Environment.NewLine : string.Empty)
-                            .AppendFormat("LIMIT {0}", selectQuery.NbRows.Value);
-                    }
-
                     if (selectQuery.Unions != null)
                     {
                         foreach (IUnionQuery<SelectQuery> unionQuery in selectQuery.Unions)
@@ -297,9 +267,9 @@ namespace Queries.Core.Renderers
                             SelectQuery union = unionQuery.Build();
                             sb
                                 .Append(' ')
-                                .Append(PrettyPrint ? Environment.NewLine : string.Empty)
+                                .Append(Settings.PrettyPrint ? Environment.NewLine : string.Empty)
                                 .Append("UNION ")
-                                .Append(PrettyPrint ? Environment.NewLine : string.Empty)
+                                .Append(Settings.PrettyPrint ? Environment.NewLine : string.Empty)
                                 .Append(Render(union.Build()));
                         }
                     }
@@ -737,10 +707,10 @@ namespace Queries.Core.Renderers
             return columnString;
         }
 
-        protected virtual string RenderLiteralColumn<T>(T lc, bool renderAlias) where  T : LiteralColumn
+        protected virtual string RenderLiteralColumn<T>(T lc, bool renderAlias) where T : LiteralColumn
         {
             string columnString;
-            
+
             object value = lc.Value;
             string stringValue = value.ToString();
             if (lc is StringColumn)
@@ -774,7 +744,7 @@ namespace Queries.Core.Renderers
                     {
                         sbFieldsToUpdate = sbFieldsToUpdate
                             .Append(", ")
-                            .Append(PrettyPrint ? Environment.NewLine : string.Empty);
+                            .Append(Settings.PrettyPrint ? Environment.NewLine : string.Empty);
                     }
 
                     sbFieldsToUpdate = sbFieldsToUpdate.Append($"{RenderColumn(queryFieldValue.Destination, false)} = {RenderColumn(queryFieldValue.Source, false)}");
@@ -782,14 +752,14 @@ namespace Queries.Core.Renderers
 
                 queryStringBuilder = queryStringBuilder
                     .AppendFormat("UPDATE {0} ", RenderTablename(updateQuery.Table, renderAlias: false))
-                    .Append(PrettyPrint ? Environment.NewLine : string.Empty)
+                    .Append(Settings.PrettyPrint ? Environment.NewLine : string.Empty)
                     .AppendFormat("SET {0}", sbFieldsToUpdate);
 
                 if (updateQuery.Criteria != null)
                 {
                     queryStringBuilder = queryStringBuilder
                         .Append(" ")
-                        .Append(PrettyPrint ? Environment.NewLine : string.Empty)
+                        .Append(Settings.PrettyPrint ? Environment.NewLine : string.Empty)
                         .AppendFormat("WHERE {0}", RenderWhere(updateQuery.Criteria));
                 }
 
@@ -806,9 +776,9 @@ namespace Queries.Core.Renderers
 
             sb = sb.AppendFormat("CREATE VIEW {0} ", RenderTables(new ITable[] { query.ViewName.Table() }))
 
-                .Append(PrettyPrint ? Environment.NewLine : string.Empty)
+                .Append(Settings.PrettyPrint ? Environment.NewLine : string.Empty)
                 .AppendFormat("AS ")
-                .Append(PrettyPrint ? Environment.NewLine : string.Empty)
+                .Append(Settings.PrettyPrint ? Environment.NewLine : string.Empty)
                 .Append(Render(query.SelectQuery));
 
 
@@ -839,7 +809,7 @@ namespace Queries.Core.Renderers
                 if (deleteQuery.Criteria != null)
                 {
                     sbQuery = sbQuery
-                        .Append($" {(PrettyPrint ? Environment.NewLine : string.Empty)}WHERE {RenderWhere(deleteQuery.Criteria)}");
+                        .Append($" {(Settings.PrettyPrint ? Environment.NewLine : string.Empty)}WHERE {RenderWhere(deleteQuery.Criteria)}");
                 }
             }
 
@@ -856,6 +826,7 @@ namespace Queries.Core.Renderers
         protected virtual string Render(BatchQuery query)
         {
             StringBuilder sbResult = new StringBuilder();
+
             IEnumerable<IQuery> statements = query.Statements?.ToArray() ?? Enumerable.Empty<IQuery>().ToArray();
             if (statements.Any())
             {

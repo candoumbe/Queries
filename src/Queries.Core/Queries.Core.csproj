@@ -9,7 +9,9 @@
     <AssemblyName>Queries.Core</AssemblyName>
     <PackageId>Queries.Core</PackageId>
     <PackageTags>Queries;Query;SQL;Builder</PackageTags>
-    <PackageReleaseNotes>This is an alpha version</PackageReleaseNotes>
+    <PackageReleaseNotes>
+      Replaced "prettyPrint" parameter with "QueryRendererSettings".
+    </PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/candoumbe/Queries</PackageProjectUrl>
     <Version>4.0.1</Version>
     <LangVersion>7.1</LangVersion>

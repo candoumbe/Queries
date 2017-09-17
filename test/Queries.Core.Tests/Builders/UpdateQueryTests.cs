@@ -96,7 +96,7 @@ namespace Queries.Core.Tests.Builders
 
             // Assert
             attr.Should()
-                .NotBeNull();
+                .NotBeNull($"{nameof(UpdateQuery)} class must be marked with {nameof(DataManipulationLanguageAttribute)}");
         }
 
 

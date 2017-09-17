@@ -84,6 +84,18 @@ namespace Queries.Core.Tests.Builders.Fluent
                     )),
                 };
 
+
+                yield return new object[]
+                {
+                    Declare("p").WithValue("Noname").String(),
+                    ((Expression<Func<Variable, bool>>)(variable =>
+                        variable.Name == "p"
+                        && variable.Type == VariableType.String
+                        && "Noname".Equals(variable.Value)
+                    )),
+                };
+
+
                 yield return new object[]
                 {
                     Declare("p").Numeric(),

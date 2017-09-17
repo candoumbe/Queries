@@ -14,6 +14,7 @@ using Queries.Core.Parts.Columns;
 using Xunit.Abstractions;
 using static Newtonsoft.Json.JsonConvert;
 using Newtonsoft.Json;
+using Queries.Core.Renderers;
 
 namespace Queries.Renderers.SqlServer.Tests
 {
@@ -26,20 +27,30 @@ namespace Queries.Renderers.SqlServer.Tests
 
         public void Dispose() => _outputHelper = null;
 
+        [Fact]
+        public void DefaultConstructor()
+        {
+            SqlServerRenderer renderer = new SqlServerRenderer();
+
+            renderer.Settings.Should().NotBeNull();
+            renderer.Settings.PrettyPrint.Should().BeTrue($"{nameof(SqlServerRenderer)}.{nameof(SqlServerRenderer.Settings)}.{nameof(QueryRendererSettings.PrettyPrint)} should be set to true by default");
+            renderer.Settings.DateFormatString.Should().Be("yyyy-MM-dd");
+            //renderer.Settings.DefaultSchema.Should().BeNull();
+        }
 
         public static IEnumerable<object[]> SelectTestCases
         {
             get
             {
-                yield return new object[] { Select(UUID()), false, "SELECT NEWID()" };
+                yield return new object[] { Select(UUID()), new QueryRendererSettings { PrettyPrint = false }, "SELECT NEWID()" };
 
-                yield return new object[] { Select(1.Literal()), false, "SELECT 1" };
+                yield return new object[] { Select(1.Literal()), new QueryRendererSettings { PrettyPrint = false }, "SELECT 1" };
 
-                yield return new object[] { Select(1L.Literal()), false, "SELECT 1" };
+                yield return new object[] { Select(1L.Literal()), new QueryRendererSettings { PrettyPrint = false }, "SELECT 1" };
 
-                yield return new object[] { Select(1.Literal()).Union(Select(2.Literal())), false, "SELECT 1 UNION SELECT 2" };
+                yield return new object[] { Select(1.Literal()).Union(Select(2.Literal())), new QueryRendererSettings { PrettyPrint = false }, "SELECT 1 UNION SELECT 2" };
 
-                yield return new object[] { Select(1.Literal()).Union(Select(2.Literal())), true, $"SELECT 1 {Environment.NewLine}UNION {Environment.NewLine}SELECT 2" };
+                yield return new object[] { Select(1.Literal()).Union(Select(2.Literal())), new QueryRendererSettings { PrettyPrint = true }, $"SELECT 1 {Environment.NewLine}UNION {Environment.NewLine}SELECT 2" };
 
                 yield return new object[]
                 {
@@ -47,7 +58,7 @@ namespace Queries.Renderers.SqlServer.Tests
                     .From(
                         Select(Concat("firstname".Field(), " ".Literal(),  "lastname".Field()).As("fullname"))
                         .From("people").As("p")),
-                    false,
+                    new QueryRendererSettings { PrettyPrint = false },
                     "SELECT [fullname] FROM (SELECT [firstname] + ' ' + [lastname] AS [fullname] FROM [people]) [p]"
 
                 };
@@ -58,7 +69,7 @@ namespace Queries.Renderers.SqlServer.Tests
                     Select("firstname".Field(), "lastname".Field())
                         .From("people")
                         .Where("firstname".Field().IsNotNull()),
-                    false,
+                    new QueryRendererSettings { PrettyPrint = false },
                     "SELECT [firstname], [lastname] FROM [people] WHERE ([firstname] IS NOT NULL)"
 
                 };
@@ -66,7 +77,7 @@ namespace Queries.Renderers.SqlServer.Tests
                 yield return new object[]
                 {
                     Select(1.2f.Literal()),
-                    false,
+                    new QueryRendererSettings { PrettyPrint = false },
                     $"SELECT {1.2f}"
 
                 };
@@ -74,44 +85,56 @@ namespace Queries.Renderers.SqlServer.Tests
                 yield return new object[]
                 {
                     Select(double.MaxValue.Literal()),
-                    false,
+                    new QueryRendererSettings { PrettyPrint = false },
                     $"SELECT {double.MaxValue}"
 
                 };
 
                 yield return new object[]
                 {
-                    Select("*").From(Select(1.Literal()).Union(Select(2.Literal()))), false, "SELECT * FROM (SELECT 1 UNION SELECT 2)"
+                    Select("*").From(Select(1.Literal()).Union(Select(2.Literal()))),
+                    new QueryRendererSettings { PrettyPrint = false },
+                    "SELECT * FROM (SELECT 1 UNION SELECT 2)"
                 };
 
                 yield return new object[] {
                     Select("*")
                     .From(
                         Select("identifier").From("identities").Union(Select("username").From("members")).As("logins")
-                        ), false,
+                        ),
+                    new QueryRendererSettings { PrettyPrint = false },
                     "SELECT * FROM (SELECT [identifier] FROM [identities] UNION SELECT [username] FROM [members]) [logins]"
                 };
 
 
                 yield return new object[]
                 {
-                    Select("*").From("Table"), false,
+                    Select("*").From("Table"),
+                    new QueryRendererSettings { PrettyPrint = false },
                     "SELECT * FROM [Table]"
                 };
 
-                yield return new object[] { Select("*".Field()).From("Table"), false, "SELECT * FROM [Table]" };
+                yield return new object[] {
+                    Select("*".Field()).From("Table"),
+                    new QueryRendererSettings { PrettyPrint = false },
+                    "SELECT * FROM [Table]" };
 
-                yield return new object[] { Select("Employees.*").From("Table"), false, "SELECT [Employees].* FROM [Table]" };
+                yield return new object[] {
+                    Select("Employees.*").From("Table"),
+                    new QueryRendererSettings { PrettyPrint = false },
+                    "SELECT [Employees].* FROM [Table]" };
 
                 yield return new object[]
                 {
-                    Select(Concat("firstname".Field(), " ".Literal(), "lastname".Field())).From("members"), false,
+                    Select(Concat("firstname".Field(), " ".Literal(), "lastname".Field())).From("members"),
+                    new QueryRendererSettings { PrettyPrint = false },
                     "SELECT [firstname] + ' ' + [lastname] FROM [members]"
                 };
 
                 yield return new object[]
                 {
-                    Select(Concat("firstname".Field(), " ".Literal(), "lastname".Field())).From("members"), false,
+                    Select(Concat("firstname".Field(), " ".Literal(), "lastname".Field())).From("members"),
+                    new QueryRendererSettings { PrettyPrint = false },
                     "SELECT [firstname] + ' ' + [lastname] FROM [members]"
                 };
 
@@ -119,7 +142,7 @@ namespace Queries.Renderers.SqlServer.Tests
                 {
                     Select(Concat("firstname".Field(), " ".Literal(), "lastname".Field()))
                     .From("members")
-                    , false,
+                    , new QueryRendererSettings { PrettyPrint = false },
                     "SELECT [firstname] + ' ' + [lastname] FROM [members]"
                 };
 
@@ -128,7 +151,7 @@ namespace Queries.Renderers.SqlServer.Tests
                     Select(Concat("firstname".Field(), " ".Literal(), "lastname".Field()))
                     .From("members")
                     .OrderBy(new SortExpression("firstname"))
-                    , false,
+                    , new QueryRendererSettings { PrettyPrint = false },
                     "SELECT [firstname] + ' ' + [lastname] FROM [members] ORDER BY [firstname]"
                 };
 
@@ -139,7 +162,7 @@ namespace Queries.Renderers.SqlServer.Tests
                     Select(Concat("firstname".Field(), " ".Literal(), "lastname".Field()))
                     .From("members")
                     .OrderBy(new SortExpression("firstname", SortDirection.Descending))
-                    , false,
+                    , new QueryRendererSettings { PrettyPrint = false },
                     "SELECT [firstname] + ' ' + [lastname] FROM [members] ORDER BY [firstname] DESC"
                 };
 
@@ -148,7 +171,7 @@ namespace Queries.Renderers.SqlServer.Tests
                     Select(Concat("firstname".Field(), " ".Literal(), "lastname".Field()))
                     .From("members")
                     .OrderBy("firstname".Desc())
-                    , false,
+                    , new QueryRendererSettings { PrettyPrint = false },
                     "SELECT [firstname] + ' ' + [lastname] FROM [members] ORDER BY [firstname] DESC"
                 };
 
@@ -157,7 +180,7 @@ namespace Queries.Renderers.SqlServer.Tests
                     Select(Length(Concat("firstname".Field(), " ".Literal(), "lastname".Field())))
                     .From("members")
                     .OrderBy("firstname".Desc())
-                    , false,
+                    , new QueryRendererSettings { PrettyPrint = false },
                     "SELECT LEN([firstname] + ' ' + [lastname]) FROM [members] ORDER BY [firstname] DESC"
                 };
 
@@ -166,7 +189,7 @@ namespace Queries.Renderers.SqlServer.Tests
                     Select(Length(Min(Concat("firstname".Field(), " ".Literal(), "lastname".Field()))))
                     .From("members")
                     .OrderBy("firstname".Desc())
-                    , false,
+                    , new QueryRendererSettings { PrettyPrint = false },
                     "SELECT LEN(MIN([firstname] + ' ' + [lastname])) FROM [members] ORDER BY [firstname] DESC"
                 };
 
@@ -175,45 +198,51 @@ namespace Queries.Renderers.SqlServer.Tests
                     Select(Min(Length(Concat("firstname".Field(), " ".Literal(), "lastname".Field()))))
                     .From("members")
                     .OrderBy("firstname".Desc())
-                    , false,
+                    , new QueryRendererSettings { PrettyPrint = false },
                     "SELECT MIN(LEN([firstname] + ' ' + [lastname])) FROM [members] ORDER BY [firstname] DESC"
                 };
 
                 yield return new object[]
                 {
-                    Select(Concat("firstname".Field(), " ".Literal(), "lastname".Field()).As("fullname")).From("members"), false,
+                    Select(Concat("firstname".Field(), " ".Literal(), "lastname".Field()).As("fullname")).From("members"),
+                    new QueryRendererSettings { PrettyPrint = false },
                     "SELECT [firstname] + ' ' + [lastname] AS [fullname] FROM [members]"
                 };
 
                 yield return new object[]
                 {
-                    Select(Null("firstname".Field(), "").As("firstname")).From("members"), false,
+                    Select(Null("firstname".Field(), "").As("firstname")).From("members"),
+                    new QueryRendererSettings { PrettyPrint = false },
                     "SELECT ISNULL([firstname], '') AS [firstname] FROM [members]"
                 };
 
                 yield return new object[]
                 {
-                    Select(Max("age".Field()).As("age maxi")).From("members"), false,
+                    Select(Max("age".Field()).As("age maxi")).From("members"),
+                    new QueryRendererSettings{ PrettyPrint = false },
                     "SELECT MAX([age]) AS [age maxi] FROM [members]"
                 };
 
 
                 yield return new object[]
                 {
-                    Select(Max(Null("age".Field(), 0)).As("age maxi")).From("members"), false,
+                    Select(Max(Null("age".Field(), 0)).As("age maxi")).From("members"),
+                    new QueryRendererSettings{ PrettyPrint = false },
                     "SELECT MAX(ISNULL([age], 0)) AS [age maxi] FROM [members]"
                 };
 
 
                 yield return new object[]
                 {
-                    Select(Min("age".Field()).As("age mini")).From("members"), false,
+                    Select(Min("age".Field()).As("age mini")).From("members"),
+                    new QueryRendererSettings{ PrettyPrint = false },
                     "SELECT MIN([age]) AS [age mini] FROM [members]"
                 };
 
                 yield return new object[]
                 {
-                    Select(Min(Null("age".Field(), 0)).As("age mini")).From("members"), false,
+                    Select(Min(Null("age".Field(), 0)).As("age mini")).From("members"),
+                    new QueryRendererSettings{ PrettyPrint = false },
                     "SELECT MIN(ISNULL([age], 0)) AS [age mini] FROM [members]"
                 };
 
@@ -221,7 +250,7 @@ namespace Queries.Renderers.SqlServer.Tests
                 {
                     Select("firstname".Field(), Max("age".Field()).As("age maximum"))
                     .From("members"),
-                    false,
+                    new QueryRendererSettings{ PrettyPrint = false },
                     "SELECT [firstname], MAX([age]) AS [age maximum] FROM [members] GROUP BY [firstname]"
                 };
 
@@ -229,7 +258,7 @@ namespace Queries.Renderers.SqlServer.Tests
                 {
                     Select(Concat(Substring("firstname".Field(), 0, 1), Substring("lastname".Field(), 0, 1)).As("initials"))
                     .From("members"),
-                    false,
+                    new QueryRendererSettings{ PrettyPrint = false },
                     "SELECT SUBSTRING([firstname], 0, 1) + SUBSTRING([lastname], 0, 1) AS [initials] FROM [members]"
                 };
 
@@ -237,7 +266,7 @@ namespace Queries.Renderers.SqlServer.Tests
                 {
                     Select(Concat(Substring("firstname".Field(), 0, 1), Substring("lastname".Field(), 0)).As("initials"))
                     .From("members"),
-                    false,
+                    new QueryRendererSettings{ PrettyPrint = false },
                     "SELECT SUBSTRING([firstname], 0, 1) + SUBSTRING([lastname], 0) AS [initials] FROM [members]"
                 };
 
@@ -245,7 +274,7 @@ namespace Queries.Renderers.SqlServer.Tests
                 {
                     Select(Substring(Concat("firstname".Field(), "lastname".Field()), 0).As("initials"))
                     .From("members"),
-                    false,
+                    new QueryRendererSettings{ PrettyPrint = false },
                     "SELECT SUBSTRING([firstname] + [lastname], 0) AS [initials] FROM [members]"
                 };
 
@@ -254,27 +283,27 @@ namespace Queries.Renderers.SqlServer.Tests
                 {
                     Select(Concat(Substring("firstname".Field(), 0, 1), Substring("lastname".Field(), 0)).As("initials"))
                     .From("members"),
-                    false,
+                    new QueryRendererSettings{ PrettyPrint = false },
                     "SELECT SUBSTRING([firstname], 0, 1) + SUBSTRING([lastname], 0) AS [initials] FROM [members]"
                 };
 
                 yield return new object[]
                 {
-                    Select(Upper("firstname".Field())), false,
+                    Select(Upper("firstname".Field())),
+                    new QueryRendererSettings{ PrettyPrint = false },
                     "SELECT UPPER([firstname])"
                 };
 
+
+                yield return new object[]
                 {
-                    yield return new object[]
-                    {
-                        Select("Firstname".Field(), "Lastname".Field())
-                        .From("SuperHeroes")
-                        .Where("Nickname".Field(), EqualTo, "Batman"),
-                        false,
-                        "DECLARE @nickname AS VARCHAR(8000) = 'Batman';" +
-                        "SELECT [Firstname], [Lastname] FROM [SuperHeroes] WHERE ([Nickname] = @nickname)"
-                    };
-                }
+                    Select("Firstname".Field(), "Lastname".Field())
+                    .From("SuperHeroes")
+                    .Where("Nickname".Field(), EqualTo, "Batman"),
+                    new QueryRendererSettings{ PrettyPrint = false },
+                    "DECLARE @nickname AS VARCHAR(8000) = 'Batman';" +
+                    "SELECT [Firstname], [Lastname] FROM [SuperHeroes] WHERE ([Nickname] = @nickname)"
+                };
 
                 {
                     string nickname = "Batman";
@@ -283,7 +312,7 @@ namespace Queries.Renderers.SqlServer.Tests
                         Select("Firstname".Field(), "Lastname".Field())
                         .From("SuperHeroes")
                         .Where("Nickname".Field(), EqualTo, $"{nickname}"),
-                        true,
+                        new QueryRendererSettings{ PrettyPrint = true },
                         $"DECLARE @nickname AS VARCHAR(8000) = 'Batman';{Environment.NewLine}" +
                         $"SELECT [Firstname], [Lastname] {Environment.NewLine}" +
                         $"FROM [SuperHeroes] {Environment.NewLine}" +
@@ -295,8 +324,8 @@ namespace Queries.Renderers.SqlServer.Tests
 
         [Theory]
         [MemberData(nameof(SelectTestCases))]
-        public void SelectTest(SelectQuery query, bool prettyPrint, string expectedString)
-            => IsQueryOk(query, prettyPrint, expectedString);
+        public void SelectTest(SelectQuery query, QueryRendererSettings settings, string expectedString)
+            => IsQueryOk(query, settings, expectedString);
 
         public static IEnumerable<object[]> UpdateTestCases
         {
@@ -304,17 +333,20 @@ namespace Queries.Renderers.SqlServer.Tests
             {
                 yield return new object[]
                 {
-                    Update("members").Set("UUID".Field().EqualTo(UUID())), false,
+                    Update("members").Set("UUID".Field().EqualTo(UUID())),
+                    new QueryRendererSettings{ PrettyPrint = false },
                     "UPDATE [members] SET [UUID] = NEWID()"
                 };
                 yield return new object[]
                 {
-                    Update("members").Set("firstname".Field().EqualTo("")).Where("firstname".Field().IsNull()), false,
+                    Update("members").Set("firstname".Field().EqualTo("")).Where("firstname".Field().IsNull()),
+                    new QueryRendererSettings{ PrettyPrint = false },
                     "UPDATE [members] SET [firstname] = '' WHERE ([firstname] IS NULL)"
                 };
                 yield return new object[]
                 {
-                    Update("members").Set("firstname".Field().EqualTo(null)).Where(new WhereClause("firstname".Field(), EqualTo, "")), false,
+                    Update("members").Set("firstname".Field().EqualTo(null)).Where(new WhereClause("firstname".Field(), EqualTo, "")),
+                    new QueryRendererSettings{ PrettyPrint = false },
                     "UPDATE [members] SET [firstname] = NULL WHERE ([firstname] = '')"
                 };
             }
@@ -322,8 +354,8 @@ namespace Queries.Renderers.SqlServer.Tests
 
         [Theory]
         [MemberData(nameof(UpdateTestCases))]
-        public void UpdateTest(UpdateQuery query, bool prettyPrint, string expectedString)
-            => IsQueryOk(query, prettyPrint, expectedString);
+        public void UpdateTest(UpdateQuery query, QueryRendererSettings settings, string expectedString)
+            => IsQueryOk(query, settings, expectedString);
 
 
         public static IEnumerable<object[]> BatchQueryCases
@@ -336,17 +368,31 @@ namespace Queries.Renderers.SqlServer.Tests
                         Delete("members").Where(new WhereClause("firstname".Field(), IsNull)),
                         Select("*").From("members")
                     ),
-                    false,
+                    new QueryRendererSettings{ PrettyPrint = false },
                     $"DELETE FROM [members] WHERE ([firstname] IS NULL);{Environment.NewLine}" +
                     $"SELECT * FROM [members]"
                 };
+
+                //yield return new object[]
+                //{
+                //    new BatchQuery(
+                //        Declare("p").WithValue("parameterValue").String(),
+                //        Delete("members").Where(new WhereClause("firstname".Field(), IsNull)),
+                //        Select("*").From("members")
+                //    ),
+                //    new QueryRendererSettings{ PrettyPrint = false },
+                //    $"DECLARE @p VARCHAR(8000) = 'parameterValue';{Environment.NewLine}" +
+                //    $"DELETE FROM [members] WHERE ([firstname] IS NULL);{Environment.NewLine}" +
+                //    $"SELECT * FROM [members]"
+                //};
+
             }
         }
 
         [Theory]
         [MemberData(nameof(BatchQueryCases))]
-        public void BatchQueryTest(BatchQuery query, bool prettyPrint, string expectedString)
-            => IsQueryOk(query, prettyPrint, expectedString);
+        public void BatchQueryTest(BatchQuery query, QueryRendererSettings settings, string expectedString)
+            => IsQueryOk(query, settings, expectedString);
 
 
         public static IEnumerable<object[]> TruncateQueryCases
@@ -356,13 +402,13 @@ namespace Queries.Renderers.SqlServer.Tests
                 yield return new object[]
                 {
                     Truncate("SuperHero"),
-                    false,
+                    new QueryRendererSettings{ PrettyPrint = false },
                     "TRUNCATE TABLE [SuperHero]"
                 };
                 yield return new object[]
                 {
                     Truncate("SuperHero"),
-                    true,
+                    new QueryRendererSettings{ PrettyPrint = true },
                     "TRUNCATE TABLE [SuperHero]"
                 };
             }
@@ -370,8 +416,8 @@ namespace Queries.Renderers.SqlServer.Tests
 
         [Theory]
         [MemberData(nameof(TruncateQueryCases))]
-        public void TruncateQueryTest(TruncateQuery query, bool prettyPrint, string expectedString)
-            => IsQueryOk(query, prettyPrint, expectedString);
+        public void TruncateQueryTest(TruncateQuery query, QueryRendererSettings settings, string expectedString)
+            => IsQueryOk(query, settings, expectedString);
 
 
         public static IEnumerable<object[]> SelectIntoQueryCases
@@ -381,13 +427,13 @@ namespace Queries.Renderers.SqlServer.Tests
                 yield return new object[]
                 {
                     SelectInto("SuperHero_BackUp").From(Select("Firstname", "Lastname").From("DCComics")),
-                    false,
+                    new QueryRendererSettings{ PrettyPrint = false },
                     "SELECT * INTO [SuperHero_BackUp] FROM (SELECT [Firstname], [Lastname] FROM [DCComics])"
                 };
                 yield return new object[]
                 {
                     SelectInto("SuperHero_BackUp").From(Select("Firstname", "Lastname").From("DCComics")),
-                    true,
+                    new QueryRendererSettings{ PrettyPrint = true },
                     $"SELECT * {Environment.NewLine}" +
                     $"INTO [SuperHero_BackUp] {Environment.NewLine}" +
                     $"FROM (SELECT [Firstname], [Lastname] {Environment.NewLine}" +
@@ -398,17 +444,17 @@ namespace Queries.Renderers.SqlServer.Tests
 
         [Theory]
         [MemberData(nameof(SelectIntoQueryCases))]
-        public void SelectIntoQueryTest(SelectIntoQuery query, bool prettyPrint, string expectedString)
-            => IsQueryOk(query, prettyPrint, expectedString);
+        public void SelectIntoQueryTest(SelectIntoQuery query, QueryRendererSettings settings, string expectedString)
+            => IsQueryOk(query, settings, expectedString);
 
 
 
-        private void IsQueryOk(IQuery query, bool prettyPrint, string expectedString)
+        private void IsQueryOk(IQuery query, QueryRendererSettings settings, string expectedString)
         {
             _outputHelper.WriteLine($"{nameof(query)} : {SerializeObject(query, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore })}");
-            _outputHelper.WriteLine($"{nameof(prettyPrint)} : {prettyPrint}");
+            _outputHelper.WriteLine($"{nameof(settings)} : {SerializeObject(settings)}");
             // Act
-            string result = query.ForSqlServer(prettyPrint);
+            string result = query.ForSqlServer(settings);
 
             // Assert
             result.Should().Be(expectedString);

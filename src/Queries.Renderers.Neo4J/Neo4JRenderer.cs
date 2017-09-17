@@ -12,7 +12,7 @@ namespace Queries.Renderers.Neo4J
 {
     public class Neo4JRenderer : QueryRendererBase
     {
-        public Neo4JRenderer(bool prettyPrint) : base(DatabaseType.Neo4J, prettyPrint)
+        public Neo4JRenderer(QueryRendererSettings settings) : base(settings)
         { }
 
         protected override string BeginEscapeWordString => string.Empty;
@@ -39,8 +39,8 @@ namespace Queries.Renderers.Neo4J
             NormalizeColumnAndTable(columns, selectQuery, tables);
             
 
-            sbQuery.Append($"MATCH {RenderTables(tables)} {(PrettyPrint ? Environment.NewLine : string.Empty)}" +
-                           $"{(query.WhereCriteria != null ? $"WHERE {RenderWhere(query.WhereCriteria)} {(PrettyPrint ? Environment.NewLine : string.Empty)}" : string.Empty)}" +
+            sbQuery.Append($"MATCH {RenderTables(tables)} {(Settings.PrettyPrint ? Environment.NewLine : string.Empty)}" +
+                           $"{(query.WhereCriteria != null ? $"WHERE {RenderWhere(query.WhereCriteria)} {(Settings.PrettyPrint ? Environment.NewLine : string.Empty)}" : string.Empty)}" +
                            $"RETURN {RenderColumns(columns)}{BatchStatementSeparator}");
             
             return sbQuery.ToString();
@@ -111,10 +111,8 @@ namespace Queries.Renderers.Neo4J
             //TODO validate the query
 
             StringBuilder sbQuery = new StringBuilder();
-            if (query.InsertedValue is IEnumerable<InsertedValue>)
+            if (query.InsertedValue is IEnumerable<InsertedValue> values)
             {
-                IEnumerable<InsertedValue> values = (IEnumerable<InsertedValue>) query.InsertedValue;
-
                 IDictionary<string, IColumn> map = values
                     .ToDictionary(val => val.Column.Name, val => val.Value);
                 StringBuilder sbCreate = new StringBuilder();
@@ -122,7 +120,7 @@ namespace Queries.Renderers.Neo4J
                 {
                     IColumn columnValue = kv.Value;
                     string valueString = RenderColumn(columnValue, false);
-                    sbCreate.Append($"{(sbCreate.Length > 0 ? ", " : string.Empty)}{kv.Key} : {(valueString == null ? "NULL" : valueString )}");
+                    sbCreate.Append($"{(sbCreate.Length > 0 ? ", " : string.Empty)}{kv.Key} : {(valueString ?? "NULL")}");
                 }
 
                 sbQuery.Append($"CREATE ({query.TableName?.Substring(0, 1)?.ToLower()}:{query.TableName} {{{sbCreate}}})");
@@ -141,11 +139,11 @@ namespace Queries.Renderers.Neo4J
 
             StringBuilder sbQuery = new StringBuilder();
             string tableAlias = query.Table?.Substring(0, 1)?.ToLower();
-            sbQuery.Append($"MATCH {RenderTablenameWithAlias(query.Table, tableAlias)} {(PrettyPrint ? Environment.NewLine : string.Empty)}");
+            sbQuery.Append($"MATCH {RenderTablenameWithAlias(query.Table, tableAlias)} {(Settings.PrettyPrint ? Environment.NewLine : string.Empty)}");
 
             if (query.Criteria != null)
             {
-                sbQuery = sbQuery.Append($"WHERE {RenderWhere(query.Criteria)} {(PrettyPrint ? Environment.NewLine : string.Empty)}");
+                sbQuery = sbQuery.Append($"WHERE {RenderWhere(query.Criteria)} {(Settings.PrettyPrint ? Environment.NewLine : string.Empty)}");
             }
             sbQuery.Append($"DELETE {tableAlias}");
 
@@ -153,10 +151,7 @@ namespace Queries.Renderers.Neo4J
         }
 
 
-        protected override string RenderTablenameWithAlias(string tableName, string alias)
-        {
-            return $"({alias}:{tableName})";
-        }
+        protected override string RenderTablenameWithAlias(string tableName, string alias) => $"({alias}:{tableName})";
 
         protected override string RenderColumnnameWithAlias(string columnName, string alias) 
             => $"{columnName}{(!string.IsNullOrWhiteSpace(alias) ? $" AS {alias}" : string.Empty)}";
