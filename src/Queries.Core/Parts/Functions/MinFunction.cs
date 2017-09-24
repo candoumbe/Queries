@@ -28,5 +28,12 @@ namespace Queries.Core.Parts.Functions
         public MinFunction(string columnName)
             : this(columnName?.Field())
         { }
+
+
+        /// <summary>
+        /// Performs a deep copy of the current instance.
+        /// </summary>
+        /// <returns><see cref="MinFunction"/></returns>
+        public override IColumn Clone() => new MinFunction(Column.Clone());
     }
 }

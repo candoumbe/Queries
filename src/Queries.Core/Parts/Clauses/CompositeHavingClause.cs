@@ -29,5 +29,12 @@ namespace Queries.Core.Parts.Clauses
         /// Builds a new <see cref="CompositeHavingClause"/> instance.
         /// </summary>
         public CompositeHavingClause() => Clauses = Enumerable.Empty<IHavingClause>();
+
+
+        public IHavingClause Clone() => new CompositeHavingClause
+        {
+            Logic = Logic,
+            Clauses = Clauses.Select(x => x.Clone()).ToList()
+        };
     }
 }

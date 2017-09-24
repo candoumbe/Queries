@@ -133,5 +133,36 @@ namespace Queries.Core.Tests.Parts.Clauses
             actualResult.Should().Be(expectedResult, reason);
         }
 
+
+        public static IEnumerable<object[]> CloneCases
+        {
+            get
+            {
+                yield return new[] { new WhereClause("Firstname".Field(), EqualTo, "Bruce") };
+                yield return new[] { new WhereClause("Firstname".Field(), IsNull, "Bruce") };
+                yield return new[] { new WhereClause("Firstname".Field(), IsNotNull, "Bruce") };
+                yield return new[] { new WhereClause( 1.Literal(), LessThan, 2) };
+                yield return new[] { new WhereClause( 1.Literal(), GreaterThan, 2) };
+                yield return new[] { new WhereClause( 1.Literal(), GreaterThanOrEqualTo, 2) };
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(CloneCases))]
+        public void CloneTest(WhereClause original)
+        {
+            _outputHelper.WriteLine($"{nameof(original)} : {original}");
+
+            // Act
+            IWhereClause copie = original.Clone();
+
+            // Assert
+            copie.Should()
+                .BeOfType<WhereClause>().Which.Should()
+                .NotBeSameAs(original).And
+                .Be(original);
+        }
+
+
     }
 }

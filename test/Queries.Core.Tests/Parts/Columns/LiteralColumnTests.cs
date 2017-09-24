@@ -126,5 +126,28 @@ namespace Queries.Core.Tests.Parts.Columns
             // Assert
             actualResult.Should().Be(expectedResult, reason);
         }
+
+        public static IEnumerable<object[]> CloneCases
+        {
+            get
+            {
+                yield return new[] { 1.Literal() };
+                yield return new[] { "Bruce".Literal() };
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(CloneCases))]
+        public void CloneTest(LiteralColumn original)
+        {
+            // Act
+            IColumn copie = original.Clone();
+
+            // Assert
+            copie.Should()
+                .BeOfType<LiteralColumn>().Which.Should()
+                .NotBeSameAs(original).And
+                .Be(original);
+        }
     }
 }

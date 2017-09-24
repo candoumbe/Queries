@@ -1,11 +1,13 @@
-﻿using System;
+﻿using Queries.Core.Parts.Columns;
+using System;
+using System.Collections.Generic;
 
 namespace Queries.Core.Parts.Clauses
 {
     /// <summary>
     /// a <see cref="Variable"/> can be used in <see cref="WhereClause.Constraint"/>
     /// </summary>
-    public class Variable
+    public class Variable : ColumnBase, IEquatable<Variable>
     {
         /// <summary>
         /// Builds a new <see cref="Variable"/> instance.
@@ -43,5 +45,21 @@ namespace Queries.Core.Parts.Clauses
         /// Type of the constraint's value
         /// </summary>
         public VariableType Type { get; }
+
+        public override IColumn Clone() => new Variable(Name, Type, Value);
+        public override bool Equals(object obj) => Equals(obj as Variable);
+        public bool Equals(Variable other) => 
+            other != null 
+            && Name == other.Name 
+            && EqualityComparer<object>.Default.Equals(Value, other.Value) && Type == other.Type;
+
+        public override int GetHashCode()
+        {
+            int hashCode = 1477810893;
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Name);
+            hashCode = hashCode * -1521134295 + EqualityComparer<object>.Default.GetHashCode(Value);
+            hashCode = hashCode * -1521134295 + Type.GetHashCode();
+            return hashCode;
+        }
     }
 }

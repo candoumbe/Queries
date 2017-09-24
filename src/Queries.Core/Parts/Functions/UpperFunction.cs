@@ -53,5 +53,12 @@ namespace Queries.Core.Parts.Functions
 
             return this;
         }
+
+
+        /// <summary>
+        /// Performs a deep copy of the current instance.
+        /// </summary>
+        /// <returns><see cref="UpperFunction"/></returns>
+        public IColumn Clone() => new UpperFunction(Column.Clone());
     }
 }

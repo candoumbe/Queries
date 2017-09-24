@@ -26,5 +26,11 @@ namespace Queries.Core.Parts.Functions
         {
             
         }
+        /// <summary>
+        /// Performs a deep copy of the current instance.
+        /// </summary>
+        /// <returns><see cref="MaxFunction"/></returns>
+        public override IColumn Clone() => new MaxFunction(Column.Clone());
+
     }
 }

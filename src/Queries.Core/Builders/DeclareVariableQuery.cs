@@ -59,6 +59,17 @@ namespace Queries.Core.Builders
             return this;
         }
 
+        /// <summary>
+        /// Set the type of <see cref="Variable"/> the current instance of <see cref="DeclareVariableQuery"/>
+        /// is building as <see cref="VariableType.Date"/>.
+        /// </summary>
+        /// <returns></returns>
+        public IBuild<Variable> Date()
+        {
+            _type = VariableType.Date;
+            return this;
+        }
+
         public Variable Build() => new Variable(_name, _type, _value);
     }
 }

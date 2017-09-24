@@ -88,5 +88,12 @@ namespace Queries.Core.Parts.Functions
             };
             return jObj.ToString();
         }
+
+        /// <summary>
+        /// Performs a deep copy of the current instance.
+        /// </summary>
+        /// <returns><see cref="ConcatFunction"/></returns>
+        public IColumn Clone() => new ConcatFunction(Columns.ElementAt(0), Columns.ElementAt(1), Columns.Skip(2).Select(x => Clone()).ToArray());
+
     }
 }

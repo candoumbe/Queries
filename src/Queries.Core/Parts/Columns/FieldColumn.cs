@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using static Newtonsoft.Json.JsonConvert;
+using Queries.Core.Tools;
 
 namespace Queries.Core.Parts.Columns
 {
@@ -58,5 +59,11 @@ namespace Queries.Core.Parts.Columns
         }
 
         public override string ToString() => SerializeObject(this);
+
+        /// <summary>
+        /// Performs a deep copy of the current instance
+        /// </summary>
+        /// <returns></returns>
+        public override IColumn Clone() => new FieldColumn(Name);
     }
 }

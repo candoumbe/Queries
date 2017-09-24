@@ -50,5 +50,8 @@ namespace Queries.Core.Parts.Clauses
             hashCode = hashCode * -1521134295 + EqualityComparer<ColumnBase>.Default.GetHashCode(Constraint);
             return hashCode;
         }
+
+
+        public IWhereClause Clone() => new WhereClause(Column.Clone(), Operator, Constraint?.Clone() as ColumnBase);
     }
 }

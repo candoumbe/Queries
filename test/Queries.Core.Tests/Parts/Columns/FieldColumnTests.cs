@@ -130,5 +130,26 @@ namespace Queries.Core.Tests.Parts.Columns
             actual.Should().Be(expected);
         }
 
+
+        public static IEnumerable<object[]> CloneCases
+        {
+            get
+            {
+                yield return new[] { "Firstname".Field() };
+            }
+        }
+        [Theory]
+        [MemberData(nameof(CloneCases))]
+        public void CloneTest(FieldColumn original)
+        {
+            // Act
+            FieldColumn copie = (FieldColumn) original.Clone();
+
+            // Assert
+            copie.Should()
+                .NotBeSameAs(original).And
+                .Be(original);
+        }
+
     }
 }

@@ -62,5 +62,12 @@ namespace Queries.Core.Parts.Functions
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Alias);
             return hashCode;
         }
+
+
+        /// <summary>
+        /// Performs a deep copy of the current instance.
+        /// </summary>
+        /// <returns><see cref="NullFunction"/></returns>
+        public IColumn Clone() => new NullFunction(Column.Clone(), DefaultValue);
     }
 }

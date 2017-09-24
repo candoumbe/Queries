@@ -16,5 +16,7 @@ namespace Queries.Core.Parts.Columns
 
         public NumericColumn(long? value = null) : base(value)
         { }
+
+        
     }
 }

@@ -105,6 +105,16 @@ namespace Queries.Core.Tests.Builders.Fluent
                         && variable.Value == null
                     )),
                 };
+
+                yield return new object[]
+                {
+                    Declare("p").Date(),
+                    ((Expression<Func<Variable, bool>>)(variable =>
+                        variable.Name == "p"
+                        && variable.Type == VariableType.Date
+                        && variable.Value == null
+                    )),
+                };
             }
         }
 

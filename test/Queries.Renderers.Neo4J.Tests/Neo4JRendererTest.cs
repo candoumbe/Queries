@@ -148,7 +148,7 @@ namespace Queries.Renderers.Neo4J.Tests
 
                             InsertInto("Disease")
                                 .Values(
-                                    "Code".InsertValue("LOH".Literal()),
+                                    "Code".InsertValue("Batman".Literal()),
                                     "Name".InsertValue("Lack of humanity".Literal())
                                 )
                         ),

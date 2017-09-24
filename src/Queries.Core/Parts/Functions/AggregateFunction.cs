@@ -67,5 +67,8 @@ namespace Queries.Core.Parts.Functions
         }
 
         public override string ToString() => SerializeObject(this);
+
+
+        public abstract IColumn Clone();
     }
 }

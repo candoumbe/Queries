@@ -50,5 +50,8 @@ namespace Queries.Core.Parts
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Alias);
             return hashCode;
         }
+
+
+        public ITable Clone() => new Table(Name, Alias);
     }
 }

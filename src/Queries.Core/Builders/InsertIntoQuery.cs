@@ -1,13 +1,14 @@
 ﻿using Queries.Core.Builders.Fluent;
 using Queries.Core.Parts.Columns;
 using System;
+using System.Collections.Generic;
 
 namespace Queries.Core.Builders
 {
     /// <summary>
     /// A query to insert data 
     /// </summary>
-    public class InsertIntoQuery : IInsertIntoQuery<InsertIntoQuery>, IBuild<InsertIntoQuery>
+    public class InsertIntoQuery : IInsertIntoQuery<InsertIntoQuery>, IBuild<InsertIntoQuery>, IEquatable<InsertIntoQuery>
     {
         /// <summary>
         /// Values to insert
@@ -39,9 +40,9 @@ namespace Queries.Core.Builders
         }
 
         
-        public IBuild<InsertIntoQuery> Values(params InsertedValue[] values)
+        public IBuild<InsertIntoQuery> Values(InsertedValue value, params InsertedValue[] values)
         {
-            InsertedValues insertedValues = new InsertedValues();
+            InsertedValues insertedValues = new InsertedValues() { value };
             foreach (InsertedValue insertedValue in values)
             {
                 insertedValues.Add(insertedValue);
@@ -54,6 +55,18 @@ namespace Queries.Core.Builders
 
         public InsertIntoQuery Build() => this;
 
-        
+        public override bool Equals(object obj) => Equals(obj as InsertIntoQuery);
+        public bool Equals(InsertIntoQuery other) =>
+            other != null
+            && TableName == other.TableName
+            && InsertedValue.Equals(other.InsertedValue); 
+
+        public override int GetHashCode()
+        {
+            int hashCode = 792988066;
+            hashCode = hashCode * -1521134295 + EqualityComparer<IInsertable>.Default.GetHashCode(InsertedValue);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(TableName);
+            return hashCode;
+        }
     }
 }

@@ -73,7 +73,7 @@ namespace Queries.Core.Renderers
             return escapedColumnName;
         }
 
-        public string Render(IQuery query)
+        public virtual string Render(IQuery query)
         {
             string result = string.Empty;
             switch (query)
@@ -508,32 +508,39 @@ namespace Queries.Core.Renderers
             {
                 columnString = "NULL";
             }
-            else if (column is FieldColumn fieldColumn)
-            {
-                columnString = !renderAlias || string.IsNullOrWhiteSpace(fieldColumn.Alias)
-                    ? EscapeName(fieldColumn.Name)
-                    : RenderColumnnameWithAlias(EscapeName(fieldColumn.Name), EscapeName(fieldColumn.Alias));
-            }
-            else if (column is LiteralColumn literalColumn)
-            {
-                columnString = RenderLiteralColumn(literalColumn, renderAlias);
-            }
-            else if (column is SelectColumn selectColumn)
-            {
-                columnString = RenderInlineSelect(selectColumn, renderAlias);
-            }
-            else if (column is UniqueIdentifierValue)
-            {
-                columnString = RenderUUIDValue();
-            }
             else if (column.GetType().GetTypeInfo().GetCustomAttribute<FunctionAttribute>() != null)
             {
                 columnString = RenderFunction(column, renderAlias);
+            }
+            else
+            {
+                switch (column)
+                {
+                    case FieldColumn fieldColumn:
+                        columnString = !renderAlias || string.IsNullOrWhiteSpace(fieldColumn.Alias)
+                    ? EscapeName(fieldColumn.Name)
+                    : RenderColumnnameWithAlias(EscapeName(fieldColumn.Name), EscapeName(fieldColumn.Alias));
+                        break;
+                    case LiteralColumn literalColumn:
+                        columnString = RenderLiteralColumn(literalColumn, renderAlias);
+                        break;
+                    case SelectColumn selectColumn:
+                        columnString = RenderInlineSelect(selectColumn, renderAlias);
+                        break;
+                    case UniqueIdentifierValue _:
+                        columnString = RenderUUIDValue();
+                        break;
+
+                    case Variable variable:
+                        columnString = RenderVariable(variable, renderAlias);
+                        break;
+                }
             }
 
             return columnString;
         }
 
+        protected virtual string RenderVariable(Variable variable, bool renderAlias) => throw new NotSupportedException();
 
         protected virtual string RenderUUIDValue() => $"NEWID()";
 

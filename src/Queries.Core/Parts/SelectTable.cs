@@ -25,6 +25,8 @@ namespace Queries.Core.Parts
             return this;
         }
 
+        public ITable Clone() => Select.Clone();
+
         /// <summary>
         /// Builds a new <see cref="SelectTable"/> instance.
         /// </summary>

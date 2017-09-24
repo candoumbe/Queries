@@ -1,8 +1,7 @@
 ﻿using Queries.Core.Renderers;
 using Queries.Renderers.SqlServer;
 
-// ReSharper disable once CheckNamespace
-namespace Queries.Core.Builders
+namespace Queries.Core
 {
     public static class SqlServerExtensions
     {

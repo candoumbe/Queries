@@ -1,0 +1,143 @@
+﻿using Queries.Core.Parts;
+using Queries.Core.Parts.Clauses;
+using Queries.Core.Parts.Columns;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using static Queries.Core.Parts.Clauses.VariableType;
+
+namespace Queries.Core.Builders
+{
+    /// <summary>
+    /// Collects <see cref="Variable"/>s from queries and rewrites each literal so that it uses
+    /// the collected variables.
+    /// </summary>
+    public class CollectVariableVisitor : IVisitor<SelectQuery>, IVisitor<IWhereClause>, IVisitor<InsertIntoQuery>
+    {
+        public IEnumerable<Variable> Variables { get; set; }
+
+        /// <summary>
+        /// Builds a new <see cref="CollectVariableVisitor"/> instance.
+        /// </summary>
+        public CollectVariableVisitor()
+        {
+            Variables = Enumerable.Empty<Variable>();
+        }
+
+        public void Visit(SelectQuery instance)
+        {
+            foreach (ITable item in instance.Tables)
+            {
+                switch (item)
+                {
+                    case SelectTable st:
+                        Visit(((SelectTable)item).Select);
+                        break;
+                    case SelectQuery sq:
+                        Visit(sq);
+                        break;
+                }
+            }
+            Visit(instance.WhereCriteria);
+            foreach (SelectQuery unionQuery in instance.Unions)
+            {
+                Visit(unionQuery);
+            }
+
+
+        }
+
+        public void Visit(IWhereClause instance)
+        {
+            switch (instance)
+            {
+                case WhereClause wc when wc.Constraint != null:
+                    switch (wc.Constraint)
+                    {
+                        case StringColumn sc when sc.Value != null:
+                            {
+                                Variable variable = Variables.SingleOrDefault(x => x.Type == VariableType.String && sc.Value == x.Value);
+                                if (variable == null)
+                                {
+                                    variable = new Variable($"p{Variables.Count()}", VariableType.String, sc.Value);
+                                    Variables = Variables.Concat(new[] { variable });
+                                }
+                                ((WhereClause)instance).Constraint = variable;
+                            }
+                            break;
+
+                        case BooleanColumn bc when bc.Value != null:
+                            {
+                                Variable variable = Variables.SingleOrDefault(x => x.Type == VariableType.Boolean && bc.Value == x.Value);
+                                if (variable == null)
+                                {
+                                    variable = new Variable($"p{Variables.Count()}", VariableType.Boolean, bc.Value);
+                                    Variables = Variables.Concat(new[] { variable });
+                                }
+                                ((WhereClause)instance).Constraint = variable;
+                            }
+                            break;
+
+                        case DateTimeColumn dc when dc.Value != null:
+                            {
+                                Variable variable = Variables.SingleOrDefault(x => x.Type == Date && dc.Value == x.Value);
+                                if (variable == null)
+                                {
+                                    variable = new Variable($"p{Variables.Count()}", Date, dc.Value);
+                                    Variables = Variables.Concat(new[] { variable });
+                                }
+                                ((WhereClause)instance).Constraint = variable;
+                            }
+                            break;
+                    }
+
+                    break;
+                case CompositeWhereClause cwc:
+                    foreach (IWhereClause item in cwc.Clauses)
+                    {
+                        Visit(item);
+                    }
+                    break;
+
+            }
+        }
+
+        public void Visit(InsertIntoQuery instance)
+        {
+            if (instance.InsertedValue is InsertedValues)
+            {
+                foreach (InsertedValue item in (InsertedValues)instance.InsertedValue)
+                {
+                    switch (item.Value)
+                    {
+                        case StringColumn sc when sc.Value != null:
+                            {
+                                Variable variable = new Variable($"p{Variables.Count()}", VariableType.String, sc.Value);
+                                Variables = Variables.Concat(new[] { variable });
+                                item.Value = variable;
+                            }
+                            break;
+
+                        case BooleanColumn bc when bc.Value != null:
+                            {
+                                Variable variable = new Variable($"p{Variables.Count()}", VariableType.Boolean, bc.Value);
+                                Variables = Variables.Concat(new[] { variable });
+                                item.Value = variable;
+                            }
+                            break;
+
+                        case DateTimeColumn dc when dc.Value != null:
+                            {
+                                Variable variable = new Variable($"p{Variables.Count()}", Date, dc.Value);
+                                Variables = Variables.Concat(new[] { variable });
+                                item.Value = variable;
+                            }
+                            break;
+                    }
+                }
+
+            }
+        }
+
+    }
+}

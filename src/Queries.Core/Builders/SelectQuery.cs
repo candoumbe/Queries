@@ -10,6 +10,7 @@ using Queries.Core.Parts.Joins;
 using Queries.Core.Parts.Sorting;
 using Newtonsoft.Json;
 using static Newtonsoft.Json.JsonConvert;
+using Queries.Core.Tools;
 
 namespace Queries.Core.Builders
 {
@@ -186,16 +187,16 @@ namespace Queries.Core.Builders
         }
 
         public override bool Equals(object obj) => Equals(obj as SelectQuery);
-        
+
         public bool Equals(SelectQuery other)
         {
             bool equals = false;
 
             if (other != null && other.NbRows == NbRows && other.Alias == Alias)
             {
-                equals = Columns.SequenceEqual(other.Columns) 
+                equals = Columns.SequenceEqual(other.Columns)
                     && (WhereCriteria == null && other.WhereCriteria == null || WhereCriteria.Equals(other.WhereCriteria))
-                    && Tables.SequenceEqual(other.Tables) 
+                    && Tables.SequenceEqual(other.Tables)
                     && Unions.SequenceEqual(other.Unions);
             }
 
@@ -214,6 +215,37 @@ namespace Queries.Core.Builders
         }
 
         public override string ToString() => SerializeObject(this);
+
+        /// <summary>
+        /// Performs a deep copy of the current instance.
+        /// </summary>
+        /// <returns>a <see cref="SelectQuery"/> instance that is a deep copy of the current instance.</returns>
+        public SelectQuery Clone()
+        {
+
+
+            SelectQuery query = new SelectQuery(Columns.Select(x => x.Clone()).ToArray())
+            {
+                Alias = Alias,
+                Columns = Columns.Select(x => x.Clone()).ToList(),
+                HavingCriteria = HavingCriteria?.Clone(),
+                WhereCriteria = WhereCriteria?.Clone()
+            };
+            if (NbRows.HasValue)
+            {
+                query.Limit(NbRows.Value);
+            }
+            query.From(Tables.Select(t => t.Clone()).ToArray());
+            
+            foreach (IUnionQuery<SelectQuery> item in Unions)
+            {
+                query.Union(item.Build().Clone());
+            }
+
+            return query;
+        }
+
+        ITable ITable.Clone() => Clone();
     }
 
 }

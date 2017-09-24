@@ -10,5 +10,6 @@ namespace Queries.Core.Parts.Columns
     /// </summary>
     public sealed class UniqueIdentifierValue : ColumnBase, IColumn
     {
+        public override IColumn Clone() => new UniqueIdentifierValue();
     }
 }

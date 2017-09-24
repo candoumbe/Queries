@@ -96,5 +96,12 @@ namespace Queries.Core.Parts.Clauses
             hashCode = hashCode * -1521134295 + EqualityComparer<IEnumerable<IWhereClause>>.Default.GetHashCode(Clauses);
             return hashCode;
         }
+
+
+        public IWhereClause Clone() => new CompositeWhereClause
+        {
+            Logic = Logic,
+            Clauses = Clauses.Select(x => x.Clone()).ToList()
+        };
     }
 }

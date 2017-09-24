@@ -73,10 +73,35 @@ namespace Queries.Core.Tests.Parts.Clauses
         }
 
 
+        public static IEnumerable<object[]> CloneCases
+        {
+            get
+            {
+                yield return new[] { new HavingClause(new CountFunction("Firstname".Field()), EqualTo, "Bruce") };
+                yield return new[] { new HavingClause(new MinFunction("Firstname".Field()), IsNull, "Bruce") };
+                yield return new[] { new HavingClause(new MaxFunction(1.Literal()), GreaterThanOrEqualTo, 2) };
+                yield return new[] { new HavingClause(new AvgFunction(1.Literal()), GreaterThanOrEqualTo, 2) };
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(CloneCases))]
+        public void CloneTest(HavingClause original)
+        {
+            _outputHelper.WriteLine($"{nameof(original)} : {original}");
+
+            // Act
+            IHavingClause copie = original.Clone();
+
+            // Assert
+            copie.Should()
+                .BeOfType<HavingClause>().Which.Should()
+                .NotBeSameAs(original).And
+                .Be(original);
+        }
 
 
 
-        
 
     }
 }

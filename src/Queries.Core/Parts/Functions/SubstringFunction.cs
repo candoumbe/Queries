@@ -62,5 +62,13 @@ namespace Queries.Core.Parts.Functions
             Alias = alias;
             return this;
         }
+
+
+
+        /// <summary>
+        /// Performs a deep copy of the current instance.
+        /// </summary>
+        /// <returns><see cref="SubstringFunction"/></returns>
+        public IColumn Clone() => new SubstringFunction(Column.Clone(), Start, Length);
     }
 }

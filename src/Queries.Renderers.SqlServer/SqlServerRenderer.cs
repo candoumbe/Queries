@@ -1,10 +1,12 @@
-﻿using Queries.Core.Builders;
+﻿using Queries.Core;
+using Queries.Core.Builders;
 using Queries.Core.Parts.Clauses;
 using Queries.Core.Parts.Columns;
 using Queries.Core.Renderers;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Queries.Renderers.SqlServer
@@ -38,101 +40,72 @@ namespace Queries.Renderers.SqlServer
 
         protected override string LengthFunctionName => "LEN";
 
-        protected override string Render(SelectQueryBase query)
+
+        public override string Render(IQuery query)
         {
-            StringBuilder sbResult = new StringBuilder();
-            List<Variable> parameters = new List<Variable>();
-
-            void GenerateCriterionFromWhereClause(IWhereClause whereClause, int currentParameterCount)
+            string result = string.Empty;
+            CollectVariableVisitor visitor = new CollectVariableVisitor();
+            switch (query)
             {
-                if (whereClause is WhereClause wc && wc.IsParameterized)
+                case SelectQueryBase selectQueryBase:
+                    if (selectQueryBase is SelectQuery sq)
+                    {
+                        visitor.Visit(sq);
+                        result = Render(sq);
+                    }
+                    result = Render(selectQueryBase);
+                    break;
+                case CreateViewQuery createViewQuery:
+                    result = Render(createViewQuery);
+                    break;
+                case DeleteQuery deleteQuery:
+                    result = Render(deleteQuery);
+                    break;
+                case UpdateQuery updateQuery:
+                    result = Render(updateQuery);
+                    break;
+                case TruncateQuery truncateQuery:
+                    result = Render(truncateQuery);
+                    break;
+                case InsertIntoQuery insertIntoQuery:
+                    result = Render(insertIntoQuery);
+                    break;
+                case BatchQuery batchQuery:
+                    result = Render(batchQuery);
+                    break;
+            }
+            StringBuilder sbParameters = new StringBuilder(visitor.Variables.Count() * 100);
+            foreach (Variable variable in visitor.Variables)
+            {
+                sbParameters.Append($"DECLARE @{variable.Name} AS");
+                switch (variable.Type)
                 {
-                    Variable cp = null;
-                    string parameterName = wc.Column is FieldColumn fc
-                                ? !string.IsNullOrWhiteSpace(fc.Alias)
-                                    ? fc.Alias
-                                    : fc.Name
-                                : $"p{currentParameterCount + 1}";
-
-                    switch (wc.Constraint)
-                    {
-                        case StringColumn sc when sc.Value != null:
-                            cp = new Variable(parameterName, VariableType.String, sc.Value);
-                            break;
-                        case NumericColumn nc when nc.Value != null:
-                            cp = new Variable(parameterName, VariableType.Numeric, nc.Value);
-                            break;
-                        case DateTimeColumn dc when dc.Value != null:
-                            cp = new Variable(parameterName, VariableType.Date, dc.Value);
-                            break;
-                        default:
-                            break;
-                    }
-
-                    if (cp != null)
-                    {
-
-                        ((WhereClause)whereClause).Constraint = new LiteralColumn($"@{cp.Name}");
-                        parameters.Add(cp);
-                    }
-
+                    case VariableType.Numeric:
+                        sbParameters.Append($" NUMERIC = {variable.Value};");
+                        break;
+                    case VariableType.String:
+                        sbParameters.Append($" VARCHAR(8000) = '{variable.Value}';");
+                        break;
+                    case VariableType.Boolean:
+                        break;
+                    case VariableType.Date:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException(nameof(variable), $"Unsupported variable type");
+                        
                 }
-                else if (whereClause is CompositeWhereClause cwc)
+
+                if (Settings.PrettyPrint && sbParameters.Length > 0)
                 {
-                    foreach (IWhereClause clause in cwc.Clauses)
-                    {
-                        GenerateCriterionFromWhereClause(clause, parameters.Count);
-                    }
+                    sbParameters.AppendLine();
                 }
             }
-
-            if (query is SelectQuery sq)
-            {
-                if (sq.WhereCriteria != null)
-                {
-                    GenerateCriterionFromWhereClause(sq.WhereCriteria, parameters.Count);
-                }
-
-                foreach (Variable parameter in parameters)
-                {
-                    switch (parameter.Type)
-                    {
-                        case VariableType.Numeric:
-                            sbResult.Append($"DECLARE @{parameter.Name} NUMERIC = {parameter.Value}");
-                            break;
-                        case VariableType.String:
-                            sbResult.Append($"DECLARE @{parameter.Name} AS VARCHAR(8000) = '{parameter.Value.ToString().Replace("'", "''")}'");
-                            break;
-                        case VariableType.Boolean:
-                            sbResult.Append($"DECLARE @{parameter.Name} BIT = {parameter.Value}");
-                            break;
-                        case VariableType.Date:
-                            sbResult.Append($"DECLARE @{parameter.Name} DATETIME = '{parameter.Value}'");
-
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException();
-                    }
-                }
-                if (sbResult.Length > 0)
-                {
-                    sbResult.Append(BatchStatementSeparator);
-                }
-                if (Settings.PrettyPrint && sbResult.Length > 0)
-                {
-                    sbResult.AppendLine();
-                }
-
-                sbResult.Append(base.Render(query));
-            }
-            else
-            {
-                sbResult = new StringBuilder(base.Render(query));
-            }
-
-
-            return sbResult.ToString();
+            return sbParameters.Append(result).ToString();
         }
+
+
+        protected override string RenderVariable(Variable variable, bool renderAlias) => $"@{variable.Name}";
+
 
     }
 }

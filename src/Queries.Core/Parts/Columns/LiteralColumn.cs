@@ -72,5 +72,7 @@ namespace Queries.Core.Parts.Columns
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Alias);
             return hashCode;
         }
+
+        public override IColumn Clone() => new LiteralColumn(Value);
     }
 }

@@ -22,5 +22,11 @@ namespace Queries.Core.Parts.Columns
         public SelectQuery SelectQuery { get; set; }
 
         public static UniqueIdentifierValue UUID() => new UniqueIdentifierValue();
+        
+        /// <summary>
+        /// Performs a deep copy of the current instance.
+        /// </summary>
+        /// <returns><see cref="SelectColumn"/> that is a deeo copy of the current instance.</returns>
+        public IColumn Clone() => new SelectColumn() { SelectQuery = SelectQuery.Clone() }.As(_alias); 
     }
 }

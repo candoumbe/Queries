@@ -48,7 +48,42 @@ namespace Queries.Core.Tests.Builders
         }
 
 
-        public static IEnumerable<object[]> CtorThrowsArgumentOutOfRangeExceptionCases {
+        public static IEnumerable<object[]> CloneCases
+        {
+            get
+            {
+                yield return new[] { Select(1.Literal()) };
+                yield return new[] {
+
+                    Select("*").From(
+                        Select("Firstname".Field(), "Lastname".Field()).From("People")
+                        .Union(
+                            Select("Username".Field(), "Nickname".Field()).From("SuperHeroes")))
+                };
+
+
+                yield return new[] { Select("Firstname".Field(), "Lastname".Field()).Limit(3).From("People") };
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(CloneCases))]
+        public void CloneTest(SelectQuery original)
+        {
+            _outputHelper.WriteLine($"{nameof(original)} : {original}");
+
+            // Act
+            SelectQuery copy = original.Clone();
+
+            // Assert
+            copy.Should()
+                .NotBeSameAs(original).And
+                .Be(original);
+        }
+
+
+        public static IEnumerable<object[]> CtorThrowsArgumentOutOfRangeExceptionCases
+        {
             get
             {
                 yield return new object[] { Enumerable.Empty<IColumn>().ToArray(), $"empty array of {nameof(IColumn)}s" };

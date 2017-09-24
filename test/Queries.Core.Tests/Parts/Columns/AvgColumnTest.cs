@@ -77,5 +77,29 @@ namespace Queries.Core.Tests.Parts.Columns
         public void SettingAliasTest(AvgFunction column, string expectedAlias)
             => column.Alias.Should().Be(expectedAlias);
 
+
+        public static IEnumerable<object[]> CloneCases
+        {
+            get
+            {
+                yield return new[] { new AvgFunction("Firstname")};
+                yield return new[] { new AvgFunction("Firstname".Field()) };
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(CloneCases))]
+        public void CloneTest(AvgFunction original)
+        {
+            // Act
+            IColumn copie = original.Clone();
+
+            // Assert
+            copie.Should()
+                .BeOfType<AvgFunction>().Which.Should()
+                .NotBeSameAs(original).And
+                .Be(original);
+        }
+
     }
 }

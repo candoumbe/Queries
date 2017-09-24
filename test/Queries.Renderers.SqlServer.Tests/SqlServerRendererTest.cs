@@ -301,24 +301,43 @@ namespace Queries.Renderers.SqlServer.Tests
                     .From("SuperHeroes")
                     .Where("Nickname".Field(), EqualTo, "Batman"),
                     new QueryRendererSettings{ PrettyPrint = false },
-                    "DECLARE @nickname AS VARCHAR(8000) = 'Batman';" +
-                    "SELECT [Firstname], [Lastname] FROM [SuperHeroes] WHERE ([Nickname] = @nickname)"
+                    "DECLARE @p0 AS VARCHAR(8000) = 'Batman';" +
+                    "SELECT [Firstname], [Lastname] FROM [SuperHeroes] WHERE ([Nickname] = @p0)"
                 };
 
+                
+                yield return new object[]
                 {
-                    string nickname = "Batman";
-                    yield return new object[]
-                    {
-                        Select("Firstname".Field(), "Lastname".Field())
-                        .From("SuperHeroes")
-                        .Where("Nickname".Field(), EqualTo, $"{nickname}"),
-                        new QueryRendererSettings{ PrettyPrint = true },
-                        $"DECLARE @nickname AS VARCHAR(8000) = 'Batman';{Environment.NewLine}" +
-                        $"SELECT [Firstname], [Lastname] {Environment.NewLine}" +
-                        $"FROM [SuperHeroes] {Environment.NewLine}" +
-                        $"WHERE ([Nickname] = @nickname)"
-                    };
-                }
+                    Select("Firstname".Field(), "Lastname".Field())
+                    .From("SuperHeroes")
+                    .Where("Nickname".Field(), EqualTo, "Batman"),
+                    new QueryRendererSettings{ PrettyPrint = true },
+                    $"DECLARE @p0 AS VARCHAR(8000) = 'Batman';{Environment.NewLine}" +
+                    $"SELECT [Firstname], [Lastname] {Environment.NewLine}" +
+                    $"FROM [SuperHeroes] {Environment.NewLine}" +
+                    $"WHERE ([Nickname] = @p0)"
+                };
+
+
+
+                yield return new object[]
+                {
+                    Select("*")
+                    .From(
+                        Select("Fullname").From("People").Where("Firstname".Field(), Like, "B%")
+                        .Union(
+                        Select("Fullname").From("SuperHero").Where("Nickname".Field(), Like, "B%"))
+                    ),
+                    new QueryRendererSettings{ PrettyPrint = false },
+                    "DECLARE @p0 AS VARCHAR(8000) = 'B%';" +
+                    "SELECT * " +
+                    "FROM (" +
+                        "SELECT [Fullname] FROM [People] WHERE ([Firstname] LIKE @p0) " +
+                        "UNION " +
+                        "SELECT [Fullname] FROM [SuperHero] WHERE ([Nickname] LIKE @p0)" +
+                    ")"
+                };
+
             }
         }
 
