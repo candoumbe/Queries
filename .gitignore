@@ -9,14 +9,15 @@ artifacts/
 
 # Build results
 
-[Dd]ebug/
-[Rr]elease/
+[Dd]ebug/*
+[Rr]elease/*
 x64/
 [Bb]in/
 [Oo]bj/
 src/*/[Oo]bj/
 test/*/[Oo]bj/
-.cache
+*.cache
 # MSTest test Results
-[Tt]est[Rr]esult*/
+[Tt]est[Rr]esults*/
 [Bb]uild[Ll]og.*
+

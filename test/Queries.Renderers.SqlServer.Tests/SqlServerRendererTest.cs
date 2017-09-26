@@ -30,12 +30,13 @@ namespace Queries.Renderers.SqlServer.Tests
         [Fact]
         public void DefaultConstructor()
         {
+            // Act
             SqlServerRenderer renderer = new SqlServerRenderer();
 
+            // Assert
             renderer.Settings.Should().NotBeNull();
             renderer.Settings.PrettyPrint.Should().BeTrue($"{nameof(SqlServerRenderer)}.{nameof(SqlServerRenderer.Settings)}.{nameof(QueryRendererSettings.PrettyPrint)} should be set to true by default");
             renderer.Settings.DateFormatString.Should().Be("yyyy-MM-dd");
-            //renderer.Settings.DefaultSchema.Should().BeNull();
         }
 
         public static IEnumerable<object[]> SelectTestCases

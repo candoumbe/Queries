@@ -16,6 +16,9 @@ namespace Queries.Core.Builders
     [DataManipulationLanguage]
     public class UpdateQuery : IQuery, IEquatable<UpdateQuery>
     {
+        /// <summary>
+        /// Table to update
+        /// </summary>
         public Table Table { get; }
         public IList<UpdateFieldValue> Values { get; private set; }
         public IWhereClause Criteria { get; set; }
