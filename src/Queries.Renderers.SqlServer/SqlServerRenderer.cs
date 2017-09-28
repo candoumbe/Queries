@@ -6,6 +6,7 @@ using Queries.Core.Renderers;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -75,6 +76,15 @@ namespace Queries.Renderers.SqlServer
                     break;
             }
             StringBuilder sbParameters = new StringBuilder(visitor.Variables.Count() * 100);
+
+#if DEBUG
+            if (visitor.Variables.Any())
+            {
+                Debug.Assert(visitor.Variables.All(x => x.Value != null), $"{nameof(visitor)}.{nameof(visitor.Variables)} must not contains variables with null value");
+            }
+
+#endif
+
             foreach (Variable variable in visitor.Variables)
             {
                 sbParameters.Append($"DECLARE @{variable.Name} AS");
@@ -84,11 +94,12 @@ namespace Queries.Renderers.SqlServer
                         sbParameters.Append($" NUMERIC = {variable.Value};");
                         break;
                     case VariableType.String:
-                        sbParameters.Append($" VARCHAR(8000) = '{variable.Value}';");
+                        sbParameters.Append($" VARCHAR(8000) = '{EscapeString(variable.Value.ToString())}';");
                         break;
                     case VariableType.Boolean:
                         break;
                     case VariableType.Date:
+                        sbParameters.Append($" DATETIME = '{EscapeString((variable.Value as DateTime?).Value.ToString(Settings.DateFormatString))}'");
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(variable), $"Unsupported variable type");
@@ -106,6 +117,6 @@ namespace Queries.Renderers.SqlServer
 
         protected override string RenderVariable(Variable variable, bool renderAlias) => $"@{variable.Name}";
 
-
+        
     }
 }

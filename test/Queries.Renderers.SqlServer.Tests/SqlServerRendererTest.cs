@@ -45,6 +45,8 @@ namespace Queries.Renderers.SqlServer.Tests
             {
                 yield return new object[] { Select(UUID()), new QueryRendererSettings { PrettyPrint = false }, "SELECT NEWID()" };
 
+                yield return new object[] { Select(12.July(2010).Literal()), new QueryRendererSettings { PrettyPrint = false, DateFormatString = "dd/MM/yyyy" }, $"SELECT '{12.July(2010).ToString("dd/MM/yyyy")}'" };
+
                 yield return new object[] { Select(1.Literal()), new QueryRendererSettings { PrettyPrint = false }, "SELECT 1" };
 
                 yield return new object[] { Select(1L.Literal()), new QueryRendererSettings { PrettyPrint = false }, "SELECT 1" };
@@ -306,7 +308,7 @@ namespace Queries.Renderers.SqlServer.Tests
                     "SELECT [Firstname], [Lastname] FROM [SuperHeroes] WHERE ([Nickname] = @p0)"
                 };
 
-                
+
                 yield return new object[]
                 {
                     Select("Firstname".Field(), "Lastname".Field())
@@ -318,8 +320,6 @@ namespace Queries.Renderers.SqlServer.Tests
                     $"FROM [SuperHeroes] {Environment.NewLine}" +
                     $"WHERE ([Nickname] = @p0)"
                 };
-
-
 
                 yield return new object[]
                 {
@@ -467,6 +467,30 @@ namespace Queries.Renderers.SqlServer.Tests
         public void SelectIntoQueryTest(SelectIntoQuery query, QueryRendererSettings settings, string expectedString)
             => IsQueryOk(query, settings, expectedString);
 
+
+        public static IEnumerable<object[]> SqlInjectionAttackCases
+        {
+            get
+            {
+                yield return new object[]
+                {
+                    Select("id".Field())
+                        .From("members")
+                        .Where("username".Field(), EqualTo, "Dupont';--"),
+                    new QueryRendererSettings(),
+
+                    "DECLARE @p0 AS VARCHAR(8000) = 'Dupont'';--';" +
+                    "SELECT [id] FROM [members] WHERE ([username] = @p0)"
+
+
+                };
+            }
+        }
+
+
+        [Theory]
+        [MemberData(nameof(SqlInjectionAttackCases))]
+        public void PreventSqlInjectionAttack(IQuery query, QueryRendererSettings settings, string expectedString) => IsQueryOk(query, settings, expectedString);
 
 
         private void IsQueryOk(IQuery query, QueryRendererSettings settings, string expectedString)

@@ -18,6 +18,5 @@ src/*/[Oo]bj/
 test/*/[Oo]bj/
 *.cache
 # MSTest test Results
-[Tt]est[Rr]esults*/
+[Tt]est[Rr]esults/*
 [Bb]uild[Ll]og.*
-

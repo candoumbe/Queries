@@ -1,9 +1,8 @@
 # Queries <img src='https://candoumbe.visualstudio.com/_apis/public/build/definitions/c46372c6-db92-4b5d-88d5-3ec50e332749/7/badge'/>
 
-
 This is a "basic" database agnostic query builder.
 
-## Why ?
+## Why?
 The idea of this project came to me when I dealt with Entity Framework 6.x Code First for a project I was working on as Architect.
 
 We used Migrations to make changes to our database and sometimes we needed to write plain SQL statements as part of migrations.
@@ -92,7 +91,47 @@ The code is shorter, clearer as the boilerplate code is no longer a distraction
 
 ## Build queries
 
-The `Queries.Core.Builders` namespace contains various classes that can be used to build queries. <br />
+### Columns
+
+#### [FieldColumn](./src/Queries.Core/Parts/Columns/FieldColumn.cs)
+Use 
+#### Literals
+Uses the following classes whenever you want to add a "raw" data in a query
+- [BooleanColumn](./src/Queries.Core/Parts/Columns/BooleanColumn.cs) :  column that can contains a boolean value.<br />
+Use this class to output a boolean value in the query
+
+```csharp
+IQuery query = Select("Firstname".Field(), "Lastname".Field())
+    .From("members")
+    .Where("IsActive", EqualTo, new BooleanColumn(true));
+```
+can also be written 
+```csharp
+IQuery query = Select("Firstname".Field(), "Lastname".Field())
+    .From("members")
+    .Where("IsActive", EqualTo, true);
+```
+
+- [DateTimeColumn](./src/Queries.Core/Parts/Columns/DateTimeColumn.cs) :  column that can contains a date/time/datetime value.<br />
+Use this class to output a DateTime/DateTimeOffset value.
+
+```csharp
+IQuery query = Select("Firstname".Field(), "Lastname".Field())
+    .From("members")
+    .Where("DateOfBirth", EqualTo, 1.April(1990));
+```
+
+Optionally specify a format to use when rendering the query.
+```csharp
+IQuery query = Select("Firstname".Field(), "Lastname".Field())
+    .From("members")
+    .Where("DateOfBirth", EqualTo, 1.April(1990).Format("dd-MM-yyyy"));
+```
+ 
+
+
+
+The <code>Queries.Core.Builders</code> namespace contains various classes that can be used to build queries. <br />
 You can build various queries
 
 - [SELECT](https://www.w3schools.com/sql/sql_select.asp) 
@@ -167,7 +206,20 @@ IQuery query = Select(Concat("Firstname".Field(), " ".Literal(), "Lastname".Fiel
 
 string sql = query.ForSqlServer(new QueryRendererSettings { PrettyPrint = true });
 
-Console.WriteLine(sql); "DECLARE @p0 NUMERIC = 18; SELECT [Firstname] + ' ' + [Lastname] FROM members WHERE [Age] >= @p0" 
+Console.WriteLine(sql); "DECLARE @p0 NUMERIC = 18; SELECT [Firstname] + ' ' + [Lastname] FROM [members] WHERE [Age] >= @p0" 
+```
+
+### MySQL Query Renderer
+Builds SQL string that can be used with MySQL Database Engine
+
+```csharp
+IQuery query = Select(Concat("Firstname".Field(), " ".Literal(), "Lastname".Field()).As("Fullname"))
+    .From("members".Table())
+    .Where("Age".Field().GreaterThanOrEqualTo(18));
+
+string sql = query.ForMySql(new QueryRendererSettings { PrettyPrint = true });
+
+Console.WriteLine(sql); "DECLARE @p0 NUMERIC = 18; SELECT [Firstname] + ' ' + [Lastname] FROM [members] WHERE [Age] >= @p0" 
 ```
 ## How to install ?
 

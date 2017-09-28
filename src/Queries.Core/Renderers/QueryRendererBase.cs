@@ -720,22 +720,34 @@ namespace Queries.Core.Renderers
 
             object value = lc.Value;
             string stringValue = value.ToString();
-            if (lc is StringColumn)
+            switch (lc)
             {
-                columnString = renderAlias && !string.IsNullOrWhiteSpace(lc.Alias)
-                    ? $"'{EscapeString(stringValue)}' AS {EscapeName(lc.Alias)}"
+                case StringColumn sc:
+                    columnString = renderAlias && !string.IsNullOrWhiteSpace(sc.Alias)
+                    ? $"'{EscapeString(stringValue)}' AS {EscapeName(sc.Alias)}"
                     : $"'{EscapeString(stringValue)}'";
-            }
-            else
-            {
-                columnString = renderAlias && !string.IsNullOrWhiteSpace(lc.Alias)
+                    break;
+                case DateTimeColumn dc:
+                    columnString = renderAlias && !string.IsNullOrWhiteSpace(dc.Alias)
+                    ? $"'{EscapeString((dc.Value as DateTime?)?.ToString(Settings.DateFormatString))}' AS {EscapeName(dc.Alias)}"
+                    : $"'{EscapeString((dc.Value as DateTime?)?.ToString(Settings.DateFormatString))}'";
+                    break;
+                default:
+                    columnString = renderAlias && !string.IsNullOrWhiteSpace(lc.Alias)
                     ? $"{value} AS {EscapeName(lc.Alias)}"
                     : value.ToString();
+                    break;
             }
+
             return columnString;
 
         }
 
+        /// <summary>
+        /// Escape a <see cref="string"/> value so that it can be safely used in a string query
+        /// </summary>
+        /// <param name="unescapedString">the value to escape.</param>
+        /// <returns>a safe <see cref="string"/></returns>
         protected string EscapeString(string unescapedString) => unescapedString?.Replace("'", "''");
 
         protected virtual string Render(UpdateQuery updateQuery)
