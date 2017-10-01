@@ -748,7 +748,7 @@ namespace Queries.Core.Renderers
         /// </summary>
         /// <param name="unescapedString">the value to escape.</param>
         /// <returns>a safe <see cref="string"/></returns>
-        protected string EscapeString(string unescapedString) => unescapedString?.Replace("'", "''");
+        protected virtual string EscapeString(string unescapedString) => unescapedString?.Replace("'", "''");
 
         protected virtual string Render(UpdateQuery updateQuery)
         {

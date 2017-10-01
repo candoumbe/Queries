@@ -481,9 +481,20 @@ namespace Queries.Renderers.SqlServer.Tests
 
                     "DECLARE @p0 AS VARCHAR(8000) = 'Dupont'';--';" +
                     "SELECT [id] FROM [members] WHERE ([username] = @p0)"
-
-
                 };
+
+
+                yield return new object[]
+                {
+                    Select("id".Field())
+                        .From("members")
+                        .Where("username".Field(), Like, "Du[pont';--"),
+                    new QueryRendererSettings(),
+
+                    @"DECLARE @p0 AS VARCHAR(8000) = 'Du\[pont'';--';" +
+                    "SELECT [id] FROM [members] WHERE ([username] LIKE @p0)"
+                };
+
             }
         }
 

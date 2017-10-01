@@ -117,6 +117,15 @@ namespace Queries.Renderers.SqlServer
 
         protected override string RenderVariable(Variable variable, bool renderAlias) => $"@{variable.Name}";
 
-        
+        protected override string EscapeString(string unescapedString)
+        {
+            StringBuilder sbEscapedString = new StringBuilder(unescapedString);
+
+            sbEscapedString = sbEscapedString
+                .Replace("'", "''")
+                .Replace("[", @"\[");
+
+            return sbEscapedString.ToString();
+        }
     }
 }

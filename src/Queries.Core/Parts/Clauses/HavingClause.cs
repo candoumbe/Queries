@@ -44,7 +44,7 @@ namespace Queries.Core.Parts.Clauses
 
         public override int GetHashCode()
         {
-            var hashCode = -300605098;
+            int hashCode = -300605098;
             hashCode = hashCode * -1521134295 + EqualityComparer<AggregateFunction>.Default.GetHashCode(Column);
             hashCode = hashCode * -1521134295 + Operator.GetHashCode();
             hashCode = hashCode * -1521134295 + EqualityComparer<ColumnBase>.Default.GetHashCode(Constraint);

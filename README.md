@@ -8,7 +8,7 @@ The idea of this project came to me when I dealt with Entity Framework 6.x Code 
 We used Migrations to make changes to our database and sometimes we needed to write plain SQL statements as part of migrations.
 For this, the EF 6.x <code>Sql(...)</code> command allows to add additional SQL statements that will be executed alongside the migrations. 
 But I wasn't happy with that approach as the written SQL was tightly coupled to the database engine those migrations were run against. 
-I wanted something more dynamic allowing to code SQL once in the migrations and be sure that it will run smoothly if we switch from SQL Server to Postgres.
+I wanted something more dynamic allowing to code SQL once in the migrations and be sure that it will run smoothly if we switch from SQL Server to PostgreSQL / MySQL / ... .
 
 ### No more tightly coupled SQL string
 Writing tightly coupled SQL means that you're writing SQL statements that are specific to a database engine. <br />
@@ -89,98 +89,6 @@ using (var conn = GetConnectionSomehow() )
 
 The code is shorter, clearer as the boilerplate code is no longer a distraction
 
-## Build queries
-
-### Columns
-
-#### [FieldColumn](./src/Queries.Core/Parts/Columns/FieldColumn.cs)
-Use 
-#### Literals
-Uses the following classes whenever you want to add a "raw" data in a query
-- [BooleanColumn](./src/Queries.Core/Parts/Columns/BooleanColumn.cs) :  column that can contains a boolean value.<br />
-Use this class to output a boolean value in the query
-
-```csharp
-IQuery query = Select("Firstname".Field(), "Lastname".Field())
-    .From("members")
-    .Where("IsActive", EqualTo, new BooleanColumn(true));
-```
-can also be written 
-```csharp
-IQuery query = Select("Firstname".Field(), "Lastname".Field())
-    .From("members")
-    .Where("IsActive", EqualTo, true);
-```
-
-- [DateTimeColumn](./src/Queries.Core/Parts/Columns/DateTimeColumn.cs) :  column that can contains a date/time/datetime value.<br />
-Use this class to output a DateTime/DateTimeOffset value.
-
-```csharp
-IQuery query = Select("Firstname".Field(), "Lastname".Field())
-    .From("members")
-    .Where("DateOfBirth", EqualTo, 1.April(1990));
-```
-
-Optionally specify a format to use when rendering the query.
-```csharp
-IQuery query = Select("Firstname".Field(), "Lastname".Field())
-    .From("members")
-    .Where("DateOfBirth", EqualTo, 1.April(1990).Format("dd-MM-yyyy"));
-```
- 
-
-
-
-The <code>Queries.Core.Builders</code> namespace contains various classes that can be used to build queries. <br />
-You can build various queries
-
-- [SELECT](https://www.w3schools.com/sql/sql_select.asp) 
-```csharp
-// Using builders ...
-IQuery query = new SelectQuery 
-{
-    Columns = new IColumn[]
-    {
-        new FieldColumn("Firstname"),
-        new FieldColumn("Lastname")
-    },
-    Tables = new ITable[] 
-    {
-        new Table("members")
-    }
-};
-
-// ... or fluent syntax
-IQuery query = Select("Firstname".Field(), "Lastname".Field())
-    .From("members");
-```
-- UPDATE :
-```csharp
-// Using builders ...
-IQuery query = new UpdateQuery 
-{
-    Table = new Table("members"),
-    Values = new []
-    {
-        new UpdateFieldValue("Nickname".Field(), "Nightwing")
-    },
-    WhereCriteria = new WhereClause{ Column = "NickName", Operator = EqualTo, Value = "Robin" }
-}
-
-// ... or with fluent syntax
-IQuery query = Update("members")
-    .Set("Nickname".Field().EqualTo("NightWing"))
-    .Where("Nickname", EqualTo, "Robin");
-```
-
-or even combine them using a [BatchQuery](./src/Queries.Core/Builders/BatchQuery.cs)
-
-```csharp
-BatchQuery batch = new BatchQuery(
-    InsertInto("members").Values("Firstname".Field().EqualTo("Harley"), "Lastname".Field().EqualTo("Quinzel"))
-    Delete("members_bkp").Where("Nickname".Field(), EqualTo, ""))
-);
-```
 ## Renderers
 Renderers are special classes that can produce a SQL string given a [IQuery](./src/Queries.Core/IQuery.cs) instance. <br />
 
@@ -221,9 +129,115 @@ string sql = query.ForMySql(new QueryRendererSettings { PrettyPrint = true });
 
 Console.WriteLine(sql); "DECLARE @p0 NUMERIC = 18; SELECT [Firstname] + ' ' + [Lastname] FROM [members] WHERE [Age] >= @p0" 
 ```
+## Build queries
+
+### Columns
+
+#### [FieldColumn](./src/Queries.Core/Parts/Columns/FieldColumn.cs)
+Use 
+#### Literals
+Uses the following classes whenever you want to write a "raw" data in a query
+- [BooleanColumn](./src/Queries.Core/Parts/Columns/BooleanColumn.cs) :  column that can contains a boolean value.<br />
+Use this class to output a boolean value in the query
+
+```csharp
+IQuery query = Select("Firstname".Field(), "Lastname".Field())
+    .From("members")
+    .Where("IsActive", EqualTo, new BooleanColumn(true));
+```
+can also be written 
+```csharp
+IQuery query = Select("Firstname".Field(), "Lastname".Field())
+    .From("members")
+    .Where("IsActive", EqualTo, true);
+```
+which will output <code>SELECT [Firstname], [Lastname] FROM [members] WHERE [IsActive] = 1</code>
+- [DateTimeColumn](./src/Queries.Core/Parts/Columns/DateTimeColumn.cs) :  column that can contains a date/time/datetime value.<br />
+Use this class to output a DateTime/DateTimeOffset value.
+
+```csharp
+IQuery query = Select("Firstname".Field(), "Lastname".Field())
+    .From("members")
+    .Where("DateOfBirth", EqualTo, 1.April(1990));
+```
+
+Optionally specify a format to use when rendering the query.
+```csharp
+IQuery query = Select("Firstname".Field(), "Lastname".Field())
+    .From("members")
+    .Where("DateOfBirth", EqualTo, 1.April(1990).Format("dd-MM-yyyy"));
+```
+The <code>Queries.Core.Builders</code> namespace contains various classes that can be used to build queries. <br />
+You can build various queries
+
+- [SELECT](https://www.w3schools.com/sql/sql_select.asp) 
+```csharp
+// Using builders ...
+IQuery query = new SelectQuery 
+{
+    Columns = new IColumn[]
+    {
+        new FieldColumn("Firstname"),
+        new FieldColumn("Lastname")
+    },
+    Tables = new ITable[] 
+    {
+        new Table("members")
+    }
+};
+
+// ... or fluent syntax
+IQuery query = Select("Firstname".Field(), "Lastname".Field())
+    .From("members");
+```
+- [UPDATE](https://www.w3schools.com/sql/sql_update.asp)
+```csharp
+// Using builders ...
+IQuery query = new UpdateQuery 
+{
+    Table = new Table("members"),
+    Values = new []
+    {
+        new UpdateFieldValue("Nickname".Field(), "Nightwing")
+    },
+    WhereCriteria = new WhereClause{ Column = "NickName", Operator = EqualTo, Value = "Robin" }
+}
+
+// ... or with fluent syntax
+IQuery query = Update("members")
+    .Set("Nickname".Field().EqualTo("NightWing"))
+    .Where("Nickname", EqualTo, "Robin");
+```
+
+or even combine them using a [BatchQuery](./src/Queries.Core/Builders/BatchQuery.cs)
+
+```csharp
+BatchQuery batch = new BatchQuery(
+    InsertInto("members").Values("Firstname".Field().EqualTo("Harley"), "Lastname".Field().EqualTo("Quinzel"))
+    Delete("members_bkp").Where("Nickname".Field(), EqualTo, ""))
+);
+```
+<strong>Warning</strong>
+<code>IQuery</code> classes are all mutable (except when specified otherwise) meaning that any instance can be modified once created.
+UUse he <code>.Clone()</code> method to duplicate any instance
+
+
+### Clauses 
+<code>Queries.Core.Parts.Clauses</code> namespace contains classes to add filters to <code>IQuery</code> instances.
+#### Where
+- [WhereClause](./src/Queries.Core/Parts/Clauses/WhereClause.cs) 
+- [CompositeWhereClause](./src/Queries.Core/Parts/Clauses/CompositeWhereClause.cs) : combine multiple <code>WhereClause</code> instances together.
+#### Having
+- [HavingClause](./src/Queries.Core/Parts/Clauses/HavingClause.cs) 
+- [CompositeHavingClause](./src/Queries.Core/Parts/Clauses/CompositeHavingClause.cs) : combine multiple <code>HavingClause</code> instances together.
+
+
+
+
 ## How to install ?
 
-1.  Download the [Queries.Core](https://www.nuget.org/packages/Queries.Core/) package and references it in your project.<br />
+1.  Run <code>dotnet add package Queries.Core</code><br /> command to get the latest version of the [Queries.Core](https://www.nuget.org/packages/Queries.Core/) 
+    package and references it in your project.<br />
     From this point you can start building queries in your code.
 2.  Download the Queries.Renderers.XXXXX that is specific to the database engine you're targeting.
     This will add extensions methods ForXXXX to all <code>IQuery</code> instances that produces SQL statements
