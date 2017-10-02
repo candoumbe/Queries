@@ -56,6 +56,21 @@ namespace Queries.Core.Tests.Parts.Clauses
 
                 yield return new object[]
                 {
+                    Select("Fullname").From("SuperHero").Where("Nickname".Field(), In, new StringValues("Batman", "Superman")),
+                    ((Expression<Func<CollectVariableVisitor, bool>>)(visitor =>
+                        visitor.Variables.Count() == 2
+                        && visitor.Variables.Any(x => x.Name == "p0" && "Batman".Equals(x.Value) && x.Type == VariableType.String)
+                        && visitor.Variables.Any(x => x.Name == "p1" && "Superman".Equals(x.Value) && x.Type == VariableType.String)
+                    )),
+                    ((Expression<Func<SelectQuery, bool>>)(query =>
+                        query.Equals(
+                            Select("Fullname").From("SuperHero")
+                            .Where("Nickname".Field(), In, new VariableValues(new Variable("p0", VariableType.String, "Batman"), new Variable("p1", VariableType.String, "Superman")))))
+                    )
+                };
+
+                yield return new object[]
+                {
                     Select("Fullname").From("SuperHero")
                         .Where(new CompositeWhereClause{
                             Logic = Or,

@@ -15,24 +15,46 @@ namespace Queries.Core.Tests.Parts.Clauses
     {
         private ITestOutputHelper _outputHelper;
 
-        public WhereClauseTests(ITestOutputHelper outputHelper)
-        {
-            _outputHelper = outputHelper;
-        }
+        public WhereClauseTests(ITestOutputHelper outputHelper) => _outputHelper = outputHelper;
 
         public void Dispose() => _outputHelper = null;
 
-        [Fact]
-        public void CtorShouldThrowsArgumentNullExceptionWhenColumnIsNull()
+
+        [Theory]
+        [InlineData(EqualTo)]
+        [InlineData(GreaterThan)]
+        [InlineData(GreaterThanOrEqualTo)]
+        [InlineData(In)]
+        [InlineData(IsNotNull)]
+        [InlineData(IsNull)]
+        [InlineData(LessThan)]
+        [InlineData(LessThanOrEqualTo)]
+        [InlineData(Like)]
+        [InlineData(NotEqualTo)]
+        [InlineData(NotLike)]
+        public void CtorShouldThrowsArgumentNullExceptionWhenColumnIsNull(ClauseOperator @operator)
         {
             // Act
-            Action action = () => new WhereClause(null, default);
+            Action action = () => new WhereClause(null, @operator);
 
             // Assert
             action.ShouldThrow<ArgumentNullException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
 
+        }
+
+        [Theory]
+        [InlineData(In)]
+        public void CtorThrowsArgumentNuullExceptionWhenValueIsNull(ClauseOperator @operator)
+        {
+            // Act
+            Action action = () => new WhereClause("Firstname".Field(), @operator, null);
+
+            // Assert
+            action.ShouldThrow<ArgumentNullException>().Which
+                .ParamName.Should()
+                .NotBeNullOrWhiteSpace();
         }
 
         public static IEnumerable<object[]> ObjectShouldBeInCorrectStateAfterBeingBuiltCases
@@ -46,7 +68,6 @@ namespace Queries.Core.Tests.Parts.Clauses
                         1.Literal().Equals(clause.Column)
                         && EqualTo == clause.Operator
                         && 1.Literal().Equals(clause.Constraint)
-                        && clause.IsParameterized
                     ))
                 };
 
@@ -57,7 +78,6 @@ namespace Queries.Core.Tests.Parts.Clauses
                         1.Literal().Equals(clause.Column)
                         && EqualTo == clause.Operator
                         && "a".Literal().Equals(clause.Constraint)
-                        && clause.IsParameterized
                     ))
                 };
 
@@ -68,7 +88,16 @@ namespace Queries.Core.Tests.Parts.Clauses
                         "Firstname".Field().Equals(clause.Column)
                         && LessThan == clause.Operator
                         && "Bruce".Literal().Equals(clause.Constraint)
-                        && clause.IsParameterized
+                    ))
+                };
+
+                yield return new object[]
+                {
+                    "Firstname".Field(), In, new StringValues("Bruce", "Lex", "Clark"),
+                    ((Expression<Func<WhereClause, bool>>)(clause =>
+                        "Firstname".Field().Equals(clause.Column)
+                        && In == clause.Operator
+                        && new StringValues("Bruce", "Lex", "Clark").Equals(clause.Constraint)
                     ))
                 };
             }
@@ -91,7 +120,7 @@ namespace Queries.Core.Tests.Parts.Clauses
         public void CtorShouldIgnoreConstraintWhenUsingIsNullOperator()
         {
             // Act
-            WhereClause clause = new WhereClause("firstname".Field(), ClauseOperator.IsNull, 1);
+            WhereClause clause = new WhereClause("firstname".Field(), IsNull, 1);
 
             // Assert
             clause.Constraint.Should().BeNull();
@@ -141,9 +170,9 @@ namespace Queries.Core.Tests.Parts.Clauses
                 yield return new[] { new WhereClause("Firstname".Field(), EqualTo, "Bruce") };
                 yield return new[] { new WhereClause("Firstname".Field(), IsNull, "Bruce") };
                 yield return new[] { new WhereClause("Firstname".Field(), IsNotNull, "Bruce") };
-                yield return new[] { new WhereClause( 1.Literal(), LessThan, 2) };
-                yield return new[] { new WhereClause( 1.Literal(), GreaterThan, 2) };
-                yield return new[] { new WhereClause( 1.Literal(), GreaterThanOrEqualTo, 2) };
+                yield return new[] { new WhereClause(1.Literal(), LessThan, 2) };
+                yield return new[] { new WhereClause(1.Literal(), GreaterThan, 2) };
+                yield return new[] { new WhereClause(1.Literal(), GreaterThanOrEqualTo, 2) };
             }
         }
 

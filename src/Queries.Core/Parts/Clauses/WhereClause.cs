@@ -14,8 +14,6 @@ namespace Queries.Core.Parts.Clauses
         public ClauseOperator Operator{ get; }
         public ColumnBase Constraint { get; set; }
 
-        public bool IsParameterized { get; }
-
         /// <summary>
         /// Builds a new <see cref="WhereClause"/> instance.
         /// </summary>
@@ -30,8 +28,23 @@ namespace Queries.Core.Parts.Clauses
             Operator = @operator;
             if (@operator != ClauseOperator.IsNull && @operator != ClauseOperator.IsNotNull)
             {
+                if (@operator == ClauseOperator.In)
+                {
+                    switch (constraint)
+                    {
+                        case StringValues strings:
+                            Constraint = strings;
+                            break;
+                        case null:
+                            throw new ArgumentNullException(nameof(constraint), 
+                                $"{nameof(constraint)} cannot be null when {nameof(@operator)} is {nameof(ClauseOperator)}.{nameof(ClauseOperator.In)}");
+                            
+                        default:
+                            
+                            break;
+                    }
+                }
                 Constraint = constraint;
-                IsParameterized = constraint is LiteralColumn lc && lc.Value != null; 
             }
         }
 

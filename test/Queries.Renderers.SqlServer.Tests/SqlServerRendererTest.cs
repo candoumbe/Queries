@@ -339,6 +339,16 @@ namespace Queries.Renderers.SqlServer.Tests
                     ")"
                 };
 
+
+                yield return new object[]
+                {
+                    Select("*").From("members").Where("Firstname".Field(), In, new StringValues("Bruce", "Bane")),
+                    new QueryRendererSettings(),
+                    "DECLARE @p0 AS VARCHAR(8000) = 'Bruce';" +
+                    "DECLARE @p1 AS VARCHAR(8000) = 'Bane';" +
+                    "SELECT * FROM [members] WHERE ([Firstname] IN (@p0, @p1))"
+                };
+
             }
         }
 

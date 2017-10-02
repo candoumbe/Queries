@@ -32,10 +32,7 @@ namespace Queries.Core.Renderers
         /// </summary>
         /// <param name="databaseType">The <see cref="DatabaseType"/> to target</param>
         /// <param name="prettyPrint"><code>true</code> to render queries in a "pretty" fashion</param>
-        protected QueryRendererBase(QueryRendererSettings settings)
-        {
-            Settings = settings;
-        }
+        protected QueryRendererBase(QueryRendererSettings settings) => Settings = settings;
 
 
         /// <summary>
@@ -400,6 +397,16 @@ namespace Queries.Core.Renderers
                     break;
                 case ClauseOperator.IsNotNull:
                     clauseString = $"{RenderColumn(clause.Column, false)} IS NOT NULL";
+                    break;
+                case ClauseOperator.In:
+                    switch (clause.Constraint)
+                    {
+                        case VariableValues variables:
+                            clauseString = $"{RenderColumn(clause.Column, false)} IN ({string.Join(", ", variables.Select(x => RenderVariable(x, false)))})";
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException(nameof(clause), $"Unsupported constraint type");
+                    }
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();

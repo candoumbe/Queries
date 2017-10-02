@@ -1,12 +1,15 @@
-﻿using Queries.Core.Parts.Columns;
+﻿using Newtonsoft.Json;
+using Queries.Core.Parts.Columns;
 using System;
 using System.Collections.Generic;
+using static Newtonsoft.Json.JsonConvert;
 
 namespace Queries.Core.Parts.Clauses
 {
     /// <summary>
     /// a <see cref="Variable"/> can be used in <see cref="WhereClause.Constraint"/>
     /// </summary>
+    [JsonObject]
     public class Variable : ColumnBase, IEquatable<Variable>
     {
         /// <summary>
@@ -61,5 +64,7 @@ namespace Queries.Core.Parts.Clauses
             hashCode = hashCode * -1521134295 + Type.GetHashCode();
             return hashCode;
         }
+
+        public override string ToString() => SerializeObject(this);
     }
 }

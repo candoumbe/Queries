@@ -14,8 +14,8 @@ artifacts/
 x64/
 [Bb]in/
 [Oo]bj/
-src/*/[Oo]bj/
-test/*/[Oo]bj/
+src/*/[Oo]bj/*
+test/*/[Oo]bj/*
 *.cache
 # MSTest test Results
 [Tt]est[Rr]esults/*

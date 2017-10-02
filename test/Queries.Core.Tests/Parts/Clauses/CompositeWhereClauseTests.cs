@@ -21,80 +21,8 @@ namespace Queries.Core.Tests.Parts
             // Assert
             clause.Clauses.Should().BeEmpty();
             clause.Logic.Should().Be(And);
-            clause.GetParameters().Should().BeEmpty();
         }
-
-        public static IEnumerable<object[]> GetParametersCases
-        {
-            get
-            {
-                yield return new object[]
-                {
-                    new CompositeWhereClause(),
-                    ((Expression<Func<IEnumerable<Variable>, bool>>)(parameters => !parameters.Any()))
-                };
-
-                {
-                    WhereClause ageLessThanFifteenCriterion = "Age".Field().LessThan(15);
-                    WhereClause ageGreaterThanTenCriterion = "Age".Field().GreaterThan(10);
-                    yield return new object[]
-                    {
-                        new CompositeWhereClause
-                        {
-                            Logic = And,
-                            Clauses = new IWhereClause[]
-                            {
-                               ageLessThanFifteenCriterion,
-                               ageGreaterThanTenCriterion
-                            }
-                        },
-                        ((Expression<Func<IEnumerable<Variable>, bool>>)(parameters =>
-                            parameters.Count() == 2
-                            && parameters.Any(x => x.Type == VariableType.Numeric && 15.Literal().Equals(x.Value))
-                            && parameters.Any(x => x.Type == VariableType.Numeric && 10.Literal().Equals(x.Value))
-                        ))
-                    };
-                }
-
-                {
-                    WhereClause firstnameEqualToBruceCriterion = "Firstname".Field().LessThan("Bruce");
-                    WhereClause ageGreaterThanTenCriterion = "Age".Field().GreaterThan(10);
-
-                    yield return new object[]
-                    {
-                        new CompositeWhereClause
-                        {
-                            Logic = And,
-                            Clauses = new IWhereClause[]
-                            {
-                                firstnameEqualToBruceCriterion,
-                                ageGreaterThanTenCriterion
-                            }
-                        },
-                        ((Expression<Func<IEnumerable<Variable>, bool>>)(parameters =>
-                            parameters.Count() == 2
-                            && parameters.Any(x => "Bruce".Literal().Equals(x.Value) && x.Type == VariableType.String)
-                            && parameters.Any(x => 10.Literal().Equals(x.Value) && x.Type == VariableType.Numeric)
-                        ))
-                    };
-                }
-            }
-        }
-
-
-
-        [Theory]
-        [MemberData(nameof(GetParametersCases))]
-        public void GetParameters(CompositeWhereClause compositeWhereClause, Expression<Func<IEnumerable<Variable>, bool>> parametersExpectation)
-        {
-            // Act
-            IEnumerable<Variable> parameters = compositeWhereClause.GetParameters();
-
-            // Assert
-            parameters.Should().Match(parametersExpectation);
-        }
-
-
+        
         public static IEnumerable<object[]> EqualsCases
         {
             get

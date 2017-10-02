@@ -31,53 +31,6 @@ namespace Queries.Core.Parts.Clauses
 
         private IEnumerable<IWhereClause> _clauses;
 
-
-        public bool IsParameterized { get => Clauses.Any(x => x.IsParameterized); }
-
-
-        /// <summary>
-        /// Gets parameters of the <see cref="Clauses"/>
-        /// </summary>
-        /// <returns>a collection of <see cref="Variable"/>s.</returns>
-        public IEnumerable<Variable> GetParameters()
-        {
-            List<Variable> parameters = new List<Variable>();
-
-            foreach (IWhereClause clause in Clauses)
-            {
-
-                if (clause is WhereClause wc && wc.IsParameterized)
-                {
-                    string parameterName = wc.Column is FieldColumn fc
-                            ? !string.IsNullOrWhiteSpace(fc.Alias)
-                                ? fc.Alias
-                                : fc.Name
-                            : $"p{parameters.Count + 1}";
-
-                    switch (wc.Constraint)
-                    {
-                        case StringColumn sc when sc.Value != null:
-                            parameters.Add(new Variable(parameterName, VariableType.String, wc.Constraint));
-                            break;
-                        case NumericColumn nc when nc.Value != null:
-                            parameters.Add(new Variable(parameterName, VariableType.Numeric, wc.Constraint));
-                            break;
-                        case DateTimeColumn dc when dc.Value != null:
-                            parameters.Add(new Variable(parameterName, VariableType.Date, wc.Constraint));
-                            break;
-                        default:
-                            break;
-                    }
-                }
-                else if (clause is CompositeWhereClause cwc)
-                {
-                    parameters.AddRange(cwc.GetParameters());
-                }
-            }
-
-            return parameters;
-        }
-
         /// <summary>
         /// Builds a new <see cref="CompositeWhereClause"/> instance.
         /// </summary>

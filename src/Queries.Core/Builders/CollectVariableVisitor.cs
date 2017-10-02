@@ -19,10 +19,7 @@ namespace Queries.Core.Builders
         /// <summary>
         /// Builds a new <see cref="CollectVariableVisitor"/> instance.
         /// </summary>
-        public CollectVariableVisitor()
-        {
-            Variables = Enumerable.Empty<Variable>();
-        }
+        public CollectVariableVisitor() => Variables = Enumerable.Empty<Variable>();
 
         public void Visit(SelectQuery instance)
         {
@@ -89,6 +86,25 @@ namespace Queries.Core.Builders
                                 ((WhereClause)instance).Constraint = variable;
                             }
                             break;
+                        case StringValues strings:
+                            IEnumerable<Variable> variables = Enumerable.Empty<Variable>();
+                            foreach (string value in strings)
+                            {
+                                Variable variable = Variables.SingleOrDefault(x => x.Type == VariableType.String && Equals(value,x.Value));
+                                if (variable == null)
+                                {
+                                    variable = new Variable($"p{Variables.Count()}", VariableType.String, value);
+                                    variables = variables.Concat(new[] { variable });
+                                    Variables = Variables.Concat(new[] { variable });
+                                }
+                            }
+                            if (variables.Any())
+                            {
+                                ((WhereClause)instance).Constraint = new VariableValues(variables.First(), variables.Skip(1).ToArray()); /**/
+                            }
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException($"unsu column type");
                     }
 
                     break;
