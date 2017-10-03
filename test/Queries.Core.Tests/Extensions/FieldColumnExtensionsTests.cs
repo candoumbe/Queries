@@ -33,9 +33,9 @@ namespace Queries.Core.Parts.Columns.Tests
                     "Bruce",
                     ((Expression<Func<UpdateFieldValue, bool>>)(x => 
                         x.Source != null 
-                        && x.Source is LiteralColumn 
-                        && ((LiteralColumn)x.Source).Value is string 
-                        && "Bruce".Equals(((LiteralColumn)x.Source).Value)
+                        && x.Source is Literal 
+                        && ((Literal)x.Source).Value is string 
+                        && "Bruce".Equals(((Literal)x.Source).Value)
                         && x.Destination != null 
                         && "firstname".Equals(x.Destination.Name)    
                     ))

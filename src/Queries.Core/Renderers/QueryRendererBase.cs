@@ -399,6 +399,7 @@ namespace Queries.Core.Renderers
                     clauseString = $"{RenderColumn(clause.Column, false)} IS NOT NULL";
                     break;
                 case ClauseOperator.In:
+
                     switch (clause.Constraint)
                     {
                         case VariableValues variables:
@@ -528,7 +529,7 @@ namespace Queries.Core.Renderers
                     ? EscapeName(fieldColumn.Name)
                     : RenderColumnnameWithAlias(EscapeName(fieldColumn.Name), EscapeName(fieldColumn.Alias));
                         break;
-                    case LiteralColumn literalColumn:
+                    case Literal literalColumn:
                         columnString = RenderLiteralColumn(literalColumn, renderAlias);
                         break;
                     case SelectColumn selectColumn:
@@ -721,7 +722,7 @@ namespace Queries.Core.Renderers
             return columnString;
         }
 
-        protected virtual string RenderLiteralColumn<T>(T lc, bool renderAlias) where T : LiteralColumn
+        protected virtual string RenderLiteralColumn<T>(T lc, bool renderAlias) where T : Literal
         {
             string columnString;
 

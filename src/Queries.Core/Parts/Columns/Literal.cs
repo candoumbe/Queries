@@ -7,15 +7,15 @@ namespace Queries.Core.Parts.Columns
     /// <summary>
     /// A column that render is content as is with no interpretation.
     /// </summary>
-    public class LiteralColumn : ColumnBase, IAliasable<LiteralColumn>, IInsertable, IEquatable<LiteralColumn>
+    public class Literal : ColumnBase, IAliasable<Literal>, IInsertable, IEquatable<Literal>
     {
         public object Value { get; }
 
         /// <summary>
-        /// Builds a <see cref="LiteralColumn"/> instance.
+        /// Builds a <see cref="Literal"/> instance.
         /// </summary>
         /// <param name="value"></param>
-        public LiteralColumn(object value = null)
+        public Literal(object value = null)
         {
             switch (value)
             {
@@ -55,15 +55,15 @@ namespace Queries.Core.Parts.Columns
 
         public string Alias => _alias;
 
-        public LiteralColumn As(string alias)
+        public Literal As(string alias)
         {
             _alias = alias;
 
             return this;
         }
 
-        public override bool Equals(object obj) => Equals(obj as LiteralColumn);
-        public bool Equals(LiteralColumn other) => other != null && EqualityComparer<object>.Default.Equals(Value, other.Value) && Alias == other.Alias;
+        public override bool Equals(object obj) => Equals(obj as Literal);
+        public bool Equals(Literal other) => other != null && EqualityComparer<object>.Default.Equals(Value, other.Value) && Alias == other.Alias;
 
         public override int GetHashCode()
         {
@@ -73,6 +73,6 @@ namespace Queries.Core.Parts.Columns
             return hashCode;
         }
 
-        public override IColumn Clone() => new LiteralColumn(Value);
+        public override IColumn Clone() => new Literal(Value);
     }
 }

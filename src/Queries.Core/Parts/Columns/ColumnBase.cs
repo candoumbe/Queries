@@ -5,7 +5,7 @@ namespace Queries.Core.Parts.Columns
 {
     /// <summary>
     /// Provide implicit cast from primitive types (<see cref="int"/>/<see cref="double"/>/<see cref="float"/> ...)
-    /// to <see cref="LiteralColumn"/>.
+    /// to <see cref="Literal"/>.
     /// </summary>
     public abstract class ColumnBase : IColumn
     {

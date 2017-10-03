@@ -9,11 +9,11 @@ using static Newtonsoft.Json.JsonConvert;
 
 namespace Queries.Core.Tests.Parts.Columns
 {
-    public class LiteralColumnTests : IDisposable
+    public class LiteralTests : IDisposable
     {
         private ITestOutputHelper _outputHelper;
 
-        public LiteralColumnTests(ITestOutputHelper outputHelper) => _outputHelper = outputHelper;
+        public LiteralTests(ITestOutputHelper outputHelper) => _outputHelper = outputHelper;
 
         public void Dispose() => _outputHelper = null;
 
@@ -21,7 +21,7 @@ namespace Queries.Core.Tests.Parts.Columns
         public void CtorWithNullArgumentDoesNotThrowArgumentNullException()
         {
             // Arrange
-            Action action = () => new LiteralColumn(null);
+            Action action = () => new Literal(null);
 
             // Assert
             action.ShouldNotThrow<ArgumentException>();
@@ -31,7 +31,7 @@ namespace Queries.Core.Tests.Parts.Columns
         public void CtorWithNoArgumentDoesNotThrowArgumentNullException()
         {
             // Arrange
-            Action action = () => new LiteralColumn();
+            Action action = () => new Literal();
 
             // Assert
             action.ShouldNotThrow<ArgumentException>();
@@ -43,7 +43,7 @@ namespace Queries.Core.Tests.Parts.Columns
         public void CtorThrowsArgumentExceptionWhenArgumentIsNotAPrimitiveType()
         {
             // Arrange
-            Action action = () => new LiteralColumn(new { prop1 = "prop" });
+            Action action = () => new Literal(new { prop1 = "prop" });
 
             // Assert
             ArgumentException exception = action.ShouldThrow<ArgumentException>("only bool/int/double/float/long/string are supported").Which;
@@ -74,7 +74,7 @@ namespace Queries.Core.Tests.Parts.Columns
         public void CtorSetInternalValueProperly(object value, string because)
         {
             // Act
-            LiteralColumn literalColumn = new LiteralColumn(value);
+            Literal literalColumn = new Literal(value);
 
             // Assert
             literalColumn.Value.Should().Be(value, because);
@@ -87,7 +87,7 @@ namespace Queries.Core.Tests.Parts.Columns
         public void SettingAlias(string newAlias)
         {
             // Arrange
-            LiteralColumn column = new LiteralColumn("column");
+            Literal column = new Literal("column");
 
             // Act
             column = column.As(newAlias);
@@ -101,12 +101,12 @@ namespace Queries.Core.Tests.Parts.Columns
         {
             get
             {
-                yield return new object[] { new LiteralColumn("firstname"), null, false, "object is null" };
-                yield return new object[] { new LiteralColumn("firstname"), new LiteralColumn("firstname"), true, $"object is a {nameof(LiteralColumn)} with exactly the same {nameof(LiteralColumn.Value)} and {nameof(LiteralColumn.Alias)}" };
-                yield return new object[] { new LiteralColumn("firstname"), new SelectColumn(), false, $"{nameof(LiteralColumn)} is always != exactly the same {nameof(SelectColumn)}" };
+                yield return new object[] { new Literal("firstname"), null, false, "object is null" };
+                yield return new object[] { new Literal("firstname"), new Literal("firstname"), true, $"object is a {nameof(Literal)} with exactly the same {nameof(Literal.Value)} and {nameof(Literal.Alias)}" };
+                yield return new object[] { new Literal("firstname"), new SelectColumn(), false, $"{nameof(Literal)} is always != exactly the same {nameof(SelectColumn)}" };
 
                 {
-                    LiteralColumn column = new LiteralColumn("firstname");
+                    Literal column = new Literal("firstname");
                     yield return new object[] { column, column, true, "Equals with same instance" };
                 }
 
@@ -115,7 +115,7 @@ namespace Queries.Core.Tests.Parts.Columns
 
         [Theory]
         [MemberData(nameof(EqualsCases))]
-        public void EqualTests(LiteralColumn first, object second, bool expectedResult, string reason)
+        public void EqualTests(Literal first, object second, bool expectedResult, string reason)
         {
             _outputHelper.WriteLine($"{nameof(first)} : {first}");
             _outputHelper.WriteLine($"{nameof(second)} : {second}");
@@ -138,14 +138,14 @@ namespace Queries.Core.Tests.Parts.Columns
 
         [Theory]
         [MemberData(nameof(CloneCases))]
-        public void CloneTest(LiteralColumn original)
+        public void CloneTest(Literal original)
         {
             // Act
             IColumn copie = original.Clone();
 
             // Assert
             copie.Should()
-                .BeOfType<LiteralColumn>().Which.Should()
+                .BeOfType<Literal>().Which.Should()
                 .NotBeSameAs(original).And
                 .Be(original);
         }

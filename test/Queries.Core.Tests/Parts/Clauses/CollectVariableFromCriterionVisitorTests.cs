@@ -247,5 +247,43 @@ namespace Queries.Core.Tests.Parts.Clauses
 
             insertIntoQuery.Should().Match(insertIntoQueryExpectation);
         }
+
+
+        public static IEnumerable<object[]> VisitDeleteQueryCases
+        {
+            get
+            {
+                yield return new object[]
+                {
+                    Delete("members").Where("Activity".Field(), NotLike, "%Super hero%"),
+                    ((Expression<Func<CollectVariableVisitor, bool>>)(visitor =>
+                        visitor.Variables.Count() == 1
+                        && visitor.Variables.Any(x => x.Name == "p0" && "%Super hero%".Equals(x.Value) && x.Type == VariableType.String)
+                    )),
+                    ((Expression<Func<DeleteQuery, bool>>)(query =>
+                        query.Equals(Delete("members")
+                            .Where("Activity".Field(), NotLike, new Variable("p0", VariableType.String, "%Super hero%")))
+                    ))
+                };
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(VisitDeleteQueryCases))]
+        public void VisitDeleteQuery(DeleteQuery deleteQuery, Expression<Func<CollectVariableVisitor, bool>> visitorExpectation, Expression<Func<DeleteQuery, bool>> queryAfterVisitExpectation)
+        {
+            // Arrange
+            CollectVariableVisitor visitor = new CollectVariableVisitor();
+
+            // Act
+            visitor.Visit(deleteQuery);
+
+            // Assert
+            visitor.Should()
+                .Match(visitorExpectation);
+
+            deleteQuery.Should().Match(queryAfterVisitExpectation);
+        }
+
     }
 }

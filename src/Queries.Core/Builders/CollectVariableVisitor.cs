@@ -12,7 +12,7 @@ namespace Queries.Core.Builders
     /// Collects <see cref="Variable"/>s from queries and rewrites each literal so that it uses
     /// the collected variables.
     /// </summary>
-    public class CollectVariableVisitor : IVisitor<SelectQuery>, IVisitor<IWhereClause>, IVisitor<InsertIntoQuery>
+    public class CollectVariableVisitor : IVisitor<SelectQuery>, IVisitor<IWhereClause>, IVisitor<InsertIntoQuery>, IVisitor<DeleteQuery>
     {
         public IEnumerable<Variable> Variables { get; set; }
 
@@ -40,8 +40,6 @@ namespace Queries.Core.Builders
             {
                 Visit(unionQuery);
             }
-
-
         }
 
         public void Visit(IWhereClause instance)
@@ -155,5 +153,12 @@ namespace Queries.Core.Builders
             }
         }
 
+        public void Visit(DeleteQuery instance)
+        {
+            if (instance.Criteria != null)
+            {
+                Visit(instance.Criteria);
+            }
+        }
     }
 }

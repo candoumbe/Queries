@@ -190,7 +190,7 @@ namespace Queries.Core.Tests.Parts.Columns
 
             // Assert
             copie.Should()
-                .BeOfType<LiteralColumn>().Which.Should()
+                .BeOfType<Literal>().Which.Should()
                 .NotBeSameAs(original).And
                 .Be(original);
         }

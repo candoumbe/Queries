@@ -3,15 +3,23 @@
 namespace Queries.Core.Parts.Columns
 {
     /// <summary>
-    /// An instanc of this class represents a <see cref="Builders.SelectQuery"/> that can be used as 
+    /// a <see cref="Builders.SelectQuery"/> that can be used as 
     /// <see cref="IColumn"/> in a <see cref="Builders.SelectQuery"/>.
     /// </summary>
     public class SelectColumn : IAliasable<SelectColumn>, IColumn
     {
         private string _alias;
 
+        /// <summary>
+        /// Alias of the column
+        /// </summary>
         public string Alias => _alias;
 
+        /// <summary>
+        /// Sets the column's alias
+        /// </summary>
+        /// <param name="alias">The new alias</param>
+        /// <returns></returns>
         public SelectColumn As(string alias)
         {
             _alias = alias;
@@ -19,6 +27,9 @@ namespace Queries.Core.Parts.Columns
             return this;
         }
 
+        /// <summary>
+        /// The wrapped query
+        /// </summary>
         public SelectQuery SelectQuery { get; set; }
 
         public static UniqueIdentifierValue UUID() => new UniqueIdentifierValue();

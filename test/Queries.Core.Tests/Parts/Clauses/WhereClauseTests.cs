@@ -63,7 +63,7 @@ namespace Queries.Core.Tests.Parts.Clauses
             {
                 yield return new object[]
                 {
-                    new LiteralColumn(1), EqualTo, 1,
+                    new Literal(1), EqualTo, 1,
                     ((Expression<Func<WhereClause, bool>>)(clause =>
                         1.Literal().Equals(clause.Column)
                         && EqualTo == clause.Operator

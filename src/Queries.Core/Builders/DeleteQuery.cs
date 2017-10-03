@@ -8,7 +8,7 @@ using System.Collections.Generic;
 namespace Queries.Core.Builders
 {
     /// <summary>
-    /// Query that produce a DELETE statement.
+    /// Query that produces a DELETE statement.
     /// </summary>
     /// <remarks>
     /// 
@@ -27,13 +27,10 @@ namespace Queries.Core.Builders
         public IWhereClause Criteria { get; private set; }
 
         /// <summary>
-        /// Builds a new <see cref="DeleteQuery"/> instance
+        /// Builds a new <see cref="DeleteQuery"/> instance.
         /// </summary>
         /// <param name="tableName">Name of the table to delete data from</param>
-        public DeleteQuery(string tableName)
-        {
-            Table = tableName ?? throw new ArgumentNullException(nameof(tableName), $"{nameof(tableName)} cannot be null");
-        }
+        public DeleteQuery(string tableName) => Table = tableName ?? throw new ArgumentNullException(nameof(tableName), $"{nameof(tableName)} cannot be null");
 
         /// <summary>
         /// Defines the <see cref="Criteria"/>

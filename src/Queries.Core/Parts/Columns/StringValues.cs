@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 
 namespace Queries.Core.Parts.Columns
 {
     /// <summary>
-    /// A list of values to use in <see cref="Clauses.ClauseOperator.In"/> condition
+    /// A list of <see cref="string"/> values to use in <see cref="Clauses.ClauseOperator.In"/> condition
     /// </summary>
     public class StringValues : MultipleValues<string>
     {

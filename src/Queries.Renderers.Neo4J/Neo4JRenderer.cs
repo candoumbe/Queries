@@ -52,7 +52,7 @@ namespace Queries.Renderers.Neo4J
             if (cols.Count() == 1)
             {
                 IColumn column = cols.Single();
-                if (column is FieldColumn || column is LiteralColumn)
+                if (column is FieldColumn || column is Literal)
                 {
                     IEnumerable<ITable> tabs = tables as ITable[] ?? tables.ToArray();
                     if (selectQuery.Tables.Count() == 1 && tabs.Single() is Table)
@@ -72,14 +72,14 @@ namespace Queries.Renderers.Neo4J
                         }
                         else
                         {
-                            LiteralColumn lc = (LiteralColumn) column;
+                            Literal lc = (Literal) column;
                             if ("*".Equals(lc.Value?.ToString()))
                             {
                                 if (string.IsNullOrWhiteSpace(table.Alias))
                                 {
                                     table.As(table.Name.Substring(0, 1).ToLower());
                                 }
-                                lc = new LiteralColumn(table.Alias).As(lc.Alias);
+                                lc = new Literal(table.Alias).As(lc.Alias);
                             }
                         }
                     }

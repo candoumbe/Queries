@@ -1,11 +1,8 @@
 ﻿using Queries.Core;
 using Queries.Core.Builders;
 using Queries.Core.Parts.Clauses;
-using Queries.Core.Parts.Columns;
 using Queries.Core.Renderers;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -20,18 +17,16 @@ namespace Queries.Renderers.SqlServer
         /// <summary>
         /// Builds a new <see cref="SqlServerRenderer"/> instance.
         /// </summary>
-        /// <param name="prettyPrint">defines how to render queries.</param>
+        /// <param name="settings">defines how to render queries.</param>
         /// <remarks>
-        ///     the <paramref name="prettyPrint"/> parameter defines how the queries will be rendered. When set to <c>true</c>,
+        ///     the <paramref name="prettyPrint"/> parameter defines how the queries will be rendered. 
+        ///     When set to <c>true</c>,
         ///     each part of a staemtn will be layed in onto a newline.
         /// </remarks>
-        public SqlServerRenderer(QueryRendererSettings settings) : base(settings)
+        public SqlServerRenderer(QueryRendererSettings settings = null) 
+            : base(settings ?? new QueryRendererSettings { DateFormatString = "yyyy-MM-dd", PrettyPrint = true })
         { }
-
-        public SqlServerRenderer() : this (new QueryRendererSettings { DateFormatString = "yyyy-MM-dd", PrettyPrint = true })
-        {
-
-        }
+        
 
         protected override string BeginEscapeWordString => "[";
 
@@ -60,6 +55,7 @@ namespace Queries.Renderers.SqlServer
                     result = Render(createViewQuery);
                     break;
                 case DeleteQuery deleteQuery:
+                    visitor.Visit(deleteQuery);
                     result = Render(deleteQuery);
                     break;
                 case UpdateQuery updateQuery:
@@ -74,6 +70,8 @@ namespace Queries.Renderers.SqlServer
                 case BatchQuery batchQuery:
                     result = Render(batchQuery);
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException("Unknown type of query");
             }
             StringBuilder sbParameters = new StringBuilder(visitor.Variables.Count() * 100);
 

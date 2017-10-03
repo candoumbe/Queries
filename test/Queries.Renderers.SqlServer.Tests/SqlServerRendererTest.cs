@@ -450,6 +450,26 @@ namespace Queries.Renderers.SqlServer.Tests
             => IsQueryOk(query, settings, expectedString);
 
 
+        public static IEnumerable<object[]> DeleteQueryCases
+        {
+            get
+            {
+                yield return new object[]
+                {
+                    Delete("members")
+                    .Where("Activity".Field(), NotLike, "%Super hero%"),
+                    new QueryRendererSettings(),
+                    "DECLARE @p0 AS VARCHAR(8000) = '%Super hero%';" +
+                    "DELETE FROM [members] WHERE ([Activity] NOT LIKE @p0)"
+                };
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(DeleteQueryCases))]
+        public void DeleteQueryTests(DeleteQuery query, QueryRendererSettings settings, string expectedString)
+            => IsQueryOk(query, settings, expectedString);
+
         public static IEnumerable<object[]> SelectIntoQueryCases
         {
             get

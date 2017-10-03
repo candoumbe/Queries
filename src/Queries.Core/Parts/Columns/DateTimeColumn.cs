@@ -2,8 +2,14 @@
 
 namespace Queries.Core.Parts.Columns
 {
-    public class DateTimeColumn : LiteralColumn, IFormattableColumn<DateTimeColumn>
+    /// <summary>
+    /// Column that contains <see cref="DateTime"/>/<see cref="DateTimeOffset"/> value.
+    /// </summary>
+    public class DateTimeColumn : Literal, IFormattableColumn<DateTimeColumn>
     {
+        /// <summary>
+        /// Format used when displaying columns value
+        /// </summary>
         public string StringFormat { get; private set; }
 
 
@@ -19,10 +25,7 @@ namespace Queries.Core.Parts.Columns
         /// </summary>
         /// <param name="value">value of the column</param>
         /// <param name="stringFormat">Format of the column</param>
-        public DateTimeColumn(DateTime value, string stringFormat) : base(value)
-        {
-            StringFormat = stringFormat;
-        }
+        public DateTimeColumn(DateTime value, string stringFormat) : base(value) => StringFormat = stringFormat;
 
         /// <summary>
         /// Specifies an output format
