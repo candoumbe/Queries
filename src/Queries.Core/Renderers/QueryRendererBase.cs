@@ -406,11 +406,22 @@ namespace Queries.Core.Renderers
                             clauseString = $"{RenderColumn(clause.Column, false)} IN ({string.Join(", ", variables.Select(x => RenderVariable(x, false)))})";
                             break;
                         default:
-                            throw new ArgumentOutOfRangeException(nameof(clause), $"Unsupported constraint type");
+                            throw new ArgumentOutOfRangeException(nameof(clause), $"Unsupported constraint type for {nameof(ClauseOperator)}.{nameof(ClauseOperator.In)} operator.");
+                    }
+                    break;
+                case ClauseOperator.NotIn:
+
+                    switch (clause.Constraint)
+                    {
+                        case VariableValues variables:
+                            clauseString = $"{RenderColumn(clause.Column, false)} NOT IN ({string.Join(", ", variables.Select(x => RenderVariable(x, false)))})";
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException(nameof(clause), $"Unsupported constraint type for {nameof(ClauseOperator)}.{nameof(ClauseOperator.NotIn)} operator.");
                     }
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException(nameof(clause.Operator), "Unknown clause operator");
             }
 
             return clauseString;

@@ -60,7 +60,8 @@ namespace Queries.Renderers.SqlServer.Tests
                     Select("fullname")
                     .From(
                         Select(Concat("firstname".Field(), " ".Literal(),  "lastname".Field()).As("fullname"))
-                        .From("people").As("p")),
+                        .From("people").As("p")
+                    ),
                     new QueryRendererSettings { PrettyPrint = false },
                     "SELECT [fullname] FROM (SELECT [firstname] + ' ' + [lastname] AS [fullname] FROM [people]) [p]"
 
@@ -74,6 +75,18 @@ namespace Queries.Renderers.SqlServer.Tests
                         .Where("firstname".Field().IsNotNull()),
                     new QueryRendererSettings { PrettyPrint = false },
                     "SELECT [firstname], [lastname] FROM [people] WHERE ([firstname] IS NOT NULL)"
+
+                };
+
+                yield return new object[]
+                {
+                    Select("firstname".Field(), "lastname".Field())
+                        .From("SuperHero")
+                        .Where("Capabilities".Field().NotIn("Super strength", "Heat vision")),
+                    new QueryRendererSettings { PrettyPrint = false },
+                    "DECLARE @p0 AS VARCHAR(8000) = 'Super strength';" +
+                    "DECLARE @p1 AS VARCHAR(8000) = 'Heat vision';" +
+                    "SELECT [firstname], [lastname] FROM [SuperHero] WHERE ([Capabilities] NOT IN (@p0, @p1))"
 
                 };
 

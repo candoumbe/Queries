@@ -77,5 +77,19 @@ namespace Queries.Core.Parts.Columns
         /// <param name="values"></param>
         /// <returns></returns>
         public static WhereClause In(this FieldColumn column, string first, params string[] values) => new WhereClause(column, ClauseOperator.In, new StringValues(first, values));
+
+
+        /// <summary>
+        /// Creates a <see cref="WhereClause"/> that states <paramref name="column"/>'s value is not one of <paramref name="first"/> or
+        /// <paramref name="values"/>.
+        /// </summary>
+        /// <param name="column">column to apply the clause onto</param>
+        /// <param name="first"></param>
+        /// <param name="values"></param>
+        /// <returns></returns>
+        public static WhereClause NotIn(this FieldColumn column, string first, params string[] values) => new WhereClause(column, ClauseOperator.NotIn, new StringValues(first, values));
+
+
+
     }
 }
