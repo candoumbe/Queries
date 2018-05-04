@@ -3,9 +3,7 @@
 *.pdb
 .vs/
 *.nupkg
-
 # Build results
-
 [Bb]in/
 [Oo]bj/
 *.cache
