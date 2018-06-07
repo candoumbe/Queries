@@ -46,7 +46,7 @@ namespace Queries.Core.Parts.Columns
         /// </summary>
         /// <param name="column">Column to apply the clause onto</param>
         /// <returns></returns>
-        public static WhereClause LessThan(this FieldColumn column, ColumnBase constraint) => new WhereClause(column, ClauseOperator.LessThan, constraint);
+        public static WhereClause LessThan(this IColumn column, ColumnBase constraint) => new WhereClause(column, ClauseOperator.LessThan, constraint);
 
 
         /// <summary>

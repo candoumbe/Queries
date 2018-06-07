@@ -14,10 +14,7 @@ namespace Queries.Core.Parts.Columns.Tests
     {
         private ITestOutputHelper _outputHelper;
 
-        public FieldColumnExtensionsTests(ITestOutputHelper outputHelper)
-        {
-            _outputHelper = outputHelper;
-        }
+        public FieldColumnExtensionsTests(ITestOutputHelper outputHelper) => _outputHelper = outputHelper;
 
 
         public void Dispose() => _outputHelper = null;

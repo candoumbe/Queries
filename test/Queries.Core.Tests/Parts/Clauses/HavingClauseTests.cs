@@ -1,12 +1,10 @@
 ﻿using FluentAssertions;
-using Queries.Core.Extensions;
 using Queries.Core.Parts.Clauses;
 using Queries.Core.Parts.Columns;
 using Queries.Core.Parts.Functions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Xunit;
 using Xunit.Abstractions;
 using static Queries.Core.Parts.Clauses.ClauseOperator;
@@ -16,10 +14,7 @@ namespace Queries.Core.Tests.Parts.Clauses
     {
         private ITestOutputHelper _outputHelper;
 
-        public HavingClauseTests(ITestOutputHelper outputHelper)
-        {
-            _outputHelper = outputHelper;
-        }
+        public HavingClauseTests(ITestOutputHelper outputHelper) => _outputHelper = outputHelper;
 
         public void Dispose() => _outputHelper = null;
 
@@ -40,10 +35,7 @@ namespace Queries.Core.Tests.Parts.Clauses
         {
             get
             {
-
-
-
-                ClauseOperator[] @operators = new[]
+                ClauseOperator[] operators = new[]
                 {
                     EqualTo,
                     NotEqualTo,
@@ -91,10 +83,10 @@ namespace Queries.Core.Tests.Parts.Clauses
             _outputHelper.WriteLine($"{nameof(original)} : {original}");
 
             // Act
-            IHavingClause copie = original.Clone();
+            IHavingClause copy = original.Clone();
 
             // Assert
-            copie.Should()
+            copy.Should()
                 .BeOfType<HavingClause>().Which.Should()
                 .NotBeSameAs(original).And
                 .Be(original);

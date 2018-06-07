@@ -1,5 +1,10 @@
+using Queries.Core.Parts.Clauses;
 using Queries.Core.Parts.Columns;
 using Queries.Core.Parts.Functions;
+using Queries.Core.Parts.Functions.Math;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Queries.Core.Builders.Fluent
 {
@@ -174,5 +179,37 @@ namespace Queries.Core.Builders.Fluent
         /// <returns></returns>
         public static DeclareVariableQuery Declare(string variableName) => new DeclareVariableQuery(variableName);
 
+        /// <summary>
+        /// Creates a <see cref="CasesColumn"/>
+        /// </summary>
+        /// <param name="whenExpressions">expressions associated with the case</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"> if <paramref name="whenExpressions"/> is <c>null</c></exception>
+        public static CasesColumn Cases(WhenExpression first, params WhenExpression[] others)
+        {
+            if (first == null)
+            {
+                throw new ArgumentNullException(nameof(first));
+            }
+
+            if (others == null)
+            {
+                throw new ArgumentNullException(nameof(others));
+            }
+
+
+            return new CasesColumn(new[] { first }.Union(others.Where(x => x != null)));
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="WhenExpression"/> instance.
+        /// </summary>
+        /// <param name="criterion"></param>
+        /// <param name="then">Value to use when <paramref name="criterion"/> is not satisfied.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">either <paramref name="criterion"/> or <paramref name="then"/> is <c>null</c></exception>
+        public static WhenExpression When(WhereClause criterion, Literal then) => new WhenExpression(criterion, then);
+
+        
     }
 }

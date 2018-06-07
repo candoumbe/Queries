@@ -214,7 +214,7 @@ namespace Queries.Core.Builders
             return hashCode;
         }
 
-        public override string ToString() => SerializeObject(this);
+        public override string ToString() => SerializeObject(this, Formatting.Indented);
 
         /// <summary>
         /// Performs a deep copy of the current instance.

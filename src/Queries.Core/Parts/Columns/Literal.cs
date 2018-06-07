@@ -74,5 +74,20 @@ namespace Queries.Core.Parts.Columns
         }
 
         public override IColumn Clone() => new Literal(Value);
+
+
+        public static implicit operator Literal(int value) => new NumericColumn(value);
+
+        public static implicit operator Literal(double value) => new NumericColumn(value);
+
+        public static implicit operator Literal(float value) => new NumericColumn(value);
+
+        public static implicit operator Literal(string value) => new StringColumn(value);
+
+        public static implicit operator Literal(bool value) => new BooleanColumn(value);
+
+        public static implicit operator Literal(DateTime value) => new DateTimeColumn(value);
+
+
     }
 }

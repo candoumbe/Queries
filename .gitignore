@@ -6,6 +6,7 @@
 # Build results
 [Bb]in/
 [Oo]bj/
+[Dd]ebug/
 *.cache
 # MSTest test Results
 [Tt]est[Rr]esults/

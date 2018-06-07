@@ -21,10 +21,7 @@ namespace Queries.Core.Tests.Validators
     {
         private ColumnValidator _validator;
 
-        public ColumnValidatorTests(ITestOutputHelper outputHelper)
-        {
-            _validator = new ColumnValidator();
-        }
+        public ColumnValidatorTests(ITestOutputHelper outputHelper) => _validator = new ColumnValidator();
 
         public void Dispose()
         {
