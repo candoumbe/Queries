@@ -42,7 +42,7 @@ namespace Queries.Core.Parts.Columns
         /// <param name="column">Column to apply the clause onto</param>
         /// <param name="constraint"></param>
         /// <returns></returns>
-        public static WhereClause LessThan(this FieldColumn column, ColumnBase constraint) => new WhereClause(column, ClauseOperator.LessThan, constraint);
+        public static WhereClause LessThan(this IColumn column, ColumnBase constraint) => new WhereClause(column, ClauseOperator.LessThan, constraint);
 
         /// <summary>
         /// Creates a <see cref="WhereClause"/> that states <paramref name="column"/>'value is <c>&lt;</c> or equal to <paramref name="constraint"/>'s value.

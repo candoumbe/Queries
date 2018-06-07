@@ -1,25 +1,8 @@
-﻿using FluentAssertions;
-using FluentAssertions.Extensions;
-using Newtonsoft.Json;
-using Queries.Core;
-using Queries.Core.Builders;
-using Queries.Core.Extensions;
-using Queries.Core.Parts.Clauses;
-using Queries.Core.Parts.Columns;
-using Queries.Core.Parts.Sorting;
-using Queries.Core.Renderers;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using Xunit;
-using Xunit.Abstractions;
-using static Queries.Core.Builders.Fluent.QueryBuilder;
-using static Queries.Core.Parts.Clauses.ClauseOperator;
-using static Queries.Core.Parts.Columns.SelectColumn;
-using System.Linq.Expressions;
 using System.Linq;
-#if !NETCOREAPP1_0
-using NaughtyStrings;
-#endif
+using System.Linq.Expressions;
+
 namespace Queries.Renderers.SqlServer.Tests
 {
     public class SqlServerRendererTest : IDisposable
@@ -352,10 +335,38 @@ namespace Queries.Renderers.SqlServer.Tests
 
                 yield return new object[]
                 {
-                    Select("*").From("members").Where("Firstname".Field(), In, new StringValues("Bruce", "Bane")),
-                    new SqlServerRendererSettings{ SkipVariableDeclaration = true },
-                    "SELECT * FROM [members] WHERE ([Firstname] IN (@p0, @p1))"
+                    Select(
+                        "Firstname".Field(),
+                        "Lastname".Field(),
+                        Cases(
+                            When("Age".Field().GreaterThan(18), then : true),
+                            When("Age".Field().IsNull(), then : false)
+                        ).As("IsMajor"))
+                        .From("members"),
+                    new SqlServerRendererSettings(){ PrettyPrint = false },
+
+                    "DECLARE @p0 AS NUMERIC = 18;" +
+                    "SELECT [Firstname], [Lastname], (SELECT CASE WHEN ([Age] > @p0) THEN 1 WHEN ([Age] IS NULL) THEN 0) AS [IsMajor] " +
+                    "FROM [members]"
                 };
+
+
+                yield return new object[]
+                {
+                    Select(Cases(
+                        When("left".Field().Substract("right".Field()).LessThan(10), then : 1))
+                        .Else(0)
+                    )
+                    .From("table1".Table("t1")).InnerJoin("table2".Table("t2"), new WhereClause("t1.Id".Field(), EqualTo, "t2.Id")),
+                    new SqlServerRendererSettings{ PrettyPrint = false },
+
+                    "DECLARE @p0 AS NUMERIC = 10;" +
+                    "DECLARE @p1 AS NUMERIC = 1;" +
+                    "SELECT CASE WHEN (([left] - [right]) < @p0) THEN 1 ELSE 0) " +
+                    "FROM [table1] AS [t1] INNER JOIN [table2] AS [t2] " +
+                    "ON [t1].[Id] = [t2].[Id]"
+                };
+
             }
         }
 

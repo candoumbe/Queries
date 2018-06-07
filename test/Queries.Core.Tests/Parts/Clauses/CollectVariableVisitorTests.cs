@@ -18,12 +18,12 @@ namespace Queries.Core.Tests.Parts.Clauses
 {
     [UnitTest]
     [Feature("Parameterized query")]
-    public class CollectVariableFromCriterionVisitorTests : IDisposable
+    public class CollectVariableVisitorTests : IDisposable
     {
         private ITestOutputHelper _outputHelper;
         private readonly CollectVariableVisitor _sut;
 
-        public CollectVariableFromCriterionVisitorTests(ITestOutputHelper outputHelper)
+        public CollectVariableVisitorTests(ITestOutputHelper outputHelper)
         {
             _outputHelper = outputHelper;
             _sut = new CollectVariableVisitor();
@@ -186,6 +186,34 @@ namespace Queries.Core.Tests.Parts.Clauses
                                 Select("Fullname").From("Superhero").Where("Nickname".Field(), Like, new Variable("p0", VariableType.String, "B%")))
                             ))
                     )
+                };
+
+                yield return new object[]
+                {
+                    Select(
+                        "Firstname".Field(),
+                        "Lastname".Field(),
+                        Cases(
+                            When("Age".Field().GreaterThan(18), then : true),
+                            When("Age".Field().IsNull(), then : false)
+                        ).As("IsMajor"))
+                        .From("members"),
+                   ((Expression<Func<CollectVariableVisitor, bool>>)(visitor =>
+                        visitor.Variables.Count() == 1
+                        && visitor.Variables.Any(x => x.Name == "p0" && 18.Equals(x.Value) && x.Type == Numeric)
+                    )),
+                    ((Expression<Func<SelectQuery, bool>>)(query =>
+                        query.Equals(
+                           Select(
+                            "Firstname".Field(),
+                            "Lastname".Field(),
+                             Cases(
+                                When("Age".Field().GreaterThan(new Variable("p0", Numeric, 18)), true),
+                                When("Age".Field().IsNull(), false)
+                            ).As("IsMajor"))
+                            .From("members")
+                        )
+                    ))
                 };
             }
         }

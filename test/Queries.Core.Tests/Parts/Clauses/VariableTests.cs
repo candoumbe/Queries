@@ -65,10 +65,10 @@ namespace Queries.Core.Tests.Parts.Clauses
         public void CtorMakeParameterNameCamelCase(string parameterName, VariableType variableType, string expectedParameterName)
         {
             // Act
-            Variable cp = new Variable(parameterName, variableType, "a value");
+            Variable v = new Variable(parameterName, variableType, "a value");
 
             // Assert
-            cp.Name.Should().Be(expectedParameterName);
+            v.Name.Should().Be(expectedParameterName);
         }
     }
 }

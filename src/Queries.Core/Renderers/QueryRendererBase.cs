@@ -317,7 +317,22 @@ namespace Queries.Core.Renderers
                 {
                     sbFields = sbFields.Append(", ");
                 }
-                sbFields.Append(RenderColumn(column, renderAlias: true));
+                if (column is CasesColumn cc)
+                {
+                    sbFields
+                        .Append("(")
+                        .Append(RenderCasesColumn(cc, renderAlias: false))
+                        .Append(")");
+
+                    if (!string.IsNullOrWhiteSpace(cc.Alias))
+                    {
+                        sbFields.Append($" AS {EscapeName(cc.Alias)}");
+                    }
+                }
+                else
+                {
+                    sbFields.Append(RenderColumn(column, renderAlias: true));
+                }
             }
 
             return sbFields.ToString();
@@ -475,6 +490,28 @@ namespace Queries.Core.Renderers
 
             return columnString;
         }
+
+        protected virtual string RenderCasesColumn(CasesColumn caseColumn, bool renderAlias)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            foreach (WhenExpression when in caseColumn.Cases)
+            {
+                if (sb.Length > 0)
+                {
+                    sb.Append(' ');
+                }
+                sb.Append("WHEN ")
+                    .Append(RenderWhere(when.Criterion))
+                    .Append(" THEN ")
+                    .Append(RenderColumn(when.ThenValue, false));
+            }
+
+
+
+            return $"SELECT CASE {sb}";
+        }
+
 
         protected virtual string RenderVariable(Variable variable, bool renderAlias) => throw new NotSupportedException();
 

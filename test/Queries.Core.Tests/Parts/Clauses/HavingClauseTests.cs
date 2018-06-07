@@ -37,7 +37,7 @@ namespace Queries.Core.Tests.Parts.Clauses
         {
             get
             {
-                ClauseOperator[] @operators = new[]
+                ClauseOperator[] operators = new[]
                 {
                     EqualTo,
                     NotEqualTo,
@@ -84,10 +84,10 @@ namespace Queries.Core.Tests.Parts.Clauses
             _outputHelper.WriteLine($"{nameof(original)} : {original}");
 
             // Act
-            IHavingClause copie = original.Clone();
+            IHavingClause copy = original.Clone();
 
             // Assert
-            copie.Should()
+            copy.Should()
                 .BeOfType<HavingClause>().Which.Should()
                 .NotBeSameAs(original).And
                 .Be(original);

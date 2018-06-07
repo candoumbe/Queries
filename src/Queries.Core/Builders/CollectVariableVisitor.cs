@@ -23,6 +23,14 @@ namespace Queries.Core.Builders
 
         public void Visit(SelectQuery instance)
         {
+            foreach (IColumn item in instance.Columns.OfType<CasesColumn>())
+            {
+                CasesColumn caseColumn = item as CasesColumn;
+                foreach (WhenExpression when in caseColumn.Cases)
+                {
+                    Visit(when.Criterion);
+                }
+            }
             foreach (ITable item in instance.Tables)
             {
                 switch (item)
@@ -52,6 +60,18 @@ namespace Queries.Core.Builders
                 case WhereClause wc:
                     switch (wc.Constraint)
                     {
+                        case NumericColumn nc:
+                            {
+                                Variable variable = Variables.SingleOrDefault(x => x.Type == Numeric && nc.Value == x.Value);
+                                if (variable == null)
+                                {
+                                    variable = new Variable($"p{Variables.Count()}", Numeric, nc.Value);
+                                    Variables = Variables.Concat(new[] { variable });
+                                }
+                                ((WhereClause)instance).Constraint = variable;
+                            }
+                            break;
+
                         case StringColumn sc when sc.Value != null:
                             {
                                 Variable variable = Variables.SingleOrDefault(x => x.Type == VariableType.String && Equals(sc.Value, x.Value));

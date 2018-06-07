@@ -15,10 +15,7 @@ namespace Queries.Core.Tests.Parts.Columns
     {
         private ITestOutputHelper _outputHelper;
 
-        public NumericColumnTests(ITestOutputHelper outputHelper)
-        {
-            _outputHelper = outputHelper;
-        }
+        public NumericColumnTests(ITestOutputHelper outputHelper) => _outputHelper = outputHelper;
 
         public void Dispose() => _outputHelper = null;
 
