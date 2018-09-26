@@ -10,7 +10,6 @@ namespace Queries.Core.Tests.Parts.Functions
 {
     public class LengthFunctionTests
     {
-
         [Fact]
         public void CtorThrowsArgumentNullExceptionIfAnyParameterIsNull()
         {
@@ -21,7 +20,6 @@ namespace Queries.Core.Tests.Parts.Functions
             action.Should().Throw<ArgumentNullException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
-
         }
 
         [Fact]

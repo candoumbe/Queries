@@ -17,14 +17,11 @@ namespace Queries.Core.Parts.Columns
                 throw new ArgumentNullException(nameof(destination));
             }
 
-
             return new UpdateFieldValue(destination, source);
-            
         }
 
         public static InsertedValue InsertValue(this FieldColumn columnName, IColumn column)
             => new InsertedValue(columnName, column);
-
 
         /// <summary>
         /// Creates a <see cref="WhereClause"/> which states <paramref name="column"/>'s value is <c>null</c>.
@@ -32,7 +29,6 @@ namespace Queries.Core.Parts.Columns
         /// <param name="column">Column to apply the clause onto</param>
         /// <returns></returns>
         public static WhereClause IsNull(this FieldColumn column) => new WhereClause(column, ClauseOperator.IsNull);
-
 
         /// <summary>
         /// Creates a <see cref="WhereClause"/> that states <paramref name="column"/>'s value is not <c>null</c>.
@@ -47,7 +43,6 @@ namespace Queries.Core.Parts.Columns
         /// <param name="column">Column to apply the clause onto</param>
         /// <returns></returns>
         public static WhereClause LessThan(this FieldColumn column, ColumnBase constraint) => new WhereClause(column, ClauseOperator.LessThan, constraint);
-
 
         /// <summary>
         /// Creates a <see cref="WhereClause"/> that states <paramref name="column"/>'value is <c>&lt;</c> or equal to <paramref name="constraint"/>'s value.
@@ -78,7 +73,6 @@ namespace Queries.Core.Parts.Columns
         /// <returns></returns>
         public static WhereClause In(this FieldColumn column, string first, params string[] values) => new WhereClause(column, ClauseOperator.In, new StringValues(first, values));
 
-
         /// <summary>
         /// Creates a <see cref="WhereClause"/> that states <paramref name="column"/>'s value is not one of <paramref name="first"/> or
         /// <paramref name="values"/>.
@@ -88,8 +82,5 @@ namespace Queries.Core.Parts.Columns
         /// <param name="values"></param>
         /// <returns></returns>
         public static WhereClause NotIn(this FieldColumn column, string first, params string[] values) => new WhereClause(column, ClauseOperator.NotIn, new StringValues(first, values));
-
-
-
     }
 }

@@ -18,7 +18,6 @@ namespace Queries.Renderers.MySQL
         protected override string EndEscapeWordString => @"""";
         protected override string ConcatOperator => "||";
 
-
         protected override string RenderConcatColumn(ConcatFunction concatColumn, bool renderAlias)
         {
             if (concatColumn == null)
@@ -37,8 +36,6 @@ namespace Queries.Renderers.MySQL
                 : sbConcat.ToString();
 
             return queryString;
-
         }
-
     }
 }

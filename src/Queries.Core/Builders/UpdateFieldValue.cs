@@ -11,7 +11,6 @@ namespace Queries.Core.Builders
     /// </summary>
     public class UpdateFieldValue : IEquatable<UpdateFieldValue>
     {
-
         public ColumnBase Source { get; set; }
 
         public FieldColumn Destination { get; set; }
@@ -23,7 +22,6 @@ namespace Queries.Core.Builders
         /// <param name="source">value to set</param>
         public UpdateFieldValue(FieldColumn destination, ColumnBase source)
         {
-
             Destination = destination ?? throw new ArgumentNullException(nameof(destination));
             Source = source;
         }

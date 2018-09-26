@@ -85,7 +85,6 @@ namespace Queries.Core.Tests.Builders
                             .Build();
                     yield return new object[] { query, query, true, "Equals with same instance" };
                 }
-
             }
         }
 
@@ -116,8 +115,5 @@ namespace Queries.Core.Tests.Builders
             attr.Should()
                 .NotBeNull($"{nameof(CreateViewQuery)} must be marked with {nameof(DataManipulationLanguageAttribute)}");
         }
-
-
-
     }
 }

@@ -9,7 +9,6 @@ namespace Queries.Core.Tests.Parts.Clauses
 {
     public class VariableTests
     {
-
         [Theory]
         [InlineData(VariableType.Boolean)]
         [InlineData(VariableType.Date)]
@@ -59,7 +58,6 @@ namespace Queries.Core.Tests.Parts.Clauses
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }
-
 
         [Theory]
         [InlineData("Nickname", VariableType.Boolean, "nickname")]

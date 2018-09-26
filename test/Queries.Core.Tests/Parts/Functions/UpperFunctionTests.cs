@@ -12,7 +12,6 @@ namespace Queries.Core.Tests.Parts.Columns
 {
     public class UpperFunctionTests
     {
-
         [Fact]
         public void ConstructorTestWithNullStringArgument()
         {
@@ -23,7 +22,6 @@ namespace Queries.Core.Tests.Parts.Columns
                 .NotBeNullOrWhiteSpace();
         }
 
-        
         [Fact]
         public void ConstructorTestWithNullColumnArgument()
         {
@@ -33,13 +31,11 @@ namespace Queries.Core.Tests.Parts.Columns
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }
-        
+
         [Theory]
         [MemberData(nameof(AsTestCases))]
         public void SettingAliasTest(UpperFunction column, string expectedAlias)
             => column.Alias.Should().Be(expectedAlias);
-
-
 
         public static IEnumerable<object[]> AsTestCases
         {

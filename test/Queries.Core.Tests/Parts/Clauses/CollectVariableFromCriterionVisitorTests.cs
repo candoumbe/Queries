@@ -23,7 +23,6 @@ namespace Queries.Core.Tests.Parts.Clauses
 
         public void Dispose() => _outputHelper = null;
 
-
         [Fact]
         public void CtorShouldBuildValidInstance()
         {
@@ -199,9 +198,7 @@ namespace Queries.Core.Tests.Parts.Clauses
                 .Match(visitorExpectation);
 
             selectQuery.Should().Match(selectQueryExpectation);
-
         }
-
 
         public static IEnumerable<object[]> VisitInsertIntoQueryCases
         {
@@ -249,7 +246,6 @@ namespace Queries.Core.Tests.Parts.Clauses
             insertIntoQuery.Should().Match(insertIntoQueryExpectation);
         }
 
-
         public static IEnumerable<object[]> VisitDeleteQueryCases
         {
             get
@@ -285,6 +281,5 @@ namespace Queries.Core.Tests.Parts.Clauses
 
             deleteQuery.Should().Match(queryAfterVisitExpectation);
         }
-
     }
 }

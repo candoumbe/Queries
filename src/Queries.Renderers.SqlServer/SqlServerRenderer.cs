@@ -23,10 +23,9 @@ namespace Queries.Renderers.SqlServer
         ///     When set to <c>true</c>,
         ///     each part of a staemtn will be layed in onto a newline.
         /// </remarks>
-        public SqlServerRenderer(QueryRendererSettings settings = null) 
+        public SqlServerRenderer(QueryRendererSettings settings = null)
             : base(settings ?? new QueryRendererSettings { DateFormatString = "yyyy-MM-dd", PrettyPrint = true })
         { }
-        
 
         protected override string BeginEscapeWordString => "[";
 
@@ -35,7 +34,6 @@ namespace Queries.Renderers.SqlServer
         protected override string ConcatOperator => "+";
 
         protected override string LengthFunctionName => "LEN";
-
 
         public override string Render(IQuery query)
         {
@@ -101,7 +99,6 @@ namespace Queries.Renderers.SqlServer
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(variable), $"Unsupported variable type");
-                        
                 }
 
                 if (Settings.PrettyPrint && sbParameters.Length > 0)
@@ -111,7 +108,6 @@ namespace Queries.Renderers.SqlServer
             }
             return sbParameters.Append(result).ToString();
         }
-
 
         protected override string RenderVariable(Variable variable, bool renderAlias) => $"@{variable.Name}";
 

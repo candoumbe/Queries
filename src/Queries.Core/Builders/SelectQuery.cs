@@ -24,7 +24,6 @@ namespace Queries.Core.Builders
         /// </summary>
         public int? NbRows => _limit;
 
-
         public IList<ITable> Tables { get; }
         public IList<IUnionQuery<SelectQuery>> Unions { get; set; }
 
@@ -77,7 +76,6 @@ namespace Queries.Core.Builders
             return this;
         }
 
-
         public IWhereQuery<SelectQuery> Where(IWhereClause clause)
         {
             WhereCriteria = clause ?? throw new ArgumentNullException(nameof(clause), $"{clause} cannot be null");
@@ -87,9 +85,6 @@ namespace Queries.Core.Builders
 
         public IWhereQuery<SelectQuery> Where(IColumn column, ClauseOperator @operator, ColumnBase constraint)
             => Where(new WhereClause(column, @operator, constraint));
-
-
-
 
         public IJoinQuery<SelectQuery> InnerJoin(Table table, IWhereClause clause)
         {
@@ -127,7 +122,6 @@ namespace Queries.Core.Builders
 
         public IJoinQuery<SelectQuery> RightOuterJoin(Table table, IWhereClause clause)
         {
-
             if (table == null)
             {
                 throw new ArgumentNullException(nameof(table), $"{nameof(table)} cannot be null");
@@ -145,8 +139,6 @@ namespace Queries.Core.Builders
 
         public SelectQuery Build() => this;
 
-
-
         ISortQuery<SelectQuery> IWhereQuery<SelectQuery>.OrderBy(params ISort[] sorts)
         {
             foreach (ISort sort in sorts)
@@ -158,7 +150,6 @@ namespace Queries.Core.Builders
 
         public IUnionQuery<SelectQuery> Union(IUnionQuery<SelectQuery> select)
         {
-
             Unions.Add(select);
             return this;
         }
@@ -171,7 +162,6 @@ namespace Queries.Core.Builders
             }
             return this;
         }
-
 
         public ISortQuery<SelectQuery> Having(IHavingClause clause)
         {
@@ -200,7 +190,6 @@ namespace Queries.Core.Builders
                     && Unions.SequenceEqual(other.Unions);
             }
 
-
             return equals;
         }
 
@@ -222,8 +211,6 @@ namespace Queries.Core.Builders
         /// <returns>a <see cref="SelectQuery"/> instance that is a deep copy of the current instance.</returns>
         public SelectQuery Clone()
         {
-
-
             SelectQuery query = new SelectQuery(Columns.Select(x => x.Clone()).ToArray())
             {
                 Alias = Alias,
@@ -236,7 +223,7 @@ namespace Queries.Core.Builders
                 query.Limit(NbRows.Value);
             }
             query.From(Tables.Select(t => t.Clone()).ToArray());
-            
+
             foreach (IUnionQuery<SelectQuery> item in Unions)
             {
                 query.Union(item.Build().Clone());
@@ -247,5 +234,4 @@ namespace Queries.Core.Builders
 
         ITable ITable.Clone() => Clone();
     }
-
 }

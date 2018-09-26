@@ -3,8 +3,6 @@ using System.Collections.Generic;
 
 namespace Queries.Core.Parts
 {
-
-
     public class Table : INamable, ITable, IAliasable<Table>, IEquatable<Table>
     {
         /// <summary>
@@ -22,11 +20,9 @@ namespace Queries.Core.Parts
         /// <param name="alias">alias of the table</param>
         public Table(string tablename, string alias = null)
         {
-
             Name = tablename ?? throw new ArgumentNullException(nameof(tablename));
             Alias = alias;
         }
-        
 
         /// <summary>
         /// Gets the alias of the table
@@ -40,7 +36,7 @@ namespace Queries.Core.Parts
         }
 
         public override bool Equals(object obj) => Equals(obj as Table);
-        public bool Equals(Table other) => 
+        public bool Equals(Table other) =>
             other != null && Name == other.Name && Alias == other.Alias;
 
         public override int GetHashCode()
@@ -50,7 +46,6 @@ namespace Queries.Core.Parts
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Alias);
             return hashCode;
         }
-
 
         public ITable Clone() => new Table(Name, Alias);
     }

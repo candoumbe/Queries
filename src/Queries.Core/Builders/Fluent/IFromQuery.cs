@@ -7,7 +7,6 @@ namespace Queries.Core.Builders.Fluent
 {
     public interface IFromQuery<T> : IUnionQuery<T>
     {
-       
         IJoinQuery<T> InnerJoin(Table table, IWhereClause clause);
 
         IJoinQuery<T> LeftOuterJoin(Table table, IWhereClause clause);
@@ -19,7 +18,5 @@ namespace Queries.Core.Builders.Fluent
         IWhereQuery<T> Where(IWhereClause clause);
 
         IWhereQuery<T> Where(IColumn column, ClauseOperator @operator, ColumnBase constraint);
-
-
     }
 }

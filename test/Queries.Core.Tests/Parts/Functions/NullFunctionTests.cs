@@ -32,7 +32,6 @@ namespace Queries.Core.Tests.Parts.Functions
             }
         }
 
-
         [Theory]
         [MemberData(nameof(CtorThrowsArgumentNullExceptionCases))]
         public void CtorThrowsArgumentNullExceptionIfAnyParameterIsNull(IColumn column, IColumn defaultValue)
@@ -44,9 +43,7 @@ namespace Queries.Core.Tests.Parts.Functions
             action.Should().Throw<ArgumentNullException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
-
         }
-
 
         public static IEnumerable<object[]> CtorBuildAValidInstanceCases
         {
@@ -66,8 +63,6 @@ namespace Queries.Core.Tests.Parts.Functions
             // Assert
             function.Column.Should().Be(column);
             function.DefaultValue.Should().Be(defaultValue);
-
-
         }
 
         [Fact]
@@ -106,7 +101,6 @@ namespace Queries.Core.Tests.Parts.Functions
                     false, "comparing two different types of query" };
             }
         }
-
 
         [Theory]
         [MemberData(nameof(EqualsCases))]

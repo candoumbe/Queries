@@ -19,6 +19,5 @@ namespace Queries.Core.Renderers
         /// Sets how <see cref="System.DateTime"/>/<see cref="System.DateTimeOffset"/> should be printed
         /// </summary>
         public string DateFormatString { get; set; }
-
     }
 }

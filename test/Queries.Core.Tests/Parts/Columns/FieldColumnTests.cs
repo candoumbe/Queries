@@ -18,7 +18,6 @@ namespace Queries.Core.Tests.Parts.Columns
         public FieldColumnTests(ITestOutputHelper outputHelper) => _outputHelper = outputHelper;
 
         public void Dispose() => _outputHelper = null;
-        
 
         [Fact]
         public void ConstructorTestWithNullArgument()
@@ -79,7 +78,6 @@ namespace Queries.Core.Tests.Parts.Columns
         public void SettingAliasTest(CountFunction column, string expectedAlias)
             => column.Alias.Should().Be(expectedAlias);
 
-
         public static IEnumerable<object[]> EqualsCases
         {
             get
@@ -92,7 +90,6 @@ namespace Queries.Core.Tests.Parts.Columns
                     FieldColumn column = new FieldColumn("firstname");
                     yield return new object[] { column, column, true, "Equals with same instance" };
                 }
-
             }
         }
 
@@ -130,7 +127,6 @@ namespace Queries.Core.Tests.Parts.Columns
             actual.Should().Be(expected);
         }
 
-
         public static IEnumerable<object[]> CloneCases
         {
             get
@@ -150,6 +146,5 @@ namespace Queries.Core.Tests.Parts.Columns
                 .NotBeSameAs(original).And
                 .Be(original);
         }
-
     }
 }

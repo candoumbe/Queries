@@ -10,7 +10,6 @@ namespace Queries.Core.Tests.Attributes
 {
     public class FunctionAttributeTests
     {
-
         [Fact]
         public void IsValid()
         {
@@ -28,7 +27,6 @@ namespace Queries.Core.Tests.Attributes
                 .BeTrue();
 
             attr.ValidOn.Should().Be(AttributeTargets.Class);
-
         }
     }
 }

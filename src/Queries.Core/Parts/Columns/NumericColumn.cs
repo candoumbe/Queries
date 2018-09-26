@@ -15,7 +15,6 @@ namespace Queries.Core.Parts.Columns
         public NumericColumn(int? value = null) : base(value)
         {}
 
-
         /// <summary>
         /// Builds a new <see cref="NumericColumn"/> instance.
         /// </summary>
@@ -43,7 +42,5 @@ namespace Queries.Core.Parts.Columns
         /// <param name="value"></param>
         public NumericColumn(long? value = null) : base(value)
         { }
-
-        
     }
 }

@@ -37,8 +37,6 @@ namespace Queries.Core.Tests.Parts.Columns
             action.Should().NotThrow<ArgumentException>();
         }
 
-
-
         [Fact]
         public void CtorThrowsArgumentExceptionWhenArgumentIsNotAPrimitiveType()
         {
@@ -92,7 +90,6 @@ namespace Queries.Core.Tests.Parts.Columns
             // Act
             column = column.As(newAlias);
 
-
             // Assert
             column.Alias.Should().Be(newAlias);
         }
@@ -109,7 +106,6 @@ namespace Queries.Core.Tests.Parts.Columns
                     Literal column = new Literal("firstname");
                     yield return new object[] { column, column, true, "Equals with same instance" };
                 }
-
             }
         }
 

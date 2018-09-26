@@ -20,7 +20,6 @@ namespace Queries.Core.Tests.Parts.Functions
                 IColumn column = "Firstname".Field();
                 yield return new object[]{column, -1, null, $"start value is negative"};
                 yield return new object[]{column, 1, -1, $"length value is negative"};
-                
             }
         }
 
@@ -37,7 +36,6 @@ namespace Queries.Core.Tests.Parts.Functions
                 .NotBeNullOrWhiteSpace();
         }
 
-
         [Theory]
         [MemberData(nameof(CtorThrowsArgumentOutOfRangeExceptionCases))]
         public void CtorThrowsArgumentOutOfRangeExceptionIfAnyParameterIsNull(IColumn column, int start, int? length, string reason)
@@ -49,7 +47,6 @@ namespace Queries.Core.Tests.Parts.Functions
             action.Should().Throw<ArgumentOutOfRangeException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
-
         }
 
         [Fact]
@@ -60,7 +57,6 @@ namespace Queries.Core.Tests.Parts.Functions
 
             // Act
             FunctionAttribute attr = typeInfo.GetCustomAttribute<FunctionAttribute>();
-
 
             // Arrange
             attr.Should().NotBeNull($"{nameof(SubstringFunction)} must be marked with {nameof(FunctionAttribute)}");

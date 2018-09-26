@@ -10,14 +10,12 @@ namespace Queries.Core.Validators
     /// </summary>
     public class SelectQueryValidator : SelectQueryBaseValidator<SelectQuery>
     {
-
         /// <summary>
         /// Builds a new <see cref="SelectQueryValidator"/> instance.
         /// </summary>
         public SelectQueryValidator()
         {
-           
-        }
 
+        }
     }
 }

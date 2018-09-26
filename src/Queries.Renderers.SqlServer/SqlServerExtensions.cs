@@ -12,6 +12,5 @@ namespace Queries.Core
         /// <param name="prettyPrint"><code>true</code> to render a "prettier" SQL string</param>
         /// <returns></returns>
         public static string ForSqlServer(this IQuery query, QueryRendererSettings settings) => new SqlServerRenderer(settings).Render(query);
-        
     }
 }

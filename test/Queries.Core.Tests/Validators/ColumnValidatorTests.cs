@@ -31,7 +31,6 @@ namespace Queries.Core.Tests.Validators
             _validator = null;
         }
 
-
         public static IEnumerable<object[]> ValidateColumnsCases
         {
             get
@@ -57,13 +56,11 @@ namespace Queries.Core.Tests.Validators
         [Theory]
         [MemberData(nameof(ValidateColumnsCases))]
         public async Task Validate(IColumn column, Expression<Func<ValidationResult, bool>> expectation, string because) {
-
             // Act
             ValidationResult vr = await _validator.ValidateAsync(column);
 
             // Assert
             vr.Should().Match(expectation, because);
-
         }
 
         /// <summary>
@@ -73,7 +70,6 @@ namespace Queries.Core.Tests.Validators
         public void Should_Validate_IColumn_Instances()
         {
             (_validator is IValidator<IColumn>).Should().BeTrue();
-        }        
-
+        }
     }
 }

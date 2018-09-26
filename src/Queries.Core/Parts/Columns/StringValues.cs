@@ -23,6 +23,5 @@ namespace Queries.Core.Parts.Columns
         public override IColumn Clone() => new StringValues(Values.First(), Values.Skip(1).ToArray());
 
         public override string ToString() => $"[{string.Join(",", Values)}]";
-        
     }
 }

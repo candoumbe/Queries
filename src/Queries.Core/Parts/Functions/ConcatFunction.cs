@@ -42,7 +42,7 @@ namespace Queries.Core.Parts.Functions
             IEnumerable<IColumn> localColumns = (columns ?? Enumerable.Empty<IColumn>())
                 .Where(x => x != null)
                 .ToList();
-            
+
             Columns = new[] { first, second }.Union(localColumns);
         }
 
@@ -67,7 +67,7 @@ namespace Queries.Core.Parts.Functions
 
         public override bool Equals(object obj) => Equals(obj as ConcatFunction);
 
-        public bool Equals(ConcatFunction other) => other != null 
+        public bool Equals(ConcatFunction other) => other != null
             && Columns.SequenceEqual(other.Columns) && Alias == other.Alias;
 
         public override int GetHashCode()
@@ -94,6 +94,5 @@ namespace Queries.Core.Parts.Functions
         /// </summary>
         /// <returns><see cref="ConcatFunction"/></returns>
         public IColumn Clone() => new ConcatFunction(Columns.ElementAt(0), Columns.ElementAt(1), Columns.Skip(2).Select(x => Clone()).ToArray());
-
     }
 }

@@ -39,7 +39,5 @@ namespace Queries.Core.Parts.Sorting
         /// <exception cref="ArgumentNullException"><paramref name="columnNameOrAlias"/> is <c>null</c>.</exception>
         public SortExpression(string columnNameOrAlias, SortDirection direction = SortDirection.Ascending) : this(columnNameOrAlias.Field(), direction)
         {}
-        
-         
     }
 }

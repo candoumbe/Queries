@@ -37,16 +37,13 @@ namespace Queries.Core.Tests.Builders
 
             };
 
-
             // Act
             BatchQuery batchQuery = new BatchQuery(queries.ToArray());
-
 
             // Assert
             batchQuery.Statements.Should()
                 .HaveCount(2).And
                 .NotContainNulls();
-
         }
 
         [Fact]
@@ -62,7 +59,7 @@ namespace Queries.Core.Tests.Builders
 
             // Act
             BatchQuery batchQuery = new BatchQuery(queries.ToArray());
-            
+
             // Assert 
             batchQuery.Statements.Should()
                 .Equal(new []
@@ -72,7 +69,6 @@ namespace Queries.Core.Tests.Builders
                     Select(3.Literal())
 
                 });
-
         }
     }
 }

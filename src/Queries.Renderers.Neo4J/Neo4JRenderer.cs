@@ -7,7 +7,6 @@ using Queries.Core.Parts;
 using Queries.Core.Parts.Columns;
 using Queries.Core.Renderers;
 
-
 namespace Queries.Renderers.Neo4J
 {
     public class Neo4JRenderer : QueryRendererBase
@@ -18,7 +17,6 @@ namespace Queries.Renderers.Neo4J
         protected override string BeginEscapeWordString => string.Empty;
         protected override string EndEscapeWordString => string.Empty;
         protected override string ConcatOperator => "+";
-
 
         protected override string Render(SelectQueryBase query)
         {
@@ -37,12 +35,11 @@ namespace Queries.Renderers.Neo4J
             IEnumerable<ITable> tables = selectQuery.Tables;
 
             NormalizeColumnAndTable(columns, selectQuery, tables);
-            
 
             sbQuery.Append($"MATCH {RenderTables(tables)} {(Settings.PrettyPrint ? Environment.NewLine : string.Empty)}" +
                            $"{(query.WhereCriteria != null ? $"WHERE {RenderWhere(query.WhereCriteria)} {(Settings.PrettyPrint ? Environment.NewLine : string.Empty)}" : string.Empty)}" +
                            $"RETURN {RenderColumns(columns)}{BatchStatementSeparator}");
-            
+
             return sbQuery.ToString();
         }
 
@@ -87,8 +84,7 @@ namespace Queries.Renderers.Neo4J
             }
         }
 
-
-        protected override string RenderTablename(Table table, bool renderAlias) 
+        protected override string RenderTablename(Table table, bool renderAlias)
             => $"({table.Alias}:{table.Name})";
 
         protected override string RenderColumns(IEnumerable<IColumn> columns)
@@ -100,7 +96,6 @@ namespace Queries.Renderers.Neo4J
 
             return $"{sbColumns}";
         }
-
 
         protected override string Render(InsertIntoQuery query)
         {
@@ -129,7 +124,6 @@ namespace Queries.Renderers.Neo4J
             return sbQuery.ToString();
         }
 
-
         protected override string Render(DeleteQuery query)
         {
             if (query == null)
@@ -150,12 +144,9 @@ namespace Queries.Renderers.Neo4J
             return sbQuery.ToString();
         }
 
-
         protected override string RenderTablenameWithAlias(string tableName, string alias) => $"({alias}:{tableName})";
 
-        protected override string RenderColumnnameWithAlias(string columnName, string alias) 
+        protected override string RenderColumnnameWithAlias(string columnName, string alias)
             => $"{columnName}{(!string.IsNullOrWhiteSpace(alias) ? $" AS {alias}" : string.Empty)}";
-
-
     }
 }

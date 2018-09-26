@@ -33,16 +33,12 @@ namespace Queries.Core.Tests.Parts.Clauses
             action.Should().Throw<ArgumentNullException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
-
         }
 
         public static IEnumerable<object[]> ObjectShouldBeInCorrectStateAfterBeingBuiltCases
         {
             get
             {
-
-
-
                 ClauseOperator[] @operators = new[]
                 {
                     EqualTo,
@@ -72,7 +68,6 @@ namespace Queries.Core.Tests.Parts.Clauses
             clause.Constraint.Should().Be(constraint);
         }
 
-
         public static IEnumerable<object[]> CloneCases
         {
             get
@@ -99,9 +94,6 @@ namespace Queries.Core.Tests.Parts.Clauses
                 .NotBeSameAs(original).And
                 .Be(original);
         }
-
-
-
 
     }
 }

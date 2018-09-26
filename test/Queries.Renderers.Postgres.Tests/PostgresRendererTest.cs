@@ -17,7 +17,6 @@ namespace Queries.Renderers.Postgres.Tests
 {
     public class PostgresRendererTest
     {
-
         public static IEnumerable<object[]> SelectTestCases
         {
             get
@@ -26,7 +25,6 @@ namespace Queries.Renderers.Postgres.Tests
                     Select(UUID()),
                     new QueryRendererSettings { PrettyPrint = false },
                     "SELECT uuid_generate_v4()" };
-
 
                 yield return new object[] { Select(1.Literal()),
                     new QueryRendererSettings { PrettyPrint = false },
@@ -54,12 +52,11 @@ namespace Queries.Renderers.Postgres.Tests
 
                 yield return new object[] {
                     Select("*")
-                    .From( 
-                        Select("identifier").From("identities").Union(Select("username").From("members")).As("logins") 
+                    .From(
+                        Select("identifier").From("identities").Union(Select("username").From("members")).As("logins")
                         ),
                     new QueryRendererSettings{ PrettyPrint = false },
                     @"SELECT * FROM (SELECT ""identifier"" FROM ""identities"" UNION SELECT ""username"" FROM ""members"") ""logins""" };
-
 
                 yield return new object[]
                 {
@@ -109,8 +106,6 @@ namespace Queries.Renderers.Postgres.Tests
                     new QueryRendererSettings{ PrettyPrint = false },
                     @"SELECT ""firstname"" || ' ' || ""lastname"" FROM ""members"" ORDER BY ""firstname"""
                 };
-
-
 
                 yield return new object[]
                 {
@@ -162,14 +157,12 @@ namespace Queries.Renderers.Postgres.Tests
                     @"SELECT MAX(""age"") ""age maxi"" FROM ""members"""
                 };
 
-
                 yield return new object[]
                 {
                     Select(Max(Null("age".Field(), 0)).As("age maxi")).From("members"),
                     new QueryRendererSettings{ PrettyPrint = false },
                     @"SELECT MAX(COALESCE(""age"", 0)) ""age maxi"" FROM ""members"""
                 };
-
 
                 yield return new object[]
                 {
@@ -192,7 +185,6 @@ namespace Queries.Renderers.Postgres.Tests
                     @"SELECT ""firstname"", MAX(""age"") ""age maximum"" FROM ""members"" GROUP BY ""firstname"""
                 };
 
-
                 yield return new object[]
                 {
                     Select(Concat(Substring("firstname".Field(), 0, 1), Substring("lastname".Field(), 0, 1)).As("initials"))
@@ -209,7 +201,6 @@ namespace Queries.Renderers.Postgres.Tests
                     @"SELECT SUBSTRING(""firstname"" FROM 0 FOR 1) || SUBSTRING(""lastname"" FROM 0) ""initials"" FROM ""members"""
                 };
 
-
                 yield return new object[]
                 {
                     Select(Concat(Substring("firstname".Field(), 0, 1), Substring("lastname".Field(), 0)).As("initials"))
@@ -217,8 +208,6 @@ namespace Queries.Renderers.Postgres.Tests
                     new QueryRendererSettings{ PrettyPrint = false },
                     @"SELECT SUBSTRING(""firstname"" FROM 0 FOR 1) || SUBSTRING(""lastname"" FROM 0) ""initials"" FROM ""members"""
                 };
-
-
             }
         }
 
@@ -233,7 +222,6 @@ namespace Queries.Renderers.Postgres.Tests
                     @"SELECT * INTO ""destination"" FROM ""source"""
                 };
 
-
                 yield return new object[]
                 {
                     SelectInto("names")
@@ -241,7 +229,7 @@ namespace Queries.Renderers.Postgres.Tests
                             Select(Concat("firstname".Field(), " ".Literal(), "lastname".Field()).As("fullname"))
                             .From("members")
                     ),
-                    new QueryRendererSettings{ PrettyPrint = false }, 
+                    new QueryRendererSettings{ PrettyPrint = false },
                     @"SELECT * INTO ""names"" FROM (SELECT ""firstname"" || ' ' || ""lastname"" ""fullname"" FROM ""members"")"
 
                 };
@@ -259,8 +247,6 @@ namespace Queries.Renderers.Postgres.Tests
                 };
             }
         }
-
-
 
         public static IEnumerable<object[]> UpdateTestCases
         {
@@ -298,7 +284,6 @@ namespace Queries.Renderers.Postgres.Tests
                     new QueryRendererSettings{ PrettyPrint = false },
                     @"DELETE FROM ""members"" WHERE (""firstname"" IS NULL)"
                 };
-
             }
         }
 
@@ -314,7 +299,6 @@ namespace Queries.Renderers.Postgres.Tests
                 };
             }
         }
-
 
         public static IEnumerable<object[]> InsertIntoTestCases
         {
@@ -333,7 +317,7 @@ namespace Queries.Renderers.Postgres.Tests
                     new QueryRendererSettings{ PrettyPrint = true },
                     $@"INSERT INTO ""members"" {Environment.NewLine}SELECT 'Bruce', 'Wayne', 'Batman'"
                 };
-                
+
                 yield return new object[]
                 {
                     InsertInto("members").Values("firstname".InsertValue("Bruce".Literal()), "lastname".InsertValue("Wayne".Literal()), "nickname".InsertValue("Batman".Literal())),
@@ -366,13 +350,10 @@ namespace Queries.Renderers.Postgres.Tests
             }
         }
 
-
         [Theory]
         [MemberData(nameof(SelectTestCases))]
         public void SelectTest(SelectQuery query, QueryRendererSettings settings, string expectedString)
             => IsQueryOk(query, settings, expectedString);
-
-
 
         [Theory]
         [MemberData(nameof(UpdateTestCases))]
@@ -383,7 +364,6 @@ namespace Queries.Renderers.Postgres.Tests
         [MemberData(nameof(DeleteTestCases))]
         public void DeleteTest(DeleteQuery query, QueryRendererSettings settings, string expectedString)
             => IsQueryOk(query, settings, expectedString);
-
 
         [Theory]
         [MemberData(nameof(SelectIntoTestCases))]
@@ -405,8 +385,7 @@ namespace Queries.Renderers.Postgres.Tests
         public void BatchQueryTest(BatchQuery query, QueryRendererSettings settings, string expectedString)
             => IsQueryOk(query, settings, expectedString);
 
-        private static void IsQueryOk(IQuery query, QueryRendererSettings settings, string expectedString) => 
+        private static void IsQueryOk(IQuery query, QueryRendererSettings settings, string expectedString) =>
             query.ForPostgres(settings).Should().Be(expectedString);
-
     }
 }

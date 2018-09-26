@@ -13,8 +13,7 @@ namespace Queries.Core.Tests.Parts.Sorting
     /// </summary>
     public class SortExpressionTests
     {
-
-        [Fact] 
+        [Fact]
         public void CtorThrowArgumentNullExpressionWhenStringParameterIsNull()
         {
             // Act

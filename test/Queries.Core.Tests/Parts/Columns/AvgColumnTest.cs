@@ -29,7 +29,6 @@ namespace Queries.Core.Tests.Parts.Columns
                 .ThrowExactly<ArgumentOutOfRangeException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
-
         }
 
         [Fact]
@@ -79,7 +78,6 @@ namespace Queries.Core.Tests.Parts.Columns
         public void SettingAliasTest(AvgFunction column, string expectedAlias)
             => column.Alias.Should().Be(expectedAlias);
 
-
         public static IEnumerable<object[]> CloneCases
         {
             get
@@ -102,6 +100,5 @@ namespace Queries.Core.Tests.Parts.Columns
                 .NotBeSameAs(original).And
                 .Be(original);
         }
-
     }
 }

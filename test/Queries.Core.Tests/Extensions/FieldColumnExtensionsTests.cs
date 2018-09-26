@@ -19,9 +19,7 @@ namespace Queries.Core.Parts.Columns.Tests
             _outputHelper = outputHelper;
         }
 
-
         public void Dispose() => _outputHelper = null;
-
 
         public static IEnumerable<object[]> EqualToExtensionCases
         {
@@ -31,13 +29,13 @@ namespace Queries.Core.Parts.Columns.Tests
                 {
                     new FieldColumn("firstname"),
                     "Bruce",
-                    ((Expression<Func<UpdateFieldValue, bool>>)(x => 
-                        x.Source != null 
-                        && x.Source is Literal 
-                        && ((Literal)x.Source).Value is string 
+                    ((Expression<Func<UpdateFieldValue, bool>>)(x =>
+                        x.Source != null
+                        && x.Source is Literal
+                        && ((Literal)x.Source).Value is string
                         && "Bruce".Equals(((Literal)x.Source).Value)
-                        && x.Destination != null 
-                        && "firstname".Equals(x.Destination.Name)    
+                        && x.Destination != null
+                        && "firstname".Equals(x.Destination.Name)
                     ))
                 };
 
@@ -79,7 +77,6 @@ namespace Queries.Core.Parts.Columns.Tests
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }
-
 
         [Fact]
         public void IsNullExtension()
@@ -272,7 +269,5 @@ namespace Queries.Core.Parts.Columns.Tests
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }
-
-
     }
 }

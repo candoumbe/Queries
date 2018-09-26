@@ -44,7 +44,7 @@ namespace Queries.Core.Tests.Builders.Fluent
                         new [] { "Firstname".Field(), "Lastname".Field() }.SequenceEqual(query.Columns)
                         && new [] { "SuperHero".Table(null) }.SequenceEqual(query.Tables)
                         && query.WhereCriteria == null
-                        && query.Unions.Count == 0 
+                        && query.Unions.Count == 0
                         && query.Sorts.Count == 0
                     )),
                 };
@@ -63,12 +63,10 @@ namespace Queries.Core.Tests.Builders.Fluent
             }
         }
 
-
         [Theory]
         [MemberData(nameof(SelectQueryFluentCases))]
         public void SelectQueryBuildTests(IBuild<SelectQuery> queryBuilder, Expression<Func<SelectQuery, bool>> queryExpectation)
             => BuildTests(queryBuilder, queryExpectation);
-
 
         public static IEnumerable<object[]> DeclareVariableFluentCases
         {
@@ -77,13 +75,12 @@ namespace Queries.Core.Tests.Builders.Fluent
                 yield return new object[]
                 {
                     Declare("p").WithValue(3).Numeric(),
-                    ((Expression<Func<Variable, bool>>)(variable => 
-                        variable.Name == "p" 
+                    ((Expression<Func<Variable, bool>>)(variable =>
+                        variable.Name == "p"
                         && variable.Type == VariableType.Numeric
                         && 3.Equals(variable.Value)
                     )),
                 };
-
 
                 yield return new object[]
                 {
@@ -94,7 +91,6 @@ namespace Queries.Core.Tests.Builders.Fluent
                         && "Noname".Equals(variable.Value)
                     )),
                 };
-
 
                 yield return new object[]
                 {
@@ -118,13 +114,10 @@ namespace Queries.Core.Tests.Builders.Fluent
             }
         }
 
-
         [Theory]
         [MemberData(nameof(DeclareVariableFluentCases))]
         public void DeclareVariableBuildTests(IBuild<Variable> queryBuilder, Expression<Func<Variable, bool>> queryExpectation)
             => BuildTests(queryBuilder, queryExpectation);
-
-
 
         private void BuildTests<T>(IBuild<T> queryBuilder, Expression<Func<T, bool>> queryExpectation)
         {
@@ -136,7 +129,5 @@ namespace Queries.Core.Tests.Builders.Fluent
             // Assert
             query.Should().Match(queryExpectation);
         }
-
-
     }
 }

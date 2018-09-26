@@ -19,7 +19,6 @@ namespace Queries.Core.Tests.Parts.Clauses
 
         public void Dispose() => _outputHelper = null;
 
-
         [Theory]
         [InlineData(EqualTo)]
         [InlineData(GreaterThan)]
@@ -41,7 +40,6 @@ namespace Queries.Core.Tests.Parts.Clauses
             action.Should().Throw<ArgumentNullException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
-
         }
 
         [Theory]
@@ -115,7 +113,6 @@ namespace Queries.Core.Tests.Parts.Clauses
             clause.Should().Match(expectation);
         }
 
-
         [Fact]
         public void CtorShouldIgnoreConstraintWhenUsingIsNullOperator()
         {
@@ -147,7 +144,6 @@ namespace Queries.Core.Tests.Parts.Clauses
             }
         }
 
-
         [Theory]
         [MemberData(nameof(EqualsCases))]
         public void EqualTests(WhereClause first, object second, bool expectedResult, string reason)
@@ -161,7 +157,6 @@ namespace Queries.Core.Tests.Parts.Clauses
             // Assert
             actualResult.Should().Be(expectedResult, reason);
         }
-
 
         public static IEnumerable<object[]> CloneCases
         {
@@ -191,7 +186,5 @@ namespace Queries.Core.Tests.Parts.Clauses
                 .NotBeSameAs(original).And
                 .Be(original);
         }
-
-
     }
 }

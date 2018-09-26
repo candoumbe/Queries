@@ -24,7 +24,6 @@ namespace Queries.Core.Tests.Parts.Columns
             }
         }
 
-
         [Theory]
         [MemberData(nameof(EqualsCases))]
         public void EqualTests(StringValues first, object second, bool expectedResult, string reason)
@@ -38,7 +37,6 @@ namespace Queries.Core.Tests.Parts.Columns
             // Assert
             actualResult.Should().Be(expectedResult, reason);
         }
-
 
         public static IEnumerable<object[]> CloneCases
         {
@@ -63,7 +61,5 @@ namespace Queries.Core.Tests.Parts.Columns
                 .NotBeSameAs(original).And
                 .BeEquivalentTo(original);
         }
-
-
     }
 }

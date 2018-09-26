@@ -7,11 +7,7 @@ namespace Queries.Core.Extensions
     {
         public static ISort Asc(this ColumnBase field) => new SortExpression(field);
 
-        
         public static ISort Desc(this ColumnBase field) => new SortExpression(field, SortDirection.Descending);
-
-        
-
 
 
     }

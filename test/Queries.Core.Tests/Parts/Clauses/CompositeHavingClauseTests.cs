@@ -7,7 +7,6 @@ namespace Queries.Core.Tests.Parts
 {
     public class CompositeHavingClauseTests
     {
-
         [Fact]
         public void DefaultCtor()
         {

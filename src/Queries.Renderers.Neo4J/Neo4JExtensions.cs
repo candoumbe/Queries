@@ -8,6 +8,5 @@ namespace Queries.Core.Builders
     public static class Neo4JExtensions
     {
         public static string ForNeo4J(this IQuery query, QueryRendererSettings settings) => new Neo4JRenderer(settings).Render(query);
-
     }
 }

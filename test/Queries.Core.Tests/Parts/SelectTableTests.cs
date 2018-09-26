@@ -11,7 +11,6 @@ namespace Queries.Core.Tests.Parts
     [Collection("Unit tests")]
     public class SelectTableTests
     {
-
         [Fact]
         public void Ctor_Throws_ArgumentNullException_If_Argument_Is_Null()
         {
@@ -38,7 +37,6 @@ namespace Queries.Core.Tests.Parts
 
             // Assert
             selectTable.Alias.Should().Be("p");
-
         }
 
         [Fact]

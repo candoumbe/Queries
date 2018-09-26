@@ -24,13 +24,12 @@ namespace Queries.Core.Parts.Functions
         /// <exception cref="System.ArgumentNullException">if <paramref name="columnName"/> is <c>null</c></exception>
         public MaxFunction(string columnName) : this(columnName?.Field())
         {
-            
+
         }
         /// <summary>
         /// Performs a deep copy of the current instance.
         /// </summary>
         /// <returns><see cref="MaxFunction"/></returns>
         public override IColumn Clone() => new MaxFunction(Column.Clone());
-
     }
 }

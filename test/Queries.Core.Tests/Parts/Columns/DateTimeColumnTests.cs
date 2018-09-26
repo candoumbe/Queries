@@ -8,7 +8,6 @@ namespace Queries.Core.Tests.Parts.Columns
 {
     public class DateTimeColumnTests
     {
-
         public static IEnumerable<object[]> ConstructorWithFormatCases
         {
             get
@@ -19,7 +18,6 @@ namespace Queries.Core.Tests.Parts.Columns
                 yield return new object[] { DateTime.MaxValue, null };
             }
         }
-
 
         [Theory]
         [MemberData(nameof(ConstructorWithFormatCases))]
@@ -34,7 +32,6 @@ namespace Queries.Core.Tests.Parts.Columns
             dc.StringFormat.Should().Be(format);
         }
 
-
         public static IEnumerable<object[]> ConstructorWithoutFormatCases
         {
             get
@@ -43,7 +40,6 @@ namespace Queries.Core.Tests.Parts.Columns
                 yield return new object[] { DateTime.MaxValue};
             }
         }
-
 
         [Theory]
         [MemberData(nameof(ConstructorWithoutFormatCases))]

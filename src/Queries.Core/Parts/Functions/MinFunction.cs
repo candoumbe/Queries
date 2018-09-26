@@ -10,7 +10,6 @@ namespace Queries.Core.Parts.Functions
     [Function]
     public class MinFunction : AggregateFunction
     {
-
         /// <summary>
         /// Buils a new <see cref="MinFunction"/> instance.
         /// </summary>
@@ -28,7 +27,6 @@ namespace Queries.Core.Parts.Functions
         public MinFunction(string columnName)
             : this(columnName?.Field())
         { }
-
 
         /// <summary>
         /// Performs a deep copy of the current instance.

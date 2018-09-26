@@ -23,14 +23,13 @@ namespace Queries.Core.Tests.Parts.Columns
         public void CtorShouldSetValueAsPassedIn()
         {
             new NumericColumn((int?)null).Value.Should().BeNull($"new {nameof(NumericColumn)}((int?)null).Value should be null");
-            
+
             new NumericColumn((long?)null).Value.Should().BeNull($"new {nameof(NumericColumn)}((long?)null).Value should be null");
 
             new NumericColumn((float?)null).Value.Should().BeNull($"new {nameof(NumericColumn)}((float?)null).Value should be null");
 
             new NumericColumn((double?)null).Value.Should().BeNull($"new {nameof(NumericColumn)}((double?)null).Value should be null");
         }
-
 
         [Theory]
         [InlineData(1)]
@@ -151,7 +150,6 @@ namespace Queries.Core.Tests.Parts.Columns
                     NumericColumn column = new NumericColumn(1);
                     yield return new object[] { column, column, true, "Equals with same instance" };
                 }
-
             }
         }
 
@@ -168,7 +166,6 @@ namespace Queries.Core.Tests.Parts.Columns
             // Assert
             actualResult.Should().Be(expectedResult, reason);
         }
-
 
         public static IEnumerable<object[]> CloneCases
         {
@@ -194,6 +191,5 @@ namespace Queries.Core.Tests.Parts.Columns
                 .NotBeSameAs(original).And
                 .Be(original);
         }
-
     }
 }

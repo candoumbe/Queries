@@ -47,7 +47,6 @@ namespace Queries.Core.Tests.Builders
                 .NotBeNull($"{nameof(DeleteQuery)} must be marked with {nameof(DataManipulationLanguageAttribute)}");
         }
 
-
         public static IEnumerable<object[]> EqualsCases
         {
             get
@@ -68,7 +67,6 @@ namespace Queries.Core.Tests.Builders
                     DeleteQuery query = Delete("SuperHero");
                     yield return new object[] { query, query, true, "Equals with same instance" };
                 }
-
             }
         }
 
@@ -85,6 +83,5 @@ namespace Queries.Core.Tests.Builders
             // Assert
             actualResult.Should().Be(expectedResult, reason);
         }
-
     }
 }

@@ -23,7 +23,6 @@ namespace Queries.Core.Parts.Columns
         /// </summary>
         public string Alias => _alias;
 
-
         public FieldColumn(string columnName)
         {
             if (columnName == null)
@@ -43,7 +42,6 @@ namespace Queries.Core.Parts.Columns
 
             return this;
         }
-
 
         public override bool Equals(object obj) =>
             ReferenceEquals(obj, this) || obj is FieldColumn fc && this.Equals(fc);

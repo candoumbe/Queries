@@ -8,8 +8,5 @@ namespace Queries.Core.Builders.Fluent
 
         IBuild<T> Values(InsertedValue value, params InsertedValue[] values);
 
-        
-
-
     }
 }

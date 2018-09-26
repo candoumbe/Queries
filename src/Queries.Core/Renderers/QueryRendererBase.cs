@@ -23,7 +23,6 @@ namespace Queries.Core.Renderers
     /// </summary>
     public abstract class QueryRendererBase : IQueryRenderer
     {
-
         public QueryRendererSettings Settings { get; }
 
         /// <summary>
@@ -34,7 +33,6 @@ namespace Queries.Core.Renderers
         /// <param name="prettyPrint"><code>true</code> to render queries in a "pretty" fashion</param>
         protected QueryRendererBase(QueryRendererSettings settings) => Settings = settings;
 
-
         /// <summary>
         /// <para>
         /// Escapes the given objectName using specific syntax.
@@ -44,7 +42,6 @@ namespace Queries.Core.Renderers
         /// <returns>Escaped object name</returns>
         protected virtual string EscapeName(string rawName)
         {
-
             string escapedColumnName = string.Empty;
 
             if (rawName != null)
@@ -132,13 +129,10 @@ namespace Queries.Core.Renderers
             return queryString;
         }
 
-
-
-
         protected virtual string Render(SelectQueryBase query)
         {
             string queryString = string.Empty;
-            
+
             if (query != null)
             {
                 StringBuilder sb = new StringBuilder();
@@ -159,11 +153,9 @@ namespace Queries.Core.Renderers
 
                         if (limit.HasValue)
                         {
-
                             sb.Append($"SELECT TOP {limit.Value} {fieldsString} ")
                                 .Append(Settings.PrettyPrint ? Environment.NewLine : string.Empty)
                                 .AppendFormat("FROM {0}", tableString);
-
                         }
                         else
                         {
@@ -184,16 +176,13 @@ namespace Queries.Core.Renderers
                         $"SELECT {fieldsString} {(Settings.PrettyPrint ? Environment.NewLine : string.Empty)}" +
                         $"INTO {RenderTablename(selectInto.Destination, false)} {(Settings.PrettyPrint ? Environment.NewLine : string.Empty)}" +
                         $"FROM {RenderTables(new[] { selectInto.Source })}");
-
                 }
-
 
                 if (query.Joins.Any())
                 {
                     string joinString = RenderJoins(query.Joins);
                     sb = sb.Append($" {(Settings.PrettyPrint ? Environment.NewLine : string.Empty)}{joinString}");
                 }
-
 
                 if (query.WhereCriteria != null)
                 {
@@ -227,12 +216,10 @@ namespace Queries.Core.Renderers
                 {
                     sb.Append(
                         $" {(Settings.PrettyPrint ? Environment.NewLine : string.Empty)}HAVING {RenderHaving(query.HavingCriteria)}");
-
                 }
 
                 if (query.Sorts.Any())
                 {
-
                     StringBuilder sbOrderBy = new StringBuilder();
 
                     foreach (ISort sort in query.Sorts)
@@ -249,9 +236,7 @@ namespace Queries.Core.Renderers
                     sb.Append(" ")
                             .Append(Settings.PrettyPrint ? Environment.NewLine : string.Empty)
                             .Append($"ORDER BY {sbOrderBy}");
-
                 }
-
 
                 if (query is SelectQuery)
                 {
@@ -273,7 +258,6 @@ namespace Queries.Core.Renderers
                 }
 
                 queryString = sb.ToString();
-
             }
 
             return queryString;
@@ -281,7 +265,6 @@ namespace Queries.Core.Renderers
 
         protected virtual string RenderJoins(IEnumerable<IJoin> joins)
         {
-
             joins = joins as IJoin[] ?? joins.ToArray();
 
             StringBuilder sbJoins = new StringBuilder();
@@ -657,7 +640,6 @@ namespace Queries.Core.Renderers
                 : sbConcat.ToString();
 
             return queryString;
-
         }
 
         protected virtual string RenderNullColumn(NullFunction nullColumn, bool renderAlias)
@@ -682,7 +664,6 @@ namespace Queries.Core.Renderers
         /// </summary>
         /// <returns></returns>
         protected abstract string EndEscapeWordString { get; }
-
 
         /// <summary>
         /// Gets the operator used to concatenate values
@@ -759,7 +740,6 @@ namespace Queries.Core.Renderers
             }
 
             return columnString;
-
         }
 
         /// <summary>
@@ -800,13 +780,10 @@ namespace Queries.Core.Renderers
                         .Append(Settings.PrettyPrint ? Environment.NewLine : string.Empty)
                         .AppendFormat("WHERE {0}", RenderWhere(updateQuery.Criteria));
                 }
-
             }
-
 
             return queryStringBuilder.ToString();
         }
-
 
         protected virtual string Render(CreateViewQuery query)
         {
@@ -818,7 +795,6 @@ namespace Queries.Core.Renderers
                 .AppendFormat("AS ")
                 .Append(Settings.PrettyPrint ? Environment.NewLine : string.Empty)
                 .Append(Render(query.SelectQuery));
-
 
             return sb.ToString();
         }
@@ -836,8 +812,6 @@ namespace Queries.Core.Renderers
 
         protected virtual string Render(DeleteQuery deleteQuery)
         {
-
-
             StringBuilder sbQuery = new StringBuilder();
 
             if (deleteQuery != null)
@@ -851,9 +825,7 @@ namespace Queries.Core.Renderers
                 }
             }
 
-
             return sbQuery.ToString();
-
         }
 
         /// <summary>
@@ -881,7 +853,6 @@ namespace Queries.Core.Renderers
                     sbResult.Append(Render(currentStatement));
                     previousStatement = currentStatement;
                 }
-
             }
             bool isDataManipulationQuery(IQuery q) => q.GetType()
                 .GetTypeInfo()

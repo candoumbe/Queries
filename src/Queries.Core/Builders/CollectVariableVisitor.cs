@@ -112,7 +112,6 @@ namespace Queries.Core.Builders
                         Visit(item);
                     }
                     break;
-
             }
         }
 
@@ -149,7 +148,6 @@ namespace Queries.Core.Builders
                             break;
                     }
                 }
-
             }
         }
 

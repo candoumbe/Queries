@@ -21,7 +21,6 @@ namespace Queries.Core.Tests.Parts.Columns
             action.Should().Throw<ArgumentNullException>($"{nameof(CountFunction)} constructor called with null argument").Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
-            
         }
 
         public static IEnumerable<object[]> AsTestCases
@@ -46,7 +45,6 @@ namespace Queries.Core.Tests.Parts.Columns
         [MemberData(nameof(AsTestCases))]
         public void SettingAliasTest(CountFunction column, string expectedAlias)
             => column.Alias.Should().Be(expectedAlias);
-
 
         [Fact]
         public void HasFunctionAttribute()

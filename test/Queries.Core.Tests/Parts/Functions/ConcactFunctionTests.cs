@@ -35,10 +35,9 @@ namespace Queries.Core.Tests.Parts.Functions
         [MemberData(nameof(CtorWithNullAsFirstOrSecondArgumentCases))]
         public void CtorThrowsArgumentNullExceptionIfAnyParameterIsNull(IColumn first, IColumn second)
         {
-
             _outputHelper.WriteLine($"{nameof(first)} : {first}");
             _outputHelper.WriteLine($"{nameof(second)} : {second}");
-            
+
             // Act
             Action action = () => new ConcatFunction(first, second);
 
@@ -46,7 +45,6 @@ namespace Queries.Core.Tests.Parts.Functions
             action.Should().Throw<ArgumentNullException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
-
         }
 
         [Fact]
@@ -64,7 +62,6 @@ namespace Queries.Core.Tests.Parts.Functions
                 .NotBeNull($"{nameof(ConcatFunction)} must be marked with {nameof(FunctionAttribute)}");
         }
 
-
         public static IEnumerable<object[]> EqualsCases
         {
             get
@@ -80,7 +77,6 @@ namespace Queries.Core.Tests.Parts.Functions
             }
         }
 
-
         [Theory]
         [MemberData(nameof(EqualsCases))]
         public void EqualTests(ConcatFunction first, object second, bool expectedResult, string reason)
@@ -94,7 +90,6 @@ namespace Queries.Core.Tests.Parts.Functions
             // Assert
             actualResult.Should().Be(expectedResult, reason);
         }
-
 
         public static IEnumerable<object[]> ToStringCases {
             get
@@ -110,7 +105,6 @@ namespace Queries.Core.Tests.Parts.Functions
                 };
             }
         }
-
 
         [Theory]
         [MemberData(nameof(ToStringCases))]
@@ -145,6 +139,5 @@ namespace Queries.Core.Tests.Parts.Functions
         [MemberData(nameof(AsTestCases))]
         public void SettingAliasTest(ConcatFunction column, string expectedAlias)
             => column.Alias.Should().Be(expectedAlias);
-
     }
 }

@@ -8,7 +8,6 @@ namespace Queries.Core.Tests.Attributes
 {
     public class DataManipulationLanguageAttributeTests
     {
-
         [Fact]
         public void IsValid()
         {
@@ -26,7 +25,6 @@ namespace Queries.Core.Tests.Attributes
                 .BeTrue("the attribute must propagate to inherited classes ");
 
             attr.ValidOn.Should().Be(AttributeTargets.Class);
-
         }
     }
 }

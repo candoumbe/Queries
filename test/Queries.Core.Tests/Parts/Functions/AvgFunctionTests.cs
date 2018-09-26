@@ -21,13 +21,9 @@ namespace Queries.Core.Tests.Parts.Functions
 
         public void Dispose() => _outputHelper = null;
 
-        
-
         [Fact]
         public void CtorThrowsArgumentNullExceptionIfColumnParameterIsNull()
         {
-
-            
             // Act
             Action action = () => new AvgFunction((IColumn) null);
 
@@ -35,7 +31,6 @@ namespace Queries.Core.Tests.Parts.Functions
             action.Should().Throw<ArgumentNullException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
-
         }
 
         [Fact]
@@ -53,21 +48,19 @@ namespace Queries.Core.Tests.Parts.Functions
                 .NotBeNull($"{nameof(AvgFunction)} must be marked with {nameof(FunctionAttribute)}");
         }
 
-
         public static IEnumerable<object[]> EqualsCases
         {
             get
             {
                 yield return new object[] { Avg("Age".Field()), null, false, $"comparing {nameof(AvgFunction)} with a null instance" };
                 yield return new object[] { Avg("Age".Field()), Avg("Age".Field()), true, $"comparing two {nameof(AvgFunction)} instances with same column names" };
-                
+
                 {
                     AvgFunction function = Avg("Age".Field());
                     yield return new object[] { function, function, true, $"comparing {nameof(AvgFunction)} instance to itself" };
                 }
             }
         }
-
 
         [Theory]
         [MemberData(nameof(EqualsCases))]

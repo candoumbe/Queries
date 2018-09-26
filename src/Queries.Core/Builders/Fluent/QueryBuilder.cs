@@ -8,7 +8,6 @@ namespace Queries.Core.Builders.Fluent
     /// </summary>
     public static class QueryBuilder
     {
-        
 #region Columns conversions shortcuts
 
         /// <summary>
@@ -48,8 +47,6 @@ namespace Queries.Core.Builders.Fluent
         /// <param name="defaultValue">Result value to use if <paramref name="column"/>'s value is <c>null</c></param>
         /// <returns></returns>
         public static NullFunction Null(Literal column, ColumnBase defaultValue) => new NullFunction(column, defaultValue);
-
-
 
         /// <summary>
         /// Applies <see cref="MinFunction"/> to <paramref name="column"/>.
@@ -104,8 +101,6 @@ namespace Queries.Core.Builders.Fluent
 
         #endregion
 
-
-
         /// <summary>
         /// Creates a <see cref="DeleteQuery"/>
         /// </summary>
@@ -119,7 +114,6 @@ namespace Queries.Core.Builders.Fluent
         /// <param name="viewName">Name of the view the query will be generated for</param>
         /// <returns></returns>
         public static CreateViewQuery CreateView(string viewName) => new CreateViewQuery(viewName);
-
 
         /// <summary>
         /// Creates a <see cref="UpdateQuery"/> object suitable to build <a href="http://www.w3schools.com/sql/sql_update.asp">UPDATE</a> query
@@ -173,6 +167,5 @@ namespace Queries.Core.Builders.Fluent
         /// <param name="variableName"></param>
         /// <returns></returns>
         public static DeclareVariableQuery Declare(string variableName) => new DeclareVariableQuery(variableName);
-
     }
 }

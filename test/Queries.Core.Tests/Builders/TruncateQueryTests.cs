@@ -54,7 +54,6 @@ namespace Queries.Core.Tests.Builders
             }
         }
 
-
         [Theory]
         [MemberData(nameof(EqualsCases))]
         public void EqualTests(TruncateQuery first, object second, bool expectedResult, string reason)
@@ -83,8 +82,5 @@ namespace Queries.Core.Tests.Builders
             attr.Should()
                 .NotBeNull();
         }
-
-
-
     }
 }

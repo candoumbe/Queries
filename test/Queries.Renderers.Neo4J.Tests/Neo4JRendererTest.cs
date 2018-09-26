@@ -49,14 +49,12 @@ namespace Queries.Renderers.Neo4J.Tests
                     "RETURN h;"
                 };
 
-
                 yield return new object[]
                 {
                     Select("*").From("Hero"),
                     new QueryRendererSettings{ PrettyPrint = false },
                     "MATCH (h:Hero) RETURN h;"
                 };
-
 
                 yield return new object[]
                 {
@@ -76,7 +74,6 @@ namespace Queries.Renderers.Neo4J.Tests
                 };
             }
         }
-
 
         public static IEnumerable<object[]> InsertCases
         {
@@ -105,7 +102,6 @@ namespace Queries.Renderers.Neo4J.Tests
                     "CREATE (h:Hero {firstname : 'Bruce', lastname : 'Wayne', nickname : 'Batman', superpowers : NULL})"
                 };
 
-
                 yield return new object[]
                 {
                     InsertInto("Hero")
@@ -119,7 +115,6 @@ namespace Queries.Renderers.Neo4J.Tests
             }
         }
 
-
         public static IEnumerable<object[]> DeleteCases
         {
             get
@@ -132,7 +127,6 @@ namespace Queries.Renderers.Neo4J.Tests
                 };
             }
         }
-
 
         public IEnumerable<object[]> BatchQueriesCases
         {
@@ -174,12 +168,10 @@ namespace Queries.Renderers.Neo4J.Tests
         public void InsertTest(InsertIntoQuery query, QueryRendererSettings settings, string expectedString)
             => IsQueryOk(query, settings, expectedString);
 
-
         [Theory]
         [MemberData(nameof(DeleteCases))]
         public void DeleteTest(DeleteQuery query, QueryRendererSettings settings, string expectedString)
             => IsQueryOk(query, settings, expectedString);
-
 
         private void IsQueryOk(IQuery query, QueryRendererSettings settings, string expectedString)
         {
@@ -189,7 +181,4 @@ namespace Queries.Renderers.Neo4J.Tests
             query.ForNeo4J(settings).Should().Be(expectedString);
         }
     }
-
-
-
 }

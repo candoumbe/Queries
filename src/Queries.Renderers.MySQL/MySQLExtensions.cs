@@ -15,6 +15,5 @@ namespace Queries.Core.Builders
         /// <param name="settings">settings to use to render <see cref="query"/>.</param>
         /// <returns>a <see cref="string"/> representation of <see cref="query"/> to use to query a MySQL database engine</returns>
         public static string ForMySQL(this IQuery query, QueryRendererSettings settings) => new MySQLRenderer(settings).Render(query);
-        
     }
 }

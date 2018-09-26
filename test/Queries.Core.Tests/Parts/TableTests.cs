@@ -20,7 +20,6 @@ namespace Queries.Core.Tests.Parts
 
         public void Dispose() => _outputHelper = null;
 
-
         [Fact]
         public void CtorThrowsArgumentNullExceptionWhenParameterIsNull()
         {
@@ -32,7 +31,6 @@ namespace Queries.Core.Tests.Parts
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }
-
 
         public static IEnumerable<object[]> EqualsCases
         {
@@ -46,7 +44,6 @@ namespace Queries.Core.Tests.Parts
                     Table column = new Table("firstname");
                     yield return new object[] { column, column, true, "Equals with same instance" };
                 }
-
             }
         }
 
@@ -63,9 +60,6 @@ namespace Queries.Core.Tests.Parts
             // Assert
             actualResult.Should().Be(expectedResult, reason);
         }
-
-
-
 
     }
 }

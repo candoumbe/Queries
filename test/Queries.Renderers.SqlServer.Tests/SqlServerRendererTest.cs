@@ -19,7 +19,6 @@ using FluentAssertions.Extensions;
 
 namespace Queries.Renderers.SqlServer.Tests
 {
-
     public class SqlServerRendererTest : IDisposable
     {
         private ITestOutputHelper _outputHelper;
@@ -67,7 +66,6 @@ namespace Queries.Renderers.SqlServer.Tests
                     "SELECT [fullname] FROM (SELECT [firstname] + ' ' + [lastname] AS [fullname] FROM [people]) [p]"
 
                 };
-
 
                 yield return new object[]
                 {
@@ -123,7 +121,6 @@ namespace Queries.Renderers.SqlServer.Tests
                     "SELECT * FROM (SELECT [identifier] FROM [identities] UNION SELECT [username] FROM [members]) [logins]"
                 };
 
-
                 yield return new object[]
                 {
                     Select("*").From("Table"),
@@ -171,8 +168,6 @@ namespace Queries.Renderers.SqlServer.Tests
                     , new QueryRendererSettings { PrettyPrint = false },
                     "SELECT [firstname] + ' ' + [lastname] FROM [members] ORDER BY [firstname]"
                 };
-
-
 
                 yield return new object[]
                 {
@@ -240,14 +235,12 @@ namespace Queries.Renderers.SqlServer.Tests
                     "SELECT MAX([age]) AS [age maxi] FROM [members]"
                 };
 
-
                 yield return new object[]
                 {
                     Select(Max(Null("age".Field(), 0)).As("age maxi")).From("members"),
                     new QueryRendererSettings{ PrettyPrint = false },
                     "SELECT MAX(ISNULL([age], 0)) AS [age maxi] FROM [members]"
                 };
-
 
                 yield return new object[]
                 {
@@ -295,7 +288,6 @@ namespace Queries.Renderers.SqlServer.Tests
                     "SELECT SUBSTRING([firstname] + [lastname], 0) AS [initials] FROM [members]"
                 };
 
-
                 yield return new object[]
                 {
                     Select(Concat(Substring("firstname".Field(), 0, 1), Substring("lastname".Field(), 0)).As("initials"))
@@ -311,7 +303,6 @@ namespace Queries.Renderers.SqlServer.Tests
                     "SELECT UPPER([firstname])"
                 };
 
-
                 yield return new object[]
                 {
                     Select("Firstname".Field(), "Lastname".Field())
@@ -321,7 +312,6 @@ namespace Queries.Renderers.SqlServer.Tests
                     "DECLARE @p0 AS VARCHAR(8000) = 'Batman';" +
                     "SELECT [Firstname], [Lastname] FROM [SuperHeroes] WHERE ([Nickname] = @p0)"
                 };
-
 
                 yield return new object[]
                 {
@@ -353,7 +343,6 @@ namespace Queries.Renderers.SqlServer.Tests
                     ")"
                 };
 
-
                 yield return new object[]
                 {
                     Select("*").From("members").Where("Firstname".Field(), In, new StringValues("Bruce", "Bane")),
@@ -362,7 +351,6 @@ namespace Queries.Renderers.SqlServer.Tests
                     "DECLARE @p1 AS VARCHAR(8000) = 'Bane';" +
                     "SELECT * FROM [members] WHERE ([Firstname] IN (@p0, @p1))"
                 };
-
             }
         }
 
@@ -401,7 +389,6 @@ namespace Queries.Renderers.SqlServer.Tests
         public void UpdateTest(UpdateQuery query, QueryRendererSettings settings, string expectedString)
             => IsQueryOk(query, settings, expectedString);
 
-
         public static IEnumerable<object[]> BatchQueryCases
         {
             get
@@ -438,7 +425,6 @@ namespace Queries.Renderers.SqlServer.Tests
         public void BatchQueryTest(BatchQuery query, QueryRendererSettings settings, string expectedString)
             => IsQueryOk(query, settings, expectedString);
 
-
         public static IEnumerable<object[]> TruncateQueryCases
         {
             get
@@ -462,7 +448,6 @@ namespace Queries.Renderers.SqlServer.Tests
         [MemberData(nameof(TruncateQueryCases))]
         public void TruncateQueryTest(TruncateQuery query, QueryRendererSettings settings, string expectedString)
             => IsQueryOk(query, settings, expectedString);
-
 
         public static IEnumerable<object[]> DeleteQueryCases
         {
@@ -511,7 +496,6 @@ namespace Queries.Renderers.SqlServer.Tests
         public void SelectIntoQueryTest(SelectIntoQuery query, QueryRendererSettings settings, string expectedString)
             => IsQueryOk(query, settings, expectedString);
 
-
         public static IEnumerable<object[]> SqlInjectionAttackCases
         {
             get
@@ -527,7 +511,6 @@ namespace Queries.Renderers.SqlServer.Tests
                     "SELECT [id] FROM [members] WHERE ([username] = @p0)"
                 };
 
-
                 yield return new object[]
                 {
                     Select("id".Field())
@@ -538,15 +521,12 @@ namespace Queries.Renderers.SqlServer.Tests
                     @"DECLARE @p0 AS VARCHAR(8000) = 'Du\[pont'';--';" +
                     "SELECT [id] FROM [members] WHERE ([username] LIKE @p0)"
                 };
-
             }
         }
-
 
         [Theory]
         [MemberData(nameof(SqlInjectionAttackCases))]
         public void PreventSqlInjectionAttack(IQuery query, QueryRendererSettings settings, string expectedString) => IsQueryOk(query, settings, expectedString);
-
 
         private void IsQueryOk(IQuery query, QueryRendererSettings settings, string expectedString)
         {
