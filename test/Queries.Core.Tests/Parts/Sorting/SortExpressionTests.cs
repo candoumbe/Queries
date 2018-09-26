@@ -21,7 +21,7 @@ namespace Queries.Core.Tests.Parts.Sorting
             Action action = () => new SortExpression((string)null);
 
             // Assert
-            action.ShouldThrow<ArgumentNullException>().Which
+            action.Should().Throw<ArgumentNullException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }
@@ -33,7 +33,7 @@ namespace Queries.Core.Tests.Parts.Sorting
             Action action = () => new SortExpression((ColumnBase)null);
 
             // Assert
-            action.ShouldThrow<ArgumentNullException>().Which
+            action.Should().Throw<ArgumentNullException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }

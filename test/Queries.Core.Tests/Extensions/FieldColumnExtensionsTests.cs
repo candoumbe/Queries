@@ -75,7 +75,7 @@ namespace Queries.Core.Parts.Columns.Tests
             Action action = () => fieldColumn.EqualTo("Bruce");
 
             // Assert
-            action.ShouldThrow<ArgumentNullException>().Which
+            action.Should().Throw<ArgumentNullException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }
@@ -91,7 +91,7 @@ namespace Queries.Core.Parts.Columns.Tests
             WhereClause clause = fc.IsNull();
 
             // Assert
-            clause.Column.ShouldBeEquivalentTo(fc);
+            clause.Column.Should().Be(fc);
             clause.Operator.Should().Be(ClauseOperator.IsNull);
             clause.Constraint.Should().BeNull();
         }
@@ -106,7 +106,7 @@ namespace Queries.Core.Parts.Columns.Tests
             Action action = () => fieldColumn.IsNull();
 
             // Assert
-            action.ShouldThrow<ArgumentNullException>().Which
+            action.Should().Throw<ArgumentNullException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }
@@ -121,7 +121,7 @@ namespace Queries.Core.Parts.Columns.Tests
             WhereClause clause = fc.IsNotNull();
 
             // Assert
-            clause.Column.ShouldBeEquivalentTo(fc);
+            clause.Column.Should().Be(fc);
             clause.Operator.Should().Be(ClauseOperator.IsNotNull);
             clause.Constraint.Should().BeNull();
         }
@@ -136,7 +136,7 @@ namespace Queries.Core.Parts.Columns.Tests
             Action action = () => fieldColumn.IsNotNull();
 
             // Assert
-            action.ShouldThrow<ArgumentNullException>().Which
+            action.Should().Throw<ArgumentNullException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }
@@ -151,7 +151,7 @@ namespace Queries.Core.Parts.Columns.Tests
             WhereClause clause = fc.LessThan(18);
 
             // Assert
-            clause.Column.ShouldBeEquivalentTo(fc);
+            clause.Column.Should().Be(fc);
             clause.Operator.Should().Be(ClauseOperator.LessThan);
             clause.Constraint.Should()
                 .BeOfType<NumericColumn>().Which
@@ -169,7 +169,7 @@ namespace Queries.Core.Parts.Columns.Tests
             Action action = () => fieldColumn.LessThan(18);
 
             // Assert
-            action.ShouldThrow<ArgumentNullException>().Which
+            action.Should().Throw<ArgumentNullException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }
@@ -184,7 +184,7 @@ namespace Queries.Core.Parts.Columns.Tests
             WhereClause clause = fc.GreaterThan(18);
 
             // Assert
-            clause.Column.ShouldBeEquivalentTo(fc);
+            clause.Column.Should().Be(fc);
             clause.Operator.Should().Be(ClauseOperator.GreaterThan);
             clause.Constraint.Should()
                 .BeAssignableTo<NumericColumn>().Which
@@ -202,7 +202,7 @@ namespace Queries.Core.Parts.Columns.Tests
             Action action = () => fieldColumn.GreaterThan(18);
 
             // Assert
-            action.ShouldThrow<ArgumentNullException>().Which
+            action.Should().Throw<ArgumentNullException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }
@@ -217,7 +217,7 @@ namespace Queries.Core.Parts.Columns.Tests
             WhereClause clause = fc.GreaterThanOrEqualTo(18);
 
             // Assert
-            clause.Column.ShouldBeEquivalentTo(fc);
+            clause.Column.Should().Be(fc);
             clause.Operator.Should().Be(ClauseOperator.GreaterThanOrEqualTo);
             clause.Constraint.Should()
                 .BeOfType<NumericColumn>().Which
@@ -235,7 +235,7 @@ namespace Queries.Core.Parts.Columns.Tests
             Action action = () => fieldColumn.GreaterThanOrEqualTo(18);
 
             // Assert
-            action.ShouldThrow<ArgumentNullException>().Which
+            action.Should().Throw<ArgumentNullException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }
@@ -250,7 +250,7 @@ namespace Queries.Core.Parts.Columns.Tests
             WhereClause clause = fc.LessThanOrEqualTo(18);
 
             // Assert
-            clause.Column.ShouldBeEquivalentTo(fc);
+            clause.Column.Should().Be(fc);
             clause.Operator.Should().Be(ClauseOperator.LessThanOrEqualTo);
             clause.Constraint.Should()
                 .BeOfType<NumericColumn>().Which
@@ -268,7 +268,7 @@ namespace Queries.Core.Parts.Columns.Tests
             Action action = () => fieldColumn.LessThanOrEqualTo(18);
 
             // Assert
-            action.ShouldThrow<ArgumentNullException>().Which
+            action.Should().Throw<ArgumentNullException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }

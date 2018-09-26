@@ -27,7 +27,7 @@ namespace Queries.Core.Tests.Parts.Columns
             Action action = () => new FieldColumn(null);
 
             // Arrange
-            action.ShouldThrow<ArgumentNullException>().Which
+            action.Should().Throw<ArgumentNullException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }
@@ -39,7 +39,7 @@ namespace Queries.Core.Tests.Parts.Columns
             Action action = () => new FieldColumn(string.Empty);
 
             // Arrange
-            action.ShouldThrow<ArgumentOutOfRangeException>().Which
+            action.Should().Throw<ArgumentOutOfRangeException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }
@@ -51,7 +51,7 @@ namespace Queries.Core.Tests.Parts.Columns
             Action action = () => new FieldColumn("   ");
 
             // Arrange
-            action.ShouldThrow<ArgumentOutOfRangeException>().Which
+            action.Should().Throw<ArgumentOutOfRangeException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }

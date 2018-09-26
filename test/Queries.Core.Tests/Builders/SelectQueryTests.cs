@@ -99,7 +99,7 @@ namespace Queries.Core.Tests.Builders
             Action action = () => new SelectQuery(columns.ToArray());
 
             // Assert
-            action.ShouldThrow<ArgumentOutOfRangeException>("no columns set").Which
+            action.Should().Throw<ArgumentOutOfRangeException>("no columns set").Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }

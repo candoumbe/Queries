@@ -14,8 +14,8 @@ namespace Queries.Core.Tests.Parts.Columns
         {
             Action action = () => new AvgFunction((string)null);
 
-            action.ShouldThrowExactly<ArgumentNullException>()
-                .Which
+            action.Should()
+                .ThrowExactly<ArgumentNullException>().Which
                 .ParamName.Should()
                     .NotBeNullOrWhiteSpace();
         }
@@ -25,7 +25,8 @@ namespace Queries.Core.Tests.Parts.Columns
         {
             Action action = () => new AvgFunction(string.Empty);
 
-            action.ShouldThrowExactly<ArgumentOutOfRangeException>().Which
+            action.Should()
+                .ThrowExactly<ArgumentOutOfRangeException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
 
@@ -36,7 +37,8 @@ namespace Queries.Core.Tests.Parts.Columns
         {
             Action action = () => new AvgFunction("   ");
 
-            action.ShouldThrowExactly<ArgumentOutOfRangeException>().Which
+            action.Should()
+                .ThrowExactly<ArgumentOutOfRangeException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }
@@ -46,7 +48,7 @@ namespace Queries.Core.Tests.Parts.Columns
         {
             Action action = () => new AvgFunction((IColumn) null);
 
-            action.ShouldThrowExactly<ArgumentNullException>().Which
+            action.Should().ThrowExactly<ArgumentNullException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }

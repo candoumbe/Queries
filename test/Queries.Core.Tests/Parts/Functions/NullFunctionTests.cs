@@ -41,7 +41,7 @@ namespace Queries.Core.Tests.Parts.Functions
             Action action = () => new NullFunction(column, defaultValue);
 
             // Assert
-            action.ShouldThrow<ArgumentNullException>().Which
+            action.Should().Throw<ArgumentNullException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
 

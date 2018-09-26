@@ -28,7 +28,7 @@ namespace Queries.Core.Tests.Builders
             Action action = () => new DeleteQuery(null);
 
             // Assert
-            action.ShouldThrow<ArgumentNullException>("name of the table to delete cannot be null").Which
+            action.Should().Throw<ArgumentNullException>("name of the table to delete cannot be null").Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }

@@ -19,7 +19,7 @@ namespace Queries.Core.Tests.Parts
             Action action = () => new SelectTable(null);
 
             // Assert
-            action.ShouldThrow<ArgumentNullException>().Which
+            action.Should().Throw<ArgumentNullException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }

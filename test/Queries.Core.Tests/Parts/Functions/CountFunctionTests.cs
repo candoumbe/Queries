@@ -18,7 +18,7 @@ namespace Queries.Core.Tests.Parts.Columns
             Action action = () => new CountFunction(null);
 
             // Assert
-            action.ShouldThrow<ArgumentNullException>($"{nameof(CountFunction)} constructor called with null argument").Which
+            action.Should().Throw<ArgumentNullException>($"{nameof(CountFunction)} constructor called with null argument").Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
             

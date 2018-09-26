@@ -26,7 +26,7 @@ namespace Queries.Core.Tests.Builders
             Action action = () => new CreateViewQuery(null);
 
             // Assert
-            action.ShouldThrow<ArgumentNullException>().Which
+            action.Should().Throw<ArgumentNullException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }
@@ -40,7 +40,7 @@ namespace Queries.Core.Tests.Builders
             Action action = () => new CreateViewQuery(viewName);
 
             // Assert
-            action.ShouldThrow<ArgumentOutOfRangeException>("viewName is empty or whitespace").Which
+            action.Should().Throw<ArgumentOutOfRangeException>("viewName is empty or whitespace").Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }

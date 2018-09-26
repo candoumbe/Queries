@@ -24,7 +24,7 @@ namespace Queries.Core.Tests.Parts.Columns
             Action action = () => new Literal(null);
 
             // Assert
-            action.ShouldNotThrow<ArgumentException>();
+            action.Should().NotThrow<ArgumentException>();
         }
 
         [Fact]
@@ -34,7 +34,7 @@ namespace Queries.Core.Tests.Parts.Columns
             Action action = () => new Literal();
 
             // Assert
-            action.ShouldNotThrow<ArgumentException>();
+            action.Should().NotThrow<ArgumentException>();
         }
 
 
@@ -46,7 +46,7 @@ namespace Queries.Core.Tests.Parts.Columns
             Action action = () => new Literal(new { prop1 = "prop" });
 
             // Assert
-            ArgumentException exception = action.ShouldThrow<ArgumentException>("only bool/int/double/float/long/string are supported").Which;
+            ArgumentException exception = action.Should().Throw<ArgumentException>("only bool/int/double/float/long/string are supported").Which;
 
             exception
                 .ParamName.Should()

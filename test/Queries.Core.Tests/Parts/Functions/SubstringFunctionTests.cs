@@ -31,7 +31,7 @@ namespace Queries.Core.Tests.Parts.Functions
             Action action = () => new SubstringFunction(null, 1, 1);
 
             // Assert
-            action.ShouldThrow<ArgumentNullException>($"first parameter of {nameof(SubstringFunction)}'s constructor cannot be null")
+            action.Should().Throw<ArgumentNullException>($"first parameter of {nameof(SubstringFunction)}'s constructor cannot be null")
                 .Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
@@ -46,7 +46,7 @@ namespace Queries.Core.Tests.Parts.Functions
             Action action = () => new SubstringFunction(column, start, length);
 
             // Assert
-            action.ShouldThrow<ArgumentOutOfRangeException>().Which
+            action.Should().Throw<ArgumentOutOfRangeException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
 

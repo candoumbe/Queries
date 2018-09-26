@@ -17,7 +17,7 @@ namespace Queries.Core.Tests.Parts.Functions
         {
             Action action = () => new MaxFunction((string)null);
 
-            action.ShouldThrowExactly<ArgumentNullException>().Which
+            action.Should().ThrowExactly<ArgumentNullException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }
@@ -27,7 +27,7 @@ namespace Queries.Core.Tests.Parts.Functions
         {
             Action action = () => new MaxFunction(string.Empty);
 
-            action.ShouldThrowExactly<ArgumentOutOfRangeException>().Which
+            action.Should().ThrowExactly<ArgumentOutOfRangeException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }
@@ -37,7 +37,7 @@ namespace Queries.Core.Tests.Parts.Functions
         {
             Action action = () => new MaxFunction("   ");
 
-            action.ShouldThrowExactly<ArgumentOutOfRangeException>().Which
+            action.Should().ThrowExactly<ArgumentOutOfRangeException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }
@@ -47,7 +47,7 @@ namespace Queries.Core.Tests.Parts.Functions
         {
             Action action = () => new MaxFunction((IColumn)null);
 
-            action.ShouldThrowExactly<ArgumentNullException>().Which
+            action.Should().ThrowExactly<ArgumentNullException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }

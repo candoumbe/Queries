@@ -27,7 +27,7 @@ namespace Queries.Core.Tests.Builders
             Action action = () => new UpdateQuery((string) null);
 
             // Assert
-            action.ShouldThrow<ArgumentNullException>("name of the table to delete cannot be null").Which
+            action.Should().Throw<ArgumentNullException>("name of the table to delete cannot be null").Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }
@@ -39,7 +39,7 @@ namespace Queries.Core.Tests.Builders
             Action action = () => new UpdateQuery((Table)null);
 
             // Assert
-            action.ShouldThrow<ArgumentNullException>("name of the table to delete cannot be null").Which
+            action.Should().Throw<ArgumentNullException>("name of the table to delete cannot be null").Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }
@@ -53,7 +53,7 @@ namespace Queries.Core.Tests.Builders
             Action action = () => new UpdateQuery(tableName);
 
             // Assert
-            action.ShouldThrow<ArgumentOutOfRangeException>("name of the table to delete cannot be null").Which
+            action.Should().Throw<ArgumentOutOfRangeException>("name of the table to delete cannot be null").Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }

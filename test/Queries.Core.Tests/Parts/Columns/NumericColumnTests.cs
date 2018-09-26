@@ -47,7 +47,7 @@ namespace Queries.Core.Tests.Parts.Columns
             int? currentValue = column.Value.Should()
                 .BeAssignableTo<int>().Which;
 
-            currentValue.ShouldBeEquivalentTo(value, $"{nameof(NumericColumn)}.{nameof(NumericColumn.Value)} should be equal to the ctor input");
+            currentValue.Should().Be(value, $"{nameof(NumericColumn)}.{nameof(NumericColumn.Value)} should be equal to the ctor input");
         }
 
         [Theory]

@@ -21,7 +21,7 @@ namespace Queries.Core.Tests.Parts.Clauses
             Action action = () => new Variable("p", variableType, null);
 
             // Assert
-            action.ShouldNotThrow<ArgumentNullException>($"{nameof(Variable)}.{nameof(Variable.Value)} can be null");
+            action.Should().NotThrow<ArgumentNullException>($"{nameof(Variable)}.{nameof(Variable.Value)} can be null");
         }
 
         [Theory]
@@ -35,7 +35,7 @@ namespace Queries.Core.Tests.Parts.Clauses
             Action action = () => new Variable(parameterName, constraintType, 3);
 
             // Assert
-            action.ShouldThrow<ArgumentNullException>($"{nameof(Variable)}.{nameof(Variable.Name)} cannot be null").Which
+            action.Should().Throw<ArgumentNullException>($"{nameof(Variable)}.{nameof(Variable.Name)} cannot be null").Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }
@@ -55,7 +55,7 @@ namespace Queries.Core.Tests.Parts.Clauses
             Action action = () => new Variable(parameterName, constraintType, 3);
 
             // Assert
-            action.ShouldThrow<ArgumentOutOfRangeException>($"{nameof(Variable)}.{nameof(Variable.Name)} cannot be null").Which
+            action.Should().Throw<ArgumentOutOfRangeException>($"{nameof(Variable)}.{nameof(Variable.Name)} cannot be null").Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }

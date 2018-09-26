@@ -18,7 +18,7 @@ namespace Queries.Core.Tests.Parts.Columns
         {
             Action action = () => new UpperFunction((string)null);
 
-            action.ShouldThrowExactly<ArgumentNullException>().Which
+            action.Should().ThrowExactly<ArgumentNullException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }
@@ -29,7 +29,7 @@ namespace Queries.Core.Tests.Parts.Columns
         {
             Action action = () => new UpperFunction((IColumn) null);
 
-            action.ShouldThrowExactly<ArgumentNullException>().Which
+            action.Should().ThrowExactly<ArgumentNullException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }

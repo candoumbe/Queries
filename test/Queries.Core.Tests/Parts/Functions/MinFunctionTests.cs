@@ -17,7 +17,7 @@ namespace Queries.Core.Tests.Parts.Columns
         {
             Action action = () => new MinFunction((string)null);
 
-            action.ShouldThrowExactly<ArgumentNullException>().Which
+            action.Should().ThrowExactly<ArgumentNullException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }
@@ -27,7 +27,7 @@ namespace Queries.Core.Tests.Parts.Columns
         {
             Action action = () => new MinFunction(string.Empty);
 
-            action.ShouldThrowExactly<ArgumentOutOfRangeException>().Which
+            action.Should().ThrowExactly<ArgumentOutOfRangeException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }
@@ -39,7 +39,7 @@ namespace Queries.Core.Tests.Parts.Columns
         {
             Action action = () => new MinFunction(columnName);
 
-            action.ShouldThrowExactly<ArgumentOutOfRangeException>().Which
+            action.Should().ThrowExactly<ArgumentOutOfRangeException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }
@@ -49,7 +49,7 @@ namespace Queries.Core.Tests.Parts.Columns
         {
             Action action = () => new MinFunction((IColumn) null);
 
-            action.ShouldThrowExactly<ArgumentNullException>().Which
+            action.Should().ThrowExactly<ArgumentNullException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }

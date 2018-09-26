@@ -30,7 +30,7 @@ namespace Queries.Core.Tests.Parts.Clauses
             Action action = () => new HavingClause(null, default);
 
             // Assert
-            action.ShouldThrow<ArgumentNullException>().Which
+            action.Should().Throw<ArgumentNullException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
 

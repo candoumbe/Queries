@@ -38,7 +38,7 @@ namespace Queries.Core.Tests.Parts.Clauses
             Action action = () => new WhereClause(null, @operator);
 
             // Assert
-            action.ShouldThrow<ArgumentNullException>().Which
+            action.Should().Throw<ArgumentNullException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
 
@@ -52,7 +52,7 @@ namespace Queries.Core.Tests.Parts.Clauses
             Action action = () => new WhereClause("Firstname".Field(), @operator, null);
 
             // Assert
-            action.ShouldThrow<ArgumentNullException>().Which
+            action.Should().Throw<ArgumentNullException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }

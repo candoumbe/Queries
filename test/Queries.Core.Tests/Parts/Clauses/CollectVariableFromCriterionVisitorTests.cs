@@ -11,6 +11,7 @@ using static Queries.Core.Builders.Fluent.QueryBuilder;
 using static Queries.Core.Parts.Clauses.ClauseOperator;
 using static Queries.Core.Parts.Clauses.ClauseLogic;
 using Queries.Core.Parts.Columns;
+using FluentAssertions.Extensions;
 
 namespace Queries.Core.Tests.Parts.Clauses
 {

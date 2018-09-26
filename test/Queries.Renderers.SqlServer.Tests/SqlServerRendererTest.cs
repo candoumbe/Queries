@@ -15,6 +15,7 @@ using Xunit.Abstractions;
 using static Newtonsoft.Json.JsonConvert;
 using Newtonsoft.Json;
 using Queries.Core.Renderers;
+using FluentAssertions.Extensions;
 
 namespace Queries.Renderers.SqlServer.Tests
 {
