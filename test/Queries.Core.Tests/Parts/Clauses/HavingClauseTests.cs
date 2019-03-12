@@ -1,25 +1,23 @@
 ﻿using FluentAssertions;
-using Queries.Core.Extensions;
 using Queries.Core.Parts.Clauses;
 using Queries.Core.Parts.Columns;
 using Queries.Core.Parts.Functions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Xunit;
 using Xunit.Abstractions;
+using Xunit.Categories;
 using static Queries.Core.Parts.Clauses.ClauseOperator;
 namespace Queries.Core.Tests.Parts.Clauses
 {
+    [UnitTest]
+    [Feature("Having")]
     public class HavingClauseTests : IDisposable
     {
         private ITestOutputHelper _outputHelper;
 
-        public HavingClauseTests(ITestOutputHelper outputHelper)
-        {
-            _outputHelper = outputHelper;
-        }
+        public HavingClauseTests(ITestOutputHelper outputHelper) => _outputHelper = outputHelper;
 
         public void Dispose() => _outputHelper = null;
 
@@ -94,6 +92,5 @@ namespace Queries.Core.Tests.Parts.Clauses
                 .NotBeSameAs(original).And
                 .Be(original);
         }
-
     }
 }

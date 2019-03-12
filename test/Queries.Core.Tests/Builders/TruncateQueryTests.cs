@@ -6,10 +6,14 @@ using System.Collections.Generic;
 using System.Reflection;
 using Xunit;
 using Xunit.Abstractions;
+using Xunit.Categories;
 using static Queries.Core.Builders.Fluent.QueryBuilder;
 
 namespace Queries.Core.Tests.Builders
 {
+    [UnitTest]
+    [Feature("Truncate")]
+    [Feature("Builder")]
     public class TruncateQueryTests : IDisposable
     {
         private ITestOutputHelper _outputHelper;

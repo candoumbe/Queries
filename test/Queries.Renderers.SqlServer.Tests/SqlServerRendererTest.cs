@@ -16,7 +16,9 @@ using static Newtonsoft.Json.JsonConvert;
 using Newtonsoft.Json;
 using Queries.Core.Renderers;
 using FluentAssertions.Extensions;
-
+#if !NETCOREAPP1_0
+using NaughtyStrings;
+#endif
 namespace Queries.Renderers.SqlServer.Tests
 {
     public class SqlServerRendererTest : IDisposable
@@ -322,7 +324,7 @@ namespace Queries.Renderers.SqlServer.Tests
                     $"DECLARE @p0 AS VARCHAR(8000) = 'Batman';{Environment.NewLine}" +
                     $"SELECT [Firstname], [Lastname] {Environment.NewLine}" +
                     $"FROM [SuperHeroes] {Environment.NewLine}" +
-                    $"WHERE ([Nickname] = @p0)"
+                    "WHERE ([Nickname] = @p0)"
                 };
 
                 yield return new object[]
@@ -521,6 +523,25 @@ namespace Queries.Renderers.SqlServer.Tests
                     @"DECLARE @p0 AS VARCHAR(8000) = 'Du\[pont'';--';" +
                     "SELECT [id] FROM [members] WHERE ([username] LIKE @p0)"
                 };
+
+#if !NETCOREAPP1_0
+                {
+                    foreach (string naughtyString in TheNaughtyStrings.SQLInjection)
+                    {
+                        string escapedString = naughtyString
+                            .Replace("\'", "''")
+                            .Replace("[", "[");
+                        yield return new object[]
+                        {
+                            Select("*").From("superheroes")
+                                .Where("name".Field(), EqualTo, naughtyString),
+                            new QueryRendererSettings (),
+                            $"DECLARE @p0 AS VARCHAR(8000) = '{escapedString}';" +
+                            "SELECT * FROM [superheroes] WHERE ([name] = @p0)"
+                        };
+                    }
+                }
+#endif
             }
         }
 

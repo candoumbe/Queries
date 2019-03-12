@@ -1,12 +1,12 @@
 ﻿using FluentAssertions;
 using Queries.Core.Parts.Clauses;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Xunit;
+using Xunit.Categories;
 
 namespace Queries.Core.Tests.Parts.Clauses
 {
+    [UnitTest]
     public class VariableTests
     {
         [Theory]

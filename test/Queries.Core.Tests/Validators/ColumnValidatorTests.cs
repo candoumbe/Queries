@@ -6,11 +6,9 @@ using Queries.Core.Validators;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
-using static FluentValidation.Severity;
 
 namespace Queries.Core.Tests.Validators
 {
@@ -21,10 +19,7 @@ namespace Queries.Core.Tests.Validators
     {
         private ColumnValidator _validator;
 
-        public ColumnValidatorTests(ITestOutputHelper outputHelper)
-        {
-            _validator = new ColumnValidator();
-        }
+        public ColumnValidatorTests() => _validator = new ColumnValidator();
 
         public void Dispose()
         {
@@ -38,10 +33,10 @@ namespace Queries.Core.Tests.Validators
                 yield return new object[]
                 {
                     new FieldColumn("1"),
-                    ((Expression<Func<ValidationResult, bool>>)(
+                    (Expression<Func<ValidationResult, bool>>)(
                         vr => vr.IsValid
-                    )),
-                    ""
+                    ),
+                    $"new {nameof(FieldColumn)}(1) is a valid usage"
                 };
             }
         }
@@ -57,19 +52,18 @@ namespace Queries.Core.Tests.Validators
         [MemberData(nameof(ValidateColumnsCases))]
         public async Task Validate(IColumn column, Expression<Func<ValidationResult, bool>> expectation, string because) {
             // Act
-            ValidationResult vr = await _validator.ValidateAsync(column);
+            ValidationResult vr = await _validator.ValidateAsync(column)
+                .ConfigureAwait(false);
 
             // Assert
-            vr.Should().Match(expectation, because);
+            vr.Should()
+                .Match(expectation, because);
         }
 
         /// <summary>
         /// Tests that <see cref="ColumnValidator"/> can validate instances of <see cref="IValidator{IColumn}"/>.
         /// </summary>
         [Fact]
-        public void Should_Validate_IColumn_Instances()
-        {
-            (_validator is IValidator<IColumn>).Should().BeTrue();
-        }
+        public void Should_Validate_IColumn_Instances() => (_validator is IValidator<IColumn>).Should().BeTrue();
     }
 }

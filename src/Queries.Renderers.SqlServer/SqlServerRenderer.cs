@@ -83,19 +83,19 @@ namespace Queries.Renderers.SqlServer
 
             foreach (Variable variable in visitor.Variables)
             {
-                sbParameters.Append($"DECLARE @{variable.Name} AS");
+                sbParameters.Append("DECLARE @").Append(variable.Name).Append(" AS");
                 switch (variable.Type)
                 {
                     case VariableType.Numeric:
-                        sbParameters.Append($" NUMERIC = {variable.Value};");
+                        sbParameters.Append(" NUMERIC = ").Append(variable.Value).Append(";");
                         break;
                     case VariableType.String:
-                        sbParameters.Append($" VARCHAR(8000) = '{EscapeString(variable.Value.ToString())}';");
+                        sbParameters.Append(" VARCHAR(8000) = '").Append(EscapeString(variable.Value.ToString())).Append("';");
                         break;
                     case VariableType.Boolean:
                         break;
                     case VariableType.Date:
-                        sbParameters.Append($" DATETIME = '{EscapeString((variable.Value as DateTime?).Value.ToString(Settings.DateFormatString))}'");
+                        sbParameters.Append(" DATETIME = '").Append(EscapeString((variable.Value as DateTime?).Value.ToString(Settings.DateFormatString))).Append("'");
                         break;
                     default:
                         throw new ArgumentOutOfRangeException(nameof(variable), $"Unsupported variable type");

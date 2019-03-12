@@ -4,15 +4,17 @@ using Queries.Core.Builders;
 using Queries.Core.Parts.Columns;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using Xunit;
 using Xunit.Abstractions;
+using Xunit.Categories;
 using static Queries.Core.Builders.Fluent.QueryBuilder;
 
 namespace Queries.Core.Tests.Builders
 {
+    [UnitTest]
+    [Feature("Delete")]
+    [Feature("Builder")]
     public class DeleteQueryTests : IDisposable
     {
         private ITestOutputHelper _outputHelper;

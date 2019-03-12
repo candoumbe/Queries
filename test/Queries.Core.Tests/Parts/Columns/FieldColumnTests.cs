@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Queries.Core.Extensions;
 using Queries.Core.Parts.Columns;
 using Xunit;
 using Queries.Core.Parts.Functions;
@@ -8,9 +7,12 @@ using FluentAssertions;
 using Xunit.Abstractions;
 using static Newtonsoft.Json.JsonConvert;
 using Newtonsoft.Json.Linq;
+using Xunit.Categories;
 
 namespace Queries.Core.Tests.Parts.Columns
 {
+    [UnitTest]
+    [Feature(nameof(FieldColumn))]
     public class FieldColumnTests : IDisposable
     {
         private ITestOutputHelper _outputHelper;

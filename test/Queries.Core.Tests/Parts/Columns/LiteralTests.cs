@@ -2,13 +2,15 @@
 using Queries.Core.Parts.Columns;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Xunit;
 using Xunit.Abstractions;
-using static Newtonsoft.Json.JsonConvert;
+using Xunit.Categories;
 
 namespace Queries.Core.Tests.Parts.Columns
 {
+    [UnitTest]
+    [Feature(nameof(Literal))]
+    [Feature("Column")]
     public class LiteralTests : IDisposable
     {
         private ITestOutputHelper _outputHelper;

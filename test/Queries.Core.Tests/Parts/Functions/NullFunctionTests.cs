@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Xunit;
 using Xunit.Abstractions;
+using Xunit.Categories;
 using static Queries.Core.Builders.Fluent.QueryBuilder;
 
 namespace Queries.Core.Tests.Parts.Functions
@@ -14,6 +15,9 @@ namespace Queries.Core.Tests.Parts.Functions
     /// <summary>
     /// Unit tests for <see cref="NullFunction"/>
     /// </summary>
+    [UnitTest]
+    [Feature(nameof(NullFunction))]
+    [Feature("Functions")]
     public class NullFunctionTests : IDisposable
     {
         private ITestOutputHelper _outputHelper;
@@ -67,16 +71,8 @@ namespace Queries.Core.Tests.Parts.Functions
 
         [Fact]
         public void HasFunctionFunctionAttribute()
-        {
-            // Arrange
-            TypeInfo typeInfo = typeof(NullFunction).GetTypeInfo();
-
-            // Act
-            FunctionAttribute attr = typeInfo.GetCustomAttribute<FunctionAttribute>();
-
-            // Arrange
-            attr.Should().NotBeNull($"{nameof(NullFunction)} must be marked with {nameof(FunctionAttribute)}");
-        }
+            => typeof(NullFunction).Should()
+            .BeDecoratedWith<FunctionAttribute>($"{nameof(NullFunction)} must be marked with {nameof(FunctionAttribute)}");
 
         public static IEnumerable<object[]> EqualsCases
         {

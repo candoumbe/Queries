@@ -4,9 +4,9 @@ using Queries.Core.Parts.Columns;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Xunit;
 using Xunit.Abstractions;
+using Xunit.Categories;
 using static Queries.Core.Builders.Fluent.QueryBuilder;
 
 namespace Queries.Core.Tests.Builders
@@ -14,6 +14,9 @@ namespace Queries.Core.Tests.Builders
     /// <summary>
     /// Unit tests for <see cref="SelectQuery"/>.
     /// </summary>
+    [UnitTest]
+    [Feature("Select")]
+    [Feature("Builder")]
     public class SelectQueryTests : IDisposable
     {
         private ITestOutputHelper _outputHelper;
@@ -32,7 +35,6 @@ namespace Queries.Core.Tests.Builders
             }
         }
 
-
         [Theory]
         [MemberData(nameof(EqualsCases))]
         public void EqualTests(SelectQuery first, object second, bool expectedResult, string reason)
@@ -47,7 +49,6 @@ namespace Queries.Core.Tests.Builders
             actualResult.Should().Be(expectedResult, reason);
         }
 
-
         public static IEnumerable<object[]> CloneCases
         {
             get
@@ -60,7 +61,6 @@ namespace Queries.Core.Tests.Builders
                         .Union(
                             Select("Username".Field(), "Nickname".Field()).From("SuperHeroes")))
                 };
-
 
                 yield return new[] { Select("Firstname".Field(), "Lastname".Field()).Limit(3).From("People") };
             }
@@ -81,7 +81,6 @@ namespace Queries.Core.Tests.Builders
                 .Be(original);
         }
 
-
         public static IEnumerable<object[]> CtorThrowsArgumentOutOfRangeExceptionCases
         {
             get
@@ -99,7 +98,7 @@ namespace Queries.Core.Tests.Builders
             Action action = () => new SelectQuery(columns.ToArray());
 
             // Assert
-            action.Should().Throw<ArgumentOutOfRangeException>("no columns set").Which
+            action.Should().Throw<ArgumentOutOfRangeException>(reason).Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }

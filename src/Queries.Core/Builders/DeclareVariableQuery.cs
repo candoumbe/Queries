@@ -1,8 +1,5 @@
 ﻿using Queries.Core.Builders.Fluent;
 using Queries.Core.Parts.Clauses;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Queries.Core.Builders
 {

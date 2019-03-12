@@ -37,7 +37,7 @@ namespace Queries.Renderers.Neo4J
             NormalizeColumnAndTable(columns, selectQuery, tables);
 
             sbQuery.Append($"MATCH {RenderTables(tables)} {(Settings.PrettyPrint ? Environment.NewLine : string.Empty)}" +
-                           $"{(query.WhereCriteria != null ? $"WHERE {RenderWhere(query.WhereCriteria)} {(Settings.PrettyPrint ? Environment.NewLine : string.Empty)}" : string.Empty)}" +
+                           (query.WhereCriteria != null ? $"WHERE {RenderWhere(query.WhereCriteria)} {(Settings.PrettyPrint ? Environment.NewLine : string.Empty)}" : string.Empty) +
                            $"RETURN {RenderColumns(columns)}{BatchStatementSeparator}");
 
             return sbQuery.ToString();
@@ -52,10 +52,8 @@ namespace Queries.Renderers.Neo4J
                 if (column is FieldColumn || column is Literal)
                 {
                     IEnumerable<ITable> tabs = tables as ITable[] ?? tables.ToArray();
-                    if (selectQuery.Tables.Count() == 1 && tabs.Single() is Table)
+                    if (selectQuery.Tables.Count == 1 && tabs.Single() is Table table)
                     {
-                        Table table = (Table) tabs.Single();
-
                         if (column is FieldColumn fc)
                         {
                             if ("*".Equals(fc.Name))
@@ -92,7 +90,9 @@ namespace Queries.Renderers.Neo4J
             StringBuilder sbColumns = new StringBuilder();
 
             sbColumns = columns.Aggregate(sbColumns,
-                (current, column) => current.Append($"{(current.Length > 0 ? ", " : string.Empty)}{RenderColumn(column, true)}"));
+                (current, column) => current
+                    .Append(current.Length > 0 ? ", " : string.Empty)
+                    .Append(RenderColumn(column, true)));
 
             return $"{sbColumns}";
         }
@@ -115,7 +115,7 @@ namespace Queries.Renderers.Neo4J
                 {
                     IColumn columnValue = kv.Value;
                     string valueString = RenderColumn(columnValue, false);
-                    sbCreate.Append($"{(sbCreate.Length > 0 ? ", " : string.Empty)}{kv.Key} : {(valueString ?? "NULL")}");
+                    sbCreate.Append($"{(sbCreate.Length > 0 ? ", " : string.Empty)}{kv.Key} : {valueString ?? "NULL"}");
                 }
 
                 sbQuery.Append($"CREATE ({query.TableName?.Substring(0, 1)?.ToLower()}:{query.TableName} {{{sbCreate}}})");
@@ -139,12 +139,13 @@ namespace Queries.Renderers.Neo4J
             {
                 sbQuery = sbQuery.Append($"WHERE {RenderWhere(query.Criteria)} {(Settings.PrettyPrint ? Environment.NewLine : string.Empty)}");
             }
-            sbQuery.Append($"DELETE {tableAlias}");
+            sbQuery.Append("DELETE ").Append(tableAlias);
 
             return sbQuery.ToString();
         }
 
-        protected override string RenderTablenameWithAlias(string tableName, string alias) => $"({alias}:{tableName})";
+        protected override string RenderTablenameWithAlias(string tableName, string alias)
+            => $"({alias}:{tableName})";
 
         protected override string RenderColumnnameWithAlias(string columnName, string alias)
             => $"{columnName}{(!string.IsNullOrWhiteSpace(alias) ? $" AS {alias}" : string.Empty)}";

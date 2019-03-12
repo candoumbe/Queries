@@ -3,15 +3,17 @@ using Queries.Core.Parts;
 using Queries.Core.Parts.Columns;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Xunit;
 using Xunit.Abstractions;
+using Xunit.Categories;
 
 namespace Queries.Core.Tests.Parts
 {
     /// <summary>
     /// Unit tests for <see cref="Table"/>
     /// </summary>
+    [UnitTest]
+    [Feature(nameof(Table))]
     public class TableTests : IDisposable
     {
         private ITestOutputHelper _outputHelper;
@@ -60,6 +62,5 @@ namespace Queries.Core.Tests.Parts
             // Assert
             actualResult.Should().Be(expectedResult, reason);
         }
-
     }
 }

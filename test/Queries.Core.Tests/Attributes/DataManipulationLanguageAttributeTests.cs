@@ -3,9 +3,13 @@ using Queries.Core.Attributes;
 using System;
 using System.Reflection;
 using Xunit;
+using Xunit.Categories;
 
 namespace Queries.Core.Tests.Attributes
 {
+    [UnitTest]
+    [Feature(nameof(DataManipulationLanguageAttribute))]
+    [Feature("Attributes")]
     public class DataManipulationLanguageAttributeTests
     {
         [Fact]

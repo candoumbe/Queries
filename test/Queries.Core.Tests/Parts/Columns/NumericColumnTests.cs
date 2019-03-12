@@ -2,12 +2,15 @@
 using Queries.Core.Parts.Columns;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Xunit;
 using Xunit.Abstractions;
+using Xunit.Categories;
 
 namespace Queries.Core.Tests.Parts.Columns
 {
+    [UnitTest]
+    [Feature(nameof(NumericColumn))]
+    [Feature("Column")]
     public class NumericColumnTests : IDisposable
     {
         private ITestOutputHelper _outputHelper;

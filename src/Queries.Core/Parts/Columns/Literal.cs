@@ -68,8 +68,8 @@ namespace Queries.Core.Parts.Columns
         public override int GetHashCode()
         {
             int hashCode = -1351936271;
-            hashCode = hashCode * -1521134295 + EqualityComparer<object>.Default.GetHashCode(Value);
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Alias);
+            hashCode = (hashCode * -1521134295) + EqualityComparer<object>.Default.GetHashCode(Value);
+            hashCode = (hashCode * -1521134295) + EqualityComparer<string>.Default.GetHashCode(Alias);
             return hashCode;
         }
 

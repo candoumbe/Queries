@@ -7,6 +7,5 @@ namespace Queries.Core.Builders.Fluent
         IBuild<T> Values(SelectQuery select);
 
         IBuild<T> Values(InsertedValue value, params InsertedValue[] values);
-
     }
 }

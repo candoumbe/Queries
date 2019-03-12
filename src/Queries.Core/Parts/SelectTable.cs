@@ -12,6 +12,7 @@ namespace Queries.Core.Parts
     public class SelectTable : IAliasable<SelectTable>, ITable
     {
         private string _alias;
+
         /// <summary>
         /// The original <see cref="SelectQuery"/>
         /// </summary>
@@ -25,15 +26,13 @@ namespace Queries.Core.Parts
             return this;
         }
 
-        public ITable Clone() => Select.Clone();
+        public ITable Clone() => new SelectTable(Select.Clone()).As(Alias);
 
         /// <summary>
         /// Builds a new <see cref="SelectTable"/> instance.
         /// </summary>
         /// <param name="query">the select query to wrap as an <see cref="ITable"/></param>
-        public SelectTable(SelectQuery query)
-        {
-            Select = query ?? throw new ArgumentNullException(nameof(query));
-        }
+        /// <exception cref="ArgumentNullException">if <paramref name="query"/> is <c>null</c>.</exception>
+        public SelectTable(SelectQuery query) => Select = query ?? throw new ArgumentNullException(nameof(query));
     }
 }

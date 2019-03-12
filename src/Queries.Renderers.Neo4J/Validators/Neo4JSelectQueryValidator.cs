@@ -3,7 +3,6 @@ using System.Linq;
 using Queries.Core.Builders;
 using Queries.Core.Parts;
 using Queries.Core.Parts.Columns;
-using Queries.Core.Validators;
 using FluentValidation;
 
 namespace Queries.Renderers.Neo4J.Validators

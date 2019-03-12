@@ -1,4 +1,3 @@
-using Queries.Core.Parts.Columns;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,8 +44,8 @@ namespace Queries.Core.Parts.Clauses
         public override int GetHashCode()
         {
             int hashCode = 411513146;
-            hashCode = hashCode * -1521134295 + Logic.GetHashCode();
-            hashCode = hashCode * -1521134295 + EqualityComparer<IEnumerable<IWhereClause>>.Default.GetHashCode(Clauses);
+            hashCode = (hashCode * -1521134295) + Logic.GetHashCode();
+            hashCode = (hashCode * -1521134295) + EqualityComparer<IEnumerable<IWhereClause>>.Default.GetHashCode(Clauses);
             return hashCode;
         }
 

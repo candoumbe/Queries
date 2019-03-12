@@ -1,10 +1,13 @@
 ﻿using FluentAssertions;
 using Queries.Core.Parts.Clauses;
 using Xunit;
+using Xunit.Categories;
 using static Queries.Core.Parts.Clauses.ClauseLogic;
 
 namespace Queries.Core.Tests.Parts
 {
+    [UnitTest]
+    [Feature("Having clause")]
     public class CompositeHavingClauseTests
     {
         [Fact]

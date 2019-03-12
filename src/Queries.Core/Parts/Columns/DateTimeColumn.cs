@@ -12,7 +12,6 @@ namespace Queries.Core.Parts.Columns
         /// </summary>
         public string StringFormat { get; private set; }
 
-
         /// <summary>
         /// Builds a new <see cref="DateTimeColumn"/> instance.
         /// </summary>
@@ -36,7 +35,6 @@ namespace Queries.Core.Parts.Columns
         {
             //TODO check that format conforms to RFC if not throw a exception
             StringFormat = format;
-       
             return this;
         }
     }

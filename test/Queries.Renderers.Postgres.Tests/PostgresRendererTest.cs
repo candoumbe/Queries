@@ -53,7 +53,12 @@ namespace Queries.Renderers.Postgres.Tests
                 yield return new object[] {
                     Select("*")
                     .From(
-                        Select("identifier").From("identities").Union(Select("username").From("members")).As("logins")
+                        Select("identifier")
+                        .From("identities")
+                        .Union(
+                            Select("username")
+                            .From("members")
+                            ).As("logins")
                         ),
                     new QueryRendererSettings{ PrettyPrint = false },
                     @"SELECT * FROM (SELECT ""identifier"" FROM ""identities"" UNION SELECT ""username"" FROM ""members"") ""logins""" };

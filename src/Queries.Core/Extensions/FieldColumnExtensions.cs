@@ -1,7 +1,6 @@
 ﻿using System;
 using Queries.Core.Builders;
 using Queries.Core.Parts.Clauses;
-using System.Linq;
 
 namespace Queries.Core.Parts.Columns
 {

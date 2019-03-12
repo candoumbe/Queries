@@ -1,15 +1,18 @@
 using System;
 using System.Collections.Generic;
-using Queries.Core.Extensions;
 using Queries.Core.Parts.Columns;
 using Xunit;
 using Queries.Core.Parts.Functions;
 using FluentAssertions;
 using System.Reflection;
 using Queries.Core.Attributes;
+using Xunit.Categories;
 
 namespace Queries.Core.Tests.Parts.Columns
 {
+    [UnitTest]
+    [Feature(nameof(MinFunction))]
+    [Feature("Functions")]
     public class MinFunctionTests
     {
         [Fact]
@@ -55,10 +58,8 @@ namespace Queries.Core.Tests.Parts.Columns
         }
 
         [Fact]
-        public void ConstructorTestColumnArgument() => 
-            new MinFunction("age").Type.Should().Be(AggregateType.Min);
-        
-        
+        public void ConstructorTestColumnArgument() => new MinFunction("age").Type.Should().Be(AggregateType.Min);
+
         public static IEnumerable<object[]> AsTestCases
         {
             get
@@ -83,18 +84,7 @@ namespace Queries.Core.Tests.Parts.Columns
             => column.Alias.Should().Be(expectedAlias);
 
         [Fact]
-        public void HasFunctionAttribute()
-        {
-            // Arrange 
-            TypeInfo lengthFunctionType = typeof(MinFunction)
-                .GetTypeInfo();
-
-            // Act
-            FunctionAttribute attr = lengthFunctionType.GetCustomAttribute<FunctionAttribute>();
-
-            // Assert
-            attr.Should()
-                .NotBeNull($"{nameof(MinFunction)} must be marked with {nameof(FunctionAttribute)}");
-        }
+        public void HasFunctionAttribute() => typeof(MinFunction).Should()
+            .BeDecoratedWithOrInherit<FunctionAttribute>($"{nameof(MinFunction)} must be marked with {nameof(FunctionAttribute)}");
     }
 }

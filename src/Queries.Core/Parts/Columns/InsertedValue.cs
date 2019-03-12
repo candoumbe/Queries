@@ -32,16 +32,16 @@ namespace Queries.Core.Parts.Columns
         }
 
         public override bool Equals(object obj) => Equals(obj as InsertedValue);
-        public bool Equals(InsertedValue other) => 
-            other != null 
-            && Column.Equals(other.Column) 
-            && (Value == null && other.Value == null || Value.Equals(other.Value));
+        public bool Equals(InsertedValue other) =>
+            other != null
+            && Column.Equals(other.Column)
+            && ((Value == null && other.Value == null) || Value.Equals(other.Value));
 
         public override int GetHashCode()
         {
             int hashCode = 1372869065;
-            hashCode = hashCode * -1521134295 + EqualityComparer<FieldColumn>.Default.GetHashCode(Column);
-            hashCode = hashCode * -1521134295 + EqualityComparer<IColumn>.Default.GetHashCode(Value);
+            hashCode = (hashCode * -1521134295) + EqualityComparer<FieldColumn>.Default.GetHashCode(Column);
+            hashCode = (hashCode * -1521134295) + EqualityComparer<IColumn>.Default.GetHashCode(Value);
             return hashCode;
         }
     }

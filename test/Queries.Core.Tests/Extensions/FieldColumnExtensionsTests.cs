@@ -4,20 +4,20 @@ using Queries.Core.Parts.Clauses;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Text;
 using Xunit;
 using Xunit.Abstractions;
+using Xunit.Categories;
 
 namespace Queries.Core.Parts.Columns.Tests
 {
+    [UnitTest]
+    [Feature(nameof(FieldColumn))]
+    [Feature("Extensions")]
     public class FieldColumnExtensionsTests : IDisposable
     {
         private ITestOutputHelper _outputHelper;
 
-        public FieldColumnExtensionsTests(ITestOutputHelper outputHelper)
-        {
-            _outputHelper = outputHelper;
-        }
+        public FieldColumnExtensionsTests(ITestOutputHelper outputHelper) => _outputHelper = outputHelper;
 
         public void Dispose() => _outputHelper = null;
 
@@ -29,25 +29,25 @@ namespace Queries.Core.Parts.Columns.Tests
                 {
                     new FieldColumn("firstname"),
                     "Bruce",
-                    ((Expression<Func<UpdateFieldValue, bool>>)(x =>
+                    (Expression<Func<UpdateFieldValue, bool>>)(x =>
                         x.Source != null
                         && x.Source is Literal
                         && ((Literal)x.Source).Value is string
                         && "Bruce".Equals(((Literal)x.Source).Value)
                         && x.Destination != null
                         && "firstname".Equals(x.Destination.Name)
-                    ))
+                    )
                 };
 
                 yield return new object[]
                 {
                     new FieldColumn("firstname"),
                     null,
-                    ((Expression<Func<UpdateFieldValue, bool>>)(x =>
+                    (Expression<Func<UpdateFieldValue, bool>>)(x =>
                         x.Source  == null
                         && x.Destination != null
                         && "firstname".Equals(x.Destination.Name)
-                    ))
+                    )
                 };
             }
         }

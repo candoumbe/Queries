@@ -1,5 +1,4 @@
-﻿using System;
-using Queries.Core.Parts.Columns;
+﻿using Queries.Core.Parts.Columns;
 
 namespace System
 {
@@ -46,7 +45,7 @@ namespace System
         /// <param name="value"></param>
         /// <param name="format">format to use when converting <paramref name="value"/> to its string representation</param>
         /// <returns></returns>
-        public static DateTimeColumn Literal(this DateTime value, string format = default) => format == default 
+        public static DateTimeColumn Literal(this DateTime value, string format = default) => format == default
             ? new DateTimeColumn(value)
             : new DateTimeColumn(value, format);
     }

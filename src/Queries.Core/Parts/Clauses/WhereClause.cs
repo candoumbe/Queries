@@ -36,11 +36,11 @@ namespace Queries.Core.Parts.Clauses
                             Constraint = strings;
                             break;
                         case null:
-                            throw new ArgumentNullException(nameof(constraint), 
+                            throw new ArgumentNullException(nameof(constraint),
                                 $"{nameof(constraint)} cannot be null when {nameof(@operator)} is {nameof(ClauseOperator)}.{nameof(ClauseOperator.In)}");
-                            
+
                         default:
-                            
+
                             break;
                     }
                 }
@@ -49,18 +49,18 @@ namespace Queries.Core.Parts.Clauses
         }
 
         public override bool Equals(object obj) => Equals(obj as WhereClause);
-        public bool Equals(WhereClause other) => 
-            other != null 
+        public bool Equals(WhereClause other) =>
+            other != null
             && Column.Equals(other.Column)
-            && Operator == other.Operator 
-            && (Constraint == null && other.Constraint == null || Constraint.Equals(other.Constraint));
+            && Operator == other.Operator
+            && ((Constraint == null && other.Constraint == null) || Constraint.Equals(other.Constraint));
 
         public override int GetHashCode()
         {
             int hashCode = -300605098;
-            hashCode = hashCode * -1521134295 + EqualityComparer<IColumn>.Default.GetHashCode(Column);
-            hashCode = hashCode * -1521134295 + Operator.GetHashCode();
-            hashCode = hashCode * -1521134295 + EqualityComparer<ColumnBase>.Default.GetHashCode(Constraint);
+            hashCode = (hashCode * -1521134295) + EqualityComparer<IColumn>.Default.GetHashCode(Column);
+            hashCode = (hashCode * -1521134295) + Operator.GetHashCode();
+            hashCode = (hashCode * -1521134295) + EqualityComparer<ColumnBase>.Default.GetHashCode(Constraint);
             return hashCode;
         }
 

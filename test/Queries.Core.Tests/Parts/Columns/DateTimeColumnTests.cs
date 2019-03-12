@@ -3,9 +3,13 @@ using Queries.Core.Parts.Columns;
 using System;
 using System.Collections.Generic;
 using Xunit;
+using Xunit.Categories;
 
 namespace Queries.Core.Tests.Parts.Columns
 {
+    [UnitTest]
+    [Feature("Column")]
+    [Feature(nameof(DateTimeColumn))]
     public class DateTimeColumnTests
     {
         public static IEnumerable<object[]> ConstructorWithFormatCases

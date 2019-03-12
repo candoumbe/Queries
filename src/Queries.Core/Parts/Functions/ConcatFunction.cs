@@ -5,7 +5,6 @@ using Queries.Core.Parts.Columns;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using static Newtonsoft.Json.JsonConvert;
 
 namespace Queries.Core.Parts.Functions
 {
@@ -73,8 +72,8 @@ namespace Queries.Core.Parts.Functions
         public override int GetHashCode()
         {
             int hashCode = -1367283405;
-            hashCode = hashCode * -1521134295 + EqualityComparer<IEnumerable<IColumn>>.Default.GetHashCode(Columns);
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Alias);
+            hashCode = (hashCode * -1521134295) + EqualityComparer<IEnumerable<IColumn>>.Default.GetHashCode(Columns);
+            hashCode = (hashCode * -1521134295) + EqualityComparer<string>.Default.GetHashCode(Alias);
             return hashCode;
         }
 

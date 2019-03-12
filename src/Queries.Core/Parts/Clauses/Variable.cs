@@ -33,7 +33,6 @@ namespace Queries.Core.Parts.Clauses
             Type = type;
         }
 
-       
         /// <summary>
         /// Name of the parameter
         /// </summary>
@@ -51,17 +50,17 @@ namespace Queries.Core.Parts.Clauses
 
         public override IColumn Clone() => new Variable(Name, Type, Value);
         public override bool Equals(object obj) => Equals(obj as Variable);
-        public bool Equals(Variable other) => 
-            other != null 
-            && Name == other.Name 
+        public bool Equals(Variable other) =>
+            other != null
+            && Name == other.Name
             && EqualityComparer<object>.Default.Equals(Value, other.Value) && Type == other.Type;
 
         public override int GetHashCode()
         {
             int hashCode = 1477810893;
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Name);
-            hashCode = hashCode * -1521134295 + EqualityComparer<object>.Default.GetHashCode(Value);
-            hashCode = hashCode * -1521134295 + Type.GetHashCode();
+            hashCode = (hashCode * -1521134295) + EqualityComparer<string>.Default.GetHashCode(Name);
+            hashCode = (hashCode * -1521134295) + EqualityComparer<object>.Default.GetHashCode(Value);
+            hashCode = (hashCode * -1521134295) + Type.GetHashCode();
             return hashCode;
         }
 

@@ -2,8 +2,6 @@
 using Queries.Core.Parts.Columns;
 using Queries.Core.Parts.Sorting;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using Xunit;
 
 namespace Queries.Core.Tests.Parts.Sorting

@@ -1,5 +1,4 @@
-﻿using Queries.Core.Extensions;
-using Queries.Core.Parts.Columns;
+﻿using Queries.Core.Parts.Columns;
 using System;
 
 namespace Queries.Core.Parts.Sorting

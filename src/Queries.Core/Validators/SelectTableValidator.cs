@@ -5,6 +5,6 @@ namespace Queries.Core.Validators
 {
     public class SelectTableValidator : AbstractValidator<SelectTable>
     {
-        
+
     }
 }

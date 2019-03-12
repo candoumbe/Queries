@@ -4,14 +4,11 @@ using System.Linq;
 using System.Text;
 using Queries.Core.Builders;
 using Queries.Core.Builders.Fluent;
-using Queries.Core.Exceptions;
-using Queries.Core.Extensions;
 using Queries.Core.Parts;
 using Queries.Core.Parts.Clauses;
 using Queries.Core.Parts.Columns;
 using Queries.Core.Parts.Joins;
 using Queries.Core.Parts.Sorting;
-using Queries.Core.Validators;
 using Queries.Core.Parts.Functions;
 using System.Reflection;
 using Queries.Core.Attributes;
@@ -569,6 +566,8 @@ namespace Queries.Core.Renderers
                 case UpperFunction upperColumn:
                     columnString = RenderUpperColumn(upperColumn, renderAlias);
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException("Unknown function type");
             }
 
             return columnString;
@@ -594,11 +593,9 @@ namespace Queries.Core.Renderers
         {
             string sbLengthColumn = $"{LengthFunctionName}({RenderColumn(lengthColumn.Column, false)})";
 
-            string queryString = renderAlias && !string.IsNullOrWhiteSpace(lengthColumn.Alias)
+            return renderAlias && !string.IsNullOrWhiteSpace(lengthColumn.Alias)
                 ? RenderColumnnameWithAlias(sbLengthColumn, EscapeName(lengthColumn.Alias))
                 : sbLengthColumn;
-
-            return queryString;
         }
 
         protected virtual string RenderSubstringColumn(SubstringFunction substringColumn, bool renderAlias)

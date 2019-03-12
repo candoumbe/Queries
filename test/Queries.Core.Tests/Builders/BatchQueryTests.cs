@@ -3,12 +3,15 @@ using Queries.Core.Builders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Xunit;
+using Xunit.Categories;
 using static Queries.Core.Builders.Fluent.QueryBuilder;
 
 namespace Queries.Core.Tests.Builders
 {
+    [UnitTest]
+    [Feature("Batch query")]
+    [Feature("Builder")]
     public class BatchQueryTests
     {
         [Fact]

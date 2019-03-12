@@ -1,5 +1,4 @@
-﻿using System;
-using Queries.Core.Parts;
+﻿using Queries.Core.Parts;
 using FluentValidation;
 
 namespace Queries.Core.Validators

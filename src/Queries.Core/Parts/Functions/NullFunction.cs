@@ -49,17 +49,17 @@ namespace Queries.Core.Parts.Functions
         }
 
         public override bool Equals(object obj) => Equals(obj as NullFunction);
-        public bool Equals(NullFunction other) => other != null 
-            && Column.Equals(other.Column) 
+        public bool Equals(NullFunction other) => other != null
+            && Column.Equals(other.Column)
             && DefaultValue.Equals(other.DefaultValue)
             && Alias == other.Alias;
 
         public override int GetHashCode()
         {
             int hashCode = 1755619493;
-            hashCode = hashCode * -1521134295 + EqualityComparer<IColumn>.Default.GetHashCode(Column);
-            hashCode = hashCode * -1521134295 + EqualityComparer<IColumn>.Default.GetHashCode(DefaultValue);
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Alias);
+            hashCode = (hashCode * -1521134295) + EqualityComparer<IColumn>.Default.GetHashCode(Column);
+            hashCode = (hashCode * -1521134295) + EqualityComparer<IColumn>.Default.GetHashCode(DefaultValue);
+            hashCode = (hashCode * -1521134295) + EqualityComparer<string>.Default.GetHashCode(Alias);
             return hashCode;
         }
 

@@ -17,7 +17,7 @@ namespace Queries.Core.Builders
         /// Name of the view
         /// </summary>
         public string ViewName { get;}
-        
+
         /// <summary>
         /// <see cref="Builders.SelectQuery"/> the view will be built from
         /// </summary>
@@ -49,7 +49,6 @@ namespace Queries.Core.Builders
             return this;
         }
 
-
         public CreateViewQuery Build() => this;
         public override bool Equals(object obj) => Equals(obj as CreateViewQuery);
         public bool Equals(CreateViewQuery other) => other != null && ViewName == other.ViewName && EqualityComparer<SelectQuery>.Default.Equals(SelectQuery, other.SelectQuery);
@@ -57,8 +56,8 @@ namespace Queries.Core.Builders
         public override int GetHashCode()
         {
             int hashCode = -954091970;
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(ViewName);
-            hashCode = hashCode * -1521134295 + EqualityComparer<SelectQuery>.Default.GetHashCode(SelectQuery);
+            hashCode = (hashCode * -1521134295) + EqualityComparer<string>.Default.GetHashCode(ViewName);
+            hashCode = (hashCode * -1521134295) + EqualityComparer<SelectQuery>.Default.GetHashCode(SelectQuery);
             return hashCode;
         }
     }

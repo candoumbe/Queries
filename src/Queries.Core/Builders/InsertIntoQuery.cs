@@ -20,17 +20,12 @@ namespace Queries.Core.Builders
         /// </summary>
         public string TableName { get; }
 
-
         /// <summary>
         /// Creates a new <see cref="InsertIntoQuery"/>
         /// </summary>
         /// <param name="tableName">name of the table the INSERT INTO will be made for</param>
         /// <exception cref="ArgumentNullException">if <paramref name="tableName"/> is <c>null</c>.</exception>
-        public InsertIntoQuery(string tableName)
-        {
-            TableName = tableName ?? throw new ArgumentNullException(nameof(tableName));
-        }
-
+        public InsertIntoQuery(string tableName) => TableName = tableName ?? throw new ArgumentNullException(nameof(tableName));
 
         public IBuild<InsertIntoQuery> Values(SelectQuery values)
         {
@@ -39,7 +34,6 @@ namespace Queries.Core.Builders
             return this;
         }
 
-        
         public IBuild<InsertIntoQuery> Values(InsertedValue value, params InsertedValue[] values)
         {
             InsertedValues insertedValues = new InsertedValues() { value };
@@ -56,16 +50,17 @@ namespace Queries.Core.Builders
         public InsertIntoQuery Build() => this;
 
         public override bool Equals(object obj) => Equals(obj as InsertIntoQuery);
+
         public bool Equals(InsertIntoQuery other) =>
             other != null
             && TableName == other.TableName
-            && InsertedValue.Equals(other.InsertedValue); 
+            && InsertedValue.Equals(other.InsertedValue);
 
         public override int GetHashCode()
         {
             int hashCode = 792988066;
-            hashCode = hashCode * -1521134295 + EqualityComparer<IInsertable>.Default.GetHashCode(InsertedValue);
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(TableName);
+            hashCode = (hashCode * -1521134295) + EqualityComparer<IInsertable>.Default.GetHashCode(InsertedValue);
+            hashCode = (hashCode * -1521134295) + EqualityComparer<string>.Default.GetHashCode(TableName);
             return hashCode;
         }
     }

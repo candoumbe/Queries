@@ -8,10 +8,14 @@ using System.Collections.Generic;
 using System.Reflection;
 using Xunit;
 using Xunit.Abstractions;
+using Xunit.Categories;
 using static Queries.Core.Builders.Fluent.QueryBuilder;
 
 namespace Queries.Core.Tests.Builders
 {
+    [UnitTest]
+    [Feature("Update")]
+    [Feature("Builder")]
     public class UpdateQueryTests : IDisposable
     {
         private ITestOutputHelper _outputHelper;

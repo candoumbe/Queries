@@ -20,7 +20,6 @@ namespace Queries.Core.Parts.Functions
         /// </summary>
         public int Start { get; }
 
-
         /// <summary>
         /// Defines the length of the extracted substring
         /// </summary>
@@ -56,9 +55,14 @@ namespace Queries.Core.Parts.Functions
 
         public string Alias { get; private set; }
 
-
+        /// <summary>
+        /// Defines an alias for the <see cref="SubstringFunction"/>
+        /// </summary>
+        /// <param name="alias">The new alias</param>
+        /// <returns></returns>
         public SubstringFunction As(string alias)
         {
+            // TODO Validate the alias ?
             Alias = alias;
             return this;
         }

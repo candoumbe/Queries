@@ -3,13 +3,14 @@ using Queries.Core.Parts.Clauses;
 using Queries.Core.Parts.Columns;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
 using Xunit;
+using Xunit.Categories;
 using static Queries.Core.Parts.Clauses.ClauseLogic;
 
 namespace Queries.Core.Tests.Parts
 {
+    [UnitTest]
+    [Feature("Where")]
     public class CompositeWhereClauseTests
     {
         [Fact]

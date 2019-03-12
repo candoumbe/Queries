@@ -8,11 +8,14 @@ using System.Reflection;
 using Xunit;
 using Xunit.Abstractions;
 using static Queries.Core.Builders.Fluent.QueryBuilder;
-using static Newtonsoft.Json.JsonConvert;
 using Queries.Core.Attributes;
+using Xunit.Categories;
 
 namespace Queries.Core.Tests.Parts.Functions
 {
+    [UnitTest]
+    [Feature(nameof(ConcatFunction))]
+    [Feature("Functions")]
     public class ConcatFunctionFunctionTests : IDisposable
     {
         private ITestOutputHelper _outputHelper;
@@ -48,19 +51,8 @@ namespace Queries.Core.Tests.Parts.Functions
         }
 
         [Fact]
-        public void HasFunctionAttribute()
-        {
-            // Arrange 
-            TypeInfo lengthFunctionType = typeof(ConcatFunction)
-                .GetTypeInfo();
-
-            // Act
-            FunctionAttribute attr = lengthFunctionType.GetCustomAttribute<FunctionAttribute>();
-
-            // Assert
-            attr.Should()
-                .NotBeNull($"{nameof(ConcatFunction)} must be marked with {nameof(FunctionAttribute)}");
-        }
+        public void HasFunctionAttribute() => typeof(ConcatFunction).Should()
+                .BeDecoratedWithOrInherit<FunctionAttribute>($"{nameof(ConcatFunction)} must be marked with {nameof(FunctionAttribute)}");
 
         public static IEnumerable<object[]> EqualsCases
         {
@@ -88,7 +80,8 @@ namespace Queries.Core.Tests.Parts.Functions
             bool actualResult = first.Equals(second);
 
             // Assert
-            actualResult.Should().Be(expectedResult, reason);
+            actualResult.Should()
+                .Be(expectedResult, reason);
         }
 
         public static IEnumerable<object[]> ToStringCases {

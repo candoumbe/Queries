@@ -1,8 +1,6 @@
 ﻿using FluentAssertions;
 using Queries.Core.Parts.Columns;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -10,7 +8,7 @@ namespace Queries.Core.Tests.Parts.Columns
 {
     public class StringValuesTests
     {
-        private ITestOutputHelper _outputHelper;
+        private readonly ITestOutputHelper _outputHelper;
 
         public StringValuesTests(ITestOutputHelper outputHelper) => _outputHelper = outputHelper;
 

@@ -1,4 +1,3 @@
-using Queries.Core.Attributes;
 using Queries.Core.Parts.Columns;
 using System;
 using System.Collections.Generic;
@@ -32,8 +31,8 @@ namespace Queries.Core.Builders
         public override int GetHashCode()
         {
             int hashCode = 1918477335;
-            hashCode = hashCode * -1521134295 + EqualityComparer<ColumnBase>.Default.GetHashCode(Source);
-            hashCode = hashCode * -1521134295 + EqualityComparer<FieldColumn>.Default.GetHashCode(Destination);
+            hashCode = (hashCode * -1521134295) + EqualityComparer<ColumnBase>.Default.GetHashCode(Source);
+            hashCode = (hashCode * -1521134295) + EqualityComparer<FieldColumn>.Default.GetHashCode(Destination);
             return hashCode;
         }
     }

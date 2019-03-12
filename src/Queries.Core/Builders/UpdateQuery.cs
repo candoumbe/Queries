@@ -38,11 +38,11 @@ namespace Queries.Core.Builders
             Table = tableName.Table();
             Values = new List<UpdateFieldValue>();
         }
-        
+
 
         public UpdateQuery(Table table) : this(table?.Name)
         {
-            
+
         }
 
 
@@ -60,17 +60,17 @@ namespace Queries.Core.Builders
 
         public override bool Equals(object obj) => Equals(obj as UpdateQuery);
         public bool Equals(UpdateQuery other) => other != null
-                && (Table == null && other.Table == null || Table.Equals(other.Table))
+                && ((Table == null && other.Table == null) || Table.Equals(other.Table))
                 && Values.SequenceEqual(other.Values)
-                && (Criteria == null && other.Criteria == null || Criteria.Equals(other.Criteria));
+                && ((Criteria == null && other.Criteria == null) || Criteria.Equals(other.Criteria));
 
 
         public override int GetHashCode()
         {
             int hashCode = -1291674402;
-            hashCode = hashCode * -1521134295 + EqualityComparer<Table>.Default.GetHashCode(Table);
-            hashCode = hashCode * -1521134295 + EqualityComparer<IList<UpdateFieldValue>>.Default.GetHashCode(Values);
-            hashCode = hashCode * -1521134295 + EqualityComparer<IWhereClause>.Default.GetHashCode(Criteria);
+            hashCode = (hashCode * -1521134295) + EqualityComparer<Table>.Default.GetHashCode(Table);
+            hashCode = (hashCode * -1521134295) + EqualityComparer<IList<UpdateFieldValue>>.Default.GetHashCode(Values);
+            hashCode = (hashCode * -1521134295) + EqualityComparer<IWhereClause>.Default.GetHashCode(Criteria);
             return hashCode;
         }
 

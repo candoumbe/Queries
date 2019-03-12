@@ -1,15 +1,18 @@
 using System;
 using System.Collections.Generic;
-using Queries.Core.Extensions;
 using Queries.Core.Parts.Columns;
 using Xunit;
 using Queries.Core.Parts.Functions;
 using FluentAssertions;
 using System.Reflection;
 using Queries.Core.Attributes;
+using Xunit.Categories;
 
 namespace Queries.Core.Tests.Parts.Columns
 {
+    [UnitTest]
+    [Feature(nameof(UpperFunction))]
+    [Feature("Functions")]
     public class UpperFunctionTests
     {
         [Fact]
@@ -57,17 +60,7 @@ namespace Queries.Core.Tests.Parts.Columns
 
         [Fact]
         public void HasFunctionAttribute()
-        {
-            // Arrange 
-            TypeInfo lengthFunctionType = typeof(UpperFunction)
-                .GetTypeInfo();
-
-            // Act
-            FunctionAttribute attr = lengthFunctionType.GetCustomAttribute<FunctionAttribute>();
-
-            // Assert
-            attr.Should()
-                .NotBeNull($"{nameof(UpperFunction)} must be marked with {nameof(FunctionAttribute)}");
-        }
+            => typeof(UpperFunction).Should()
+                .BeDecoratedWith<FunctionAttribute>($"{nameof(UpperFunction)} must be marked with {nameof(FunctionAttribute)}");
     }
 }

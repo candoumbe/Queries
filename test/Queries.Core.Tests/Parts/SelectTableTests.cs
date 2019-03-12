@@ -3,12 +3,13 @@ using Queries.Core.Builders;
 using Queries.Core.Parts;
 using System;
 using Xunit;
+using Xunit.Categories;
 using static Queries.Core.Builders.Fluent.QueryBuilder;
-using Queries.Core.Extensions;
 
 namespace Queries.Core.Tests.Parts
 {
-    [Collection("Unit tests")]
+    [UnitTest]
+    [Feature("Select table")]
     public class SelectTableTests
     {
         [Fact]
@@ -23,6 +24,7 @@ namespace Queries.Core.Tests.Parts
                 .NotBeNullOrWhiteSpace();
         }
 
+        [Feature("Alias")]
         [Fact]
         public void SettingAlias()
         {
@@ -53,6 +55,31 @@ namespace Queries.Core.Tests.Parts
 
             // Assert
             selectTable.Select.Should().BeSameAs(select);
+        }
+
+        [Fact]
+        public void CloneTest()
+        {
+            // Arrange
+            SelectQuery query = Select("firstname".Field(), "lastname".Field())
+                                .From("people")
+                                .Build();
+            SelectTable source = new SelectTable(query)
+                                .As("p");
+
+            // Act
+            ITable copy = source.Clone();
+
+            // Assert
+            SelectTable clone = copy.Should()
+                .NotBeNull().And
+                .BeAssignableTo<SelectTable>().Which;
+
+            clone.Should()
+                .BeEquivalentTo(source);
+            clone.Select.Should()
+                .NotBeSameAs(query, "select must be cloned as well").And
+                .BeEquivalentTo(query);
         }
     }
 }

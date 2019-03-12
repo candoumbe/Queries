@@ -8,9 +8,12 @@ using Xunit.Abstractions;
 using static Queries.Core.Parts.Clauses.ClauseOperator;
 using static Queries.Core.Builders.Fluent.QueryBuilder;
 using System.Linq.Expressions;
+using Xunit.Categories;
 
 namespace Queries.Core.Tests.Parts.Clauses
 {
+    [UnitTest]
+    [Feature("Where")]
     public class WhereClauseTests : IDisposable
     {
         private ITestOutputHelper _outputHelper;
@@ -62,41 +65,41 @@ namespace Queries.Core.Tests.Parts.Clauses
                 yield return new object[]
                 {
                     new Literal(1), EqualTo, 1,
-                    ((Expression<Func<WhereClause, bool>>)(clause =>
+                    (Expression<Func<WhereClause, bool>>)(clause =>
                         1.Literal().Equals(clause.Column)
                         && EqualTo == clause.Operator
                         && 1.Literal().Equals(clause.Constraint)
-                    ))
+                    )
                 };
 
                 yield return new object[]
                 {
                     new NumericColumn(1), EqualTo, "a",
-                    ((Expression<Func<WhereClause, bool>>)(clause =>
+                    (Expression<Func<WhereClause, bool>>)(clause =>
                         1.Literal().Equals(clause.Column)
                         && EqualTo == clause.Operator
                         && "a".Literal().Equals(clause.Constraint)
-                    ))
+                    )
                 };
 
                 yield return new object[]
                 {
                     "Firstname".Field(), LessThan, $"{"Bruce"}",
-                    ((Expression<Func<WhereClause, bool>>)(clause =>
+                    (Expression<Func<WhereClause, bool>>)(clause =>
                         "Firstname".Field().Equals(clause.Column)
                         && LessThan == clause.Operator
                         && "Bruce".Literal().Equals(clause.Constraint)
-                    ))
+                    )
                 };
 
                 yield return new object[]
                 {
                     "Firstname".Field(), In, new StringValues("Bruce", "Lex", "Clark"),
-                    ((Expression<Func<WhereClause, bool>>)(clause =>
+                    (Expression<Func<WhereClause, bool>>)(clause =>
                         "Firstname".Field().Equals(clause.Column)
                         && In == clause.Operator
                         && new StringValues("Bruce", "Lex", "Clark").Equals(clause.Constraint)
-                    ))
+                    )
                 };
             }
         }

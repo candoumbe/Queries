@@ -3,7 +3,6 @@ using static Queries.Core.Builders.Fluent.QueryBuilder;
 using System.Collections.Generic;
 using Queries.Core;
 using Queries.Core.Builders;
-using Queries.Core.Extensions;
 using FluentAssertions;
 using System;
 using Queries.Core.Renderers;

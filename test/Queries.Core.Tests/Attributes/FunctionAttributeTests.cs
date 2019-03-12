@@ -1,13 +1,15 @@
 ﻿using FluentAssertions;
 using Queries.Core.Attributes;
 using System;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 using Xunit;
+using Xunit.Categories;
 
 namespace Queries.Core.Tests.Attributes
 {
+    [UnitTest]
+    [Feature(nameof(FunctionAttribute))]
+    [Feature("Attributes")]
     public class FunctionAttributeTests
     {
         [Fact]
