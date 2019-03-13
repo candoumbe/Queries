@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Description>Queries.Renderers.SqlServer.Tests Class Library</Description>
     <Authors>Cyrille NDOUMBE</Authors>
-    <TargetFrameworks>netcoreapp1.0;netcoreapp2.0</TargetFrameworks>
+    <TargetFrameworks>netcoreapp1.0;netcoreapp2.1</TargetFrameworks>
     <AssemblyName>Queries.Renderers.SqlServer.Tests</AssemblyName>
     <PackageId>Queries.Renderers.SqlServer.Tests</PackageId>
     <LangVersion>latest</LangVersion>
@@ -26,7 +26,7 @@
     </PackageReference>
     <PackageReference Include="xunit" Version="2.4.1" />
     <PackageReference Include="FluentAssertions" Version="5.4.2" />
-    <PackageReference Condition="'$(TargetFramework)' == 'netcoreapp2.0'" Include="NaughtyStrings" Version="2.0.0" />
+    <PackageReference Condition="'$(TargetFramework)' == 'netcoreapp2.1'" Include="NaughtyStrings" Version="2.0.0" />
   </ItemGroup>
 
   <ItemGroup>
