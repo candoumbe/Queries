@@ -137,9 +137,11 @@ namespace Queries.Core.Builders
 
         public SelectQuery Build() => this;
 
-        ISortQuery<SelectQuery> IWhereQuery<SelectQuery>.OrderBy(params ISort[] sorts)
+        ISortQuery<SelectQuery> IWhereQuery<SelectQuery>.OrderBy(ISort first, params ISort[] others)
         {
-            foreach (ISort sort in sorts)
+            Sorts.Add(first);
+
+            foreach (ISort sort in others.Where(s => s != default))
             {
                 Sorts.Add(sort);
             }

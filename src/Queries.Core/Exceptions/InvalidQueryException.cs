@@ -12,5 +12,9 @@ namespace Queries.Core.Exceptions
 
         public InvalidQueryException(string message) : base(message)
         {}
+
+        public InvalidQueryException(string message, Exception innerException) : base(message, innerException)
+        {
+        }
     }
 }

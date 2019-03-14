@@ -84,7 +84,7 @@ namespace Queries.Core.Tests.Parts.Clauses
 
                 yield return new object[]
                 {
-                    "Firstname".Field(), LessThan, $"{"Bruce"}",
+                    "Firstname".Field(), LessThan, "Bruce",
                     (Expression<Func<WhereClause, bool>>)(clause =>
                         "Firstname".Field().Equals(clause.Column)
                         && LessThan == clause.Operator

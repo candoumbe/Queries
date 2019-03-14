@@ -19,6 +19,7 @@ namespace Queries.Core.Parts.Clauses
         /// Logical operator used between each <see cref="Clauses"/>' item.
         /// </summary>
         public ClauseLogic Logic { get; set; }
+
         /// <summary>
         /// <see cref="IWhereClause"/> instances that are combined
         /// </summary>
@@ -36,24 +37,22 @@ namespace Queries.Core.Parts.Clauses
         public CompositeWhereClause() => _clauses = Enumerable.Empty<IWhereClause>();
 
         public override bool Equals(object obj) => Equals(obj as CompositeWhereClause);
+
         public bool Equals(CompositeWhereClause other) =>
             other != null
             && Logic == other.Logic
             && Clauses.SequenceEqual(other.Clauses);
 
-        public override int GetHashCode()
-        {
-            int hashCode = 411513146;
-            hashCode = (hashCode * -1521134295) + Logic.GetHashCode();
-            hashCode = (hashCode * -1521134295) + EqualityComparer<IEnumerable<IWhereClause>>.Default.GetHashCode(Clauses);
-            return hashCode;
-        }
+        public bool Equals(IWhereClause other) => Equals(other as CompositeWhereClause);
 
+        public override int GetHashCode() => (Logic, Clauses).GetHashCode();
 
         public IWhereClause Clone() => new CompositeWhereClause
         {
             Logic = Logic,
             Clauses = Clauses.Select(x => x.Clone()).ToList()
         };
+
+        public override string ToString() => this.Stringify();
     }
 }

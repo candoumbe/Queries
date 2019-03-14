@@ -23,7 +23,7 @@ namespace Queries.Core.Tests.Parts
             clause.Clauses.Should().BeEmpty();
             clause.Logic.Should().Be(And);
         }
-        
+
         public static IEnumerable<object[]> EqualsCases
         {
             get
@@ -110,7 +110,6 @@ namespace Queries.Core.Tests.Parts
                 }
             }
         }
-
 
         [Theory]
         [MemberData(nameof(EqualsCases))]
