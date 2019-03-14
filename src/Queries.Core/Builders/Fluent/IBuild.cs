@@ -3,13 +3,13 @@
     /// <summary>
     /// Interface for fluent builders.
     /// </summary>
-    /// <typeparam name="T">Type of element that can be build</typeparam>
-    public interface IBuild<out T> : IQuery
+    /// <typeparam name="TQuery">Type of query that the current instance can will build</typeparam>
+    public interface IBuild<out TQuery> : IQuery
     {
         /// <summary>
-        /// Builds the <see cref="T"/> element
+        /// Builds the <see cref="TQuery"/> element
         /// </summary>
-        /// <returns><see cref="T"/> instance</returns>
-        T Build();
+        /// <returns><see cref="TQuery"/> instance</returns>
+        TQuery Build();
     }
 }

@@ -137,11 +137,11 @@ namespace Queries.Core.Builders
 
         public SelectQuery Build() => this;
 
-        ISortQuery<SelectQuery> IWhereQuery<SelectQuery>.OrderBy(ISort first, params ISort[] others)
+        ISortQuery<SelectQuery> IWhereQuery<SelectQuery>.OrderBy(ISort sort, params ISort[] sorts)
         {
-            Sorts.Add(first);
+            Sorts.Add(sort);
 
-            foreach (ISort sort in others.Where(s => s != default))
+            foreach (ISort items in sorts.Where(s => s != default))
             {
                 Sorts.Add(sort);
             }
@@ -194,17 +194,9 @@ namespace Queries.Core.Builders
             return equals;
         }
 
-        public override int GetHashCode()
-        {
-            int hashCode = 1000813348;
-            hashCode = (hashCode * -1521134295) + EqualityComparer<int?>.Default.GetHashCode(NbRows);
-            hashCode = (hashCode * -1521134295) + EqualityComparer<IList<ITable>>.Default.GetHashCode(Tables);
-            hashCode = (hashCode * -1521134295) + EqualityComparer<IList<IUnionQuery<SelectQuery>>>.Default.GetHashCode(Unions);
-            hashCode = (hashCode * -1521134295) + EqualityComparer<string>.Default.GetHashCode(Alias);
-            return hashCode;
-        }
+        public override int GetHashCode() => (Alias, Columns, HavingCriteria, Joins, NbRows, Sorts, Tables, Unions, WhereCriteria).GetHashCode();
 
-        public override string ToString() => SerializeObject(this);
+        public override string ToString() => this.Stringify();
 
         /// <summary>
         /// Performs a deep copy of the current instance.

@@ -36,9 +36,9 @@ namespace Queries.Renderers.Neo4J
 
             NormalizeColumnAndTable(columns, selectQuery, tables);
 
-            sbQuery.Append($"MATCH {RenderTables(tables)} {(Settings.PrettyPrint ? Environment.NewLine : string.Empty)}" +
-                           (query.WhereCriteria != null ? $"WHERE {RenderWhere(query.WhereCriteria)} {(Settings.PrettyPrint ? Environment.NewLine : string.Empty)}" : string.Empty) +
-                           $"RETURN {RenderColumns(columns)}{BatchStatementSeparator}");
+            sbQuery.Append("MATCH ").Append(RenderTables(tables)).Append(" ").Append(Settings.PrettyPrint ? Environment.NewLine : string.Empty)
+                .Append(query.WhereCriteria != null ? $"WHERE {RenderWhere(query.WhereCriteria)} {(Settings.PrettyPrint ? Environment.NewLine : string.Empty)}" : string.Empty)
+                .Append("RETURN ").Append(RenderColumns(columns)).Append(BatchStatementSeparator);
 
             return sbQuery.ToString();
         }
@@ -115,7 +115,7 @@ namespace Queries.Renderers.Neo4J
                 {
                     IColumn columnValue = kv.Value;
                     string valueString = RenderColumn(columnValue, false);
-                    sbCreate.Append($"{(sbCreate.Length > 0 ? ", " : string.Empty)}{kv.Key} : {valueString ?? "NULL"}");
+                    sbCreate.Append(sbCreate.Length > 0 ? ", " : string.Empty).Append(kv.Key).Append(" : ").Append(valueString ?? "NULL");
                 }
 
                 sbQuery.Append($"CREATE ({query.TableName?.Substring(0, 1)?.ToLower()}:{query.TableName} {{{sbCreate}}})");
@@ -124,20 +124,20 @@ namespace Queries.Renderers.Neo4J
             return sbQuery.ToString();
         }
 
-        protected override string Render(DeleteQuery query)
+        protected override string Render(DeleteQuery deleteQuery)
         {
-            if (query == null)
+            if (deleteQuery == null)
             {
-                throw new ArgumentNullException(nameof(query));
+                throw new ArgumentNullException(nameof(deleteQuery));
             }
 
             StringBuilder sbQuery = new StringBuilder();
-            string tableAlias = query.Table?.Substring(0, 1)?.ToLower();
-            sbQuery.Append($"MATCH {RenderTablenameWithAlias(query.Table, tableAlias)} {(Settings.PrettyPrint ? Environment.NewLine : string.Empty)}");
+            string tableAlias = deleteQuery.Table?.Substring(0, 1)?.ToLower();
+            sbQuery.Append($"MATCH {RenderTablenameWithAlias(deleteQuery.Table, tableAlias)} {(Settings.PrettyPrint ? Environment.NewLine : string.Empty)}");
 
-            if (query.Criteria != null)
+            if (deleteQuery.Criteria != null)
             {
-                sbQuery = sbQuery.Append($"WHERE {RenderWhere(query.Criteria)} {(Settings.PrettyPrint ? Environment.NewLine : string.Empty)}");
+                sbQuery = sbQuery.Append($"WHERE {RenderWhere(deleteQuery.Criteria)} {(Settings.PrettyPrint ? Environment.NewLine : string.Empty)}");
             }
             sbQuery.Append("DELETE ").Append(tableAlias);
 

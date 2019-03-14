@@ -27,9 +27,9 @@ namespace Queries.Core.Builders
         /// <exception cref="ArgumentNullException">if <paramref name="tableName"/> is <c>null</c>.</exception>
         public InsertIntoQuery(string tableName) => TableName = tableName ?? throw new ArgumentNullException(nameof(tableName));
 
-        public IBuild<InsertIntoQuery> Values(SelectQuery values)
+        public IBuild<InsertIntoQuery> Values(SelectQuery select)
         {
-            InsertedValue = values;
+            InsertedValue = select;
 
             return this;
         }
@@ -56,12 +56,6 @@ namespace Queries.Core.Builders
             && TableName == other.TableName
             && InsertedValue.Equals(other.InsertedValue);
 
-        public override int GetHashCode()
-        {
-            int hashCode = 792988066;
-            hashCode = (hashCode * -1521134295) + EqualityComparer<IInsertable>.Default.GetHashCode(InsertedValue);
-            hashCode = (hashCode * -1521134295) + EqualityComparer<string>.Default.GetHashCode(TableName);
-            return hashCode;
-        }
+        public override int GetHashCode() => (InsertedValue, TableName).GetHashCode();
     }
 }

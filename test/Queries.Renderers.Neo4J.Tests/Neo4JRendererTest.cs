@@ -110,7 +110,7 @@ namespace Queries.Renderers.Neo4J.Tests
                             "lastname".InsertValue("Wayne".Literal()),
                             "nickname".InsertValue(Upper("Batman".Literal()))),
                     new QueryRendererSettings{ PrettyPrint = false },
-                    @"CREATE (h:Hero {firstname : 'Bruce', lastname : 'Wayne', nickname : UPPER('Batman')})"
+                    "CREATE (h:Hero {firstname : 'Bruce', lastname : 'Wayne', nickname : UPPER('Batman')})"
                 };
             }
         }
@@ -153,10 +153,7 @@ namespace Queries.Renderers.Neo4J.Tests
             }
         }
 
-        public Neo4JRendererTest(ITestOutputHelper output)
-        {
-            _output = output;
-        }
+        public Neo4JRendererTest(ITestOutputHelper output) => _output = output;
 
         [Theory]
         [MemberData(nameof(SelectCases))]

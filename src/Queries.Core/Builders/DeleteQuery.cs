@@ -44,24 +44,18 @@ namespace Queries.Core.Builders
             return this;
         }
 
-
         public IBuild<DeleteQuery> Where(FieldColumn column, ClauseOperator @operator, ColumnBase columnBase) =>
             Where(new WhereClause(column, @operator, columnBase));
 
-
         public DeleteQuery Build() => this;
+
         public override bool Equals(object obj) => Equals(obj as DeleteQuery);
+
         public bool Equals(DeleteQuery other) =>
             other != null
             && ((Table == null && other.Table == null) || Table.Equals(other.Table))
             && ((Criteria == null && other.Criteria == null) || Criteria.Equals(other.Criteria));
 
-        public override int GetHashCode()
-        {
-            int hashCode = -2032950093;
-            hashCode = (hashCode * -1521134295) + EqualityComparer<string>.Default.GetHashCode(Table);
-            hashCode = (hashCode * -1521134295) + EqualityComparer<IWhereClause>.Default.GetHashCode(Criteria);
-            return hashCode;
-        }
+        public override int GetHashCode() => (Table, Criteria).GetHashCode();
     }
 }

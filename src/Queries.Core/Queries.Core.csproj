@@ -9,12 +9,12 @@
     <AssemblyName>Queries.Core</AssemblyName>
     <PackageId>Queries.Core</PackageId>
     <PackageTags>Queries;Query;SQL;Builder</PackageTags>
-    <PackageReleaseNotes>
-      Replaced "prettyPrint" parameter with "QueryRendererSettings".
-    </PackageReleaseNotes>
-    <PackageProjectUrl>https://github.com/candoumbe/Queries</PackageProjectUrl>
-    <Version>4.0.1</Version>
+    <PackageReleaseNotes>IWhereClause implementors must now implement IEquatable&lt;IWhereClause&gt;</PackageReleaseNotes>
+    <PackageProjectUrl>https://candoumbe.visualstudio.com/Queries</PackageProjectUrl>
+    <Version>5.0.0</Version>
     <LangVersion>latest</LangVersion>
+    <RepositoryUrl>https://candoumbe.visualstudio.com/Queries</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <Choose>
