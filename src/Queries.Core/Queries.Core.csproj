@@ -9,12 +9,15 @@
     <AssemblyName>Queries.Core</AssemblyName>
     <PackageId>Queries.Core</PackageId>
     <PackageTags>Queries;Query;SQL;Builder</PackageTags>
-    <PackageReleaseNotes>IWhereClause implementors must now implement IEquatable&lt;IWhereClause&gt;</PackageReleaseNotes>
+    <PackageReleaseNotes>Renamed : 
+ISort -&gt; IOrder
+Sort -&gt; Order</PackageReleaseNotes>
     <PackageProjectUrl>https://candoumbe.visualstudio.com/Queries</PackageProjectUrl>
-    <Version>5.0.0</Version>
+    <Version>6.0.0</Version>
     <LangVersion>latest</LangVersion>
     <RepositoryUrl>https://candoumbe.visualstudio.com/Queries</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <Choose>

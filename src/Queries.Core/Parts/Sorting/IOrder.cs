@@ -2,7 +2,7 @@
 
 namespace Queries.Core.Parts.Sorting
 {
-    public interface ISort
+    public interface IOrder
     {
         /// <summary>
         /// Column onto which the sort expression will be applied
@@ -12,6 +12,6 @@ namespace Queries.Core.Parts.Sorting
         /// <summary>
         /// Sort direction
         /// </summary>
-        SortDirection Direction { get; }
+        OrderDirection Direction { get; }
     }
 }

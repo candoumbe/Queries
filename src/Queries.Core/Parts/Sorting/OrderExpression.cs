@@ -4,9 +4,9 @@ using System;
 namespace Queries.Core.Parts.Sorting
 {
     /// <summary>
-    /// Represents a SORT expression
+    /// Represents a ORDER expression
     /// </summary>
-    public class SortExpression : ISort
+    public class OrderExpression : IOrder
     {
         /// <summary>
         /// Column which the sort expression will be applied onto
@@ -14,29 +14,29 @@ namespace Queries.Core.Parts.Sorting
         public ColumnBase Column { get; }
 
         /// <summary>
-        /// The <see cref="SortDirection"/>.
+        /// The <see cref="OrderDirection"/>.
         /// </summary>
-        public SortDirection Direction { get; }
+        public OrderDirection Direction { get; }
 
         /// <summary>
-        /// Builds a new <see cref="SortExpression"/> instance.
+        /// Builds a new <see cref="OrderExpression"/> instance.
         /// </summary>
         /// <param name="column">Column onto which the sort will be applied</param>
-        /// <param name="direction">sort direction (<see cref="SortDirection.Ascending"/> by default).</param>
+        /// <param name="direction">sort direction (<see cref="OrderDirection.Ascending"/> by default).</param>
         /// <exception cref="ArgumentNullException"><paramref name="column"/> is <c>null</c>.</exception>
-        public SortExpression(ColumnBase column, SortDirection direction = SortDirection.Ascending)
+        public OrderExpression(ColumnBase column, OrderDirection direction = OrderDirection.Ascending)
         {
             Column = column ?? throw new ArgumentNullException(nameof(column));
             Direction = direction;
         }
 
         /// <summary>
-        /// Builds a new <see cref="SortExpression" /> instance. 
+        /// Builds a new <see cref="OrderExpression" /> instance. 
         /// </summary>
         /// <param name="columnNameOrAlias">column name/alias onto wich the sort will be applied.</param>
-        /// <param name="direction">sort direction (<see cref="SortDirection.Ascending"/> by default).</param>
+        /// <param name="direction">sort direction (<see cref="OrderDirection.Ascending"/> by default).</param>
         /// <exception cref="ArgumentNullException"><paramref name="columnNameOrAlias"/> is <c>null</c>.</exception>
-        public SortExpression(string columnNameOrAlias, SortDirection direction = SortDirection.Ascending) : this(columnNameOrAlias.Field(), direction)
+        public OrderExpression(string columnNameOrAlias, OrderDirection direction = OrderDirection.Ascending) : this(columnNameOrAlias.Field(), direction)
         {}
     }
 }

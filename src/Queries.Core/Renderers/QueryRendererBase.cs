@@ -219,14 +219,14 @@ namespace Queries.Core.Renderers
                 {
                     StringBuilder sbOrderBy = new StringBuilder();
 
-                    foreach (ISort sort in query.Sorts)
+                    foreach (IOrder sort in query.Sorts)
                     {
                         if (sbOrderBy.Length > 0)
                         {
                             sbOrderBy = sbOrderBy.Append(", ");
                         }
 
-                        sbOrderBy = sort.Direction == SortDirection.Descending
+                        sbOrderBy = sort.Direction == OrderDirection.Descending
                             ? sbOrderBy.Append($"{RenderColumn(sort.Column, false)} DESC")
                             : sbOrderBy.Append(RenderColumn(sort.Column, false));
                     }

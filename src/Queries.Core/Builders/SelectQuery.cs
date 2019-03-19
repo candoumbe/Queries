@@ -13,7 +13,7 @@ using static Newtonsoft.Json.JsonConvert;
 namespace Queries.Core.Builders
 {
     [JsonObject(ItemReferenceLoopHandling = ReferenceLoopHandling.Ignore)]
-    public class SelectQuery : SelectQueryBase, ISelectQuery<SelectQuery>, IFromQuery<SelectQuery>, IWhereQuery<SelectQuery>, IJoinQuery<SelectQuery>, ISortQuery<SelectQuery>, IInsertable, IEquatable<SelectQuery>
+    public class SelectQuery : SelectQueryBase, ISelectQuery<SelectQuery>, IFromQuery<SelectQuery>, IWhereQuery<SelectQuery>, IJoinQuery<SelectQuery>, IOrderQuery<SelectQuery>, IInsertable, IEquatable<SelectQuery>
     {
         private int? _limit;
 
@@ -137,11 +137,11 @@ namespace Queries.Core.Builders
 
         public SelectQuery Build() => this;
 
-        ISortQuery<SelectQuery> IWhereQuery<SelectQuery>.OrderBy(ISort sort, params ISort[] sorts)
+        IOrderQuery<SelectQuery> IWhereQuery<SelectQuery>.OrderBy(IOrder sort, params IOrder[] sorts)
         {
             Sorts.Add(sort);
 
-            foreach (ISort items in sorts.Where(s => s != default))
+            foreach (IOrder items in sorts.Where(s => s != default))
             {
                 Sorts.Add(sort);
             }
@@ -154,16 +154,16 @@ namespace Queries.Core.Builders
             return this;
         }
 
-        public ISortQuery<SelectQuery> OrderBy(params ISort[] sorts)
+        public IOrderQuery<SelectQuery> OrderBy(params IOrder[] sorts)
         {
-            foreach (ISort sort in sorts)
+            foreach (IOrder sort in sorts)
             {
                 Sorts.Add(sort);
             }
             return this;
         }
 
-        public ISortQuery<SelectQuery> Having(IHavingClause clause)
+        public IOrderQuery<SelectQuery> Having(IHavingClause clause)
         {
             HavingCriteria = clause;
             return this;

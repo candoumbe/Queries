@@ -4,6 +4,6 @@ namespace Queries.Core.Builders.Fluent
 {
     public interface IHavingQuery<T> : IUnionQuery<T>
     {
-        ISortQuery<T> Having(IHavingClause clause);
+        IOrderQuery<T> Having(IHavingClause clause);
     }
 }

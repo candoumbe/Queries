@@ -13,7 +13,7 @@ namespace Queries.Core.Builders.Fluent
         /// </summary>
         /// <param name="sort">Sort operation</param>
         /// <param name="sorts">Additional sort operations</param>
-        /// <returns><see cref="ISortQuery{T}"/></returns>
-        ISortQuery<T> OrderBy(ISort sort, params ISort[] sorts);
+        /// <returns><see cref="IOrderQuery{T}"/></returns>
+        IOrderQuery<T> OrderBy(IOrder sort, params IOrder[] sorts);
     }
 }

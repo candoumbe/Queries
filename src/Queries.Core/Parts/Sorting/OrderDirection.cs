@@ -1,6 +1,6 @@
 ﻿namespace Queries.Core.Parts.Sorting
 {
-    public enum SortDirection
+    public enum OrderDirection
     {
         Ascending,
         Descending

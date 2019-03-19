@@ -107,7 +107,7 @@ namespace Queries.Renderers.Postgres.Tests
                 {
                     Select(Concat("firstname".Field(), " ".Literal(), "lastname".Field()))
                     .From("members")
-                    .OrderBy(new SortExpression("firstname")),
+                    .OrderBy(new OrderExpression("firstname")),
                     new QueryRendererSettings{ PrettyPrint = false },
                     @"SELECT ""firstname"" || ' ' || ""lastname"" FROM ""members"" ORDER BY ""firstname"""
                 };
@@ -116,7 +116,7 @@ namespace Queries.Renderers.Postgres.Tests
                 {
                     Select(Concat("firstname".Field(), " ".Literal(), "lastname".Field()))
                     .From("members")
-                    .OrderBy(new SortExpression("firstname", SortDirection.Descending))
+                    .OrderBy(new OrderExpression("firstname", OrderDirection.Descending))
                     ,
                     new QueryRendererSettings{ PrettyPrint = false },
                     @"SELECT ""firstname"" || ' ' || ""lastname"" FROM ""members"" ORDER BY ""firstname"" DESC"

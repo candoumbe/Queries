@@ -31,8 +31,8 @@ namespace System
         public static InsertedValue InsertValue(this string columnName, IColumn column)
             => columnName.Field().InsertValue(column);
 
-        public static ISort Asc(this string columnNameOrFieldAlias) => new SortExpression(columnNameOrFieldAlias.Field());
+        public static IOrder Asc(this string columnNameOrFieldAlias) => new OrderExpression(columnNameOrFieldAlias.Field());
 
-        public static ISort Desc(this string columnNameOrFieldAlias) => new SortExpression(columnNameOrFieldAlias.Field(), SortDirection.Descending);
+        public static IOrder Desc(this string columnNameOrFieldAlias) => new OrderExpression(columnNameOrFieldAlias.Field(), OrderDirection.Descending);
     }
 }

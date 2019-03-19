@@ -7,15 +7,15 @@ using Xunit;
 namespace Queries.Core.Tests.Parts.Sorting
 {
     /// <summary>
-    /// Unit tests for <see cref="SortExpression"/>
+    /// Unit tests for <see cref="OrderExpression"/>
     /// </summary>
-    public class SortExpressionTests
+    public class OrderExpressionTests
     {
         [Fact]
         public void CtorThrowArgumentNullExpressionWhenStringParameterIsNull()
         {
             // Act
-            Action action = () => new SortExpression((string)null);
+            Action action = () => new OrderExpression((string)null);
 
             // Assert
             action.Should().Throw<ArgumentNullException>().Which
@@ -27,7 +27,7 @@ namespace Queries.Core.Tests.Parts.Sorting
         public void CtorThrowArgumentNullExpressionWhenColumnParameterIsNull()
         {
             // Act
-            Action action = () => new SortExpression((ColumnBase)null);
+            Action action = () => new OrderExpression((ColumnBase)null);
 
             // Assert
             action.Should().Throw<ArgumentNullException>().Which

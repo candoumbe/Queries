@@ -13,7 +13,7 @@ namespace Queries.Core.Builders.Fluent
 
         IJoinQuery<T> RightOuterJoin(Table table, IWhereClause clause);
 
-        ISortQuery<T> OrderBy(params ISort[] sorts);
+        IOrderQuery<T> OrderBy(params IOrder[] sorts);
 
         IWhereQuery<T> Where(IWhereClause clause);
 

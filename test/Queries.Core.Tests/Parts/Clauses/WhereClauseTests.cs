@@ -166,7 +166,7 @@ namespace Queries.Core.Tests.Parts.Clauses
             get
             {
                 yield return new[] { new WhereClause("Firstname".Field(), EqualTo, "Bruce") };
-                yield return new[] { new WhereClause("Firstname".Field(), IsNull, "Bruce") };
+                yield return new[] { new WhereClause("Firstname".Field(), IsNull) };
                 yield return new[] { new WhereClause("Firstname".Field(), IsNotNull, "Bruce") };
                 yield return new[] { new WhereClause(1.Literal(), LessThan, 2) };
                 yield return new[] { new WhereClause(1.Literal(), GreaterThan, 2) };
