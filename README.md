@@ -77,7 +77,16 @@ using (var conn = GetConnectionSomehow() )
     IQuery query = Select(Concat("Firstname".Field(), " ".Literal(), "Lastname".Field())
         .From("SuperHero")
         .Where("Nickname", Like, "Bat%" );
+
     cmd.CommandText = query.ForSqlServer();
+    
+    /* CommandText now contains
+
+     DECLARE @p0 NVARCHAR(max)
+     SET @p0 = 'Bat%'
+     SELECT Firstname + ' ' + 'Lastname' FROM SuperHero WHERE Nickname LIKE @p0
+
+    */
 
     var result = cmd.ExecuteQuery();
 

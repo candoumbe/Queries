@@ -38,5 +38,13 @@ namespace Queries.Core.Parts.Sorting
         /// <exception cref="ArgumentNullException"><paramref name="columnNameOrAlias"/> is <c>null</c>.</exception>
         public OrderExpression(string columnNameOrAlias, OrderDirection direction = OrderDirection.Ascending) : this(columnNameOrAlias.Field(), direction)
         {}
+
+        public bool Equals(OrderExpression other) => other != null && (Column, Direction).Equals((other.Column, other.Direction));
+
+        public override int GetHashCode() => (Column, Direction).GetHashCode();
+
+        public override bool Equals(object obj) => Equals(obj as OrderExpression);
+
+        public bool Equals(IOrder other) => Equals(other as OrderExpression);
     }
 }

@@ -1,8 +1,9 @@
 ﻿using Queries.Core.Parts.Columns;
+using System;
 
 namespace Queries.Core.Parts.Sorting
 {
-    public interface IOrder
+    public interface IOrder : IEquatable<IOrder>
     {
         /// <summary>
         /// Column onto which the sort expression will be applied
