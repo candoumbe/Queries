@@ -9,7 +9,7 @@ using static Queries.Core.Parts.Clauses.VariableType;
 namespace Queries.Core.Builders
 {
     /// <summary>
-    /// Collects <see cref="Variable"/>s from queries and rewrites each literal so that it uses
+    /// Collects <see cref="Variable"/>s from queries and rewrites each literal so that it's replaces
     /// the collected variables.
     /// </summary>
     public class CollectVariableVisitor : IVisitor<SelectQuery>, IVisitor<IWhereClause>, IVisitor<InsertIntoQuery>, IVisitor<DeleteQuery>
@@ -42,7 +42,7 @@ namespace Queries.Core.Builders
             }
         }
 
-        public void Visit(IWhereClause instance)
+        public virtual void Visit(IWhereClause instance)
         {
             switch (instance)
             {

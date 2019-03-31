@@ -38,10 +38,10 @@ namespace Queries.Core.Tests.Builders
         {
             get
             {
-                yield return new object[] { "firstname".Field().EqualTo("Bruce"), null, false, "comparing with a null instance" };
-                yield return new object[] { "firstname".Field().EqualTo("Bruce"), "firstname".Field().EqualTo("Bruce"), true, "comparing two instances with same fieldname" };
-                yield return new object[] { "firstname".Field().EqualTo("Bruce"), "Firstname".Field().EqualTo("Bruce"), false, "comparing two instances with same fieldname but different casing" };
-                yield return new object[] { "firstname".Field().EqualTo("Bruce"), Select(1.Literal()), false, "comparing two different types of query" };
+                yield return new object[] { "firstname".Field().UpdateValueTo("Bruce"), null, false, "comparing with a null instance" };
+                yield return new object[] { "firstname".Field().UpdateValueTo("Bruce"), "firstname".Field().UpdateValueTo("Bruce"), true, "comparing two instances with same fieldname" };
+                yield return new object[] { "firstname".Field().UpdateValueTo("Bruce"), "Firstname".Field().UpdateValueTo("Bruce"), false, "comparing two instances with same fieldname but different casing" };
+                yield return new object[] { "firstname".Field().UpdateValueTo("Bruce"), Select(1.Literal()), false, "comparing two different types of query" };
             }
         }
 

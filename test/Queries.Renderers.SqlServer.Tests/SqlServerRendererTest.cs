@@ -88,7 +88,6 @@ namespace Queries.Renderers.SqlServer.Tests
                     "DECLARE @p0 AS VARCHAR(8000) = 'Super strength';" +
                     "DECLARE @p1 AS VARCHAR(8000) = 'Heat vision';" +
                     "SELECT [firstname], [lastname] FROM [SuperHero] WHERE ([Capabilities] NOT IN (@p0, @p1))"
-
                 };
 
                 yield return new object[]
@@ -96,7 +95,6 @@ namespace Queries.Renderers.SqlServer.Tests
                     Select(1.2f.Literal()),
                     new QueryRendererSettings { PrettyPrint = false },
                     $"SELECT {1.2f}"
-
                 };
 
                 yield return new object[]
@@ -367,19 +365,19 @@ namespace Queries.Renderers.SqlServer.Tests
             {
                 yield return new object[]
                 {
-                    Update("members").Set("UUID".Field().EqualTo(UUID())),
+                    Update("members").Set("UUID".Field().UpdateValueTo(UUID())),
                     new QueryRendererSettings{ PrettyPrint = false },
                     "UPDATE [members] SET [UUID] = NEWID()"
                 };
                 yield return new object[]
                 {
-                    Update("members").Set("firstname".Field().EqualTo("")).Where("firstname".Field().IsNull()),
+                    Update("members").Set("firstname".Field().UpdateValueTo("")).Where("firstname".Field().IsNull()),
                     new QueryRendererSettings{ PrettyPrint = false },
                     "UPDATE [members] SET [firstname] = '' WHERE ([firstname] IS NULL)"
                 };
                 yield return new object[]
                 {
-                    Update("members").Set("firstname".Field().EqualTo(null)).Where(new WhereClause("firstname".Field(), EqualTo, "")),
+                    Update("members").Set("firstname".Field().UpdateValueTo(null)).Where(new WhereClause("firstname".Field(), EqualTo, "")),
                     new QueryRendererSettings{ PrettyPrint = false },
                     "UPDATE [members] SET [firstname] = NULL WHERE ([firstname] = '')"
                 };

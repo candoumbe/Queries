@@ -57,7 +57,7 @@ namespace Queries.Core.Parts.Columns.Tests
         public void EqualToExtension(FieldColumn fc, ColumnBase value, Expression<Func<UpdateFieldValue, bool>> expectation)
         {
             // Act
-            UpdateFieldValue ufv  = fc.EqualTo(value);
+            UpdateFieldValue ufv  = fc.UpdateValueTo(value);
 
             // Assert
             ufv.Should().Match(expectation);
@@ -70,7 +70,7 @@ namespace Queries.Core.Parts.Columns.Tests
             FieldColumn fieldColumn = null;
 
             // Act
-            Action action = () => fieldColumn.EqualTo("Bruce");
+            Action action = () => fieldColumn.UpdateValueTo("Bruce");
 
             // Assert
             action.Should().Throw<ArgumentNullException>().Which

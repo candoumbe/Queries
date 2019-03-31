@@ -66,9 +66,9 @@ namespace Queries.Core.Tests.Builders
         {
             get
             {
-                yield return new object[] { Update("SuperHero").Set("firstname".Field().EqualTo("Bruce")), null, false, "comparing with a null instance" };
-                yield return new object[] { Update("SuperHero").Set("firstname".Field().EqualTo("Bruce")), Update("SuperHero").Set("firstname".Field().EqualTo("Bruce")), true, "comparing two instances with same tableName" };
-                yield return new object[] { Update("SuperHero").Set("firstname".Field().EqualTo("Bruce")), Update("SuperHero").Set("firstname".Field().EqualTo("Bruce")), true, "comparing two instances with same tableName" };
+                yield return new object[] { Update("SuperHero").Set("firstname".Field().UpdateValueTo("Bruce")), null, false, "comparing with a null instance" };
+                yield return new object[] { Update("SuperHero").Set("firstname".Field().UpdateValueTo("Bruce")), Update("SuperHero").Set("firstname".Field().UpdateValueTo("Bruce")), true, "comparing two instances with same tableName" };
+                yield return new object[] { Update("SuperHero").Set("firstname".Field().UpdateValueTo("Bruce")), Update("SuperHero").Set("firstname".Field().UpdateValueTo("Bruce")), true, "comparing two instances with same tableName" };
                 yield return new object[] { Update("SuperHero"), Select(1.Literal()), false, "comparing two different types of query" };
             }
         }

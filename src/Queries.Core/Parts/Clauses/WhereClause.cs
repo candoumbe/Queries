@@ -12,7 +12,7 @@ namespace Queries.Core.Parts.Clauses
         public Guid UniqueId { get; }
         public IColumn Column { get; }
         public ClauseOperator Operator{ get; }
-        public ColumnBase Constraint { get; set; }
+        public IColumn Constraint { get; set; }
 
         /// <summary>
         /// Builds a new <see cref="WhereClause"/> instance.
@@ -21,7 +21,7 @@ namespace Queries.Core.Parts.Clauses
         /// <param name="operator"><see cref="ClauseOperator"/> to apply</param>
         /// <param name="constraint">constraint to apply to <paramref name="column"/>.</param>
         /// <exception cref="ArgumentNullException">if <paramref name="column"/> is <c>null</c>.</exception>
-        public WhereClause(IColumn column, ClauseOperator @operator, ColumnBase constraint = null)
+        public WhereClause(IColumn column, ClauseOperator @operator, IColumn constraint = null)
         {
             Column = column ?? throw new ArgumentNullException(nameof(column));
             UniqueId = Guid.NewGuid();
@@ -46,6 +46,12 @@ namespace Queries.Core.Parts.Clauses
                 }
                 Constraint = constraint;
             }
+        }
+
+
+        public WhereClause(IColumn column, ClauseOperator @operator, string constraint) : this(column, @operator, constraint?.Literal())
+        {
+            
         }
 
         public override bool Equals(object obj) => Equals(obj as WhereClause);

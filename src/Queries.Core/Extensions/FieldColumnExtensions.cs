@@ -9,7 +9,7 @@ namespace Queries.Core.Parts.Columns
     /// </summary>
     public static class FieldColumnExtensions
     {
-        public static UpdateFieldValue EqualTo(this FieldColumn destination, ColumnBase source)
+        public static UpdateFieldValue UpdateValueTo(this FieldColumn destination, ColumnBase source)
         {
             if (destination == null)
             {
@@ -64,6 +64,8 @@ namespace Queries.Core.Parts.Columns
         /// <returns></returns>
         public static WhereClause GreaterThanOrEqualTo(this FieldColumn column, ColumnBase constraint) => new WhereClause(column, ClauseOperator.GreaterThanOrEqualTo, constraint);
 
+        public static WhereClause EqualTo(this FieldColumn column, ColumnBase constraint) => new WhereClause(column, ClauseOperator.EqualTo, constraint);
+
         /// <summary>
         /// Creates a <see cref="WhereClause"/> that states <paramref name="column"/>'s value is one the 
         /// </summary>
@@ -81,5 +83,22 @@ namespace Queries.Core.Parts.Columns
         /// <param name="values"></param>
         /// <returns></returns>
         public static WhereClause NotIn(this FieldColumn column, string first, params string[] values) => new WhereClause(column, ClauseOperator.NotIn, new StringValues(first, values));
+
+
+        /// <summary>
+        /// Creates a <see cref="WhereClause"/> that states <paramref name="column"/>'s value is like <paramref name="variable"/>.
+        /// </summary>
+        /// <param name="column">column to apply the clause onto</param>
+        /// <param name="variable"></param>
+        /// <returns></returns>
+        public static WhereClause Like(this FieldColumn column, IColumn variable) => new WhereClause(column, ClauseOperator.Like, variable);
+
+        /// <summary>
+        /// Creates a <see cref="WhereClause"/> that states <paramref name="column"/>'s value is like <paramref name="variable"/>.
+        /// </summary>
+        /// <param name="column">column to apply the clause onto</param>
+        /// <param name="variable"></param>
+        /// <returns></returns>
+        public static WhereClause Like(this FieldColumn column, string variable) => new WhereClause(column, ClauseOperator.Like, variable.Literal());
     }
 }

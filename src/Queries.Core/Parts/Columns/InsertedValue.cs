@@ -32,6 +32,7 @@ namespace Queries.Core.Parts.Columns
         }
 
         public override bool Equals(object obj) => Equals(obj as InsertedValue);
+
         public bool Equals(InsertedValue other) =>
             other != null
             && Column.Equals(other.Column)

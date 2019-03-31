@@ -22,7 +22,7 @@ namespace Queries.Core.Parts.Clauses
         /// <summary>
         /// Constraint to apply
         /// </summary>
-        public ColumnBase Constraint { get; }
+        public IColumn Constraint { get; }
 
         /// <summary>
         /// Builds a new <see cref="HavingClause"/> instance.
@@ -30,7 +30,7 @@ namespace Queries.Core.Parts.Clauses
         /// <param name="column">column the </param>
         /// <param name="operator"></param>
         /// <param name="constraint"></param>
-        public HavingClause(AggregateFunction column, ClauseOperator @operator, ColumnBase constraint = null)
+        public HavingClause(AggregateFunction column, ClauseOperator @operator, IColumn constraint = null)
         {
             Column = column ?? throw new ArgumentNullException(nameof(column));
             Operator = @operator;
@@ -40,15 +40,9 @@ namespace Queries.Core.Parts.Clauses
 
         public IHavingClause Clone() => new HavingClause(Column, Operator, Constraint);
         public override bool Equals(object obj) => Equals(obj as HavingClause);
-        public bool Equals(HavingClause other) => other != null && EqualityComparer<AggregateFunction>.Default.Equals(Column, other.Column) && Operator == other.Operator && EqualityComparer<ColumnBase>.Default.Equals(Constraint, other.Constraint);
+        public bool Equals(HavingClause other) => other != null
+            && (Column, Operator, Constraint).Equals((other.Column, other.Operator, other.Constraint));
 
-        public override int GetHashCode()
-        {
-            int hashCode = -300605098;
-            hashCode = (hashCode * -1521134295) + EqualityComparer<AggregateFunction>.Default.GetHashCode(Column);
-            hashCode = (hashCode * -1521134295) + Operator.GetHashCode();
-            hashCode = (hashCode * -1521134295) + EqualityComparer<ColumnBase>.Default.GetHashCode(Constraint);
-            return hashCode;
-        }
+        public override int GetHashCode() => (Column, Operator, Constraint).GetHashCode();
     }
 }

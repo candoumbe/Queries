@@ -17,6 +17,8 @@ namespace Queries.Core.Builders.Fluent
 
         IWhereQuery<T> Where(IWhereClause clause);
 
-        IWhereQuery<T> Where(IColumn column, ClauseOperator @operator, ColumnBase constraint);
+        IWhereQuery<T> Where(IColumn column, ClauseOperator @operator, IColumn constraint);
+
+        IWhereQuery<T> Where(IColumn column, ClauseOperator @operator, string constraint);
     }
 }

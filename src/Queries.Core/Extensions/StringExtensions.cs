@@ -1,4 +1,5 @@
-﻿using Queries.Core.Parts;
+﻿using Queries.Core.Builders;
+using Queries.Core.Parts;
 using Queries.Core.Parts.Columns;
 using Queries.Core.Parts.Sorting;
 
@@ -34,5 +35,12 @@ namespace System
         public static IOrder Asc(this string columnNameOrFieldAlias) => new OrderExpression(columnNameOrFieldAlias.Field());
 
         public static IOrder Desc(this string columnNameOrFieldAlias) => new OrderExpression(columnNameOrFieldAlias.Field(), OrderDirection.Descending);
+
+        /// <summary>
+        /// Turns <paramref name="nativeQuery"/> into <see cref="NativeQuery"/>.
+        /// </summary>
+        /// <param name="nativeQuery">The raw string</param>
+        /// <returns></returns>
+        public static NativeQuery AsNative(this string nativeQuery) => new NativeQuery(nativeQuery);
     }
 }

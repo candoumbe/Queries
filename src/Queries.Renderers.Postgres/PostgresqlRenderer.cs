@@ -15,7 +15,8 @@ namespace Queries.Renderers.Postgres
         /// </para>
         /// </summary>
         /// <param name="settings">Defines how to render <see cref="IQuery"/></param>
-        public PostgresqlRenderer(QueryRendererSettings settings) : base(settings)
+        public PostgresqlRenderer(QueryRendererSettings settings = null) 
+            : base(settings ?? new QueryRendererSettings { DateFormatString = "YYYY-mm-DD", PrettyPrint = true })
         {}
 
         protected override string EndEscapeWordString => @"""";
@@ -32,11 +33,9 @@ namespace Queries.Renderers.Postgres
 
             sbNullColumn = sbNullColumn.Append($"COALESCE({RenderColumn(nullColumn.Column, false)}, {RenderColumn(nullColumn.DefaultValue, false)})");
 
-            string queryString = renderAlias && !String.IsNullOrWhiteSpace(nullColumn.Alias)
+            return renderAlias && !string.IsNullOrWhiteSpace(nullColumn.Alias)
                 ? RenderColumnnameWithAlias(sbNullColumn.ToString(), EscapeName(nullColumn.Alias))
                 : sbNullColumn.ToString();
-
-            return queryString;
         }
 
         protected override string BeginEscapeWordString => @"""";

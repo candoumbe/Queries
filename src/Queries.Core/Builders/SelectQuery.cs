@@ -13,7 +13,7 @@ using static Newtonsoft.Json.JsonConvert;
 namespace Queries.Core.Builders
 {
     [JsonObject(ItemReferenceLoopHandling = ReferenceLoopHandling.Ignore)]
-    public class SelectQuery : SelectQueryBase, ISelectQuery<SelectQuery>, IFromQuery<SelectQuery>, IWhereQuery<SelectQuery>, IJoinQuery<SelectQuery>, IOrderQuery<SelectQuery>, IInsertable, IEquatable<SelectQuery>
+    public class SelectQuery : SelectQueryBase, ISelectQuery<SelectQuery>, IFromQuery<SelectQuery>, IWhereQuery<SelectQuery>, IJoinQuery<SelectQuery>, IOrderQuery<SelectQuery>, IEquatable<SelectQuery>, IColumn
     {
         private int? _limit;
 
@@ -81,8 +81,11 @@ namespace Queries.Core.Builders
             return this;
         }
 
-        public IWhereQuery<SelectQuery> Where(IColumn column, ClauseOperator @operator, ColumnBase constraint)
+        public IWhereQuery<SelectQuery> Where(IColumn column, ClauseOperator @operator, IColumn constraint)
             => Where(new WhereClause(column, @operator, constraint));
+
+        public IWhereQuery<SelectQuery> Where(IColumn column, ClauseOperator @operator, string constraint)
+            => Where(column, @operator, constraint?.Literal());
 
         public IJoinQuery<SelectQuery> InnerJoin(Table table, IWhereClause clause)
         {
@@ -226,5 +229,7 @@ namespace Queries.Core.Builders
         }
 
         ITable ITable.Clone() => Clone();
+
+        IColumn IColumn.Clone() => Clone();
     }
 }

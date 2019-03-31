@@ -10,6 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitignore = .gitignore
 		CONTRIBUTING.md = CONTRIBUTING.md
 		global.json = global.json
+		NuGet.Config = NuGet.Config
 		README.md = README.md
 	EndProjectSection
 EndProject
@@ -36,6 +37,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Queries.Renderers.MySQL.Tests", "test\Queries.Renderers.MySQL.Tests\Queries.Renderers.MySQL.Tests.csproj", "{E2F270F8-42A5-4BBB-A96F-A9D7EEB36A57}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Queries.Renderers.Neo4J.Tests", "test\Queries.Renderers.Neo4J.Tests\Queries.Renderers.Neo4J.Tests.csproj", "{3F69E0B3-13AD-41AC-988C-7112F2B330F4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Queries.Renderers.Sqlite.Tests", "test\Queries.Renderers.Sqlite.Tests\Queries.Renderers.Sqlite.Tests.csproj", "{B3D841C5-074C-43FC-9ECC-779E06BA2405}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Queries.Renderers.Sqlite", "src\Queries.Renderers.Sqlite\Queries.Renderers.Sqlite.csproj", "{DCD6E411-8A79-4477-A16E-6EC776D4FFBC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -83,6 +88,14 @@ Global
 		{3F69E0B3-13AD-41AC-988C-7112F2B330F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3F69E0B3-13AD-41AC-988C-7112F2B330F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3F69E0B3-13AD-41AC-988C-7112F2B330F4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B3D841C5-074C-43FC-9ECC-779E06BA2405}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3D841C5-074C-43FC-9ECC-779E06BA2405}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3D841C5-074C-43FC-9ECC-779E06BA2405}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3D841C5-074C-43FC-9ECC-779E06BA2405}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DCD6E411-8A79-4477-A16E-6EC776D4FFBC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DCD6E411-8A79-4477-A16E-6EC776D4FFBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DCD6E411-8A79-4477-A16E-6EC776D4FFBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DCD6E411-8A79-4477-A16E-6EC776D4FFBC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -98,6 +111,8 @@ Global
 		{069EFD2C-9AAF-469F-B085-DE509139DE07} = {4EAF8F5E-4703-416F-ACD9-277726BD78EF}
 		{E2F270F8-42A5-4BBB-A96F-A9D7EEB36A57} = {357A11A7-39EE-4782-85BB-0B5B9E6DBD9A}
 		{3F69E0B3-13AD-41AC-988C-7112F2B330F4} = {357A11A7-39EE-4782-85BB-0B5B9E6DBD9A}
+		{B3D841C5-074C-43FC-9ECC-779E06BA2405} = {357A11A7-39EE-4782-85BB-0B5B9E6DBD9A}
+		{DCD6E411-8A79-4477-A16E-6EC776D4FFBC} = {4EAF8F5E-4703-416F-ACD9-277726BD78EF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A80F3874-CE69-426F-BEEB-F241B73D3A1D}

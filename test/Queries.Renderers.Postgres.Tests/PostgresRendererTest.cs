@@ -259,13 +259,13 @@ namespace Queries.Renderers.Postgres.Tests
             {
                 yield return new object[]
                 {
-                    Update("members").Set("firstname".Field().EqualTo("")).Where("firstname".Field().IsNull()),
+                    Update("members").Set("firstname".Field().UpdateValueTo("")).Where("firstname".Field().IsNull()),
                     new QueryRendererSettings{ PrettyPrint = false },
                     @"UPDATE ""members"" SET ""firstname"" = '' WHERE (""firstname"" IS NULL)"
                 };
                 yield return new object[]
                 {
-                     Update("members").Set("firstname".Field().EqualTo(null)).Where(new WhereClause("firstname".Field(), EqualTo, "")),
+                     Update("members").Set("firstname".Field().UpdateValueTo(null)).Where(new WhereClause("firstname".Field(), EqualTo, "")),
                     new QueryRendererSettings{ PrettyPrint = false },
                     @"UPDATE ""members"" SET ""firstname"" = NULL WHERE (""firstname"" = '')"
                 };

@@ -9,9 +9,13 @@
     <AssemblyName>Queries.Core</AssemblyName>
     <PackageId>Queries.Core</PackageId>
     <PackageTags>Queries;Query;SQL;Builder</PackageTags>
-    <PackageReleaseNotes>IOrder implementations now implements IEquatable&lt;IOrder&gt;</PackageReleaseNotes>
+    <PackageReleaseNotes>Added NativeQuery which allows to build querie that are specific to the target engine. The query built will be rendered "as is".
+Renamed FieldColumnExtensions.EqualTo() extensions method to UpdateValueTo()
+Added FieldColumnExtensions.EqualTo() which create a WhereClause instance.
+
+Added method to AddStatement to a BatchQuery instance</PackageReleaseNotes>
     <PackageProjectUrl>https://candoumbe.visualstudio.com/Queries</PackageProjectUrl>
-    <Version>6.0.1</Version>
+    <Version>7.0.0</Version>
     <LangVersion>latest</LangVersion>
     <RepositoryUrl>https://candoumbe.visualstudio.com/Queries</RepositoryUrl>
     <RepositoryType>git</RepositoryType>

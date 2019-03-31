@@ -90,6 +90,11 @@ namespace Queries.Core.Renderers
                 case BatchQuery batchQuery:
                     result = Render(batchQuery);
                     break;
+                case NativeQuery nativeQuery:
+                    result = nativeQuery.Statement;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException("Unsupported query type");
             }
 
             return result;
