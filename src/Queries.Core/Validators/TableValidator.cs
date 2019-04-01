@@ -1,5 +1,4 @@
-﻿using System;
-using Queries.Core.Parts;
+﻿using Queries.Core.Parts;
 using FluentValidation;
 
 namespace Queries.Core.Validators
@@ -9,6 +8,5 @@ namespace Queries.Core.Validators
     /// </summary>
     public class TableValidator : AbstractValidator<ITable>
     {
-               
     }
 }

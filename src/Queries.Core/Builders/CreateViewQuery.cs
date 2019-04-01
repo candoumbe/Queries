@@ -11,13 +11,13 @@ namespace Queries.Core.Builders
     /// </summary>
     [DataManipulationLanguage]
     [JsonObject(ItemReferenceLoopHandling = ReferenceLoopHandling.Ignore)]
-    public class CreateViewQuery : IBuildableQuery<CreateViewQuery>, IEquatable<CreateViewQuery>
+    public class CreateViewQuery : IBuild<CreateViewQuery>, IEquatable<CreateViewQuery>
     {
         /// <summary>
         /// Name of the view
         /// </summary>
         public string ViewName { get;}
-        
+
         /// <summary>
         /// <see cref="Builders.SelectQuery"/> the view will be built from
         /// </summary>
@@ -42,13 +42,12 @@ namespace Queries.Core.Builders
             ViewName = viewName;
         }
 
-        public IBuildableQuery<CreateViewQuery> As(SelectQuery select)
+        public IBuild<CreateViewQuery> As(SelectQuery select)
         {
             SelectQuery = select ?? throw new ArgumentNullException(nameof(select));
 
             return this;
         }
-
 
         public CreateViewQuery Build() => this;
         public override bool Equals(object obj) => Equals(obj as CreateViewQuery);
@@ -57,8 +56,8 @@ namespace Queries.Core.Builders
         public override int GetHashCode()
         {
             int hashCode = -954091970;
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(ViewName);
-            hashCode = hashCode * -1521134295 + EqualityComparer<SelectQuery>.Default.GetHashCode(SelectQuery);
+            hashCode = (hashCode * -1521134295) + EqualityComparer<string>.Default.GetHashCode(ViewName);
+            hashCode = (hashCode * -1521134295) + EqualityComparer<SelectQuery>.Default.GetHashCode(SelectQuery);
             return hashCode;
         }
     }

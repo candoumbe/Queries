@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using Queries.Core.Builders;
-using Queries.Core.Extensions;
 
 namespace Queries.Core.Validators
 {
@@ -9,6 +8,5 @@ namespace Queries.Core.Validators
     /// </summary>
     public class CreateViewQueryValidator : AbstractValidator<CreateViewQuery>
     {
-       
     }
 }

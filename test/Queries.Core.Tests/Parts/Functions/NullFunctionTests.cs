@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Xunit;
 using Xunit.Abstractions;
+using Xunit.Categories;
 using static Queries.Core.Builders.Fluent.QueryBuilder;
 
 namespace Queries.Core.Tests.Parts.Functions
@@ -14,6 +15,9 @@ namespace Queries.Core.Tests.Parts.Functions
     /// <summary>
     /// Unit tests for <see cref="NullFunction"/>
     /// </summary>
+    [UnitTest]
+    [Feature(nameof(NullFunction))]
+    [Feature("Functions")]
     public class NullFunctionTests : IDisposable
     {
         private ITestOutputHelper _outputHelper;
@@ -32,7 +36,6 @@ namespace Queries.Core.Tests.Parts.Functions
             }
         }
 
-
         [Theory]
         [MemberData(nameof(CtorThrowsArgumentNullExceptionCases))]
         public void CtorThrowsArgumentNullExceptionIfAnyParameterIsNull(IColumn column, IColumn defaultValue)
@@ -41,12 +44,10 @@ namespace Queries.Core.Tests.Parts.Functions
             Action action = () => new NullFunction(column, defaultValue);
 
             // Assert
-            action.ShouldThrow<ArgumentNullException>().Which
+            action.Should().Throw<ArgumentNullException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
-
         }
-
 
         public static IEnumerable<object[]> CtorBuildAValidInstanceCases
         {
@@ -66,22 +67,12 @@ namespace Queries.Core.Tests.Parts.Functions
             // Assert
             function.Column.Should().Be(column);
             function.DefaultValue.Should().Be(defaultValue);
-
-
         }
 
         [Fact]
         public void HasFunctionFunctionAttribute()
-        {
-            // Arrange
-            TypeInfo typeInfo = typeof(NullFunction).GetTypeInfo();
-
-            // Act
-            FunctionAttribute attr = typeInfo.GetCustomAttribute<FunctionAttribute>();
-
-            // Arrange
-            attr.Should().NotBeNull($"{nameof(NullFunction)} must be marked with {nameof(FunctionAttribute)}");
-        }
+            => typeof(NullFunction).Should()
+            .BeDecoratedWith<FunctionAttribute>($"{nameof(NullFunction)} must be marked with {nameof(FunctionAttribute)}");
 
         public static IEnumerable<object[]> EqualsCases
         {
@@ -106,7 +97,6 @@ namespace Queries.Core.Tests.Parts.Functions
                     false, "comparing two different types of query" };
             }
         }
-
 
         [Theory]
         [MemberData(nameof(EqualsCases))]

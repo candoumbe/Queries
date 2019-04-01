@@ -3,12 +3,15 @@ using Queries.Core.Parts.Columns;
 using System;
 using System.Collections.Generic;
 using Xunit;
+using Xunit.Categories;
 
 namespace Queries.Core.Tests.Parts.Columns
 {
+    [UnitTest]
+    [Feature("Column")]
+    [Feature(nameof(DateTimeColumn))]
     public class DateTimeColumnTests
     {
-
         public static IEnumerable<object[]> ConstructorWithFormatCases
         {
             get
@@ -19,7 +22,6 @@ namespace Queries.Core.Tests.Parts.Columns
                 yield return new object[] { DateTime.MaxValue, null };
             }
         }
-
 
         [Theory]
         [MemberData(nameof(ConstructorWithFormatCases))]
@@ -34,7 +36,6 @@ namespace Queries.Core.Tests.Parts.Columns
             dc.StringFormat.Should().Be(format);
         }
 
-
         public static IEnumerable<object[]> ConstructorWithoutFormatCases
         {
             get
@@ -43,7 +44,6 @@ namespace Queries.Core.Tests.Parts.Columns
                 yield return new object[] { DateTime.MaxValue};
             }
         }
-
 
         [Theory]
         [MemberData(nameof(ConstructorWithoutFormatCases))]

@@ -5,7 +5,6 @@ using System;
 using Queries.Core.Attributes;
 using System.Linq;
 using Newtonsoft.Json;
-using static Newtonsoft.Json.JsonConvert;
 
 namespace Queries.Core.Builders
 {
@@ -16,6 +15,9 @@ namespace Queries.Core.Builders
     [DataManipulationLanguage]
     public class UpdateQuery : IQuery, IEquatable<UpdateQuery>
     {
+        /// <summary>
+        /// Table to update
+        /// </summary>
         public Table Table { get; }
         public IList<UpdateFieldValue> Values { get; private set; }
         public IWhereClause Criteria { get; set; }
@@ -35,13 +37,11 @@ namespace Queries.Core.Builders
             Table = tableName.Table();
             Values = new List<UpdateFieldValue>();
         }
-        
 
         public UpdateQuery(Table table) : this(table?.Name)
         {
-            
-        }
 
+        }
 
         public UpdateQuery Set(params UpdateFieldValue[] newValues)
         {
@@ -56,21 +56,21 @@ namespace Queries.Core.Builders
         }
 
         public override bool Equals(object obj) => Equals(obj as UpdateQuery);
-        public bool Equals(UpdateQuery other) => other != null
-                && (Table == null && other.Table == null || Table.Equals(other.Table))
-                && Values.SequenceEqual(other.Values)
-                && (Criteria == null && other.Criteria == null || Criteria.Equals(other.Criteria));
 
+        public bool Equals(UpdateQuery other) => other != null
+                && ((Table == null && other.Table == null) || Table.Equals(other.Table))
+                && Values.SequenceEqual(other.Values)
+                && ((Criteria == null && other.Criteria == null) || Criteria.Equals(other.Criteria));
 
         public override int GetHashCode()
         {
             int hashCode = -1291674402;
-            hashCode = hashCode * -1521134295 + EqualityComparer<Table>.Default.GetHashCode(Table);
-            hashCode = hashCode * -1521134295 + EqualityComparer<IList<UpdateFieldValue>>.Default.GetHashCode(Values);
-            hashCode = hashCode * -1521134295 + EqualityComparer<IWhereClause>.Default.GetHashCode(Criteria);
+            hashCode = (hashCode * -1521134295) + EqualityComparer<Table>.Default.GetHashCode(Table);
+            hashCode = (hashCode * -1521134295) + EqualityComparer<IList<UpdateFieldValue>>.Default.GetHashCode(Values);
+            hashCode = (hashCode * -1521134295) + EqualityComparer<IWhereClause>.Default.GetHashCode(Criteria);
             return hashCode;
         }
 
-        public override string ToString() => SerializeObject(this, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+        public override string ToString() => this.Stringify();
     }
 }

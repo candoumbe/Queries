@@ -1,14 +1,16 @@
+using FluentAssertions;
+using Queries.Core.Attributes;
+using Queries.Core.Parts.Functions;
 using System;
 using System.Collections.Generic;
-using Queries.Core.Extensions;
 using Xunit;
-using Queries.Core.Parts.Functions;
-using FluentAssertions;
-using System.Reflection;
-using Queries.Core.Attributes;
+using Xunit.Categories;
 
 namespace Queries.Core.Tests.Parts.Columns
 {
+    [UnitTest]
+    [Feature(nameof(CountFunction))]
+    [Feature("Functions")]
     public class CountFunctionTests
     {
         [Fact]
@@ -18,10 +20,9 @@ namespace Queries.Core.Tests.Parts.Columns
             Action action = () => new CountFunction(null);
 
             // Assert
-            action.ShouldThrow<ArgumentNullException>($"{nameof(CountFunction)} constructor called with null argument").Which
+            action.Should().Throw<ArgumentNullException>($"{nameof(CountFunction)} constructor called with null argument").Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
-            
         }
 
         public static IEnumerable<object[]> AsTestCases
@@ -47,20 +48,8 @@ namespace Queries.Core.Tests.Parts.Columns
         public void SettingAliasTest(CountFunction column, string expectedAlias)
             => column.Alias.Should().Be(expectedAlias);
 
-
         [Fact]
-        public void HasFunctionAttribute()
-        {
-            // Arrange 
-            TypeInfo lengthFunctionType = typeof(CountFunction)
-                .GetTypeInfo();
-
-            // Act
-            FunctionAttribute attr = lengthFunctionType.GetCustomAttribute<FunctionAttribute>();
-
-            // Assert
-            attr.Should()
-                .NotBeNull($"{nameof(CountFunction)} must be marked with {nameof(FunctionAttribute)}");
-        }
+        public void HasFunctionAttribute() => typeof(CountFunction).Should()
+                .BeDecoratedWithOrInherit<FunctionAttribute>($"{nameof(CountFunction)} must be marked with {nameof(FunctionAttribute)}");
     }
 }

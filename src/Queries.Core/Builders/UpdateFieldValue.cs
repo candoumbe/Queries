@@ -1,4 +1,3 @@
-using Queries.Core.Attributes;
 using Queries.Core.Parts.Columns;
 using System;
 using System.Collections.Generic;
@@ -11,7 +10,6 @@ namespace Queries.Core.Builders
     /// </summary>
     public class UpdateFieldValue : IEquatable<UpdateFieldValue>
     {
-
         public ColumnBase Source { get; set; }
 
         public FieldColumn Destination { get; set; }
@@ -23,7 +21,6 @@ namespace Queries.Core.Builders
         /// <param name="source">value to set</param>
         public UpdateFieldValue(FieldColumn destination, ColumnBase source)
         {
-
             Destination = destination ?? throw new ArgumentNullException(nameof(destination));
             Source = source;
         }
@@ -34,8 +31,8 @@ namespace Queries.Core.Builders
         public override int GetHashCode()
         {
             int hashCode = 1918477335;
-            hashCode = hashCode * -1521134295 + EqualityComparer<ColumnBase>.Default.GetHashCode(Source);
-            hashCode = hashCode * -1521134295 + EqualityComparer<FieldColumn>.Default.GetHashCode(Destination);
+            hashCode = (hashCode * -1521134295) + EqualityComparer<ColumnBase>.Default.GetHashCode(Source);
+            hashCode = (hashCode * -1521134295) + EqualityComparer<FieldColumn>.Default.GetHashCode(Destination);
             return hashCode;
         }
     }

@@ -3,7 +3,6 @@ using Queries.Core.Attributes;
 using Queries.Core.Parts.Columns;
 using System;
 using System.Collections.Generic;
-using static Newtonsoft.Json.JsonConvert;
 
 namespace Queries.Core.Parts.Functions
 {
@@ -36,7 +35,6 @@ namespace Queries.Core.Parts.Functions
             Column = column ?? throw new ArgumentNullException(nameof(column));
         }
 
-
         private string _alias;
 
         /// <summary>
@@ -52,20 +50,13 @@ namespace Queries.Core.Parts.Functions
         }
 
         public override bool Equals(object obj) => Equals(obj as AggregateFunction);
-        public bool Equals(AggregateFunction other) => 
-            other != null 
-            && Type == other.Type 
-            && EqualityComparer<IColumn>.Default.Equals(Column, other.Column) && Alias == other.Alias;
 
-        public override int GetHashCode()
-        {
-            int hashCode = 211458323;
-            hashCode = hashCode * -1521134295 + Type.GetHashCode();
-            hashCode = hashCode * -1521134295 + EqualityComparer<IColumn>.Default.GetHashCode(Column);
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Alias);
-            return hashCode;
-        }
+        public bool Equals(AggregateFunction other) => (Column, Alias).Equals((other?.Column, other?.Alias));
 
-        public override string ToString() => SerializeObject(this);
+        public override int GetHashCode() => (Column, Alias).GetHashCode();
+
+        public override string ToString() => this.Stringify();
+
+        public abstract IColumn Clone();
     }
 }

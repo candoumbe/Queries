@@ -4,15 +4,17 @@ using Queries.Core.Builders;
 using Queries.Core.Parts.Columns;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using Xunit;
 using Xunit.Abstractions;
+using Xunit.Categories;
 using static Queries.Core.Builders.Fluent.QueryBuilder;
 
 namespace Queries.Core.Tests.Builders
 {
+    [UnitTest]
+    [Feature("Delete")]
+    [Feature("Builder")]
     public class DeleteQueryTests : IDisposable
     {
         private ITestOutputHelper _outputHelper;
@@ -28,7 +30,7 @@ namespace Queries.Core.Tests.Builders
             Action action = () => new DeleteQuery(null);
 
             // Assert
-            action.ShouldThrow<ArgumentNullException>("name of the table to delete cannot be null").Which
+            action.Should().Throw<ArgumentNullException>("name of the table to delete cannot be null").Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }
@@ -47,7 +49,6 @@ namespace Queries.Core.Tests.Builders
                 .NotBeNull($"{nameof(DeleteQuery)} must be marked with {nameof(DataManipulationLanguageAttribute)}");
         }
 
-
         public static IEnumerable<object[]> EqualsCases
         {
             get
@@ -61,14 +62,13 @@ namespace Queries.Core.Tests.Builders
 
                 yield return new object[] {
                     Delete("SuperHero"),
-                    new SelectColumn(),
+                    null,
                     false,
-                    $"{nameof(DeleteQuery)} can never equals an instance of an object that is not its type"};
+                    $"{nameof(DeleteQuery)} instance is never equal to null"};
                 {
                     DeleteQuery query = Delete("SuperHero");
                     yield return new object[] { query, query, true, "Equals with same instance" };
                 }
-
             }
         }
 
@@ -85,6 +85,5 @@ namespace Queries.Core.Tests.Builders
             // Assert
             actualResult.Should().Be(expectedResult, reason);
         }
-
     }
 }

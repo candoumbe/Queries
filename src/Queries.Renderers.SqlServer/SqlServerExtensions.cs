@@ -1,7 +1,7 @@
-﻿using Queries.Renderers.SqlServer;
+﻿using Queries.Core.Renderers;
+using Queries.Renderers.SqlServer;
 
-// ReSharper disable once CheckNamespace
-namespace Queries.Core.Builders
+namespace Queries.Core
 {
     public static class SqlServerExtensions
     {
@@ -11,7 +11,6 @@ namespace Queries.Core.Builders
         /// <param name="query">the query to computes</param>
         /// <param name="prettyPrint"><code>true</code> to render a "prettier" SQL string</param>
         /// <returns></returns>
-        public static string ForSqlServer(this IQuery query, bool prettyPrint) => new SqlServerRenderer(prettyPrint).Render(query);
-        
+        public static string ForSqlServer(this IQuery query, QueryRendererSettings settings) => new SqlServerRenderer(settings).Render(query);
     }
 }

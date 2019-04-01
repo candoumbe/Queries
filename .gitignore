@@ -1,20 +1,11 @@
-*.user
 *.dll
 *.pdb
-*.suo
 *.pdb
-artifacts/
 .vs/
 *.nupkg
-
 # Build results
-
-[Dd]ebug/
-[Rr]elease/
-x64/
 [Bb]in/
 [Oo]bj/
-
+*.cache
 # MSTest test Results
-[Tt]est[Rr]esult*/
-[Bb]uild[Ll]og.*
+[Tt]est[Rr]esults/

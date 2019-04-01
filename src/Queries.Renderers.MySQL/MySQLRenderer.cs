@@ -10,14 +10,13 @@ namespace Queries.Renderers.MySQL
     // To enable this option, right-click on the project and select the Properties menu item. In the Build tab select "Produce outputs on build".
     public class MySQLRenderer : QueryRendererBase
     {
-        public MySQLRenderer(bool prettyPrint) : base(DatabaseType.Mysql, prettyPrint)
+        public MySQLRenderer(QueryRendererSettings settings) : base(settings)
         {
         }
 
         protected override string BeginEscapeWordString => @"""";
         protected override string EndEscapeWordString => @"""";
         protected override string ConcatOperator => "||";
-
 
         protected override string RenderConcatColumn(ConcatFunction concatColumn, bool renderAlias)
         {
@@ -37,8 +36,6 @@ namespace Queries.Renderers.MySQL
                 : sbConcat.ToString();
 
             return queryString;
-
         }
-
     }
 }

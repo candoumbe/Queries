@@ -3,12 +3,15 @@ using Queries.Core.Attributes;
 using System;
 using System.Reflection;
 using Xunit;
+using Xunit.Categories;
 
 namespace Queries.Core.Tests.Attributes
 {
+    [UnitTest]
+    [Feature(nameof(DataControlLanguageAttribute))]
+    [Feature("Attributes")]
     public class DataControlLanguageAttributeTests
     {
-
         [Fact]
         public void IsValid()
         {
@@ -26,7 +29,6 @@ namespace Queries.Core.Tests.Attributes
                 .BeTrue("the attribute must propagate to inherited classes ");
 
             attr.ValidOn.Should().Be(AttributeTargets.Class);
-
         }
     }
 }

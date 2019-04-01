@@ -8,7 +8,5 @@ namespace Queries.Core.Validators
     /// </summary>
     public class InlineSelectQueryColumnValidator : AbstractValidator<SelectColumn>
     {
-
-       
     }
 }

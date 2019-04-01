@@ -1,4 +1,5 @@
-﻿using Queries.Core.Parts;
+﻿using Queries.Core.Builders;
+using Queries.Core.Parts;
 using Queries.Core.Parts.Columns;
 using Queries.Core.Parts.Sorting;
 
@@ -31,12 +32,15 @@ namespace System
         public static InsertedValue InsertValue(this string columnName, IColumn column)
             => columnName.Field().InsertValue(column);
 
+        public static IOrder Asc(this string columnNameOrFieldAlias) => new OrderExpression(columnNameOrFieldAlias.Field());
 
-        
-        public static ISort Asc(this string columnNameOrFieldAlias) => new SortExpression(columnNameOrFieldAlias.Field());
+        public static IOrder Desc(this string columnNameOrFieldAlias) => new OrderExpression(columnNameOrFieldAlias.Field(), OrderDirection.Descending);
 
-        public static ISort Desc(this string columnNameOrFieldAlias) => new SortExpression(columnNameOrFieldAlias.Field(), SortDirection.Descending);
-
-
+        /// <summary>
+        /// Turns <paramref name="nativeQuery"/> into <see cref="NativeQuery"/>.
+        /// </summary>
+        /// <param name="nativeQuery">The raw string</param>
+        /// <returns></returns>
+        public static NativeQuery AsNative(this string nativeQuery) => new NativeQuery(nativeQuery);
     }
 }

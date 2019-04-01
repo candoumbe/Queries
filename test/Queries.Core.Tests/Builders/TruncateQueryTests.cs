@@ -6,10 +6,14 @@ using System.Collections.Generic;
 using System.Reflection;
 using Xunit;
 using Xunit.Abstractions;
+using Xunit.Categories;
 using static Queries.Core.Builders.Fluent.QueryBuilder;
 
 namespace Queries.Core.Tests.Builders
 {
+    [UnitTest]
+    [Feature("Truncate")]
+    [Feature("Builder")]
     public class TruncateQueryTests : IDisposable
     {
         private ITestOutputHelper _outputHelper;
@@ -25,7 +29,7 @@ namespace Queries.Core.Tests.Builders
             Action action = () => new TruncateQuery(null);
 
             // Assert
-            action.ShouldThrow<ArgumentNullException>("name of the table to delete cannot be null").Which
+            action.Should().Throw<ArgumentNullException>("name of the table to delete cannot be null").Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }
@@ -39,7 +43,7 @@ namespace Queries.Core.Tests.Builders
             Action action = () => new TruncateQuery(tableName);
 
             // Assert
-            action.ShouldThrow<ArgumentOutOfRangeException>("name of the table to delete cannot be null").Which
+            action.Should().Throw<ArgumentOutOfRangeException>("name of the table to delete cannot be null").Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }
@@ -53,7 +57,6 @@ namespace Queries.Core.Tests.Builders
                 yield return new object[] { Truncate("SuperHero"), Select(1.Literal()), false, "comparing two different types of query" };
             }
         }
-
 
         [Theory]
         [MemberData(nameof(EqualsCases))]
@@ -83,8 +86,5 @@ namespace Queries.Core.Tests.Builders
             attr.Should()
                 .NotBeNull();
         }
-
-
-
     }
 }

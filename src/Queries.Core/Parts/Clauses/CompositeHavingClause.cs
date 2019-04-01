@@ -14,7 +14,6 @@ namespace Queries.Core.Parts.Clauses
     /// </remarks>
     public class CompositeHavingClause : IHavingClause
     {
-
         /// <summary>
         /// Logical operator used between each <see cref="Clauses"/>' item.
         /// </summary>
@@ -29,5 +28,11 @@ namespace Queries.Core.Parts.Clauses
         /// Builds a new <see cref="CompositeHavingClause"/> instance.
         /// </summary>
         public CompositeHavingClause() => Clauses = Enumerable.Empty<IHavingClause>();
+
+        public IHavingClause Clone() => new CompositeHavingClause
+        {
+            Logic = Logic,
+            Clauses = Clauses.Select(x => x.Clone()).ToList()
+        };
     }
 }

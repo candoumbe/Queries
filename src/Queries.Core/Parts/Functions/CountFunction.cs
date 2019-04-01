@@ -16,5 +16,11 @@ namespace Queries.Core.Parts.Functions
             : base(AggregateType.Count, column)
         { }
 
+
+        /// <summary>
+        /// Performs a deep copy of the current instance.
+        /// </summary>
+        /// <returns><see cref="CountFunction"/></returns>
+        public override IColumn Clone() => new CountFunction((FieldColumn)Column.Clone());
     }
 }

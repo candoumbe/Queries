@@ -8,7 +8,6 @@ namespace Queries.Core.Builders.Fluent
     /// </summary>
     public static class QueryBuilder
     {
-        
 #region Columns conversions shortcuts
 
         /// <summary>
@@ -30,9 +29,11 @@ namespace Queries.Core.Builders.Fluent
         /// Applies <see cref="NullFunction"/> to <paramref name="column"/>.
         /// </summary>
         /// <param name="column">Column onto which aoply <see cref="NullFunction"/>.</param>
+        /// <param name="fallBackValue"></param>
+        /// <param name="otherFallbackValues"></param>
         /// <param name="defaultValue">Result value to use if <paramref name="column"/>'s value is <c>null</c></param>
         /// <returns></returns>
-        public static NullFunction Null(FieldColumn column, ColumnBase defaultValue) => new NullFunction(column, defaultValue);
+        public static NullFunction Null(FieldColumn column, ColumnBase fallBackValue, params ColumnBase[] otherFallbackValues) => new NullFunction(column, fallBackValue, otherFallbackValues);
 
         /// <summary>
         /// Applies <see cref="CountFunction"/> to <paramref name="column"/>.
@@ -41,16 +42,7 @@ namespace Queries.Core.Builders.Fluent
         /// <returns></returns>
         public static CountFunction Count(FieldColumn column) => new CountFunction(column);
 
-        /// <summary>
-        /// Applies <see cref="NullFunction"/> to <paramref name="column"/>.
-        /// </summary>
-        /// <param name="column">Column onto which aoply <see cref="NullFunction"/>.</param>
-        /// <param name="defaultValue">Result value to use if <paramref name="column"/>'s value is <c>null</c></param>
-        /// <returns></returns>
-        public static NullFunction Null(LiteralColumn column, ColumnBase defaultValue) => new NullFunction(column, defaultValue);
-
-
-
+        
         /// <summary>
         /// Applies <see cref="MinFunction"/> to <paramref name="column"/>.
         /// </summary>
@@ -104,8 +96,6 @@ namespace Queries.Core.Builders.Fluent
 
         #endregion
 
-
-
         /// <summary>
         /// Creates a <see cref="DeleteQuery"/>
         /// </summary>
@@ -119,7 +109,6 @@ namespace Queries.Core.Builders.Fluent
         /// <param name="viewName">Name of the view the query will be generated for</param>
         /// <returns></returns>
         public static CreateViewQuery CreateView(string viewName) => new CreateViewQuery(viewName);
-
 
         /// <summary>
         /// Creates a <see cref="UpdateQuery"/> object suitable to build <a href="http://www.w3schools.com/sql/sql_update.asp">UPDATE</a> query
@@ -167,7 +156,11 @@ namespace Queries.Core.Builders.Fluent
         /// <returns><see cref="InsertIntoQuery"/></returns>
         public static InsertIntoQuery InsertInto(string tableName) => new InsertIntoQuery(tableName);
 
-        
-
+        /// <summary>
+        /// Creates a <see cref="DeclareVariableQuery"/> object suitable to create a variable in a script
+        /// </summary>
+        /// <param name="variableName"></param>
+        /// <returns></returns>
+        public static DeclareVariableQuery Declare(string variableName) => new DeclareVariableQuery(variableName);
     }
 }

@@ -4,9 +4,9 @@ using Queries.Core.Parts.Columns;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Xunit;
 using Xunit.Abstractions;
+using Xunit.Categories;
 using static Queries.Core.Builders.Fluent.QueryBuilder;
 
 namespace Queries.Core.Tests.Builders
@@ -14,6 +14,9 @@ namespace Queries.Core.Tests.Builders
     /// <summary>
     /// Unit tests for <see cref="SelectQuery"/>.
     /// </summary>
+    [UnitTest]
+    [Feature("Select")]
+    [Feature("Builder")]
     public class SelectQueryTests : IDisposable
     {
         private ITestOutputHelper _outputHelper;
@@ -29,9 +32,39 @@ namespace Queries.Core.Tests.Builders
                 yield return new object[] { Select("Firstname"), null, false, "comparing with a null instance" };
                 yield return new object[] { Select("Firstname"), Select("Firstname"), true, "comparing two instances with same columns names and same columns count" };
                 yield return new object[] { Select(1.Literal()), Select(1.Literal()), true, "comparing two instances with same columns" };
+                yield return new object[]
+                {
+                    Select(Null("RealValue".Field(), "TextValue".Field()))
+                        .Limit(1)
+                        .From("Parameter")
+                        .Where("ParameterName".Field().EqualTo("p0")),
+
+                    Select(Null("RealValue".Field(), "TextValue".Field()))
+                        .Limit(1)
+                        .From("Parameter")
+                        .Where("ParameterName".Field().EqualTo("p0")),
+                    true,
+                    "Two differents instances of the same query"
+
+                };
+
+                yield return new object[]
+                {
+                    Select("RealValue".Field(), "TextValue".Field())
+                        .Limit(1)
+                        .From("Parameter")
+                        .Where("ParameterName".Field().EqualTo("p0")),
+
+                    Select("RealValue".Field(), "TextValue".Field())
+                        .Limit(1)
+                        .From("Parameter")
+                        .Where("ParameterName".Field().EqualTo("p0")),
+                    true,
+                    "Two differents instances of the same query"
+
+                };
             }
         }
-
 
         [Theory]
         [MemberData(nameof(EqualsCases))]
@@ -47,8 +80,40 @@ namespace Queries.Core.Tests.Builders
             actualResult.Should().Be(expectedResult, reason);
         }
 
+        public static IEnumerable<object[]> CloneCases
+        {
+            get
+            {
+                yield return new[] { Select(1.Literal()) };
+                yield return new[] {
 
-        public static IEnumerable<object[]> CtorThrowsArgumentOutOfRangeExceptionCases {
+                    Select("*").From(
+                        Select("Firstname".Field(), "Lastname".Field()).From("People")
+                        .Union(
+                            Select("Username".Field(), "Nickname".Field()).From("SuperHeroes")))
+                };
+
+                yield return new[] { Select("Firstname".Field(), "Lastname".Field()).Limit(3).From("People") };
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(CloneCases))]
+        public void CloneTest(SelectQuery original)
+        {
+            _outputHelper.WriteLine($"{nameof(original)} : {original}");
+
+            // Act
+            SelectQuery copy = original.Clone();
+
+            // Assert
+            copy.Should()
+                .NotBeSameAs(original).And
+                .Be(original);
+        }
+
+        public static IEnumerable<object[]> CtorThrowsArgumentOutOfRangeExceptionCases
+        {
             get
             {
                 yield return new object[] { Enumerable.Empty<IColumn>().ToArray(), $"empty array of {nameof(IColumn)}s" };
@@ -64,7 +129,7 @@ namespace Queries.Core.Tests.Builders
             Action action = () => new SelectQuery(columns.ToArray());
 
             // Assert
-            action.ShouldThrow<ArgumentOutOfRangeException>("no columns set").Which
+            action.Should().Throw<ArgumentOutOfRangeException>(reason).Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }

@@ -8,15 +8,39 @@ namespace Queries.Core.Builders
     /// </summary>
     public class BatchQuery : IQuery
     {
-        public IEnumerable<IQuery> Statements { get;  }
-        
+        private readonly List<IQuery> _statements;
+
+        public IEnumerable<IQuery> Statements => _statements;
+
         /// <summary>
         /// Builds a new <see cref="BatchQuery"/> instance.
         /// </summary>
         /// <param name="queries">queries of the batch.</param>
-        public BatchQuery(params IQuery[] queries)
+        public BatchQuery(params IQuery[] queries) => _statements = queries.Where(x => x != null)
+                .ToList();
+
+        /// <summary>
+        /// Adds a statement to this instance
+        /// </summary>
+        /// <param name="query">The query to add</param>
+        /// <returns></returns>
+        public BatchQuery AddStatement(IQuery query)
         {
-            Statements = queries.Where(x => x != null);
+            _statements.Add(query);
+
+            return this;
+        }
+
+        /// <summary>
+        /// Adds multiple statements to this instance
+        /// </summary>
+        /// <param name="queries"></param>
+        /// <returns></returns>
+        public BatchQuery AddStatements(IEnumerable<IQuery> queries)
+        {
+            _statements.AddRange(queries);
+
+            return this;
         }
     }
 }

@@ -8,7 +8,7 @@ namespace Queries.Core.Parts.Functions
     /// "UPPER" function.
     /// </summary>
     [Function]
-    public class UpperFunction : IColumn, IAliasable<UpperFunction> 
+    public class UpperFunction : IColumn, IAliasable<UpperFunction>
     {
         /// <summary>
         /// Column onto wich the function applies
@@ -19,7 +19,7 @@ namespace Queries.Core.Parts.Functions
         /// Alias of the result of the function
         /// </summary>
         public string Alias { get; private set; }
-        
+
         /// <summary>
         /// Builds a new <see cref="UpperFunction"/> instance
         /// </summary>
@@ -42,9 +42,7 @@ namespace Queries.Core.Parts.Functions
                 throw new ArgumentNullException(nameof(value));
             }
 
-
             Column = value.Literal();
-
         }
 
         public UpperFunction As(string alias)
@@ -53,5 +51,11 @@ namespace Queries.Core.Parts.Functions
 
             return this;
         }
+
+        /// <summary>
+        /// Performs a deep copy of the current instance.
+        /// </summary>
+        /// <returns><see cref="UpperFunction"/></returns>
+        public IColumn Clone() => new UpperFunction(Column.Clone());
     }
 }

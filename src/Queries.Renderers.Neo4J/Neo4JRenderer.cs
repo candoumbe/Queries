@@ -7,18 +7,16 @@ using Queries.Core.Parts;
 using Queries.Core.Parts.Columns;
 using Queries.Core.Renderers;
 
-
 namespace Queries.Renderers.Neo4J
 {
     public class Neo4JRenderer : QueryRendererBase
     {
-        public Neo4JRenderer(bool prettyPrint) : base(DatabaseType.Neo4J, prettyPrint)
+        public Neo4JRenderer(QueryRendererSettings settings) : base(settings)
         { }
 
         protected override string BeginEscapeWordString => string.Empty;
         protected override string EndEscapeWordString => string.Empty;
         protected override string ConcatOperator => "+";
-
 
         protected override string Render(SelectQueryBase query)
         {
@@ -37,12 +35,11 @@ namespace Queries.Renderers.Neo4J
             IEnumerable<ITable> tables = selectQuery.Tables;
 
             NormalizeColumnAndTable(columns, selectQuery, tables);
-            
 
-            sbQuery.Append($"MATCH {RenderTables(tables)} {(PrettyPrint ? Environment.NewLine : string.Empty)}" +
-                           $"{(query.WhereCriteria != null ? $"WHERE {RenderWhere(query.WhereCriteria)} {(PrettyPrint ? Environment.NewLine : string.Empty)}" : string.Empty)}" +
-                           $"RETURN {RenderColumns(columns)}{BatchStatementSeparator}");
-            
+            sbQuery.Append("MATCH ").Append(RenderTables(tables)).Append(" ").Append(Settings.PrettyPrint ? Environment.NewLine : string.Empty)
+                .Append(query.WhereCriteria != null ? $"WHERE {RenderWhere(query.WhereCriteria)} {(Settings.PrettyPrint ? Environment.NewLine : string.Empty)}" : string.Empty)
+                .Append("RETURN ").Append(RenderColumns(columns)).Append(BatchStatementSeparator);
+
             return sbQuery.ToString();
         }
 
@@ -52,13 +49,11 @@ namespace Queries.Renderers.Neo4J
             if (cols.Count() == 1)
             {
                 IColumn column = cols.Single();
-                if (column is FieldColumn || column is LiteralColumn)
+                if (column is FieldColumn || column is Literal)
                 {
                     IEnumerable<ITable> tabs = tables as ITable[] ?? tables.ToArray();
-                    if (selectQuery.Tables.Count() == 1 && tabs.Single() is Table)
+                    if (selectQuery.Tables.Count == 1 && tabs.Single() is Table table)
                     {
-                        Table table = (Table) tabs.Single();
-
                         if (column is FieldColumn fc)
                         {
                             if ("*".Equals(fc.Name))
@@ -72,14 +67,14 @@ namespace Queries.Renderers.Neo4J
                         }
                         else
                         {
-                            LiteralColumn lc = (LiteralColumn) column;
+                            Literal lc = (Literal) column;
                             if ("*".Equals(lc.Value?.ToString()))
                             {
                                 if (string.IsNullOrWhiteSpace(table.Alias))
                                 {
                                     table.As(table.Name.Substring(0, 1).ToLower());
                                 }
-                                lc = new LiteralColumn(table.Alias).As(lc.Alias);
+                                lc = new Literal(table.Alias).As(lc.Alias);
                             }
                         }
                     }
@@ -87,8 +82,7 @@ namespace Queries.Renderers.Neo4J
             }
         }
 
-
-        protected override string RenderTablename(Table table, bool renderAlias) 
+        protected override string RenderTablename(Table table, bool renderAlias)
             => $"({table.Alias}:{table.Name})";
 
         protected override string RenderColumns(IEnumerable<IColumn> columns)
@@ -96,11 +90,12 @@ namespace Queries.Renderers.Neo4J
             StringBuilder sbColumns = new StringBuilder();
 
             sbColumns = columns.Aggregate(sbColumns,
-                (current, column) => current.Append($"{(current.Length > 0 ? ", " : string.Empty)}{RenderColumn(column, true)}"));
+                (current, column) => current
+                    .Append(current.Length > 0 ? ", " : string.Empty)
+                    .Append(RenderColumn(column, true)));
 
             return $"{sbColumns}";
         }
-
 
         protected override string Render(InsertIntoQuery query)
         {
@@ -111,10 +106,8 @@ namespace Queries.Renderers.Neo4J
             //TODO validate the query
 
             StringBuilder sbQuery = new StringBuilder();
-            if (query.InsertedValue is IEnumerable<InsertedValue>)
+            if (query.InsertedValue is IEnumerable<InsertedValue> values)
             {
-                IEnumerable<InsertedValue> values = (IEnumerable<InsertedValue>) query.InsertedValue;
-
                 IDictionary<string, IColumn> map = values
                     .ToDictionary(val => val.Column.Name, val => val.Value);
                 StringBuilder sbCreate = new StringBuilder();
@@ -122,7 +115,7 @@ namespace Queries.Renderers.Neo4J
                 {
                     IColumn columnValue = kv.Value;
                     string valueString = RenderColumn(columnValue, false);
-                    sbCreate.Append($"{(sbCreate.Length > 0 ? ", " : string.Empty)}{kv.Key} : {(valueString == null ? "NULL" : valueString )}");
+                    sbCreate.Append(sbCreate.Length > 0 ? ", " : string.Empty).Append(kv.Key).Append(" : ").Append(valueString ?? "NULL");
                 }
 
                 sbQuery.Append($"CREATE ({query.TableName?.Substring(0, 1)?.ToLower()}:{query.TableName} {{{sbCreate}}})");
@@ -131,36 +124,30 @@ namespace Queries.Renderers.Neo4J
             return sbQuery.ToString();
         }
 
-
-        protected override string Render(DeleteQuery query)
+        protected override string Render(DeleteQuery deleteQuery)
         {
-            if (query == null)
+            if (deleteQuery == null)
             {
-                throw new ArgumentNullException(nameof(query));
+                throw new ArgumentNullException(nameof(deleteQuery));
             }
 
             StringBuilder sbQuery = new StringBuilder();
-            string tableAlias = query.Table?.Substring(0, 1)?.ToLower();
-            sbQuery.Append($"MATCH {RenderTablenameWithAlias(query.Table, tableAlias)} {(PrettyPrint ? Environment.NewLine : string.Empty)}");
+            string tableAlias = deleteQuery.Table?.Substring(0, 1)?.ToLower();
+            sbQuery.Append($"MATCH {RenderTablenameWithAlias(deleteQuery.Table, tableAlias)} {(Settings.PrettyPrint ? Environment.NewLine : string.Empty)}");
 
-            if (query.Criteria != null)
+            if (deleteQuery.Criteria != null)
             {
-                sbQuery = sbQuery.Append($"WHERE {RenderWhere(query.Criteria)} {(PrettyPrint ? Environment.NewLine : string.Empty)}");
+                sbQuery = sbQuery.Append($"WHERE {RenderWhere(deleteQuery.Criteria)} {(Settings.PrettyPrint ? Environment.NewLine : string.Empty)}");
             }
-            sbQuery.Append($"DELETE {tableAlias}");
+            sbQuery.Append("DELETE ").Append(tableAlias);
 
             return sbQuery.ToString();
         }
 
-
         protected override string RenderTablenameWithAlias(string tableName, string alias)
-        {
-            return $"({alias}:{tableName})";
-        }
+            => $"({alias}:{tableName})";
 
-        protected override string RenderColumnnameWithAlias(string columnName, string alias) 
+        protected override string RenderColumnnameWithAlias(string columnName, string alias)
             => $"{columnName}{(!string.IsNullOrWhiteSpace(alias) ? $" AS {alias}" : string.Empty)}";
-
-
     }
 }

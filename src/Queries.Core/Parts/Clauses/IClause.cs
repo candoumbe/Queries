@@ -6,6 +6,6 @@ namespace Queries.Core.Parts.Clauses
     {
         T Column { get;  }
         ClauseOperator Operator{ get; }
-        ColumnBase Constraint { get; }
+        IColumn Constraint { get; }
     }
 }

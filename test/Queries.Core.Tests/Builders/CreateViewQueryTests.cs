@@ -7,10 +7,14 @@ using System.Collections.Generic;
 using System.Reflection;
 using Xunit;
 using Xunit.Abstractions;
+using Xunit.Categories;
 using static Queries.Core.Builders.Fluent.QueryBuilder;
 
 namespace Queries.Core.Tests.Builders
 {
+    [UnitTest]
+    [Feature("Create view")]
+    [Feature("Builder")]
     public class CreateViewQueryTests : IDisposable
     {
         private ITestOutputHelper _outputHelper;
@@ -26,7 +30,7 @@ namespace Queries.Core.Tests.Builders
             Action action = () => new CreateViewQuery(null);
 
             // Assert
-            action.ShouldThrow<ArgumentNullException>().Which
+            action.Should().Throw<ArgumentNullException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }
@@ -40,7 +44,7 @@ namespace Queries.Core.Tests.Builders
             Action action = () => new CreateViewQuery(viewName);
 
             // Assert
-            action.ShouldThrow<ArgumentOutOfRangeException>("viewName is empty or whitespace").Which
+            action.Should().Throw<ArgumentOutOfRangeException>("viewName is empty or whitespace").Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }
@@ -66,16 +70,6 @@ namespace Queries.Core.Tests.Builders
                     true,
                     $"object is a {nameof(CreateView)} with exactly the same {nameof(CreateViewQuery.ViewName)} and {nameof(CreateViewQuery.SelectQuery)}" };
 
-                yield return new object[] {
-                    CreateView("SuperHero")
-                        .As(
-                            Select(Concat("Firstname".Field(), "Lastname".Field()))
-                            .From("DC_Comics")
-                            .Build())
-                            .Build(),
-                    new SelectColumn(),
-                    false,
-                    $"{nameof(CreateViewQuery)} is always != exactly the same {nameof(SelectColumn)}" };
                 {
                     CreateViewQuery query = CreateView("SuperHero")
                         .As(
@@ -85,7 +79,6 @@ namespace Queries.Core.Tests.Builders
                             .Build();
                     yield return new object[] { query, query, true, "Equals with same instance" };
                 }
-
             }
         }
 
@@ -116,8 +109,5 @@ namespace Queries.Core.Tests.Builders
             attr.Should()
                 .NotBeNull($"{nameof(CreateViewQuery)} must be marked with {nameof(DataManipulationLanguageAttribute)}");
         }
-
-
-
     }
 }

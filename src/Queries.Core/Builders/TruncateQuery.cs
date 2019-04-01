@@ -13,7 +13,7 @@ namespace Queries.Core.Builders
     public class TruncateQuery : IEquatable<TruncateQuery>, IQuery
     {
         /// <summary>
-        /// Name of the table to truncate.
+        /// Name of the collection to truncate.
         /// </summary>
         /// <value>
         /// The name.
@@ -23,19 +23,19 @@ namespace Queries.Core.Builders
         /// <summary>
         /// Builds a new <see cref="TruncateQuery"/>
         /// </summary>
-        /// <param name="tableName">Name of the table to truncate</param>
-        public TruncateQuery(string tableName)
+        /// <param name="collection">Name of the table to truncate</param>
+        public TruncateQuery(string collection)
         {
-            if (tableName == null)
+            if (collection == null)
             {
-                throw new ArgumentNullException(nameof(tableName), $"{nameof(tableName)} cannot be null");
+                throw new ArgumentNullException(nameof(collection), $"{nameof(collection)} cannot be null");
             }
 
-            if (string.IsNullOrWhiteSpace(tableName))
+            if (string.IsNullOrWhiteSpace(collection))
             {
-                throw new ArgumentOutOfRangeException(nameof(tableName), $"{nameof(tableName)} cannot be empty or whitespace only");
+                throw new ArgumentOutOfRangeException(nameof(collection), $"{nameof(collection)} cannot be empty or whitespace only");
             }
-            Name = tableName;
+            Name = collection;
         }
 
         public override bool Equals(object obj) => Equals(obj as TruncateQuery);

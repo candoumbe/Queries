@@ -3,9 +3,9 @@ using static Queries.Core.Builders.Fluent.QueryBuilder;
 using System.Collections.Generic;
 using Queries.Core;
 using Queries.Core.Builders;
-using Queries.Core.Extensions;
 using FluentAssertions;
 using System;
+using Queries.Core.Renderers;
 
 namespace Queries.Renderers.MySQL.Tests
 {
@@ -20,7 +20,7 @@ namespace Queries.Renderers.MySQL.Tests
                 yield return new object[]
                 {
                     Select(Concat("firstname".Field(), " ".Literal(), "lastname".Field())),
-                    false,
+                    new QueryRendererSettings { PrettyPrint = false },
                     @"SELECT CONCAT(""firstname"", ' ', ""lastname"")"
                 };
 
@@ -28,7 +28,7 @@ namespace Queries.Renderers.MySQL.Tests
                 yield return new object[]
                 {
                     new SelectQuery(Concat("firstname".Field(), " ".Literal(), "lastname".Field())),
-                    false,
+                    new QueryRendererSettings { PrettyPrint = false },
                     @"SELECT CONCAT(""firstname"", ' ', ""lastname"")"
                 };
             }
@@ -39,11 +39,11 @@ namespace Queries.Renderers.MySQL.Tests
         [Theory]
         [MemberData(nameof(SelectTestCases))]
         //[TestCaseSource(typeof(Cases), nameof(Cases.SelectTestCases))]
-        public void SelectTest(SelectQuery query, bool prettyPrint, string expectedString)
-            => IsQueryOk(query, prettyPrint, expectedString);
+        public void SelectTest(SelectQuery query, QueryRendererSettings settings, string expectedString)
+            => IsQueryOk(query, settings, expectedString);
 
 
-        private static void IsQueryOk(IQuery query, bool prettyPrint, string expectedString) => 
-            query.ForMySQL(prettyPrint).Should().Be(expectedString);
+        private static void IsQueryOk(IQuery query, QueryRendererSettings settings, string expectedString) => 
+            query.ForMySQL(settings).Should().Be(expectedString);
     }
 }

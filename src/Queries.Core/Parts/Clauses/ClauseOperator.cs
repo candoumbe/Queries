@@ -11,6 +11,8 @@
         Like,
         NotLike,
         IsNull,
-        IsNotNull
+        IsNotNull,
+        In,
+        NotIn
     }
 }

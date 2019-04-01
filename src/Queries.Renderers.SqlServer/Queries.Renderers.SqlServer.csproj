@@ -8,9 +8,9 @@
     <AssemblyName>Queries.Renderers.SqlServer</AssemblyName>
     <PackageId>Queries.Renderers.SqlServer</PackageId>
     <PackageTags>Queries;Query;SQL;Builder;SQL Server</PackageTags>
-    <PackageReleaseNotes>This is an alpha version</PackageReleaseNotes>
+    <PackageReleaseNotes>Staements in a BtachQuery are not separated by a semi-colon</PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/candoumbe/Queries</PackageProjectUrl>
-    <Version>3.0.1-alpha1</Version>
+    <Version>4.0.0-alpha1</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -20,6 +20,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <LangVersion>7.1</LangVersion>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Roslynator.Analyzers" Version="1.9.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Queries.Core\Queries.Core.csproj" />

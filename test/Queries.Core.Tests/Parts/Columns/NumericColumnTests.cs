@@ -2,12 +2,15 @@
 using Queries.Core.Parts.Columns;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Xunit;
 using Xunit.Abstractions;
+using Xunit.Categories;
 
 namespace Queries.Core.Tests.Parts.Columns
 {
+    [UnitTest]
+    [Feature(nameof(NumericColumn))]
+    [Feature("Column")]
     public class NumericColumnTests : IDisposable
     {
         private ITestOutputHelper _outputHelper;
@@ -23,14 +26,13 @@ namespace Queries.Core.Tests.Parts.Columns
         public void CtorShouldSetValueAsPassedIn()
         {
             new NumericColumn((int?)null).Value.Should().BeNull($"new {nameof(NumericColumn)}((int?)null).Value should be null");
-            
+
             new NumericColumn((long?)null).Value.Should().BeNull($"new {nameof(NumericColumn)}((long?)null).Value should be null");
 
             new NumericColumn((float?)null).Value.Should().BeNull($"new {nameof(NumericColumn)}((float?)null).Value should be null");
 
             new NumericColumn((double?)null).Value.Should().BeNull($"new {nameof(NumericColumn)}((double?)null).Value should be null");
         }
-
 
         [Theory]
         [InlineData(1)]
@@ -47,7 +49,7 @@ namespace Queries.Core.Tests.Parts.Columns
             int? currentValue = column.Value.Should()
                 .BeAssignableTo<int>().Which;
 
-            currentValue.ShouldBeEquivalentTo(value, $"{nameof(NumericColumn)}.{nameof(NumericColumn.Value)} should be equal to the ctor input");
+            currentValue.Should().Be(value, $"{nameof(NumericColumn)}.{nameof(NumericColumn.Value)} should be equal to the ctor input");
         }
 
         [Theory]
@@ -145,13 +147,11 @@ namespace Queries.Core.Tests.Parts.Columns
             {
                 yield return new object[] { new NumericColumn(1), null, false, "object is null" };
                 yield return new object[] { new NumericColumn(1), new NumericColumn(1), true, $"object is a {nameof(NumericColumn)} with exactly the same {nameof(NumericColumn.Value)} and {nameof(NumericColumn.Alias)}" };
-                yield return new object[] { new NumericColumn(1), new SelectColumn(), false, $"{nameof(NumericColumn)} is always != from {nameof(SelectColumn)}" };
-
+                
                 {
                     NumericColumn column = new NumericColumn(1);
                     yield return new object[] { column, column, true, "Equals with same instance" };
                 }
-
             }
         }
 
@@ -169,5 +169,29 @@ namespace Queries.Core.Tests.Parts.Columns
             actualResult.Should().Be(expectedResult, reason);
         }
 
+        public static IEnumerable<object[]> CloneCases
+        {
+            get
+            {
+                yield return new[] { 1.Literal() };
+                yield return new[] { 2.0f.Literal() };
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(CloneCases))]
+        public void CloneTest(NumericColumn original)
+        {
+            _outputHelper.WriteLine($"{nameof(original)} : {original}");
+
+            // Act
+            IColumn copie = original.Clone();
+
+            // Assert
+            copie.Should()
+                .BeOfType<Literal>().Which.Should()
+                .NotBeSameAs(original).And
+                .Be(original);
+        }
     }
 }

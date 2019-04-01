@@ -1,16 +1,17 @@
 using System;
 using System.Collections.Generic;
-using Queries.Core.Extensions;
 using Queries.Core.Parts.Columns;
 using Xunit;
 using Queries.Core.Parts.Functions;
 using FluentAssertions;
 using Xunit.Abstractions;
-using static Newtonsoft.Json.JsonConvert;
 using Newtonsoft.Json.Linq;
+using Xunit.Categories;
 
 namespace Queries.Core.Tests.Parts.Columns
 {
+    [UnitTest]
+    [Feature(nameof(FieldColumn))]
     public class FieldColumnTests : IDisposable
     {
         private ITestOutputHelper _outputHelper;
@@ -18,7 +19,6 @@ namespace Queries.Core.Tests.Parts.Columns
         public FieldColumnTests(ITestOutputHelper outputHelper) => _outputHelper = outputHelper;
 
         public void Dispose() => _outputHelper = null;
-        
 
         [Fact]
         public void ConstructorTestWithNullArgument()
@@ -27,7 +27,7 @@ namespace Queries.Core.Tests.Parts.Columns
             Action action = () => new FieldColumn(null);
 
             // Arrange
-            action.ShouldThrow<ArgumentNullException>().Which
+            action.Should().Throw<ArgumentNullException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }
@@ -39,7 +39,7 @@ namespace Queries.Core.Tests.Parts.Columns
             Action action = () => new FieldColumn(string.Empty);
 
             // Arrange
-            action.ShouldThrow<ArgumentOutOfRangeException>().Which
+            action.Should().Throw<ArgumentOutOfRangeException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }
@@ -51,7 +51,7 @@ namespace Queries.Core.Tests.Parts.Columns
             Action action = () => new FieldColumn("   ");
 
             // Arrange
-            action.ShouldThrow<ArgumentOutOfRangeException>().Which
+            action.Should().Throw<ArgumentOutOfRangeException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }
@@ -79,20 +79,17 @@ namespace Queries.Core.Tests.Parts.Columns
         public void SettingAliasTest(CountFunction column, string expectedAlias)
             => column.Alias.Should().Be(expectedAlias);
 
-
         public static IEnumerable<object[]> EqualsCases
         {
             get
             {
                 yield return new object[] { new FieldColumn("firstname"), null, false, "object is null" };
                 yield return new object[] { new FieldColumn("firstname"), new FieldColumn("firstname"), true, $"object is a {nameof(FieldColumn)} with exactly the same {nameof(FieldColumn.Name)} and {nameof(FieldColumn.Alias)}" };
-                yield return new object[] { new FieldColumn("firstname"), new SelectColumn(), false, $"{nameof(FieldColumn)} is always != exactly the same {nameof(SelectColumn)}" };
-
+                
                 {
                     FieldColumn column = new FieldColumn("firstname");
                     yield return new object[] { column, column, true, "Equals with same instance" };
                 }
-
             }
         }
 
@@ -110,25 +107,24 @@ namespace Queries.Core.Tests.Parts.Columns
             actualResult.Should().Be(expectedResult, reason);
         }
 
-        public static IEnumerable<object[]> ToStringCases
+        public static IEnumerable<object[]> CloneCases
         {
             get
             {
-                yield return new object[] { new FieldColumn("Firstname"), new JObject{ ["Name"] = "Firstname", ["Alias"] = null }.ToString(Newtonsoft.Json.Formatting.None)};
-                yield return new object[] { new FieldColumn("Firstname").As("First name"), SerializeObject(new { Name = "Firstname", Alias = "First name" })};
+                yield return new[] { "Firstname".Field() };
             }
         }
-
         [Theory]
-        [MemberData(nameof(ToStringCases))]
-        public void TestsToString(FieldColumn column, string expected)
+        [MemberData(nameof(CloneCases))]
+        public void CloneTest(FieldColumn original)
         {
             // Act
-            string actual = column.ToString();
+            FieldColumn copie = (FieldColumn) original.Clone();
 
             // Assert
-            actual.Should().Be(expected);
+            copie.Should()
+                .NotBeSameAs(original).And
+                .Be(original);
         }
-
     }
 }

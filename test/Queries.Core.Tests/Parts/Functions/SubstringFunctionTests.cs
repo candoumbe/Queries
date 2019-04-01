@@ -1,16 +1,18 @@
 ﻿using FluentAssertions;
 using Queries.Core.Attributes;
-using Queries.Core.Extensions;
 using Queries.Core.Parts.Columns;
 using Queries.Core.Parts.Functions;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 using Xunit;
+using Xunit.Categories;
 
 namespace Queries.Core.Tests.Parts.Functions
 {
+    [UnitTest]
+    [Feature(nameof(SubstringFunction))]
+    [Feature("Functions")]
     public class SubstringFunctionTests
     {
         public static IEnumerable<object[]> CtorThrowsArgumentOutOfRangeExceptionCases
@@ -20,7 +22,6 @@ namespace Queries.Core.Tests.Parts.Functions
                 IColumn column = "Firstname".Field();
                 yield return new object[]{column, -1, null, $"start value is negative"};
                 yield return new object[]{column, 1, -1, $"length value is negative"};
-                
             }
         }
 
@@ -31,12 +32,11 @@ namespace Queries.Core.Tests.Parts.Functions
             Action action = () => new SubstringFunction(null, 1, 1);
 
             // Assert
-            action.ShouldThrow<ArgumentNullException>($"first parameter of {nameof(SubstringFunction)}'s constructor cannot be null")
+            action.Should().Throw<ArgumentNullException>($"first parameter of {nameof(SubstringFunction)}'s constructor cannot be null")
                 .Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }
-
 
         [Theory]
         [MemberData(nameof(CtorThrowsArgumentOutOfRangeExceptionCases))]
@@ -46,24 +46,13 @@ namespace Queries.Core.Tests.Parts.Functions
             Action action = () => new SubstringFunction(column, start, length);
 
             // Assert
-            action.ShouldThrow<ArgumentOutOfRangeException>().Which
+            action.Should().Throw<ArgumentOutOfRangeException>(reason).Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
-
         }
 
         [Fact]
-        public void IsMarkedWithFunctionAttribute()
-        {
-            // Arrange
-            TypeInfo typeInfo = typeof(SubstringFunction).GetTypeInfo();
-
-            // Act
-            FunctionAttribute attr = typeInfo.GetCustomAttribute<FunctionAttribute>();
-
-
-            // Arrange
-            attr.Should().NotBeNull($"{nameof(SubstringFunction)} must be marked with {nameof(FunctionAttribute)}");
-        }
+        public void IsMarkedWithFunctionAttribute() => typeof(SubstringFunction).Should()
+            .BeDecoratedWith<FunctionAttribute>($"{nameof(SubstringFunction)} must be marked with {nameof(FunctionAttribute)}");
     }
 }

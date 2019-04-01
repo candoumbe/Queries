@@ -4,24 +4,22 @@ using Queries.Core.Parts.Clauses;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Text;
 using Xunit;
 using Xunit.Abstractions;
+using Xunit.Categories;
 
 namespace Queries.Core.Parts.Columns.Tests
 {
+    [UnitTest]
+    [Feature(nameof(FieldColumn))]
+    [Feature("Extensions")]
     public class FieldColumnExtensionsTests : IDisposable
     {
         private ITestOutputHelper _outputHelper;
 
-        public FieldColumnExtensionsTests(ITestOutputHelper outputHelper)
-        {
-            _outputHelper = outputHelper;
-        }
-
+        public FieldColumnExtensionsTests(ITestOutputHelper outputHelper) => _outputHelper = outputHelper;
 
         public void Dispose() => _outputHelper = null;
-
 
         public static IEnumerable<object[]> EqualToExtensionCases
         {
@@ -31,25 +29,25 @@ namespace Queries.Core.Parts.Columns.Tests
                 {
                     new FieldColumn("firstname"),
                     "Bruce",
-                    ((Expression<Func<UpdateFieldValue, bool>>)(x => 
-                        x.Source != null 
-                        && x.Source is LiteralColumn 
-                        && ((LiteralColumn)x.Source).Value is string 
-                        && "Bruce".Equals(((LiteralColumn)x.Source).Value)
-                        && x.Destination != null 
-                        && "firstname".Equals(x.Destination.Name)    
-                    ))
+                    (Expression<Func<UpdateFieldValue, bool>>)(x =>
+                        x.Source != null
+                        && x.Source is Literal
+                        && ((Literal)x.Source).Value is string
+                        && "Bruce".Equals(((Literal)x.Source).Value)
+                        && x.Destination != null
+                        && "firstname".Equals(x.Destination.Name)
+                    )
                 };
 
                 yield return new object[]
                 {
                     new FieldColumn("firstname"),
                     null,
-                    ((Expression<Func<UpdateFieldValue, bool>>)(x =>
+                    (Expression<Func<UpdateFieldValue, bool>>)(x =>
                         x.Source  == null
                         && x.Destination != null
                         && "firstname".Equals(x.Destination.Name)
-                    ))
+                    )
                 };
             }
         }
@@ -59,7 +57,7 @@ namespace Queries.Core.Parts.Columns.Tests
         public void EqualToExtension(FieldColumn fc, ColumnBase value, Expression<Func<UpdateFieldValue, bool>> expectation)
         {
             // Act
-            UpdateFieldValue ufv  = fc.EqualTo(value);
+            UpdateFieldValue ufv  = fc.UpdateValueTo(value);
 
             // Assert
             ufv.Should().Match(expectation);
@@ -72,14 +70,13 @@ namespace Queries.Core.Parts.Columns.Tests
             FieldColumn fieldColumn = null;
 
             // Act
-            Action action = () => fieldColumn.EqualTo("Bruce");
+            Action action = () => fieldColumn.UpdateValueTo("Bruce");
 
             // Assert
-            action.ShouldThrow<ArgumentNullException>().Which
+            action.Should().Throw<ArgumentNullException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }
-
 
         [Fact]
         public void IsNullExtension()
@@ -91,7 +88,7 @@ namespace Queries.Core.Parts.Columns.Tests
             WhereClause clause = fc.IsNull();
 
             // Assert
-            clause.Column.ShouldBeEquivalentTo(fc);
+            clause.Column.Should().Be(fc);
             clause.Operator.Should().Be(ClauseOperator.IsNull);
             clause.Constraint.Should().BeNull();
         }
@@ -106,7 +103,7 @@ namespace Queries.Core.Parts.Columns.Tests
             Action action = () => fieldColumn.IsNull();
 
             // Assert
-            action.ShouldThrow<ArgumentNullException>().Which
+            action.Should().Throw<ArgumentNullException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }
@@ -121,7 +118,7 @@ namespace Queries.Core.Parts.Columns.Tests
             WhereClause clause = fc.IsNotNull();
 
             // Assert
-            clause.Column.ShouldBeEquivalentTo(fc);
+            clause.Column.Should().Be(fc);
             clause.Operator.Should().Be(ClauseOperator.IsNotNull);
             clause.Constraint.Should().BeNull();
         }
@@ -136,7 +133,7 @@ namespace Queries.Core.Parts.Columns.Tests
             Action action = () => fieldColumn.IsNotNull();
 
             // Assert
-            action.ShouldThrow<ArgumentNullException>().Which
+            action.Should().Throw<ArgumentNullException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }
@@ -151,10 +148,10 @@ namespace Queries.Core.Parts.Columns.Tests
             WhereClause clause = fc.LessThan(18);
 
             // Assert
-            clause.Column.ShouldBeEquivalentTo(fc);
+            clause.Column.Should().Be(fc);
             clause.Operator.Should().Be(ClauseOperator.LessThan);
             clause.Constraint.Should()
-                .BeOfType<LiteralColumn>().Which
+                .BeOfType<NumericColumn>().Which
                 .Value.Should()
                 .Be(18);
         }
@@ -169,7 +166,7 @@ namespace Queries.Core.Parts.Columns.Tests
             Action action = () => fieldColumn.LessThan(18);
 
             // Assert
-            action.ShouldThrow<ArgumentNullException>().Which
+            action.Should().Throw<ArgumentNullException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }
@@ -184,10 +181,10 @@ namespace Queries.Core.Parts.Columns.Tests
             WhereClause clause = fc.GreaterThan(18);
 
             // Assert
-            clause.Column.ShouldBeEquivalentTo(fc);
+            clause.Column.Should().Be(fc);
             clause.Operator.Should().Be(ClauseOperator.GreaterThan);
             clause.Constraint.Should()
-                .BeOfType<LiteralColumn>().Which
+                .BeAssignableTo<NumericColumn>().Which
                 .Value.Should()
                 .Be(18);
         }
@@ -202,7 +199,7 @@ namespace Queries.Core.Parts.Columns.Tests
             Action action = () => fieldColumn.GreaterThan(18);
 
             // Assert
-            action.ShouldThrow<ArgumentNullException>().Which
+            action.Should().Throw<ArgumentNullException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }
@@ -217,10 +214,10 @@ namespace Queries.Core.Parts.Columns.Tests
             WhereClause clause = fc.GreaterThanOrEqualTo(18);
 
             // Assert
-            clause.Column.ShouldBeEquivalentTo(fc);
+            clause.Column.Should().Be(fc);
             clause.Operator.Should().Be(ClauseOperator.GreaterThanOrEqualTo);
             clause.Constraint.Should()
-                .BeOfType<LiteralColumn>().Which
+                .BeOfType<NumericColumn>().Which
                 .Value.Should()
                 .Be(18);
         }
@@ -235,7 +232,7 @@ namespace Queries.Core.Parts.Columns.Tests
             Action action = () => fieldColumn.GreaterThanOrEqualTo(18);
 
             // Assert
-            action.ShouldThrow<ArgumentNullException>().Which
+            action.Should().Throw<ArgumentNullException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }
@@ -250,10 +247,10 @@ namespace Queries.Core.Parts.Columns.Tests
             WhereClause clause = fc.LessThanOrEqualTo(18);
 
             // Assert
-            clause.Column.ShouldBeEquivalentTo(fc);
+            clause.Column.Should().Be(fc);
             clause.Operator.Should().Be(ClauseOperator.LessThanOrEqualTo);
             clause.Constraint.Should()
-                .BeOfType<LiteralColumn>().Which
+                .BeOfType<NumericColumn>().Which
                 .Value.Should()
                 .Be(18);
         }
@@ -268,11 +265,9 @@ namespace Queries.Core.Parts.Columns.Tests
             Action action = () => fieldColumn.LessThanOrEqualTo(18);
 
             // Assert
-            action.ShouldThrow<ArgumentNullException>().Which
+            action.Should().Throw<ArgumentNullException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }
-
-
     }
 }

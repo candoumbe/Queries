@@ -1,28 +1,23 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using Newtonsoft.Json;
 using Queries.Core.Builders.Fluent;
-using Queries.Core.Extensions;
 using Queries.Core.Parts;
 using Queries.Core.Parts.Clauses;
 using Queries.Core.Parts.Columns;
 using Queries.Core.Parts.Joins;
 using Queries.Core.Parts.Sorting;
-using Newtonsoft.Json;
-using static Newtonsoft.Json.JsonConvert;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Queries.Core.Builders
 {
     [JsonObject(ItemReferenceLoopHandling = ReferenceLoopHandling.Ignore)]
-    public class SelectQuery : SelectQueryBase, ISelectQuery<SelectQuery>, IFromQuery<SelectQuery>, IWhereQuery<SelectQuery>, IJoinQuery<SelectQuery>, ISortQuery<SelectQuery>, IInsertable, IEquatable<SelectQuery>
+    public class SelectQuery : SelectQueryBase, ISelectQuery<SelectQuery>, IFromQuery<SelectQuery>, IWhereQuery<SelectQuery>, IJoinQuery<SelectQuery>, IOrderQuery<SelectQuery>, IEquatable<SelectQuery>, IColumn
     {
-        private int? _limit;
-
         /// <summary>
         /// Defines the max number of records to retrieve
         /// </summary>
-        public int? NbRows => _limit;
-
+        public int? NbRows { get; private set; }
 
         public IList<ITable> Tables { get; }
         public IList<IUnionQuery<SelectQuery>> Unions { get; set; }
@@ -52,7 +47,7 @@ namespace Queries.Core.Builders
 
         public ISelectQuery<SelectQuery> Limit(int limit)
         {
-            _limit = limit;
+            NbRows = limit;
             return this;
         }
 
@@ -76,7 +71,6 @@ namespace Queries.Core.Builders
             return this;
         }
 
-
         public IWhereQuery<SelectQuery> Where(IWhereClause clause)
         {
             WhereCriteria = clause ?? throw new ArgumentNullException(nameof(clause), $"{clause} cannot be null");
@@ -84,11 +78,11 @@ namespace Queries.Core.Builders
             return this;
         }
 
-        public IWhereQuery<SelectQuery> Where(IColumn column, ClauseOperator @operator, ColumnBase constraint)
+        public IWhereQuery<SelectQuery> Where(IColumn column, ClauseOperator @operator, IColumn constraint)
             => Where(new WhereClause(column, @operator, constraint));
 
-
-
+        public IWhereQuery<SelectQuery> Where(IColumn column, ClauseOperator @operator, string constraint)
+            => Where(column, @operator, constraint?.Literal());
 
         public IJoinQuery<SelectQuery> InnerJoin(Table table, IWhereClause clause)
         {
@@ -126,7 +120,6 @@ namespace Queries.Core.Builders
 
         public IJoinQuery<SelectQuery> RightOuterJoin(Table table, IWhereClause clause)
         {
-
             if (table == null)
             {
                 throw new ArgumentNullException(nameof(table), $"{nameof(table)} cannot be null");
@@ -144,11 +137,11 @@ namespace Queries.Core.Builders
 
         public SelectQuery Build() => this;
 
-
-
-        ISortQuery<SelectQuery> IWhereQuery<SelectQuery>.OrderBy(params ISort[] sorts)
+        IOrderQuery<SelectQuery> IWhereQuery<SelectQuery>.OrderBy(IOrder sort, params IOrder[] sorts)
         {
-            foreach (ISort sort in sorts)
+            Sorts.Add(sort);
+
+            foreach (IOrder items in sorts.Where(s => s != default))
             {
                 Sorts.Add(sort);
             }
@@ -157,28 +150,27 @@ namespace Queries.Core.Builders
 
         public IUnionQuery<SelectQuery> Union(IUnionQuery<SelectQuery> select)
         {
-
             Unions.Add(select);
             return this;
         }
 
-        public ISortQuery<SelectQuery> OrderBy(params ISort[] sorts)
+        public IOrderQuery<SelectQuery> OrderBy(params IOrder[] sorts)
         {
-            foreach (ISort sort in sorts)
+            foreach (IOrder sort in sorts)
             {
                 Sorts.Add(sort);
             }
             return this;
         }
 
-
-        public ISortQuery<SelectQuery> Having(IHavingClause clause)
+        public IOrderQuery<SelectQuery> Having(IHavingClause clause)
         {
             HavingCriteria = clause;
             return this;
         }
 
         public string Alias { get; private set; }
+
         public ITable As(string alias)
         {
             Alias = alias;
@@ -186,34 +178,71 @@ namespace Queries.Core.Builders
         }
 
         public override bool Equals(object obj) => Equals(obj as SelectQuery);
-        
+
         public bool Equals(SelectQuery other)
         {
             bool equals = false;
 
             if (other != null && other.NbRows == NbRows && other.Alias == Alias)
             {
-                equals = Columns.SequenceEqual(other.Columns) 
-                    && (WhereCriteria == null && other.WhereCriteria == null || WhereCriteria.Equals(other.WhereCriteria))
-                    && Tables.SequenceEqual(other.Tables) 
+                equals = Columns.SequenceEqual(other.Columns)
+                    && ((WhereCriteria == null && other.WhereCriteria == null) || WhereCriteria.Equals(other.WhereCriteria))
+                    && Tables.SequenceEqual(other.Tables)
                     && Unions.SequenceEqual(other.Unions);
             }
-
 
             return equals;
         }
 
-        public override int GetHashCode()
+        public override int GetHashCode() => (Alias, Columns, HavingCriteria, Joins, NbRows, Sorts, Tables, Unions, WhereCriteria).GetHashCode();
+
+        /// <summary>
+        /// Performs a deep copy of the current instance.
+        /// </summary>
+        /// <returns>a <see cref="SelectQuery"/> instance that is a deep copy of the current instance.</returns>
+        public SelectQuery Clone()
         {
-            int hashCode = 1000813348;
-            hashCode = hashCode * -1521134295 + EqualityComparer<int?>.Default.GetHashCode(NbRows);
-            hashCode = hashCode * -1521134295 + EqualityComparer<IList<ITable>>.Default.GetHashCode(Tables);
-            hashCode = hashCode * -1521134295 + EqualityComparer<IList<IUnionQuery<SelectQuery>>>.Default.GetHashCode(Unions);
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Alias);
-            return hashCode;
+            SelectQuery query = new SelectQuery(Columns.Select(x => x.Clone()).ToArray())
+            {
+                Alias = Alias,
+                Columns = Columns.Select(x => x.Clone()).ToList(),
+                HavingCriteria = HavingCriteria?.Clone(),
+                WhereCriteria = WhereCriteria?.Clone()
+            };
+            if (NbRows.HasValue)
+            {
+                query.Limit(NbRows.Value);
+            }
+            query.From(Tables.Select(t => t.Clone()).ToArray());
+
+            foreach (IUnionQuery<SelectQuery> item in Unions)
+            {
+                query.Union(item.Build().Clone());
+            }
+
+            return query;
         }
 
-        public override string ToString() => SerializeObject(this);
-    }
+        ITable ITable.Clone() => Clone();
 
+        IColumn IColumn.Clone() => Clone();
+
+        public override string ToString()
+        {
+            object obj = new
+            {
+                Alias,
+                Columns = Columns?.AtLeastOnce() ?? false ? Columns : null,
+                Having= HavingCriteria?.ToString(),
+                Joins = Joins.AtLeastOnce() ? Joins : null,
+                NbRows,
+                Sorts = Sorts.AtLeastOnce() ? Sorts : null,
+                Tables = Tables.AtLeastOnce() ? Tables : null,
+                Unions = Unions.AtLeastOnce() ? Unions : null,
+                Where = WhereCriteria?.ToString()
+            };
+
+            return $"[{nameof(SelectQuery)}:{obj.Stringify()}]";
+        }
+    }
 }

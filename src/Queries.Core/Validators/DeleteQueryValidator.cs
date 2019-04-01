@@ -8,6 +8,5 @@ namespace Queries.Core.Validators
     /// </summary>
     public class DeleteQueryValidator : AbstractValidator<DeleteQuery>
     {
-       
     }
 }
