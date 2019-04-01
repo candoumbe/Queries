@@ -37,8 +37,22 @@ namespace Queries.Core.Parts.Clauses
             Constraint = constraint;
         }
 
+        public HavingClause(AggregateFunction column, ClauseOperator @operator, string constraint)
+            : this(column, @operator, constraint?.Literal())
+        {
+        }
 
-        public IHavingClause Clone() => new HavingClause(Column, Operator, Constraint);
+        public HavingClause(AggregateFunction column, ClauseOperator @operator, long? constraint)
+            : this(column, @operator, constraint?.Literal())
+        {
+        }
+
+        public HavingClause(AggregateFunction column, ClauseOperator @operator, bool? constraint)
+            : this(column, @operator, constraint?.Literal())
+        {
+        }
+
+            public IHavingClause Clone() => new HavingClause(Column, Operator, Constraint);
         public override bool Equals(object obj) => Equals(obj as HavingClause);
         public bool Equals(HavingClause other) => other != null
             && (Column, Operator, Constraint).Equals((other.Column, other.Operator, other.Constraint));

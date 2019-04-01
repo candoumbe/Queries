@@ -40,8 +40,7 @@ namespace Queries.Core.Tests.Parts
             {
                 yield return new object[] { new Table("firstname"), null, false, "object is null" };
                 yield return new object[] { new Table("firstname"), new Table("firstname"), true, $"object is a {nameof(Table)} with exactly the same {nameof(Table.Name)} and {nameof(Table.Alias)}" };
-                yield return new object[] { new Table("firstname"), new SelectColumn(), false, $"{nameof(Table)} is always != exactly the same {nameof(SelectColumn)}" };
-
+                
                 {
                     Table column = new Table("firstname");
                     yield return new object[] { column, column, true, "Equals with same instance" };

@@ -35,13 +35,14 @@ namespace Queries.Renderers.Sqlite.Tests
             renderer.Settings.Should().NotBeNull();
             renderer.Settings.PrettyPrint.Should().BeTrue($"{nameof(SqliteRenderer)}.{nameof(SqliteRenderer.Settings)}.{nameof(SqliteRenderer.Settings.PrettyPrint)} should be set to true by default");
             renderer.Settings.DateFormatString.Should().Be("yyyy-MM-dd");
+            renderer.Settings.PaginationKind.Should()
+                .Be(PaginationKind.Limit);
         }
 
         public static IEnumerable<object[]> SelectTestCases
         {
             get
             {
-
                 yield return new object[]
                 {
                     Select(12.July(2010).Literal()), new QueryRendererSettings { PrettyPrint = false, DateFormatString = "dd/MM/yyyy" },
@@ -58,6 +59,13 @@ namespace Queries.Renderers.Sqlite.Tests
                 {
                     Select(1L.Literal()), new QueryRendererSettings { PrettyPrint = false },
                     "SELECT 1"
+                };
+
+                yield return new object[]
+                {
+                    Select(Null("TextValue".Field(), "IntegerValue".Field(), "RealValue".Field())),
+                    new QueryRendererSettings { PrettyPrint = false},
+                    @"SELECT COALESCE(""TextValue"", ""IntegerValue"", ""RealValue"")"
                 };
 
                 yield return new object[]
@@ -98,15 +106,17 @@ namespace Queries.Renderers.Sqlite.Tests
                     Select(Concat("firstname".Field(), " ".Literal(), "lastname".Field()).As("Fullname"))
                     .From("superheroes")
                     .Where("nickname".Field(), EqualTo, "Batman"),
-                    new QueryRendererSettings {PrettyPrint = false},
+                    new QueryRendererSettings {PrettyPrint = false, PaginationKind = PaginationKind.Limit},
                     "BEGIN;" +
                     "PRAGMA temp_store = 2;" +
-                    "CREATE TEMP TABLE _Variables(Name TEXT PRIMARY KEY, RealValue REAL, IntegerValue INTEGER, BlobValue BLOB, TextValue TEXT);" +
-                    @"INSERT INTO ""_Variables"" (""ParameterName"") (""nickname"") VALUES ('Batman');" +
-                    @"UPDATE ""_Variables"" SET ""TextValue"" = 'Batman' WHERE ParameterName = 'nickname';" +
-                    @"SELECT ""firstname"" || ' ' || ""lastname""  AS ""Fullname"" " +
+                    @"CREATE TEMP TABLE ""_VARIABLES""(ParameterName TEXT PRIMARY KEY, RealValue REAL, IntegerValue INTEGER, BlobValue BLOB, TextValue TEXT);" +
+                    @"INSERT INTO ""_VARIABLES"" (""ParameterName"") VALUES ('p0');" +
+                    @"UPDATE ""_VARIABLES"" SET ""TextValue"" = 'Batman' WHERE (""ParameterName"" = 'p0');" +
+                    @"SELECT ""firstname"" || ' ' || ""lastname"" AS ""Fullname"" " +
                     @"FROM ""superheroes"" " +
-                    @"WHERE ""nickname"" = (SELECT COALESCE(RealValue, IntegerValue, BlobValue, TextValue) FROM _Variables WHERE ParameterName = 'nickname')"
+                    @"WHERE (""nickname"" = (SELECT COALESCE(""RealValue"", ""IntegerValue"", ""BlobValue"", ""TextValue"") FROM ""_VARIABLES"" WHERE (""ParameterName"" = 'p0') LIMIT 1));" +
+                    @"DROP TABLE ""_VARIABLES"";" +
+                    "END;"
                 };
             }
         }

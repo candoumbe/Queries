@@ -5,9 +5,12 @@ using System;
 using System.Collections.Generic;
 using Xunit;
 using Xunit.Abstractions;
+using Xunit.Categories;
 
 namespace Queries.Core.Tests.Parts
 {
+    [UnitTest]
+    [Feature("Variable")]
     public class VariableTests :IDisposable
     {
         private ITestOutputHelper _outputHelper;
@@ -48,7 +51,11 @@ namespace Queries.Core.Tests.Parts
             {
                 yield return new object[] { new Variable("firstname", VariableType.String, "Clark"), null, false, "comparing with a null instance" };
                 yield return new object[] { new Variable("firstname", VariableType.String, "Clark"), new Variable("firstname", VariableType.String, "Clark"), true, "comparing two instances with same name/type/value" };
-                yield return new object[] { new Variable("firstname", VariableType.Date, "Clark"), new Variable("firstname", VariableType.String, "Clark"), false, "comparing two instances with same name/type/value" };
+                yield return new object[] { new Variable("firstname", VariableType.Date, "Clark"), new Variable("firstname", VariableType.String, "Clark"), false, "comparing two instances with same name/value but different types." };
+                {
+                    Variable variable = new Variable("firstname", VariableType.Date, "Clark");
+                    yield return new object[] { variable, variable.Clone(), true, "comparing a variable to its clone." };
+                }
             }
         }
 
@@ -64,7 +71,8 @@ namespace Queries.Core.Tests.Parts
             bool actualResult = first.Equals(second);
 
             // Assert
-            actualResult.Should().Be(expectedResult, reason);
+            actualResult.Should()
+                .Be(expectedResult, reason);
         }
     }
 }

@@ -40,6 +40,7 @@ namespace Queries.Core.Parts.Columns
         /// Creates a <see cref="WhereClause"/> that states <paramref name="column"/>'value is <c> &lt; </c> <paramref name="constraint"/>'s value.
         /// </summary>
         /// <param name="column">Column to apply the clause onto</param>
+        /// <param name="constraint"></param>
         /// <returns></returns>
         public static WhereClause LessThan(this FieldColumn column, ColumnBase constraint) => new WhereClause(column, ClauseOperator.LessThan, constraint);
 
@@ -47,6 +48,7 @@ namespace Queries.Core.Parts.Columns
         /// Creates a <see cref="WhereClause"/> that states <paramref name="column"/>'value is <c>&lt;</c> or equal to <paramref name="constraint"/>'s value.
         /// </summary>
         /// <param name="column">Column to apply the clause onto</param>
+        /// <param name="constraint"></param>
         /// <returns></returns>
         public static WhereClause LessThanOrEqualTo(this FieldColumn column, ColumnBase constraint) => new WhereClause(column, ClauseOperator.LessThanOrEqualTo, constraint);
 
@@ -54,6 +56,7 @@ namespace Queries.Core.Parts.Columns
         /// Creates a <see cref="WhereClause"/> that states <paramref name="column"/>'value is <c> &gt; </c> <paramref name="constraint"/>'s value.
         /// </summary>
         /// <param name="column">Column to apply the clause onto</param>
+        /// <param name="constraint"></param>
         /// <returns></returns>
         public static WhereClause GreaterThan(this FieldColumn column, ColumnBase constraint) => new WhereClause(column, ClauseOperator.GreaterThan, constraint);
 
@@ -70,6 +73,7 @@ namespace Queries.Core.Parts.Columns
         /// Creates a <see cref="WhereClause"/> that states <paramref name="column"/>'s value is one the 
         /// </summary>
         /// <param name="column">column to apply the clause onto</param>
+        /// <param name="first"></param>
         /// <param name="values"></param>
         /// <returns></returns>
         public static WhereClause In(this FieldColumn column, string first, params string[] values) => new WhereClause(column, ClauseOperator.In, new StringValues(first, values));
@@ -83,7 +87,6 @@ namespace Queries.Core.Parts.Columns
         /// <param name="values"></param>
         /// <returns></returns>
         public static WhereClause NotIn(this FieldColumn column, string first, params string[] values) => new WhereClause(column, ClauseOperator.NotIn, new StringValues(first, values));
-
 
         /// <summary>
         /// Creates a <see cref="WhereClause"/> that states <paramref name="column"/>'s value is like <paramref name="variable"/>.

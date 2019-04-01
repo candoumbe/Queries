@@ -1,20 +1,22 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Queries.Core.Attributes;
 using Queries.Core.Builders;
 using Queries.Core.Builders.Fluent;
 using Queries.Core.Parts;
 using Queries.Core.Parts.Clauses;
 using Queries.Core.Parts.Columns;
+using Queries.Core.Parts.Functions;
 using Queries.Core.Parts.Joins;
 using Queries.Core.Parts.Sorting;
-using Queries.Core.Parts.Functions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
-using Queries.Core.Attributes;
+using System.Text;
 
 namespace Queries.Core.Renderers
 {
+    using static PaginationKind;
+
     /// <summary>
     /// Base class for query renderers
     /// </summary>
@@ -140,7 +142,7 @@ namespace Queries.Core.Renderers
                 StringBuilder sb = new StringBuilder();
 
                 string fieldsString = "*";
-                if (query.Columns != null && query.Columns.Any())
+                if ((query.Columns?.Count ?? 0) > 0)
                 {
                     fieldsString = RenderColumns(query.Columns);
                 }
@@ -153,19 +155,17 @@ namespace Queries.Core.Renderers
                         string tableString = RenderTables(selectQuery.Tables);
                         int? limit = selectQuery.NbRows;
 
-                        if (limit.HasValue)
+                        if (limit.HasValue && (Settings.PaginationKind & Top) == Top)
                         {
-                            sb.Append($"SELECT TOP {limit.Value} {fieldsString} ")
-                                .Append(Settings.PrettyPrint ? Environment.NewLine : string.Empty)
-                                .AppendFormat("FROM {0}", tableString);
+                            sb.Append($"SELECT TOP {limit.Value} {fieldsString} ");
                         }
                         else
                         {
-                            sb
-                                .AppendFormat("SELECT {0} ", fieldsString)
-                                .Append(Settings.PrettyPrint ? Environment.NewLine : string.Empty)
-                                .AppendFormat("FROM {0}", tableString);
+                            sb.AppendFormat("SELECT {0} ", fieldsString);
+                                
                         }
+                            sb.Append(Settings.PrettyPrint ? Environment.NewLine : string.Empty)
+                                .AppendFormat("FROM {0}", tableString);
                     }
                     else
                     {
@@ -240,9 +240,9 @@ namespace Queries.Core.Renderers
                             .Append($"ORDER BY {sbOrderBy}");
                 }
 
-                if (query is SelectQuery)
+                if (query is SelectQuery selectQuery2)
                 {
-                    SelectQuery selectQuery = (SelectQuery)query;
+                    SelectQuery selectQuery = selectQuery2;
 
                     if (selectQuery.Unions != null)
                     {
@@ -257,7 +257,15 @@ namespace Queries.Core.Renderers
                                 .Append(Render(union.Build()));
                         }
                     }
+
+                    if ((Settings.PaginationKind & Limit) == Limit && selectQuery2.NbRows.HasValue)
+                    {
+                        sb.Append(' ')
+                            .Append($"LIMIT {selectQuery2.NbRows}");
+                    }
                 }
+
+
 
                 queryString = sb.ToString();
             }
@@ -538,6 +546,11 @@ namespace Queries.Core.Renderers
                     case Variable variable:
                         columnString = RenderVariable(variable, renderAlias);
                         break;
+                    case SelectQuery select:
+                        columnString = RenderInlineSelect(select, renderAlias);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException($"Unhandled {column?.GetType()} rendering as column");
                 }
             }
 
@@ -839,30 +852,22 @@ namespace Queries.Core.Renderers
         {
             StringBuilder sbResult = new StringBuilder();
 
-            IEnumerable<IQuery> statements = query.Statements?.ToArray() ?? Enumerable.Empty<IQuery>().ToArray();
+            IEnumerable<IQuery> statements = query.Statements?.ToArray() ?? Enumerable.Empty<IQuery>();
             if (statements.Any())
             {
-                IQuery currentStatement = statements.First();
-                sbResult.Append(Render(currentStatement));
-                IQuery previousStatement = currentStatement;
-                for (int i = 1; i < statements.Count(); i++)
+                foreach (IQuery statement in statements)
                 {
-                    currentStatement = statements.ElementAt(i);
-                    if (isDataManipulationQuery(previousStatement))
-                    {
-                        sbResult.AppendLine(BatchStatementSeparator);
-                    }
-                    sbResult.Append(Render(currentStatement));
-                    previousStatement = currentStatement;
+                    sbResult
+                        .Append(Render(statement))
+                        .Append(BatchStatementSeparator);
                 }
+
             }
-            bool isDataManipulationQuery(IQuery q) => q.GetType()
-                .GetTypeInfo()
-                .GetCustomAttribute<DataManipulationLanguageAttribute>() != null;
 
             return sbResult.ToString();
         }
 
         public virtual string BatchStatementSeparator => ";";
+
     }
 }

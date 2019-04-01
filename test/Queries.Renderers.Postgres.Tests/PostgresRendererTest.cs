@@ -350,7 +350,7 @@ namespace Queries.Renderers.Postgres.Tests
                         Select("*").From("members")
                     ),
                     new QueryRendererSettings{ PrettyPrint = false },
-                    $@"DELETE FROM ""members"" WHERE (""firstname"" IS NULL);{Environment.NewLine}SELECT * FROM ""members"""
+                    $@"DELETE FROM ""members"" WHERE (""firstname"" IS NULL);SELECT * FROM ""members"";"
                 };
             }
         }

@@ -3,7 +3,7 @@
     /// <summary>
     /// Types of <see cref="Variable"/>s.
     /// </summary>
-    public enum VariableType
+    public enum VariableType : short
     {
         Numeric,
         String,

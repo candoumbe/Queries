@@ -36,7 +36,7 @@ namespace Queries.Core.Parts
         }
 
         public override bool Equals(object obj) => Equals(obj as Table);
-        public bool Equals(Table other) => (Name, Alias).Equals((other?.Name, other?.Alias));
+        public bool Equals(Table other) => other != null && (Name, Alias).Equals((other.Name, other.Alias));
 
         public override int GetHashCode() => (Name, Alias).GetHashCode();
 

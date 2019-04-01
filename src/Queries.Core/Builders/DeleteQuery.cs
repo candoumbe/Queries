@@ -51,10 +51,7 @@ namespace Queries.Core.Builders
 
         public override bool Equals(object obj) => Equals(obj as DeleteQuery);
 
-        public bool Equals(DeleteQuery other) =>
-            other != null
-            && ((Table == null && other.Table == null) || Table.Equals(other.Table))
-            && ((Criteria == null && other.Criteria == null) || Criteria.Equals(other.Criteria));
+        public bool Equals(DeleteQuery other) => (Table, Criteria).Equals((other?.Table, other?.Criteria));
 
         public override int GetHashCode() => (Table, Criteria).GetHashCode();
     }

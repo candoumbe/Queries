@@ -29,9 +29,11 @@ namespace Queries.Core.Builders.Fluent
         /// Applies <see cref="NullFunction"/> to <paramref name="column"/>.
         /// </summary>
         /// <param name="column">Column onto which aoply <see cref="NullFunction"/>.</param>
-        /// <param name="fallBackValue">Result value to use if <paramref name="column"/>'s value is <c>null</c></param>
+        /// <param name="fallBackValue"></param>
+        /// <param name="otherFallbackValues"></param>
+        /// <param name="defaultValue">Result value to use if <paramref name="column"/>'s value is <c>null</c></param>
         /// <returns></returns>
-        public static NullFunction Null(FieldColumn column, ColumnBase fallBackValue, params ColumnBase[] otherFallbackValues) => new NullFunction(column, fallBackValue);
+        public static NullFunction Null(FieldColumn column, ColumnBase fallBackValue, params ColumnBase[] otherFallbackValues) => new NullFunction(column, fallBackValue, otherFallbackValues);
 
         /// <summary>
         /// Applies <see cref="CountFunction"/> to <paramref name="column"/>.
@@ -40,14 +42,7 @@ namespace Queries.Core.Builders.Fluent
         /// <returns></returns>
         public static CountFunction Count(FieldColumn column) => new CountFunction(column);
 
-        /// <summary>
-        /// Applies <see cref="NullFunction"/> to <paramref name="column"/>.
-        /// </summary>
-        /// <param name="column">Column onto which aoply <see cref="NullFunction"/>.</param>
-        /// <param name="defaultValue">Result value to use if <paramref name="column"/>'s value is <c>null</c></param>
-        /// <returns></returns>
-        public static NullFunction Null(Literal column, ColumnBase defaultValue) => new NullFunction(column, defaultValue);
-
+        
         /// <summary>
         /// Applies <see cref="MinFunction"/> to <paramref name="column"/>.
         /// </summary>
@@ -167,6 +162,5 @@ namespace Queries.Core.Builders.Fluent
         /// <param name="variableName"></param>
         /// <returns></returns>
         public static DeclareVariableQuery Declare(string variableName) => new DeclareVariableQuery(variableName);
-
     }
 }

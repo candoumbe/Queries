@@ -8,7 +8,6 @@ namespace Queries.Core.Builders
     /// </summary>
     public class BatchQuery : IQuery
     {
-
         private readonly List<IQuery> _statements;
 
         public IEnumerable<IQuery> Statements => _statements;

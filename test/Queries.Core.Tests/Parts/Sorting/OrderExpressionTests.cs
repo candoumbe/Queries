@@ -82,14 +82,12 @@ namespace Queries.Core.Tests.Parts.Sorting
         [MemberData(nameof(EqualsCases))]
         public void EqualsTests(IOrder first, object second, bool expected, string reason)
         {
-
             // Act
             bool actual = first.Equals(second);
 
             // Assert
             actual.Should()
                 .Be(expected, reason);
-
         }
     }
 }

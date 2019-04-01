@@ -1,26 +1,23 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using Newtonsoft.Json;
 using Queries.Core.Builders.Fluent;
 using Queries.Core.Parts;
 using Queries.Core.Parts.Clauses;
 using Queries.Core.Parts.Columns;
 using Queries.Core.Parts.Joins;
 using Queries.Core.Parts.Sorting;
-using Newtonsoft.Json;
-using static Newtonsoft.Json.JsonConvert;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Queries.Core.Builders
 {
     [JsonObject(ItemReferenceLoopHandling = ReferenceLoopHandling.Ignore)]
     public class SelectQuery : SelectQueryBase, ISelectQuery<SelectQuery>, IFromQuery<SelectQuery>, IWhereQuery<SelectQuery>, IJoinQuery<SelectQuery>, IOrderQuery<SelectQuery>, IEquatable<SelectQuery>, IColumn
     {
-        private int? _limit;
-
         /// <summary>
         /// Defines the max number of records to retrieve
         /// </summary>
-        public int? NbRows => _limit;
+        public int? NbRows { get; private set; }
 
         public IList<ITable> Tables { get; }
         public IList<IUnionQuery<SelectQuery>> Unions { get; set; }
@@ -50,7 +47,7 @@ namespace Queries.Core.Builders
 
         public ISelectQuery<SelectQuery> Limit(int limit)
         {
-            _limit = limit;
+            NbRows = limit;
             return this;
         }
 
@@ -199,8 +196,6 @@ namespace Queries.Core.Builders
 
         public override int GetHashCode() => (Alias, Columns, HavingCriteria, Joins, NbRows, Sorts, Tables, Unions, WhereCriteria).GetHashCode();
 
-        public override string ToString() => this.Stringify();
-
         /// <summary>
         /// Performs a deep copy of the current instance.
         /// </summary>
@@ -231,5 +226,23 @@ namespace Queries.Core.Builders
         ITable ITable.Clone() => Clone();
 
         IColumn IColumn.Clone() => Clone();
+
+        public override string ToString()
+        {
+            object obj = new
+            {
+                Alias,
+                Columns = Columns?.AtLeastOnce() ?? false ? Columns : null,
+                Having= HavingCriteria?.ToString(),
+                Joins = Joins.AtLeastOnce() ? Joins : null,
+                NbRows,
+                Sorts = Sorts.AtLeastOnce() ? Sorts : null,
+                Tables = Tables.AtLeastOnce() ? Tables : null,
+                Unions = Unions.AtLeastOnce() ? Unions : null,
+                Where = WhereCriteria?.ToString()
+            };
+
+            return $"[{nameof(SelectQuery)}:{obj.Stringify()}]";
+        }
     }
 }

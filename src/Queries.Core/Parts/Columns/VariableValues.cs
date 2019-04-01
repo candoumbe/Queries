@@ -23,6 +23,9 @@ namespace Queries.Core.Parts.Columns
         /// <returns></returns>
         public override IColumn Clone() => new VariableValues(Values.First(), Values.Skip(1).ToArray());
 
+        public override bool Equals(ColumnBase other) => Equals(other as VariableValues);
+
+
         public override string ToString() => $"[{string.Join(",", Values)}]";
     }
 }

@@ -12,6 +12,13 @@ namespace System
         public static StringColumn Literal(this string value) => new StringColumn(value);
 
         /// <summary>
+        /// Converts a <see cref="string"/> to <see cref="StringColumn"/>.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static BooleanColumn Literal(this bool value) => new BooleanColumn(value);
+
+        /// <summary>
         /// Converts an <see cref="int"/> to <see cref="NumericColumn"/>
         /// </summary>
         /// <param name="value"></param>

@@ -6,13 +6,14 @@ namespace Queries.Core.Parts.Columns
     /// Provide implicit cast from primitive types (<see cref="int"/>/<see cref="double"/>/<see cref="float"/> ...)
     /// to <see cref="Literal"/>.
     /// </summary>
-    public abstract class ColumnBase : IColumn
+    public abstract class ColumnBase : IColumn, IEquatable<ColumnBase>
     {
         /// <summary>
         /// Should perform a deep copy of the current instance
         /// </summary>
         /// <returns></returns>
         public abstract IColumn Clone();
+        public abstract bool Equals(ColumnBase other);
 
         public static implicit operator ColumnBase(int value) => new NumericColumn(value);
 

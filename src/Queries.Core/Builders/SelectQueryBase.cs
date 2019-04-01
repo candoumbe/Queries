@@ -17,8 +17,8 @@ namespace Queries.Core.Builders
         public IWhereClause WhereCriteria { get; protected set; }
         public IHavingClause HavingCriteria { get; protected set; }
         public IList<IJoin> Joins { get; protected set; }
-        public IList<IOrder> Sorts { get; protected set; } 
-        
+        public IList<IOrder> Sorts { get; protected set; }
+
         /// <summary>
         /// Builds a new <see cref="SelectQueryBase"/> instance.
         /// </summary>

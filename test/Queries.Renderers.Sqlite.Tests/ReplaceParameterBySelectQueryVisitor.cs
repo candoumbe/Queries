@@ -46,11 +46,11 @@ namespace Queries.Renderers.Sqlite
                 {
                     Select("*").From("superHeroes")
                         .Where("Fullname".Field().Like("Bat%")),
-                    (Func<Variable, SelectQuery>)(param => Select(Null("RealValue".Field(), "TextValue".Field())).Limit(1)
+                    (Func<Variable, SelectQuery>)(param => Select(Null("RealValue".Field(), "TextValue".Field()))
+                        .Limit(1)
                         .From("Parameter")
                         .Where("ParameterName".Field().EqualTo(param.Name)).Build()),
-                    Select("*")
-                        .From("superHeroes")
+                    Select("*").From("superHeroes")
                         .Where("Fullname".Field()
                             .Like(
                                 Select(Null("RealValue".Field(), "TextValue".Field()))
@@ -71,10 +71,13 @@ namespace Queries.Renderers.Sqlite
             // Arrange
             ReplaceParameterBySelectQueryVisitor visitor = new ReplaceParameterBySelectQueryVisitor(rewriter);
 
+            _outputHelper.WriteLine($"Query before rewriting : {initialQuery}");
+
             // Act
             visitor.Visit(initialQuery);
 
             // Assert
+            _outputHelper.WriteLine($"Query after rewriting : {initialQuery}");
             initialQuery.Should()
                 .Be(expected);
         }

@@ -45,15 +45,29 @@ namespace Queries.Core.Tests.Parts.Clauses
                 .NotBeNullOrWhiteSpace();
         }
 
+        public static IEnumerable<object[]> CtorThrowsArgumentNullExceptionCases
+        {
+            get
+            {
+                yield return new object[]
+                {
+                    In,
+                    null,
+                    "The column constraint cannot be null when using IN  oper"
+                };
+            }
+        }
+
         [Theory]
-        [InlineData(In)]
-        public void CtorThrowsArgumentNuullExceptionWhenValueIsNull(ClauseOperator @operator)
+        [MemberData(nameof(CtorThrowsArgumentNullExceptionCases))]
+        public void CtorThrowsArgumentNullExceptionWhenValueIsNull(ClauseOperator @operator, IColumn value, string reason)
         {
             // Act
-            Action action = () => new WhereClause("Firstname".Field(), @operator, null);
+            Action action = () => new WhereClause("Firstname".Field(), @operator, value);
 
             // Assert
-            action.Should().Throw<ArgumentNullException>().Which
+            action.Should()
+                .Throw<ArgumentNullException>(reason).Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }

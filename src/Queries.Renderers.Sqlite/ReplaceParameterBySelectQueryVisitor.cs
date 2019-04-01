@@ -1,7 +1,9 @@
 ﻿using Queries.Core;
 using Queries.Core.Builders;
 using Queries.Core.Parts.Clauses;
+using Queries.Core.Parts.Columns;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Queries.Renderers.Sqlite
@@ -24,6 +26,8 @@ namespace Queries.Renderers.Sqlite
             _variableVisitor = new CollectVariableVisitor();
         }
 
+        public IEnumerable<Variable> Variables => _variableVisitor.Variables;
+
         public void Visit(IQuery instance)
         {
             if (instance is SelectQuery selectQuery)
@@ -45,7 +49,7 @@ namespace Queries.Renderers.Sqlite
                     bool canBeReplace = _variableVisitor.Variables.Any(variable => variable == v);
                     if (canBeReplace)
                     {
-                        wc.Constraint = _variableRewriter.Invoke(v);
+                        ((WhereClause)instance).Constraint = _variableRewriter.Invoke(v);
                     }
                     break;
                 case CompositeWhereClause cwc:

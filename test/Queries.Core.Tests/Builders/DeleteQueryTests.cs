@@ -62,9 +62,9 @@ namespace Queries.Core.Tests.Builders
 
                 yield return new object[] {
                     Delete("SuperHero"),
-                    new SelectColumn(),
+                    null,
                     false,
-                    $"{nameof(DeleteQuery)} can never equals an instance of an object that is not its type"};
+                    $"{nameof(DeleteQuery)} instance is never equal to null"};
                 {
                     DeleteQuery query = Delete("SuperHero");
                     yield return new object[] { query, query, true, "Equals with same instance" };

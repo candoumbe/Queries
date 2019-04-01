@@ -2,6 +2,7 @@
 using Queries.Core.Builders;
 using Queries.Core.Parts.Clauses;
 using Queries.Core.Parts.Columns;
+using Queries.Core.Parts.Functions;
 using Queries.Core.Renderers;
 using System;
 using System.Collections.Generic;
@@ -9,16 +10,17 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using static Queries.Core.Builders.Fluent.QueryBuilder;
-using static Queries.Core.Parts.Clauses.ClauseOperator;
+using static Queries.Core.Renderers.PaginationKind;
 
 namespace Queries.Renderers.Sqlite
 {
     public class SqliteRenderer : QueryRendererBase
     {
-        private const string TablenameTempVariables = "_VARIABLES";
+        private const string VariablesTempTablename = "_VARIABLES";
+        private const string ParameterFieldName = "ParameterName";
 
         public SqliteRenderer(QueryRendererSettings settings = null)
-            : base(settings ?? new QueryRendererSettings { DateFormatString = "yyyy-MM-dd", PrettyPrint = true })
+            : base(settings ?? new QueryRendererSettings { DateFormatString = "yyyy-MM-dd", PrettyPrint = true, PaginationKind = Limit })
         { }
 
         protected override string BeginEscapeWordString => @"""";
@@ -34,7 +36,12 @@ namespace Queries.Renderers.Sqlite
         public override string Render(IQuery query)
         {
             string result = string.Empty;
-            CollectVariableVisitor visitor = new CollectVariableVisitor();
+            ReplaceParameterBySelectQueryVisitor visitor = new ReplaceParameterBySelectQueryVisitor(
+                v => Select(Null("RealValue".Field(), "IntegerValue".Field(), "BlobValue".Field(), "TextValue".Field())).Limit(1)
+                    .From(VariablesTempTablename)
+                    .Where(ParameterFieldName.Field().EqualTo(v.Name))
+                    .Build()
+            );
             switch (query)
             {
                 case SelectQueryBase selectQueryBase:
@@ -81,28 +88,28 @@ namespace Queries.Renderers.Sqlite
                 foreach (Variable variable in visitor.Variables)
                 {
                     insertParameters.Add(
-                        InsertInto(TablenameTempVariables).Values("ParameterName".Field().InsertValue(variable.Name.Literal()))
+                        InsertInto(VariablesTempTablename).Values(ParameterFieldName.Field().InsertValue(variable.Name.Literal()))
                         .Build()
                     );
                     switch (variable.Type)
                     {
                         case VariableType.Numeric:
                             updateParameters.Add(
-                                   Update(TablenameTempVariables).Set("RealValue".Field().UpdateValueTo(Convert.ToInt64(variable.Value)))
-                                   .Where("ParameterName".Field().EqualTo(variable.Name))
+                                   Update(VariablesTempTablename).Set("RealValue".Field().UpdateValueTo(Convert.ToInt64(variable.Value)))
+                                   .Where(ParameterFieldName.Field().EqualTo(variable.Name))
                             );
                             break;
                         case VariableType.Date:
                         case VariableType.String:
                             updateParameters.Add(
-                                Update(TablenameTempVariables).Set("TextValue".Field().UpdateValueTo(variable.Value.ToString()))
-                                    .Where("ParameterName".Field().EqualTo(variable.Name))
+                                Update(VariablesTempTablename).Set("TextValue".Field().UpdateValueTo(variable.Value.ToString()))
+                                    .Where(ParameterFieldName.Field().EqualTo(variable.Name))
                             );
                             break;
                         case VariableType.Boolean:
                             updateParameters.Add(
-                                Update(TablenameTempVariables).Set("IntegerValue".Field().UpdateValueTo(Convert.ToInt32(variable.Value)))
-                                    .Where("ParameterName".Field().EqualTo(variable.Name))
+                                Update(VariablesTempTablename).Set("IntegerValue".Field().UpdateValueTo(Convert.ToInt32(variable.Value)))
+                                    .Where(ParameterFieldName.Field().EqualTo(variable.Name))
                             );
                             break;
                         default:
@@ -112,18 +119,39 @@ namespace Queries.Renderers.Sqlite
                     
                 }
                 BatchQuery batch = new BatchQuery()
-                    .AddStatement("BEGIN;".AsNative())
-                    .AddStatement("PRAGMA temp_store=2;".AsNative())
-                    .AddStatement($"CREATE TEMP TABLE {RenderTablename(TablenameTempVariables.Table(), renderAlias:false)}(ParameterName TEXT, RealValue REAL, IntegerValue INTEGER, BlobValue BLOB);"
+                    .AddStatement("BEGIN".AsNative())
+                    .AddStatement("PRAGMA temp_store = 2".AsNative())
+                    .AddStatement($"CREATE TEMP TABLE {RenderTablename(VariablesTempTablename.Table(), renderAlias:false)}(ParameterName TEXT PRIMARY KEY, RealValue REAL, IntegerValue INTEGER, BlobValue BLOB, TextValue TEXT)"
                         .AsNative()
                     )
                     .AddStatements(insertParameters)
                     .AddStatements(updateParameters)
-                    .AddStatement(result.AsNative())
-                    .AddStatement($"DROP TABLE {RenderTablename(TablenameTempVariables.Table(), renderAlias: false)};".AsNative())
+                    .AddStatement($"{result}".AsNative())
+                    .AddStatement($"DROP TABLE {RenderTablename(VariablesTempTablename.Table(), renderAlias: false)}".AsNative())
                     .AddStatement("END".AsNative());
+
+                result = Render(batch);
             }
-            return sbParameters.Append(result).ToString();
+            return result;
+        }
+
+        protected override string RenderNullColumn(NullFunction nullColumn, bool renderAlias)
+        {
+            StringBuilder sbNullColumn = new StringBuilder();
+
+            sbNullColumn = sbNullColumn.Append($"COALESCE({RenderColumn(nullColumn.Column, false)}, {RenderColumn(nullColumn.DefaultValue, false)}");
+            foreach (IColumn defaultValue in nullColumn.AdditionalDefaultValues)
+            {
+                sbNullColumn
+                    .Append(", ")
+                    .Append(RenderColumn(defaultValue, false));
+            }
+            sbNullColumn.Append(")");
+
+
+            return renderAlias && !string.IsNullOrWhiteSpace(nullColumn.Alias)
+                ? RenderColumnnameWithAlias(sbNullColumn.ToString(), EscapeName(nullColumn.Alias))
+                : sbNullColumn.ToString();
         }
     }
 }

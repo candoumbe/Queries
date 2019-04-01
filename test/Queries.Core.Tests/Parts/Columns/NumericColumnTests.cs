@@ -147,8 +147,7 @@ namespace Queries.Core.Tests.Parts.Columns
             {
                 yield return new object[] { new NumericColumn(1), null, false, "object is null" };
                 yield return new object[] { new NumericColumn(1), new NumericColumn(1), true, $"object is a {nameof(NumericColumn)} with exactly the same {nameof(NumericColumn.Value)} and {nameof(NumericColumn.Alias)}" };
-                yield return new object[] { new NumericColumn(1), new SelectColumn(), false, $"{nameof(NumericColumn)} is always != from {nameof(SelectColumn)}" };
-
+                
                 {
                     NumericColumn column = new NumericColumn(1);
                     yield return new object[] { column, column, true, "Equals with same instance" };

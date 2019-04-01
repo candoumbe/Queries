@@ -2,11 +2,9 @@ using System;
 using Queries.Core.Builders;
 using System.Collections.Generic;
 using Newtonsoft.Json;
-using static Newtonsoft.Json.JsonConvert;
 
 namespace Queries.Core.Parts.Columns
 {
-    [JsonObject(ItemReferenceLoopHandling = ReferenceLoopHandling.Ignore)]
     public class FieldColumn : ColumnBase, INamable, IAliasable<FieldColumn>, IInsertable, IEquatable<FieldColumn>
     {
         /// <summary>
@@ -41,20 +39,15 @@ namespace Queries.Core.Parts.Columns
             return this;
         }
 
-        public override bool Equals(object obj) =>
-            ReferenceEquals(obj, this) || (obj is FieldColumn fc && this.Equals(fc));
+        public override bool Equals(object obj) => Equals(obj as FieldColumn);
 
-        public bool Equals(FieldColumn other) => other != null && Name == other.Name && Alias == other.Alias;
+        public bool Equals(FieldColumn other) => (Name, Alias).Equals((other?.Name, other?.Alias));
 
-        public override int GetHashCode()
-        {
-            int hashCode = 1124293869;
-            hashCode = (hashCode * -1521134295) + EqualityComparer<string>.Default.GetHashCode(Name);
-            hashCode = (hashCode * -1521134295) + EqualityComparer<string>.Default.GetHashCode(Alias);
-            return hashCode;
-        }
+        public override bool Equals(ColumnBase other) => Equals(other as FieldColumn);
 
-        public override string ToString() => SerializeObject(this);
+        public override int GetHashCode() => (Name, Alias).GetHashCode();
+
+        public override string ToString() => this.Stringify();
 
         /// <summary>
         /// Performs a deep copy of the current instance

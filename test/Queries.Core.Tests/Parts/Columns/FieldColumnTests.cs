@@ -5,7 +5,6 @@ using Xunit;
 using Queries.Core.Parts.Functions;
 using FluentAssertions;
 using Xunit.Abstractions;
-using static Newtonsoft.Json.JsonConvert;
 using Newtonsoft.Json.Linq;
 using Xunit.Categories;
 
@@ -86,8 +85,7 @@ namespace Queries.Core.Tests.Parts.Columns
             {
                 yield return new object[] { new FieldColumn("firstname"), null, false, "object is null" };
                 yield return new object[] { new FieldColumn("firstname"), new FieldColumn("firstname"), true, $"object is a {nameof(FieldColumn)} with exactly the same {nameof(FieldColumn.Name)} and {nameof(FieldColumn.Alias)}" };
-                yield return new object[] { new FieldColumn("firstname"), new SelectColumn(), false, $"{nameof(FieldColumn)} is always != exactly the same {nameof(SelectColumn)}" };
-
+                
                 {
                     FieldColumn column = new FieldColumn("firstname");
                     yield return new object[] { column, column, true, "Equals with same instance" };
@@ -107,26 +105,6 @@ namespace Queries.Core.Tests.Parts.Columns
 
             // Assert
             actualResult.Should().Be(expectedResult, reason);
-        }
-
-        public static IEnumerable<object[]> ToStringCases
-        {
-            get
-            {
-                yield return new object[] { new FieldColumn("Firstname"), new JObject{ ["Name"] = "Firstname", ["Alias"] = null }.ToString(Newtonsoft.Json.Formatting.None)};
-                yield return new object[] { new FieldColumn("Firstname").As("First name"), SerializeObject(new { Name = "Firstname", Alias = "First name" })};
-            }
-        }
-
-        [Theory]
-        [MemberData(nameof(ToStringCases))]
-        public void TestsToString(FieldColumn column, string expected)
-        {
-            // Act
-            string actual = column.ToString();
-
-            // Assert
-            actual.Should().Be(expected);
         }
 
         public static IEnumerable<object[]> CloneCases

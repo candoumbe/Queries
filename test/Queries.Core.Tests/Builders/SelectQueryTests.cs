@@ -32,6 +32,37 @@ namespace Queries.Core.Tests.Builders
                 yield return new object[] { Select("Firstname"), null, false, "comparing with a null instance" };
                 yield return new object[] { Select("Firstname"), Select("Firstname"), true, "comparing two instances with same columns names and same columns count" };
                 yield return new object[] { Select(1.Literal()), Select(1.Literal()), true, "comparing two instances with same columns" };
+                yield return new object[]
+                {
+                    Select(Null("RealValue".Field(), "TextValue".Field()))
+                        .Limit(1)
+                        .From("Parameter")
+                        .Where("ParameterName".Field().EqualTo("p0")),
+
+                    Select(Null("RealValue".Field(), "TextValue".Field()))
+                        .Limit(1)
+                        .From("Parameter")
+                        .Where("ParameterName".Field().EqualTo("p0")),
+                    true,
+                    "Two differents instances of the same query"
+
+                };
+
+                yield return new object[]
+                {
+                    Select("RealValue".Field(), "TextValue".Field())
+                        .Limit(1)
+                        .From("Parameter")
+                        .Where("ParameterName".Field().EqualTo("p0")),
+
+                    Select("RealValue".Field(), "TextValue".Field())
+                        .Limit(1)
+                        .From("Parameter")
+                        .Where("ParameterName".Field().EqualTo("p0")),
+                    true,
+                    "Two differents instances of the same query"
+
+                };
             }
         }
 

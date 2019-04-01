@@ -1,4 +1,6 @@
-﻿namespace Queries.Core.Renderers
+﻿using System;
+
+namespace Queries.Core.Renderers
 {
     /// <summary>
     /// Settings to use when computing string representation of a <see cref="IQuery"/> instance.
@@ -17,5 +19,12 @@
         /// Sets how <see cref="System.DateTime"/>/<see cref="System.DateTimeOffset"/> should be printed
         /// </summary>
         public string DateFormatString { get; set; }
+
+        /// <summary>
+        /// Defines the kind of pagination supported by the renderer
+        /// </summary>
+        public PaginationKind PaginationKind { get; set; }
+
+        public override string ToString() => this.Stringify();
     }
 }

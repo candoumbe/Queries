@@ -3,7 +3,6 @@ using Queries.Core.Attributes;
 using Queries.Core.Parts.Columns;
 using System;
 using System.Collections.Generic;
-using static Newtonsoft.Json.JsonConvert;
 
 namespace Queries.Core.Parts.Functions
 {
@@ -56,7 +55,7 @@ namespace Queries.Core.Parts.Functions
 
         public override int GetHashCode() => (Column, Alias).GetHashCode();
 
-        public override string ToString() => SerializeObject(this);
+        public override string ToString() => this.Stringify();
 
         public abstract IColumn Clone();
     }

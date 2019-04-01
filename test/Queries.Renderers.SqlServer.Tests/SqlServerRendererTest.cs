@@ -1,21 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using FluentAssertions;
+using FluentAssertions.Extensions;
+using Newtonsoft.Json;
 using Queries.Core;
 using Queries.Core.Builders;
 using Queries.Core.Extensions;
 using Queries.Core.Parts.Clauses;
+using Queries.Core.Parts.Columns;
 using Queries.Core.Parts.Sorting;
+using Queries.Core.Renderers;
+using System;
+using System.Collections.Generic;
 using Xunit;
+using Xunit.Abstractions;
 using static Queries.Core.Builders.Fluent.QueryBuilder;
 using static Queries.Core.Parts.Clauses.ClauseOperator;
 using static Queries.Core.Parts.Columns.SelectColumn;
-using FluentAssertions;
-using Queries.Core.Parts.Columns;
-using Xunit.Abstractions;
-using static Newtonsoft.Json.JsonConvert;
-using Newtonsoft.Json;
-using Queries.Core.Renderers;
-using FluentAssertions.Extensions;
 #if !NETCOREAPP1_0
 using NaughtyStrings;
 #endif
@@ -400,23 +399,9 @@ namespace Queries.Renderers.SqlServer.Tests
                         Select("*").From("members")
                     ),
                     new QueryRendererSettings{ PrettyPrint = false },
-                    $"DELETE FROM [members] WHERE ([firstname] IS NULL);{Environment.NewLine}" +
-                    $"SELECT * FROM [members]"
+                    "DELETE FROM [members] WHERE ([firstname] IS NULL);" +
+                    "SELECT * FROM [members];"
                 };
-
-                //yield return new object[]
-                //{
-                //    new BatchQuery(
-                //        Declare("p").WithValue("parameterValue").String(),
-                //        Delete("members").Where(new WhereClause("firstname".Field(), IsNull)),
-                //        Select("*").From("members")
-                //    ),
-                //    new QueryRendererSettings{ PrettyPrint = false },
-                //    $"DECLARE @p VARCHAR(8000) = 'parameterValue';{Environment.NewLine}" +
-                //    $"DELETE FROM [members] WHERE ([firstname] IS NULL);{Environment.NewLine}" +
-                //    $"SELECT * FROM [members]"
-                //};
-
             }
         }
 
@@ -549,8 +534,8 @@ namespace Queries.Renderers.SqlServer.Tests
 
         private void IsQueryOk(IQuery query, QueryRendererSettings settings, string expectedString)
         {
-            _outputHelper.WriteLine($"{nameof(query)} : {SerializeObject(query, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore })}");
-            _outputHelper.WriteLine($"{nameof(settings)} : {SerializeObject(settings)}");
+            _outputHelper.WriteLine($"{nameof(query)} : {query}");
+            _outputHelper.WriteLine($"{nameof(settings)} : {settings}");
             // Act
             string result = query.ForSqlServer(settings);
 

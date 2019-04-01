@@ -63,16 +63,15 @@ namespace Queries.Core.Parts.Columns
         }
 
         public override bool Equals(object obj) => Equals(obj as Literal);
-        public bool Equals(Literal other) => other != null && EqualityComparer<object>.Default.Equals(Value, other.Value) && Alias == other.Alias;
 
-        public override int GetHashCode()
-        {
-            int hashCode = -1351936271;
-            hashCode = (hashCode * -1521134295) + EqualityComparer<object>.Default.GetHashCode(Value);
-            hashCode = (hashCode * -1521134295) + EqualityComparer<string>.Default.GetHashCode(Alias);
-            return hashCode;
-        }
+        public bool Equals(Literal other) => (Value, Alias).Equals((other?.Value, other?.Alias));
+
+        public override bool Equals(ColumnBase other) => Equals(other as Literal);
+
+        public override int GetHashCode() => (Value, Alias).GetHashCode();
 
         public override IColumn Clone() => new Literal(Value);
+
+
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 
 namespace Queries.Core.Parts.Columns
 {
@@ -21,6 +22,9 @@ namespace Queries.Core.Parts.Columns
         /// </summary>
         /// <returns></returns>
         public override IColumn Clone() => new StringValues(Values.First(), Values.Skip(1).ToArray());
+
+        public override bool Equals(ColumnBase other) => Equals(other as StringValues);
+
 
         public override string ToString() => $"[{string.Join(",", Values)}]";
     }

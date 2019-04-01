@@ -9,7 +9,6 @@ namespace Queries.Core.Parts.Clauses
     /// <summary>
     /// a <see cref="Variable"/> can be used in <see cref="WhereClause.Constraint"/>
     /// </summary>
-    [JsonObject]
     public class Variable : ColumnBase, IEquatable<Variable>
     {
         /// <summary>
@@ -28,7 +27,7 @@ namespace Queries.Core.Parts.Clauses
             {
                 throw new ArgumentOutOfRangeException(nameof(name));
             }
-            Name = $"{name.Substring(0,1).ToLowerInvariant()}{name.Substring(1)}";
+            Name = $"{name.Substring(0, 1).ToLowerInvariant()}{name.Substring(1)}";
             Value = value;
             Type = type;
         }
@@ -49,21 +48,16 @@ namespace Queries.Core.Parts.Clauses
         public VariableType Type { get; }
 
         public override IColumn Clone() => new Variable(Name, Type, Value);
+
         public override bool Equals(object obj) => Equals(obj as Variable);
-        public bool Equals(Variable other) =>
-            other != null
-            && Name == other.Name
-            && EqualityComparer<object>.Default.Equals(Value, other.Value) && Type == other.Type;
 
-        public override int GetHashCode()
-        {
-            int hashCode = 1477810893;
-            hashCode = (hashCode * -1521134295) + EqualityComparer<string>.Default.GetHashCode(Name);
-            hashCode = (hashCode * -1521134295) + EqualityComparer<object>.Default.GetHashCode(Value);
-            hashCode = (hashCode * -1521134295) + Type.GetHashCode();
-            return hashCode;
-        }
+        public bool Equals(Variable other) => other != null && (Name, Type, Value).Equals((other.Name, other.Type, other.Value));
 
-        public override string ToString() => SerializeObject(this);
+        public override bool Equals(ColumnBase other) => Equals(other as Variable);
+
+
+        public override int GetHashCode() => (Name, Type, Value).GetHashCode();
+
+        public override string ToString() => this.Stringify();
     }
 }

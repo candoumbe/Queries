@@ -5,7 +5,6 @@ using System;
 using Queries.Core.Attributes;
 using System.Linq;
 using Newtonsoft.Json;
-using static Newtonsoft.Json.JsonConvert;
 
 namespace Queries.Core.Builders
 {
@@ -39,12 +38,10 @@ namespace Queries.Core.Builders
             Values = new List<UpdateFieldValue>();
         }
 
-
         public UpdateQuery(Table table) : this(table?.Name)
         {
 
         }
-
 
         public UpdateQuery Set(params UpdateFieldValue[] newValues)
         {
@@ -59,11 +56,11 @@ namespace Queries.Core.Builders
         }
 
         public override bool Equals(object obj) => Equals(obj as UpdateQuery);
+
         public bool Equals(UpdateQuery other) => other != null
                 && ((Table == null && other.Table == null) || Table.Equals(other.Table))
                 && Values.SequenceEqual(other.Values)
                 && ((Criteria == null && other.Criteria == null) || Criteria.Equals(other.Criteria));
-
 
         public override int GetHashCode()
         {
@@ -74,6 +71,6 @@ namespace Queries.Core.Builders
             return hashCode;
         }
 
-        public override string ToString() => SerializeObject(this, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+        public override string ToString() => this.Stringify();
     }
 }

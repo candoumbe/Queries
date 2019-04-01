@@ -10,8 +10,11 @@ namespace Queries.Core.Parts.Clauses
     public class WhereClause : IWhereClause, IClause<IColumn>, IEquatable<WhereClause>
     {
         public Guid UniqueId { get; }
+
         public IColumn Column { get; }
+
         public ClauseOperator Operator{ get; }
+
         public IColumn Constraint { get; set; }
 
         /// <summary>
@@ -48,26 +51,37 @@ namespace Queries.Core.Parts.Clauses
             }
         }
 
-
         public WhereClause(IColumn column, ClauseOperator @operator, string constraint) : this(column, @operator, constraint?.Literal())
         {
-            
+
+        }
+
+        public WhereClause(IColumn column, ClauseOperator @operator, DateTime? constraint) : this(column, @operator, constraint?.Literal())
+        {
+
+        }
+
+        public WhereClause(IColumn column, ClauseOperator @operator, bool? constraint) : this(column, @operator, constraint?.Literal())
+        {
+
+        }
+
+        public WhereClause(IColumn column, ClauseOperator @operator, long? constraint) : this(column, @operator, constraint?.Literal())
+        {
+
         }
 
         public override bool Equals(object obj) => Equals(obj as WhereClause);
 
         public bool Equals(IWhereClause other) => Equals(other as WhereClause);
 
-        public bool Equals(WhereClause other) =>
-            other != null
-            && Column.Equals(other.Column)
-            && Operator == other.Operator
-            && ((Constraint == null && other.Constraint == null) || Constraint.Equals(other.Constraint));
+        public bool Equals(WhereClause other) => other != null
+            && (Column, Operator, Constraint).Equals((other.Column, other.Operator, other.Constraint));
 
         public override int GetHashCode() => (Column, Operator, Constraint).GetHashCode();
 
-        public IWhereClause Clone() => new WhereClause(Column.Clone(), Operator, Constraint?.Clone() as ColumnBase);
+        public IWhereClause Clone() => new WhereClause(Column.Clone(), Operator, Constraint?.Clone());
 
-        public override string ToString() => this.Stringify();
+        public override string ToString() => (Column, Operator, Constraint).ToString();
     }
 }

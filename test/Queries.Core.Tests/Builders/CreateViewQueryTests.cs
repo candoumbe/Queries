@@ -70,16 +70,6 @@ namespace Queries.Core.Tests.Builders
                     true,
                     $"object is a {nameof(CreateView)} with exactly the same {nameof(CreateViewQuery.ViewName)} and {nameof(CreateViewQuery.SelectQuery)}" };
 
-                yield return new object[] {
-                    CreateView("SuperHero")
-                        .As(
-                            Select(Concat("Firstname".Field(), "Lastname".Field()))
-                            .From("DC_Comics")
-                            .Build())
-                            .Build(),
-                    new SelectColumn(),
-                    false,
-                    $"{nameof(CreateViewQuery)} is always != exactly the same {nameof(SelectColumn)}" };
                 {
                     CreateViewQuery query = CreateView("SuperHero")
                         .As(

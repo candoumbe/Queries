@@ -6,6 +6,7 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using static Queries.Core.Renderers.PaginationKind;
 
 namespace Queries.Renderers.SqlServer
 {
@@ -24,7 +25,7 @@ namespace Queries.Renderers.SqlServer
         ///     each part of a staemtn will be layed in onto a newline.
         /// </remarks>
         public SqlServerRenderer(QueryRendererSettings settings = null)
-            : base(settings ?? new QueryRendererSettings { DateFormatString = "yyyy-MM-dd", PrettyPrint = true })
+            : base(settings ?? new QueryRendererSettings { DateFormatString = "yyyy-MM-dd", PrettyPrint = true, PaginationKind = Top })
         { }
 
         protected override string BeginEscapeWordString => "[";
