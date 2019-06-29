@@ -263,6 +263,31 @@ namespace Queries.Renderers.Postgres.Tests
                     new QueryRendererSettings{ PrettyPrint = false},
                     @"SELECT * FROM ""members"" WHERE (""settings"" ->> 'theme' = 'dark')"
                 };
+
+                yield return new object[]
+                {
+                    Select("*")
+                        .From("members")
+                        .Where("settings".Field().Json("theme").EqualTo("settings".Field().Json("theme"))),
+                    new QueryRendererSettings{ PrettyPrint = false},
+                    @"SELECT * FROM ""members"" WHERE (""settings"" -> 'theme' = ""settings"" -> 'theme')"
+                };
+
+                yield return new object[]
+                {
+                    Select("*")
+                        .From("members")
+                        .Where(new CompositeWhereClause{
+                            Logic = ClauseLogic.And,
+                            Clauses = new IWhereClause[]
+                            {
+                                "settings".Field().Json("theme").EqualTo("dark"),
+                                "name".Field().EqualTo("super-user")
+                            }
+                        }),
+                    new QueryRendererSettings{ PrettyPrint = false},
+                    @"SELECT * FROM ""members"" WHERE ((""settings"" ->> 'theme' = 'dark') AND (""name"" = 'super-user'))"
+                };
             }
         }
 
