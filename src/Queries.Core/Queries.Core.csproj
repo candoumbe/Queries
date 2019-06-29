@@ -1,5 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <Import Project="..\..\core.props"/>
   <PropertyGroup>
     <Description>Contains the core classes to build queries.</Description>
     <AssemblyTitle>Queries.Core</AssemblyTitle>
@@ -9,11 +10,13 @@
     <AssemblyName>Queries.Core</AssemblyName>
     <PackageId>Queries.Core</PackageId>
     <PackageTags>Queries;Query;SQL;Builder</PackageTags>
-    <PackageReleaseNotes>Added NativeQuery which allows to build querie that are specific to the target engine. The query built will be rendered "as is".
-Renamed FieldColumnExtensions.EqualTo() extensions method to UpdateValueTo()
-Added FieldColumnExtensions.EqualTo() which create a WhereClause instance.
+    <PackageReleaseNotes>
+      Added NativeQuery which allows to build querie that are specific to the target engine. The query built will be rendered "as is".
+      Renamed FieldColumnExtensions.EqualTo() extensions method to UpdateValueTo()
+      Added FieldColumnExtensions.EqualTo() which create a WhereClause instance.
 
-Added method to AddStatement to a BatchQuery instance</PackageReleaseNotes>
+      Added method to AddStatement to a BatchQuery instance
+    </PackageReleaseNotes>
     <PackageProjectUrl>https://candoumbe.visualstudio.com/Queries</PackageProjectUrl>
     <Version>7.0.0</Version>
     <LangVersion>latest</LangVersion>
@@ -35,18 +38,4 @@ Added method to AddStatement to a BatchQuery instance</PackageReleaseNotes>
       </ItemGroup>
     </Otherwise>
   </Choose>
-  <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-    <PackageReference Include="Roslynator.Analyzers" Version="1.9.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="System.Collections.Immutable" Version="1.5.0" />
-    <PackageReference Include="System.Linq.Queryable" Version="4.3.0" />
-    <PackageReference Include="System.Runtime" Version="4.3.0" />
-    <PackageReference Include="System.Runtime.Extensions" Version="4.3.0" />
-    <PackageReference Include="Utilities" Version="1.1.0" />
-    
-
-  </ItemGroup>
 </Project>

@@ -12,11 +12,18 @@ using static Queries.Core.Parts.Columns.SelectColumn;
 using FluentAssertions;
 using Queries.Core.Parts.Columns;
 using Queries.Core.Renderers;
+using Xunit.Abstractions;
+using Xunit.Categories;
 
 namespace Queries.Renderers.Postgres.Tests
 {
+    [UnitTest]
     public class PostgresRendererTest
     {
+        private readonly ITestOutputHelper _outputHelper;
+
+        public PostgresRendererTest(ITestOutputHelper outputHelper) => _outputHelper = outputHelper;
+
         public static IEnumerable<object[]> SelectTestCases
         {
             get
@@ -213,6 +220,49 @@ namespace Queries.Renderers.Postgres.Tests
                     new QueryRendererSettings{ PrettyPrint = false },
                     @"SELECT SUBSTRING(""firstname"" FROM 0 FOR 1) || SUBSTRING(""lastname"" FROM 0) ""initials"" FROM ""members"""
                 };
+
+                yield return new object[]
+                {
+                    Select("settings".Field().Json("theme"))
+                        .From("members"),
+                    new QueryRendererSettings{ PrettyPrint = false},
+                    @"SELECT ""settings"" -> 'theme' FROM ""members"""
+                };
+
+                yield return new object[]
+                {
+                    Select("settings".Field().Json("theme").As("preferences"))
+                        .From("members"),
+                    new QueryRendererSettings{ PrettyPrint = false},
+                    @"SELECT ""settings"" -> 'theme' AS ""preferences"" FROM ""members"""
+                };
+
+                yield return new object[]
+                {
+                    Select("*")
+                        .From("members")
+                        .Where("settings".Field().Json("theme"), EqualTo, "dark"),
+                    new QueryRendererSettings{ PrettyPrint = false},
+                    @"SELECT * FROM ""members"" WHERE (""settings"" ->> 'theme' = 'dark')"
+                };
+
+                yield return new object[]
+                {
+                    Select("*")
+                        .From("members")
+                        .Where("dark".Literal(), EqualTo, "settings".Field().Json("theme")),
+                    new QueryRendererSettings{ PrettyPrint = false},
+                    @"SELECT * FROM ""members"" WHERE ('dark' = ""settings"" ->> 'theme')"
+                };
+
+                yield return new object[]
+                {
+                    Select("*")
+                        .From("members")
+                        .Where("settings".Field().Json("theme"), EqualTo, "dark"),
+                    new QueryRendererSettings{ PrettyPrint = false},
+                    @"SELECT * FROM ""members"" WHERE (""settings"" ->> 'theme' = 'dark')"
+                };
             }
         }
 
@@ -390,7 +440,10 @@ namespace Queries.Renderers.Postgres.Tests
         public void BatchQueryTest(BatchQuery query, QueryRendererSettings settings, string expectedString)
             => IsQueryOk(query, settings, expectedString);
 
-        private static void IsQueryOk(IQuery query, QueryRendererSettings settings, string expectedString) =>
+        private void IsQueryOk(IQuery query, QueryRendererSettings settings, string expectedString)
+        {
+            _outputHelper.WriteLine($"Expected string : {expectedString}");
             query.ForPostgres(settings).Should().Be(expectedString);
+        }
     }
 }

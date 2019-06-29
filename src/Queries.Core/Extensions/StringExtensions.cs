@@ -14,6 +14,8 @@ namespace System
         /// <returns></returns>
         public static FieldColumn Field(this string columnName) => new FieldColumn(columnName);
 
+
+
         /// <summary>
         /// Turns the specified <paramref name="tableName"/> into a <see cref="Queries.Core.Parts.Table"/>
         /// </summary>

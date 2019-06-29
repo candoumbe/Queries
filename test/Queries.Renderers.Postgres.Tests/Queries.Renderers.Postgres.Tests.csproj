@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
+  <Import Project="..\..\test.props"/>
   <PropertyGroup>
     <Description>Queries.Renderers.Postgres.Tests Class Library</Description>
     <Authors>Cyrille NDOUMBE</Authors>
@@ -21,17 +21,5 @@
     <ProjectReference Include="..\..\src\Queries.Renderers.Postgres\Queries.Renderers.Postgres.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
-    <PackageReference Include="Roslynator.Analyzers" Version="1.9.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="xunit" Version="2.4.1" />
-    <PackageReference Include="FluentAssertions" Version="5.4.2" />
-  </ItemGroup>
+  
 </Project>

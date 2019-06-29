@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26730.16
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29001.49
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{852F1208-CA32-45FA-8E26-D8D4A2DCFC26}"
 	ProjectSection(SolutionItems) = preProject
@@ -9,9 +9,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
 		CONTRIBUTING.md = CONTRIBUTING.md
+		core.props = core.props
 		global.json = global.json
 		NuGet.Config = NuGet.Config
 		README.md = README.md
+		test.props = test.props
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{4EAF8F5E-4703-416F-ACD9-277726BD78EF}"
