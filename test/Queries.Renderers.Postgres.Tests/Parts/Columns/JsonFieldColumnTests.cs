@@ -10,6 +10,7 @@ using Xunit.Categories;
 namespace Queries.Renderers.Postgres.Tests.Parts.Columns
 {
     [UnitTest]
+    [Feature(nameof(Postgres))]
     public class JsonFieldColumnTests
     {
         private readonly ITestOutputHelper _outputHelper;

@@ -6,6 +6,10 @@ using Queries.Core.Parts.Columns;
 using Queries.Renderers.Postgres.Parts.Columns;
 using System.Linq;
 using Queries.Core.Parts.Clauses;
+using Queries.Renderers.Postgres.Builders;
+using Queries.Core;
+using Queries.Core.Exceptions;
+using static Queries.Core.Builders.Fluent.QueryBuilder;
 
 namespace Queries.Renderers.Postgres
 {
@@ -30,6 +34,7 @@ namespace Queries.Renderers.Postgres
                            : base.RenderColumn(column, renderAlias);
         }
 
+
         protected virtual string RenderJsonColumn(JsonFieldColumn json, bool renderAlias)
         {
             string[] columnParts = json.Path.Split('.');
@@ -45,6 +50,44 @@ namespace Queries.Renderers.Postgres
             }
 
             return $"{result}{(renderAlias && !string.IsNullOrWhiteSpace(json.Alias) ? $" AS {EscapeName(json.Alias)}" : string.Empty)}";
+        }
+
+        public override string Render(IQuery query)
+        {
+            string result;
+            if (query is ReturnQuery returnQuery)
+            {
+
+                result = returnQuery.Return.Match(
+                    columnBase =>
+                    {
+                        string returnString = string.Empty;
+                        switch (columnBase)
+                        {
+                            case FieldColumn field:
+                                returnString = $"RETURN {RenderColumn(field, renderAlias: false)}";
+                                break;
+                            case Literal literal:
+                                returnString = $"RETURN {Render(Select(literal)).Substring("SELECT ".Length)}";
+                                break;
+                            case null:
+                                returnString = "RETURN";
+                                break;
+                            default:
+                                throw new InvalidQueryException();
+                        }
+
+                        return returnString;
+                    },
+                    select => $"RETURN {base.Render(select)}"
+                    ); ;
+            }
+            else
+            {
+                result = base.Render(query);
+            }
+
+            return result;
         }
 
         protected override string RenderWhere(IWhereClause clause)
@@ -67,13 +110,12 @@ namespace Queries.Renderers.Postgres
                     switch (where.Operator)
                     {
                         case ClauseOperator.EqualTo:
-                            result = $"({RenderColumn(where.Column, renderAlias: false)} = {RenderJsonColumn(new JsonFieldColumn(jsonConstraint.Column, jsonConstraint.Path, renderAsString: where.Column is StringColumn),renderAlias: false)})";
+                            result = $"({RenderColumn(where.Column, renderAlias: false)} = {RenderJsonColumn(new JsonFieldColumn(jsonConstraint.Column, jsonConstraint.Path, renderAsString: where.Column is StringColumn), renderAlias: false)})";
                             break;
                         default:
                             break;
                     }
                     break;
-                
                 default:
                     result = base.RenderWhere(clause);
 

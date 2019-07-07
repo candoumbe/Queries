@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\..\core.props"/>
+  <Import Project="..\..\core.props" />
   <PropertyGroup>
     <Description>
       Queries.Renderers.Postgres Class Library
@@ -15,6 +15,9 @@
     <RepositoryUrl>git://github.com/candoumbe/Queries</RepositoryUrl>
     <Version>3.0.1-alpha-01</Version>
   </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Optional" Version="4.0.0" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Queries.Core\Queries.Core.csproj" />

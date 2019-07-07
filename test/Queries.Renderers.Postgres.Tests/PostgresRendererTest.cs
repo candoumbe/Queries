@@ -14,10 +14,14 @@ using Queries.Core.Parts.Columns;
 using Queries.Core.Renderers;
 using Xunit.Abstractions;
 using Xunit.Categories;
+using Queries.Renderers.Postgres.Builders;
+using static Queries.Renderers.Postgres.Builders.Fluent.ReturnBuilder;
 
 namespace Queries.Renderers.Postgres.Tests
 {
     [UnitTest]
+    [Feature(nameof(PostgresqlRenderer))]
+    [Feature(nameof(Postgres))]
     public class PostgresRendererTest
     {
         private readonly ITestOutputHelper _outputHelper;
@@ -421,11 +425,63 @@ namespace Queries.Renderers.Postgres.Tests
                 yield return new object[]
                 {
                     new BatchQuery(
-                        Delete("members").Where(new WhereClause("firstname".Field(), IsNull)),
+                        Delete("members").Where("firstname".Field().IsNull()),
                         Select("*").From("members")
                     ),
                     new QueryRendererSettings{ PrettyPrint = false },
                     $@"DELETE FROM ""members"" WHERE (""firstname"" IS NULL);SELECT * FROM ""members"";"
+                };
+
+                yield return new object[]
+                {
+                    new BatchQuery(
+                        InsertInto("members").Values(
+                            "Firstname".InsertValue("Bruce".Literal()),
+                            "Lastname".InsertValue("Wayne".Literal())
+                        ),
+                        Return()
+                    ),
+                    new QueryRendererSettings{ PrettyPrint = false },
+                    @"INSERT INTO ""members"" (""Firstname"", ""Lastname"") VALUES ('Bruce', 'Wayne');RETURN ;"
+                };
+
+                yield return new object[]
+                {
+                    new BatchQuery(
+                        InsertInto("members").Values(
+                            "Firstname".InsertValue("Bruce".Literal()),
+                            "Lastname".InsertValue("Wayne".Literal())
+                        ),
+                        Return(0.Literal())
+                    ),
+                    new QueryRendererSettings{ PrettyPrint = false },
+                    @"INSERT INTO ""members"" (""Firstname"", ""Lastname"") VALUES ('Bruce', 'Wayne');RETURN 0;"
+                };
+
+                yield return new object[]
+                {
+                    new BatchQuery(
+                        InsertInto("members").Values(
+                            "Firstname".InsertValue("Bruce".Literal()),
+                            "Lastname".InsertValue("Wayne".Literal())
+                        ),
+                        Return("Id".Field())
+                    ),
+                    new QueryRendererSettings{ PrettyPrint = false },
+                    @"INSERT INTO ""members"" (""Firstname"", ""Lastname"") VALUES ('Bruce', 'Wayne');RETURN ""Id"";"
+                };
+
+                yield return new object[]
+                {
+                    new BatchQuery(
+                        InsertInto("members").Values(
+                            "Firstname".InsertValue("Bruce".Literal()),
+                            "Lastname".InsertValue("Wayne".Literal())
+                        ),
+                        Return(Select(Max("Age".Field())).From("members").Build())
+                    ),
+                    new QueryRendererSettings{ PrettyPrint = false },
+                    @"INSERT INTO ""members"" (""Firstname"", ""Lastname"") VALUES ('Bruce', 'Wayne');RETURN SELECT MAX(""Age"") FROM ""members"";"
                 };
             }
         }

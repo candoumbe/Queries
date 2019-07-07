@@ -1,5 +1,10 @@
-﻿using Queries.Core.Renderers;
+﻿using Queries.Core.Exceptions;
+using Queries.Core.Parts.Columns;
+using Queries.Core.Renderers;
 using Queries.Renderers.Postgres;
+using Queries.Renderers.Postgres.Builders;
+using System;
+using static Queries.Core.Builders.Fluent.QueryBuilder;
 
 // ReSharper disable once CheckNamespace
 namespace Queries.Core.Builders
