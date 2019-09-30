@@ -350,6 +350,13 @@ namespace Queries.Renderers.SqlServer.Tests
                     "DECLARE @p1 AS VARCHAR(8000) = 'Bane';" +
                     "SELECT * FROM [members] WHERE ([Firstname] IN (@p0, @p1))"
                 };
+                
+                yield return new object[]
+                {
+                    Select("*").From("members").Where("Firstname".Field(), In, new StringValues("Bruce", "Bane")),
+                    new QueryRendererSettings{ SkipVariableDeclaration = true },
+                    "SELECT * FROM [members] WHERE ([Firstname] IN (@p0, @p1))"
+                };
             }
         }
 

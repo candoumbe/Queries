@@ -25,6 +25,14 @@ namespace Queries.Core.Renderers
         /// </summary>
         public PaginationKind PaginationKind { get; set; }
 
+        /// <summary>
+        /// Indicates that the renderer should not declare variables if any
+        /// </summary>
+        /// <remarks>
+        /// Depending on the renderer implementation, this may or may not be fullfilled
+        /// </remarks>
+        public bool SkipVariableDeclaration { get; set; }
+
         public override string ToString() => this.Stringify();
     }
 }
