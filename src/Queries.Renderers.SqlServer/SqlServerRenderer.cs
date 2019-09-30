@@ -82,29 +82,32 @@ namespace Queries.Renderers.SqlServer
 
 #endif
 
-            foreach (Variable variable in visitor.Variables)
+            if (!Settings.SkipVariableDeclaration)
             {
-                sbParameters.Append("DECLARE @").Append(variable.Name).Append(" AS");
-                switch (variable.Type)
+                foreach (Variable variable in visitor.Variables)
                 {
-                    case VariableType.Numeric:
-                        sbParameters.Append(" NUMERIC = ").Append(variable.Value).Append(";");
-                        break;
-                    case VariableType.String:
-                        sbParameters.Append(" VARCHAR(8000) = '").Append(EscapeString(variable.Value.ToString())).Append("';");
-                        break;
-                    case VariableType.Boolean:
-                        break;
-                    case VariableType.Date:
-                        sbParameters.Append(" DATETIME = '").Append(EscapeString((variable.Value as DateTime?).Value.ToString(Settings.DateFormatString))).Append("'");
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(variable), $"Unsupported variable type");
-                }
+                    sbParameters.Append("DECLARE @").Append(variable.Name).Append(" AS");
+                    switch (variable.Type)
+                    {
+                        case VariableType.Numeric:
+                            sbParameters.Append(" NUMERIC = ").Append(variable.Value).Append(";");
+                            break;
+                        case VariableType.String:
+                            sbParameters.Append(" VARCHAR(8000) = '").Append(EscapeString(variable.Value.ToString())).Append("';");
+                            break;
+                        case VariableType.Boolean:
+                            break;
+                        case VariableType.Date:
+                            sbParameters.Append(" DATETIME = '").Append(EscapeString((variable.Value as DateTime?).Value.ToString(Settings.DateFormatString))).Append("'");
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException(nameof(variable), $"Unsupported variable type");
+                    }
 
-                if (Settings.PrettyPrint && sbParameters.Length > 0)
-                {
-                    sbParameters.AppendLine();
+                    if (Settings.PrettyPrint && sbParameters.Length > 0)
+                    {
+                        sbParameters.AppendLine();
+                    }
                 }
             }
             return sbParameters.Append(result).ToString();
