@@ -15,6 +15,8 @@ using Xunit.Abstractions;
 using static Queries.Core.Builders.Fluent.QueryBuilder;
 using static Queries.Core.Parts.Clauses.ClauseOperator;
 using static Queries.Core.Parts.Columns.SelectColumn;
+using System.Linq.Expressions;
+using System.Linq;
 #if !NETCOREAPP1_0
 using NaughtyStrings;
 #endif
@@ -65,7 +67,6 @@ namespace Queries.Renderers.SqlServer.Tests
                     ),
                     new QueryRendererSettings { PrettyPrint = false },
                     "SELECT [fullname] FROM (SELECT [firstname] + ' ' + [lastname] AS [fullname] FROM [people]) [p]"
-
                 };
 
                 yield return new object[]
@@ -75,7 +76,6 @@ namespace Queries.Renderers.SqlServer.Tests
                         .Where("firstname".Field().IsNotNull()),
                     new QueryRendererSettings { PrettyPrint = false },
                     "SELECT [firstname], [lastname] FROM [people] WHERE ([firstname] IS NOT NULL)"
-
                 };
 
                 yield return new object[]
@@ -101,7 +101,6 @@ namespace Queries.Renderers.SqlServer.Tests
                     Select(double.MaxValue.Literal()),
                     new QueryRendererSettings { PrettyPrint = false },
                     $"SELECT {double.MaxValue}"
-
                 };
 
                 yield return new object[]
@@ -350,7 +349,7 @@ namespace Queries.Renderers.SqlServer.Tests
                     "DECLARE @p1 AS VARCHAR(8000) = 'Bane';" +
                     "SELECT * FROM [members] WHERE ([Firstname] IN (@p0, @p1))"
                 };
-                
+
                 yield return new object[]
                 {
                     Select("*").From("members").Where("Firstname".Field(), In, new StringValues("Bruce", "Bane")),
@@ -364,6 +363,64 @@ namespace Queries.Renderers.SqlServer.Tests
         [MemberData(nameof(SelectTestCases))]
         public void SelectTest(SelectQuery query, QueryRendererSettings settings, string expectedString)
             => IsQueryOk(query, settings, expectedString);
+
+        public static IEnumerable<object[]> RenderFullCases
+        {
+            get
+            {
+                yield return new object[]
+                {
+                    Select("*").From("members").Where("Firstname".Field(), In, new StringValues("Bruce", "Bane")),
+                    new QueryRendererSettings{ SkipVariableDeclaration = true },
+                    (Expression<Func<(string sql, IEnumerable<Variable> variables), bool>>)(
+                        query => query.sql == "SELECT * FROM [members] WHERE ([Firstname] IN (@p0, @p1))"
+                            && query.variables.Count() == 2
+                            && query.variables.Once(v => v.Name == "p0" && "Bruce".Equals(v.Value))
+                            && query.variables.Once(v => v.Name == "p1" && "Bane".Equals(v.Value))
+                    ),
+                    "the statement contains 2 variables with 2 values"
+                };
+
+                yield return new object[]
+                {
+                    Select("*")
+                    .From(
+                        Select("Fullname").From("People").Where("Firstname".Field(), Like, "B%")
+                        .Union(
+                        Select("Fullname").From("SuperHero").Where("Nickname".Field(), Like, "B%"))
+                    ),
+                    new QueryRendererSettings{ PrettyPrint = false, SkipVariableDeclaration = true },
+                    (Expression<Func<(string sql, IEnumerable<Variable> variables), bool>>)(
+                        query => query.sql == "SELECT * FROM (" +
+                            "SELECT [Fullname] FROM [People] WHERE ([Firstname] LIKE @p0) " +
+                            "UNION " +
+                            "SELECT [Fullname] FROM [SuperHero] WHERE ([Nickname] LIKE @p0)" +
+                        ")"
+                            && query.variables.Count() == 1
+                            && query.variables.Once(v => v.Name == "p0" && "B%".Equals(v.Value))
+                    ),
+                    "The select statement as two variables with SAME value"
+                };
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(RenderFullCases))]
+        public void Select_Rendered_With_Explain(SelectQuery query, QueryRendererSettings settings, Expression<Func<(string sql, IEnumerable<Variable> variables), bool>> expectation, string reason)
+        {
+            // Arrange
+            SqlServerRenderer renderer = new SqlServerRenderer(settings);
+
+            // Assert
+            (string sql, IEnumerable<Variable> variables) = renderer.Explain(query);
+
+            _outputHelper.WriteLine($"sql : '{sql}'");
+            _outputHelper.WriteLine($"variables : '{variables.Stringify()}'");
+
+            // Assert
+            (sql, variables).Should()
+                .Match(expectation, reason);
+        }
 
         public static IEnumerable<object[]> UpdateTestCases
         {

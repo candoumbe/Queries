@@ -1,12 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="..\..\core.props"/>
+  <Import Project="..\..\library.props" />
   <PropertyGroup>
     <Description>Contains the core classes to build queries.</Description>
     <AssemblyTitle>Queries.Core</AssemblyTitle>
     <VersionPrefix>4.0.0</VersionPrefix>
-    <Authors>Cyrille NDOUMBE</Authors>
-    <TargetFrameworks>netstandard1.0; netstandard1.1; netstandard1.3</TargetFrameworks>
+    <TargetFrameworks>netstandard1.0; netstandard1.1; netstandard1.3;netstandard2.1</TargetFrameworks>
     <AssemblyName>Queries.Core</AssemblyName>
     <PackageId>Queries.Core</PackageId>
     <PackageTags>Queries;Query;SQL;Builder</PackageTags>
@@ -25,6 +24,10 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
+  <ItemGroup>
+        <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+  </ItemGroup>
+  
   <Choose>
     <When Condition="'$(TargetFramework)' == 'netstandard1.0' OR '$(TargetFramework)' == 'netstandard1.3'">
       <ItemGroup>

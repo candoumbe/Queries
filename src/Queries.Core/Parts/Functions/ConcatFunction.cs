@@ -73,8 +73,7 @@ namespace Queries.Core.Parts.Functions
         {
             int hashCode = -1367283405;
             hashCode = (hashCode * -1521134295) + EqualityComparer<IEnumerable<IColumn>>.Default.GetHashCode(Columns);
-            hashCode = (hashCode * -1521134295) + EqualityComparer<string>.Default.GetHashCode(Alias);
-            return hashCode;
+            return (hashCode * -1521134295) + EqualityComparer<string>.Default.GetHashCode(Alias);
         }
 
         public override string ToString()
@@ -92,6 +91,6 @@ namespace Queries.Core.Parts.Functions
         /// Performs a deep copy of the current instance.
         /// </summary>
         /// <returns><see cref="ConcatFunction"/></returns>
-        public IColumn Clone() => new ConcatFunction(Columns.ElementAt(0), Columns.ElementAt(1), Columns.Skip(2).Select(x => Clone()).ToArray());
+        public IColumn Clone() => new ConcatFunction(Columns.ElementAt(0), Columns.ElementAt(1), Columns.Skip(2).Select(x => x.Clone()).ToArray());
     }
 }

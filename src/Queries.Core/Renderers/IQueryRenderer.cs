@@ -1,4 +1,8 @@
 ﻿
+using Queries.Core.Parts.Clauses;
+using System.Collections.Generic;
+using System.Linq;
+
 namespace Queries.Core.Renderers
 {
     /// <summary>
@@ -12,6 +16,15 @@ namespace Queries.Core.Renderers
         /// <param name="query">The query to render</param>
         /// <returns>The specific string</returns>
         string Render(IQuery query);
+
+#if NETSTANDARD2_1
+        public (string query, IEnumerable<Variable> parameters) Explain(IQuery query)
+        {
+            string queryString = Render(query);
+
+            return (queryString, parameters: Enumerable.Empty<Variable>());
+        }
+#endif
     }
 }
 

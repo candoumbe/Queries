@@ -24,7 +24,6 @@ namespace Queries.Renderers.MySQL.Tests
                     @"SELECT CONCAT(""firstname"", ' ', ""lastname"")"
                 };
 
-
                 yield return new object[]
                 {
                     new SelectQuery(Concat("firstname".Field(), " ".Literal(), "lastname".Field())),
@@ -34,16 +33,13 @@ namespace Queries.Renderers.MySQL.Tests
             }
         }
 
-
-
         [Theory]
         [MemberData(nameof(SelectTestCases))]
         //[TestCaseSource(typeof(Cases), nameof(Cases.SelectTestCases))]
         public void SelectTest(SelectQuery query, QueryRendererSettings settings, string expectedString)
             => IsQueryOk(query, settings, expectedString);
 
-
-        private static void IsQueryOk(IQuery query, QueryRendererSettings settings, string expectedString) => 
+        private static void IsQueryOk(IQuery query, QueryRendererSettings settings, string expectedString) =>
             query.ForMySQL(settings).Should().Be(expectedString);
     }
 }

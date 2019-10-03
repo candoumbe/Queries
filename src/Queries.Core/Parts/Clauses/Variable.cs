@@ -55,7 +55,6 @@ namespace Queries.Core.Parts.Clauses
 
         public override bool Equals(ColumnBase other) => Equals(other as Variable);
 
-
         public override int GetHashCode() => (Name, Type, Value).GetHashCode();
 
         public override string ToString() => this.Stringify();

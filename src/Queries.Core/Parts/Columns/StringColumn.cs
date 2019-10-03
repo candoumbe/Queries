@@ -16,6 +16,5 @@ namespace Queries.Core.Parts.Columns
         public override int GetHashCode() => (Value, Alias).GetHashCode();
 
         public override string ToString() => this.Stringify();
-
     }
 }

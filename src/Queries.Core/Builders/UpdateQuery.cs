@@ -67,8 +67,7 @@ namespace Queries.Core.Builders
             int hashCode = -1291674402;
             hashCode = (hashCode * -1521134295) + EqualityComparer<Table>.Default.GetHashCode(Table);
             hashCode = (hashCode * -1521134295) + EqualityComparer<IList<UpdateFieldValue>>.Default.GetHashCode(Values);
-            hashCode = (hashCode * -1521134295) + EqualityComparer<IWhereClause>.Default.GetHashCode(Criteria);
-            return hashCode;
+            return (hashCode * -1521134295) + EqualityComparer<IWhereClause>.Default.GetHashCode(Criteria);
         }
 
         public override string ToString() => this.Stringify();

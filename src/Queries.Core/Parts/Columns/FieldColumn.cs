@@ -1,7 +1,5 @@
-using System;
 using Queries.Core.Builders;
-using System.Collections.Generic;
-using Newtonsoft.Json;
+using System;
 
 namespace Queries.Core.Parts.Columns
 {
