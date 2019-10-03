@@ -5,7 +5,6 @@
     /// </summary>
     public sealed class UniqueIdentifierValue : ColumnBase
     {
-
         public UniqueIdentifierValue()
         {
 

@@ -2,7 +2,6 @@
 
 namespace Queries.Core.Renderers
 {
-
     /// <summary>
     /// Kind of pagination supported by the renderer
     /// </summary>

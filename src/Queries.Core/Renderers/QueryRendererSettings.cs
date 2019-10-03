@@ -5,7 +5,7 @@ namespace Queries.Core.Renderers
     /// <summary>
     /// Settings to use when computing string representation of a <see cref="IQuery"/> instance.
     /// </summary>
-    public class QueryRendererSettings
+    public struct QueryRendererSettings
     {
         /// <summary>
         /// Defines how to print queries.
@@ -33,6 +33,6 @@ namespace Queries.Core.Renderers
         /// </remarks>
         public bool SkipVariableDeclaration { get; set; }
 
-        public override string ToString() => this.Stringify();
+        public readonly override string ToString() => this.Stringify();
     }
 }

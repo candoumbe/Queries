@@ -72,6 +72,5 @@ namespace Queries.Core.Parts.Columns
 
         public override IColumn Clone() => new Literal(Value);
 
-
     }
 }

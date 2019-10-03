@@ -57,8 +57,7 @@ namespace Queries.Core.Builders
         {
             int hashCode = -954091970;
             hashCode = (hashCode * -1521134295) + EqualityComparer<string>.Default.GetHashCode(ViewName);
-            hashCode = (hashCode * -1521134295) + EqualityComparer<SelectQuery>.Default.GetHashCode(SelectQuery);
-            return hashCode;
+            return (hashCode * -1521134295) + EqualityComparer<SelectQuery>.Default.GetHashCode(SelectQuery);
         }
     }
 }
