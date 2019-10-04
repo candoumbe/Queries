@@ -23,17 +23,14 @@ namespace Queries.Renderers.Postgres
         /// </para>
         /// </summary>
         /// <param name="settings">Defines how to render <see cref="IQuery"/></param>
-        public PostgresqlRenderer(QueryRendererSettings settings = null)
-            : base(settings ?? new QueryRendererSettings { DateFormatString = "YYYY-mm-DD", PrettyPrint = true })
+        public PostgresqlRenderer(PostgresRendererSettings settings = null)
+            : base(settings ?? new PostgresRendererSettings { DateFormatString = "YYYY-mm-DD", PrettyPrint = true })
         { }
 
         protected override string RenderColumn(IColumn column, bool renderAlias)
-        {
-            return column is JsonFieldColumn json
+            => column is JsonFieldColumn json
                            ? RenderJsonColumn(json, renderAlias)
                            : base.RenderColumn(column, renderAlias);
-        }
-
 
         protected virtual string RenderJsonColumn(JsonFieldColumn json, bool renderAlias)
         {
@@ -53,42 +50,23 @@ namespace Queries.Renderers.Postgres
         }
 
         public override string Render(IQuery query)
-        {
-            string result;
-            if (query is ReturnQuery returnQuery)
-            {
-
-                result = returnQuery.Return.Match(
+            => query is ReturnQuery returnQuery
+                ? returnQuery.Return.Match(
                     columnBase =>
                     {
                         string returnString = string.Empty;
-                        switch (columnBase)
+                        returnString = columnBase switch
                         {
-                            case FieldColumn field:
-                                returnString = $"RETURN {RenderColumn(field, renderAlias: false)}";
-                                break;
-                            case Literal literal:
-                                returnString = $"RETURN {Render(Select(literal)).Substring("SELECT ".Length)}";
-                                break;
-                            case null:
-                                returnString = "RETURN";
-                                break;
-                            default:
-                                throw new InvalidQueryException();
-                        }
-
+                            FieldColumn field => $"RETURN {RenderColumn(field, renderAlias: false)}",
+                            Literal literal => $"RETURN {Render(Select(literal)).Substring("SELECT ".Length)}",
+                            null => "RETURN",
+                            _ => throw new InvalidQueryException(),
+                        };
                         return returnString;
                     },
                     select => $"RETURN {base.Render(select)}"
-                    ); ;
-            }
-            else
-            {
-                result = base.Render(query);
-            }
-
-            return result;
-        }
+                )
+                : base.Render(query);
 
         protected override string RenderWhere(IWhereClause clause)
         {

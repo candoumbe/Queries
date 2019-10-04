@@ -31,11 +31,9 @@ namespace Queries.Renderers.MySQL
 
             sbConcat.Insert(0, "CONCAT(").Append(")");
 
-            string queryString = renderAlias && !string.IsNullOrWhiteSpace(concatColumn.Alias)
+            return renderAlias && !string.IsNullOrWhiteSpace(concatColumn.Alias)
                 ? RenderColumnnameWithAlias(sbConcat.ToString(), EscapeName(concatColumn.Alias))
                 : sbConcat.ToString();
-
-            return queryString;
         }
     }
 }

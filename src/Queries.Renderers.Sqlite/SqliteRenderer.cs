@@ -19,8 +19,8 @@ namespace Queries.Renderers.Sqlite
         private const string VariablesTempTablename = "_VARIABLES";
         private const string ParameterFieldName = "ParameterName";
 
-        public SqliteRenderer(QueryRendererSettings settings = null)
-            : base(settings ?? new QueryRendererSettings { DateFormatString = "yyyy-MM-dd", PrettyPrint = true, PaginationKind = Limit })
+        public SqliteRenderer(SqliteRendererSettings settings = null)
+            : base(settings ?? new SqliteRendererSettings { DateFormatString = "yyyy-MM-dd", PrettyPrint = true })
         { }
 
         protected override string BeginEscapeWordString => @"""";

@@ -5,7 +5,7 @@ namespace Queries.Core.Renderers
     /// <summary>
     /// Settings to use when computing string representation of a <see cref="IQuery"/> instance.
     /// </summary>
-    public class QueryRendererSettings
+    public abstract class QueryRendererSettings
     {
         /// <summary>
         /// Defines how to print queries.
@@ -23,7 +23,7 @@ namespace Queries.Core.Renderers
         /// <summary>
         /// Defines the kind of pagination supported by the renderer
         /// </summary>
-        public PaginationKind PaginationKind { get; set; }
+        public PaginationKind PaginationKind { get; }
 
         /// <summary>
         /// Indicates that the renderer should not declare variables if any
@@ -33,6 +33,9 @@ namespace Queries.Core.Renderers
         /// </remarks>
         public bool SkipVariableDeclaration { get; set; }
 
-        public override string ToString() => this.Stringify();
+        public override string ToString() => this.Jsonify();
+
+
+        protected QueryRendererSettings(PaginationKind paginationKind) => PaginationKind = paginationKind;
     }
 }

@@ -25,8 +25,8 @@ namespace Queries.Renderers.SqlServer
         ///     When set to <c>true</c>,
         ///     each part of a staemtn will be layed in onto a newline.
         /// </remarks>
-        public SqlServerRenderer(QueryRendererSettings settings = null)
-            : base(settings ?? new QueryRendererSettings { DateFormatString = "yyyy-MM-dd", PrettyPrint = true, PaginationKind = Top })
+        public SqlServerRenderer(SqlServerRendererSettings settings = null)
+            : base(settings ?? new SqlServerRendererSettings { DateFormatString = "yyyy-MM-dd", PrettyPrint = true } )
         { }
 
         protected override string BeginEscapeWordString => "[";

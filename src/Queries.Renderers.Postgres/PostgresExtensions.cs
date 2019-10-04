@@ -17,6 +17,6 @@ namespace Queries.Core.Builders
         /// <param name="query">The query to render</param>
         /// <param name="settings">Defines how to render <paramref name="query"/></param>
         /// <returns></returns>
-        public static string ForPostgres(this IQuery query, QueryRendererSettings settings) => new PostgresqlRenderer(settings).Render(query);
+        public static string ForPostgres(this IQuery query, PostgresRendererSettings settings) => new PostgresqlRenderer(settings).Render(query);
     }
 }

@@ -7,6 +7,6 @@ namespace Queries.Core.Builders
     // To enable this option, right-click on the project and select the Properties menu item. In the Build tab select "Produce outputs on build".
     public static class Neo4JExtensions
     {
-        public static string ForNeo4J(this IQuery query, QueryRendererSettings settings) => new Neo4JRenderer(settings).Render(query);
+        public static string ForNeo4J(this IQuery query, Neo4JRendererSettings settings) => new Neo4JRenderer(settings).Render(query);
     }
 }

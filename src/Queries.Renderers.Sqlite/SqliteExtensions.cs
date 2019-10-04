@@ -5,7 +5,7 @@ namespace Queries.Core.Builders
 {
     public static class SqliteExtensions
     {
-        public static string ForSqlite(this IQuery query, QueryRendererSettings settings = null)
+        public static string ForSqlite(this IQuery query, SqliteRendererSettings settings = null)
             => new SqliteRenderer(settings).Render(query);
     }
 }

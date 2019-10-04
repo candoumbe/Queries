@@ -18,7 +18,7 @@ namespace Queries.Renderers.Sqlite.Tests
     [Feature("Sqlite")]
     public class SqliteRendererTests
     {
-        private readonly ITestOutputHelper _outputHelper;
+        private ITestOutputHelper _outputHelper;
 
         public SqliteRendererTests(ITestOutputHelper outputHelper)
         {
@@ -45,38 +45,38 @@ namespace Queries.Renderers.Sqlite.Tests
             {
                 yield return new object[]
                 {
-                    Select(12.July(2010).Literal()), new QueryRendererSettings { PrettyPrint = false, DateFormatString = "dd/MM/yyyy" },
+                    Select(12.July(2010).Literal()), new SqliteRendererSettings { PrettyPrint = false, DateFormatString = "dd/MM/yyyy" },
                     $"SELECT '{12.July(2010).ToString("dd/MM/yyyy")}'"
                 };
 
                 yield return new object[]
                 {
-                    Select(1.Literal()), new QueryRendererSettings { PrettyPrint = false },
+                    Select(1.Literal()), new SqliteRendererSettings { PrettyPrint = false },
                     "SELECT 1"
                 };
 
                 yield return new object[]
                 {
-                    Select(1L.Literal()), new QueryRendererSettings { PrettyPrint = false },
+                    Select(1L.Literal()), new SqliteRendererSettings { PrettyPrint = false },
                     "SELECT 1"
                 };
 
                 yield return new object[]
                 {
                     Select(Null("TextValue".Field(), "IntegerValue".Field(), "RealValue".Field())),
-                    new QueryRendererSettings { PrettyPrint = false},
+                    new SqliteRendererSettings { PrettyPrint = false},
                     @"SELECT COALESCE(""TextValue"", ""IntegerValue"", ""RealValue"")"
                 };
 
                 yield return new object[]
                 {
-                    Select(1.Literal()).Union(Select(2.Literal())), new QueryRendererSettings { PrettyPrint = false },
+                    Select(1.Literal()).Union(Select(2.Literal())), new SqliteRendererSettings { PrettyPrint = false },
                     "SELECT 1 UNION SELECT 2"
                 };
 
                 yield return new object[]
                 {
-                    Select(1.Literal()).Union(Select(2.Literal())), new QueryRendererSettings { PrettyPrint = true },
+                    Select(1.Literal()).Union(Select(2.Literal())), new SqliteRendererSettings { PrettyPrint = true },
                     $"SELECT 1 {Environment.NewLine}UNION {Environment.NewLine}SELECT 2"
                 };
 
@@ -87,9 +87,8 @@ namespace Queries.Renderers.Sqlite.Tests
                         Select(Concat("firstname".Field(), " ".Literal(),  "lastname".Field()).As("fullname"))
                         .From("people").As("p")
                     ),
-                    new QueryRendererSettings { PrettyPrint = false },
+                    new SqliteRendererSettings { PrettyPrint = false },
                     @"SELECT ""fullname"" FROM (SELECT ""firstname"" || ' ' || ""lastname"" AS ""fullname"" FROM ""people"") ""p"""
-
                 };
 
                 yield return new object[]
@@ -97,7 +96,7 @@ namespace Queries.Renderers.Sqlite.Tests
                     Select("firstname".Field(), "lastname".Field())
                         .From("people")
                         .Where("firstname".Field().IsNotNull()),
-                    new QueryRendererSettings { PrettyPrint = false },
+                    new SqliteRendererSettings { PrettyPrint = false },
                     @"SELECT ""firstname"", ""lastname"" FROM ""people"" WHERE (""firstname"" IS NOT NULL)"
                 };
 
@@ -106,7 +105,7 @@ namespace Queries.Renderers.Sqlite.Tests
                     Select(Concat("firstname".Field(), " ".Literal(), "lastname".Field()).As("Fullname"))
                     .From("superheroes")
                     .Where("nickname".Field(), EqualTo, "Batman"),
-                    new QueryRendererSettings {PrettyPrint = false, PaginationKind = PaginationKind.Limit},
+                    new SqliteRendererSettings { PrettyPrint = false },
                     "BEGIN;" +
                     "PRAGMA temp_store = 2;" +
                     @"CREATE TEMP TABLE ""_VARIABLES""(ParameterName TEXT PRIMARY KEY, RealValue REAL, IntegerValue INTEGER, BlobValue BLOB, TextValue TEXT);" +
@@ -123,10 +122,10 @@ namespace Queries.Renderers.Sqlite.Tests
 
         [Theory]
         [MemberData(nameof(SelectTestCases))]
-        public void SelectTest(SelectQuery query, QueryRendererSettings settings, string expectedString)
+        public void SelectTest(SelectQuery query, SqliteRendererSettings settings, string expectedString)
             => IsQueryOk(query, settings, expectedString);
 
-        private void IsQueryOk(IQuery query, QueryRendererSettings settings, string expectedString)
+        private void IsQueryOk(IQuery query, SqliteRendererSettings settings, string expectedString)
         {
             _outputHelper.WriteLine($"{nameof(query)} : {query}");
             _outputHelper.WriteLine($"{nameof(settings)} : {settings}");

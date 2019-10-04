@@ -20,14 +20,14 @@ namespace Queries.Renderers.MySQL.Tests
                 yield return new object[]
                 {
                     Select(Concat("firstname".Field(), " ".Literal(), "lastname".Field())),
-                    new QueryRendererSettings { PrettyPrint = false },
+                    new MySqlRendererSettings { PrettyPrint = false },
                     @"SELECT CONCAT(""firstname"", ' ', ""lastname"")"
                 };
 
                 yield return new object[]
                 {
                     new SelectQuery(Concat("firstname".Field(), " ".Literal(), "lastname".Field())),
-                    new QueryRendererSettings { PrettyPrint = false },
+                    new MySqlRendererSettings { PrettyPrint = false },
                     @"SELECT CONCAT(""firstname"", ' ', ""lastname"")"
                 };
             }

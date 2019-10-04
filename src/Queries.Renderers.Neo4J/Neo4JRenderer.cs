@@ -11,7 +11,7 @@ namespace Queries.Renderers.Neo4J
 {
     public class Neo4JRenderer : QueryRendererBase
     {
-        public Neo4JRenderer(QueryRendererSettings settings) : base(settings)
+        public Neo4JRenderer(Neo4JRendererSettings settings) : base(settings)
         { }
 
         protected override string BeginEscapeWordString => string.Empty;
@@ -20,7 +20,7 @@ namespace Queries.Renderers.Neo4J
 
         protected override string Render(SelectQueryBase query)
         {
-            if (query == null)
+            if (query is null)
             {
                 throw new ArgumentNullException(nameof(query));
             }

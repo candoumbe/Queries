@@ -143,8 +143,8 @@ namespace Queries.Core.Renderers
                         {
                             sb.AppendFormat("SELECT {0} ", fieldsString);
                         }
-                            sb.Append(Settings.PrettyPrint ? Environment.NewLine : string.Empty)
-                                .AppendFormat("FROM {0}", tableString);
+                        sb.Append(Settings.PrettyPrint ? Environment.NewLine : string.Empty)
+                            .AppendFormat("FROM {0}", tableString);
                     }
                     else
                     {
@@ -240,7 +240,8 @@ namespace Queries.Core.Renderers
                     if ((Settings.PaginationKind & Limit) == Limit && selectQuery2.NbRows.HasValue)
                     {
                         sb.Append(' ')
-                            .Append($"LIMIT {selectQuery2.NbRows}");
+                            .Append("LIMIT ")
+                            .Append(selectQuery2.NbRows);
                     }
                 }
 
@@ -312,7 +313,7 @@ namespace Queries.Core.Renderers
 
             foreach (IColumn column in columns)
             {
-                if (sbFields.Length != 0)
+                if (sbFields.Length > 0)
                 {
                     sbFields = sbFields.Append(", ");
                 }
@@ -324,68 +325,30 @@ namespace Queries.Core.Renderers
 
         protected virtual string RenderClause<T>(IClause<T> clause) where T : IColumn
         {
-            string clauseString;
-
-            switch (clause.Operator)
+            return clause.Operator switch
             {
-                case ClauseOperator.EqualTo:
-                    clauseString = $"{RenderColumn(clause.Column, false)} = {RenderColumn(clause.Constraint, false)}";
-                    break;
-                case ClauseOperator.NotEqualTo:
-                    clauseString = $"{RenderColumn(clause.Column, false)} <> {RenderColumn(clause.Constraint, false)}";
-                    break;
-                case ClauseOperator.LessThan:
-                    clauseString = $"{RenderColumn(clause.Column, false)} < {RenderColumn(clause.Constraint, false)}";
-                    break;
-                case ClauseOperator.GreaterThan:
-                    clauseString = $"{RenderColumn(clause.Column, false)} > {RenderColumn(clause.Constraint, false)}";
-                    break;
-                case ClauseOperator.Like:
-                    clauseString = $"{RenderColumn(clause.Column, false)} LIKE {RenderColumn(clause.Constraint, false)}";
-                    break;
-                case ClauseOperator.NotLike:
-                    clauseString =
-                        $"{RenderColumn(clause.Column, false)} NOT LIKE {RenderColumn(clause.Constraint, false)}";
-                    break;
-                case ClauseOperator.LessThanOrEqualTo:
-                    clauseString = $"{RenderColumn(clause.Column, false)} <= {RenderColumn(clause.Constraint, false)}";
-                    break;
-                case ClauseOperator.GreaterThanOrEqualTo:
-                    clauseString = $"{RenderColumn(clause.Column, false)} >= {RenderColumn(clause.Constraint, false)}";
-                    break;
-                case ClauseOperator.IsNull:
-                    clauseString = $"{RenderColumn(clause.Column, false)} IS NULL";
-                    break;
-                case ClauseOperator.IsNotNull:
-                    clauseString = $"{RenderColumn(clause.Column, false)} IS NOT NULL";
-                    break;
-                case ClauseOperator.In:
-
-                    switch (clause.Constraint)
-                    {
-                        case VariableValues variables:
-                            clauseString = $"{RenderColumn(clause.Column, false)} IN ({string.Join(", ", variables.Select(x => RenderVariable(x, false)))})";
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException(nameof(clause), $"Unsupported constraint type for {nameof(ClauseOperator)}.{nameof(ClauseOperator.In)} operator.");
-                    }
-                    break;
-                case ClauseOperator.NotIn:
-
-                    switch (clause.Constraint)
-                    {
-                        case VariableValues variables:
-                            clauseString = $"{RenderColumn(clause.Column, false)} NOT IN ({string.Join(", ", variables.Select(x => RenderVariable(x, false)))})";
-                            break;
-                        default:
-                            throw new ArgumentOutOfRangeException(nameof(clause), $"Unsupported constraint type for {nameof(ClauseOperator)}.{nameof(ClauseOperator.NotIn)} operator.");
-                    }
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(clause.Operator), "Unknown clause operator");
-            }
-
-            return clauseString;
+                ClauseOperator.EqualTo => $"{RenderColumn(clause.Column, false)} = {RenderColumn(clause.Constraint, false)}",
+                ClauseOperator.NotEqualTo => $"{RenderColumn(clause.Column, false)} <> {RenderColumn(clause.Constraint, false)}",
+                ClauseOperator.LessThan => $"{RenderColumn(clause.Column, false)} < {RenderColumn(clause.Constraint, false)}",
+                ClauseOperator.GreaterThan => $"{RenderColumn(clause.Column, false)} > {RenderColumn(clause.Constraint, false)}",
+                ClauseOperator.Like => $"{RenderColumn(clause.Column, false)} LIKE {RenderColumn(clause.Constraint, false)}",
+                ClauseOperator.NotLike => $"{RenderColumn(clause.Column, false)} NOT LIKE {RenderColumn(clause.Constraint, false)}",
+                ClauseOperator.LessThanOrEqualTo => $"{RenderColumn(clause.Column, false)} <= {RenderColumn(clause.Constraint, false)}",
+                ClauseOperator.GreaterThanOrEqualTo => $"{RenderColumn(clause.Column, false)} >= {RenderColumn(clause.Constraint, false)}",
+                ClauseOperator.IsNull => $"{RenderColumn(clause.Column, false)} IS NULL",
+                ClauseOperator.IsNotNull => $"{RenderColumn(clause.Column, false)} IS NOT NULL",
+                ClauseOperator.In => clause.Constraint switch
+                {
+                    VariableValues variables => $"{RenderColumn(clause.Column, false)} IN ({string.Join(", ", variables.Select(x => RenderVariable(x, false)))})",
+                    _ => throw new ArgumentOutOfRangeException(nameof(clause), $"Unsupported constraint type for {nameof(ClauseOperator)}.{nameof(ClauseOperator.In)} operator."),
+                },
+                ClauseOperator.NotIn => clause.Constraint switch
+                {
+                    VariableValues variables => $"{RenderColumn(clause.Column, false)} NOT IN ({string.Join(", ", variables.Select(x => RenderVariable(x, false)))})",
+                    _ => throw new ArgumentOutOfRangeException(nameof(clause), $"Unsupported constraint type for {nameof(ClauseOperator)}.{nameof(ClauseOperator.NotIn)} operator."),
+                },
+                _ => throw new ArgumentOutOfRangeException(nameof(clause.Operator), "Unknown clause operator"),
+            };
         }
 
         protected virtual string RenderWhere(IWhereClause clause)
@@ -398,7 +361,6 @@ namespace Queries.Core.Renderers
                     sbWhere.Append(RenderClause(whereClause));
                     break;
                 case CompositeWhereClause compositeClause:
-                    {
                         switch (compositeClause.Logic)
                         {
                             case ClauseLogic.And:
@@ -427,7 +389,6 @@ namespace Queries.Core.Renderers
                         }
 
                         break;
-                    }
             }
 
             return sbWhere.Insert(0, '(').Insert(sbWhere.Length, ')').ToString();
@@ -437,38 +398,40 @@ namespace Queries.Core.Renderers
         {
             StringBuilder sbHaving = new StringBuilder();
 
-            if (clause is HavingClause havingClause)
+            switch (clause)
             {
-                sbHaving.Append(RenderClause(havingClause));
-            }
-            else if (clause is CompositeHavingClause compositeClause)
-            {
-                switch (compositeClause.Logic)
-                {
-                    case ClauseLogic.And:
-                        foreach (IHavingClause innerClause in compositeClause.Clauses)
-                        {
-                            if (sbHaving.Length > 0)
+                case HavingClause havingClause:
+                    sbHaving.Append(RenderClause(havingClause));
+                    break;
+                case CompositeHavingClause compositeClause:
+                    switch (compositeClause.Logic)
+                    {
+                        case ClauseLogic.And:
+                            foreach (IHavingClause innerClause in compositeClause.Clauses)
                             {
-                                sbHaving = sbHaving.Append(" AND ");
+                                if (sbHaving.Length > 0)
+                                {
+                                    sbHaving = sbHaving.Append(" AND ");
+                                }
+                                sbHaving = sbHaving.Append(RenderHaving(innerClause));
                             }
-                            sbHaving = sbHaving.Append(RenderHaving(innerClause));
-                        }
 
-                        break;
-                    case ClauseLogic.Or:
-                        foreach (IHavingClause innerClause in compositeClause.Clauses)
-                        {
-                            if (sbHaving.Length > 0)
+                            break;
+                        case ClauseLogic.Or:
+                            foreach (IHavingClause innerClause in compositeClause.Clauses)
                             {
-                                sbHaving = sbHaving.Append(" OR ");
+                                if (sbHaving.Length > 0)
+                                {
+                                    sbHaving = sbHaving.Append(" OR ");
+                                }
+                                sbHaving = sbHaving.Append(RenderHaving(innerClause));
                             }
-                            sbHaving = sbHaving.Append(RenderHaving(innerClause));
-                        }
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+
+                    break;
             }
 
             return sbHaving.Insert(0, '(').Insert(sbHaving.Length, ')').ToString();

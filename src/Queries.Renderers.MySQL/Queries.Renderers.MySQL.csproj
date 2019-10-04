@@ -1,18 +1,20 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="..\..\core.props"/>
+  <Import Project="..\..\core.props" />
 
   <PropertyGroup>
-    <Description>Queries.Renderers.MySQL Class Library</Description>
+    <Description>Renderer specific to MySQL database engine</Description>
     <VersionPrefix>3.0.0-alpha-01</VersionPrefix>
     <Authors>Cyrille NDOUMBE</Authors>
     <TargetFramework>netstandard1.0</TargetFramework>
     <AssemblyName>Queries.Renderers.MySQL</AssemblyName>
     <PackageId>Queries.Renderers.MySQL</PackageId>
     <PackageTags>Query;Builder;SQL;MySQL</PackageTags>
-    <PackageReleaseNotes>This is an alpha version</PackageReleaseNotes>
-    <PackageProjectUrl>https://github.com/candoumbe/Queries</PackageProjectUrl>
+    <PackageReleaseNotes>Added dedicated class for each renderer settings</PackageReleaseNotes>
+    <PackageProjectUrl>https://candoumbe.visualstudio.com/Queries</PackageProjectUrl>
     <Version>3.0.1-alpha-01</Version>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>$(PackageProjectUrl)</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>

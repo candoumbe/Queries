@@ -22,12 +22,7 @@
     <RepositoryUrl>https://candoumbe.visualstudio.com/Queries</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-  </PropertyGroup>
-
-  <ItemGroup>
-        <PackageReference Include="System.ValueTuple" Version="4.5.0" />
-  </ItemGroup>
-  
+  </PropertyGroup>  
   <Choose>
     <When Condition="'$(TargetFramework)' == 'netstandard1.0' OR '$(TargetFramework)' == 'netstandard1.3'">
       <ItemGroup>
