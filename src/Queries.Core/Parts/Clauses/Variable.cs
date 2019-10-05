@@ -17,6 +17,8 @@ namespace Queries.Core.Parts.Clauses
         /// <param name="name">name of the variable</param>
         /// <param name="type">type of variable</param>
         /// <param name="value">value of the variable</param>
+        /// <exception cref="ArgumentNullException">if <paramref name="name"/> is <c>null</c></exception>
+        /// <exception cref="ArgumentOutOfRangeException">if <paramref name="name"/> is <c>empty</c></exception>
         public Variable(string name, VariableType type, object value)
         {
             if (name == null)
@@ -51,12 +53,18 @@ namespace Queries.Core.Parts.Clauses
 
         public override bool Equals(object obj) => Equals(obj as Variable);
 
-        public bool Equals(Variable other) => other != null && (Name, Type, Value).Equals((other.Name, other.Type, other.Value));
+        public bool Equals(Variable other)
+            => Name.Equals(other?.Name)
+            && Type == other?.Type
+            && Equals(Value, other?.Value);
 
         public override bool Equals(ColumnBase other) => Equals(other as Variable);
 
+#if !NETSTANDARD2_1
         public override int GetHashCode() => (Name, Type, Value).GetHashCode();
-
-        public override string ToString() => this.Stringify();
+#else
+        public override int GetHashCode() => HashCode.Combine(Name, Type, Value);
+#endif
+        public override string ToString() => this.Jsonify();
     }
 }

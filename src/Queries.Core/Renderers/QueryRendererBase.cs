@@ -324,8 +324,7 @@ namespace Queries.Core.Renderers
         }
 
         protected virtual string RenderClause<T>(IClause<T> clause) where T : IColumn
-        {
-            return clause.Operator switch
+            => clause.Operator switch
             {
                 ClauseOperator.EqualTo => $"{RenderColumn(clause.Column, false)} = {RenderColumn(clause.Constraint, false)}",
                 ClauseOperator.NotEqualTo => $"{RenderColumn(clause.Column, false)} <> {RenderColumn(clause.Constraint, false)}",
@@ -349,7 +348,6 @@ namespace Queries.Core.Renderers
                 },
                 _ => throw new ArgumentOutOfRangeException(nameof(clause.Operator), "Unknown clause operator"),
             };
-        }
 
         protected virtual string RenderWhere(IWhereClause clause)
         {
@@ -361,34 +359,34 @@ namespace Queries.Core.Renderers
                     sbWhere.Append(RenderClause(whereClause));
                     break;
                 case CompositeWhereClause compositeClause:
-                        switch (compositeClause.Logic)
-                        {
-                            case ClauseLogic.And:
-                                foreach (IWhereClause innerClause in compositeClause.Clauses)
+                    switch (compositeClause.Logic)
+                    {
+                        case ClauseLogic.And:
+                            foreach (IWhereClause innerClause in compositeClause.Clauses)
+                            {
+                                if (sbWhere.Length > 0)
                                 {
-                                    if (sbWhere.Length > 0)
-                                    {
-                                        sbWhere = sbWhere.Append(" AND ");
-                                    }
-                                    sbWhere = sbWhere.AppendFormat("{0}", RenderWhere(innerClause));
+                                    sbWhere = sbWhere.Append(" AND ");
                                 }
+                                sbWhere = sbWhere.AppendFormat("{0}", RenderWhere(innerClause));
+                            }
 
-                                break;
-                            case ClauseLogic.Or:
-                                foreach (IWhereClause innerClause in compositeClause.Clauses)
+                            break;
+                        case ClauseLogic.Or:
+                            foreach (IWhereClause innerClause in compositeClause.Clauses)
+                            {
+                                if (sbWhere.Length > 0)
                                 {
-                                    if (sbWhere.Length > 0)
-                                    {
-                                        sbWhere = sbWhere.Append(" OR ");
-                                    }
-                                    sbWhere = sbWhere.Append(RenderWhere(innerClause));
+                                    sbWhere = sbWhere.Append(" OR ");
                                 }
-                                break;
-                            default:
-                                throw new ArgumentOutOfRangeException(nameof(compositeClause.Logic), "Unknown logic");
-                        }
+                                sbWhere = sbWhere.Append(RenderWhere(innerClause));
+                            }
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException(nameof(compositeClause.Logic), "Unknown logic");
+                    }
 
-                        break;
+                    break;
             }
 
             return sbWhere.Insert(0, '(').Insert(sbWhere.Length, ')').ToString();
@@ -738,5 +736,24 @@ namespace Queries.Core.Renderers
         }
 
         public virtual string BatchStatementSeparator => ";";
+
+        public CompiledQuery Compile(IQuery query)
+        {
+            CollectVariableVisitor visitor = new CollectVariableVisitor();
+            CompiledQuery compiledQuery;
+            switch (query)
+            {
+                case SelectQuery selectQuery:
+                    visitor.Visit(selectQuery);
+
+                    compiledQuery = new CompiledQuery(Render(selectQuery), visitor.Variables);
+                    break;
+                default:
+                    compiledQuery = new CompiledQuery(Render(query), Enumerable.Empty<Variable>());
+                    break;
+            }
+
+            return compiledQuery;
+        }
     }
 }

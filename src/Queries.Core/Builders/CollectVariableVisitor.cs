@@ -51,8 +51,8 @@ namespace Queries.Core.Builders
                     {
                         case StringColumn sc when sc.Value != null:
                             {
-                                Variable variable = Variables.SingleOrDefault(x => x.Type == VariableType.String && sc.Value == x.Value);
-                                if (variable == null)
+                                Variable variable = Variables.SingleOrDefault(x => x.Type == VariableType.String && Equals(sc.Value, x.Value));
+                                if (variable is null)
                                 {
                                     variable = new Variable($"p{Variables.Count()}", VariableType.String, sc.Value);
                                     Variables = Variables.Concat(new[] { variable });
@@ -64,7 +64,7 @@ namespace Queries.Core.Builders
                         case BooleanColumn bc when bc.Value != null:
                             {
                                 Variable variable = Variables.SingleOrDefault(x => x.Type == VariableType.Boolean && bc.Value == x.Value);
-                                if (variable == null)
+                                if (variable is null)
                                 {
                                     variable = new Variable($"p{Variables.Count()}", VariableType.Boolean, bc.Value);
                                     Variables = Variables.Concat(new[] { variable });
@@ -76,7 +76,7 @@ namespace Queries.Core.Builders
                         case DateTimeColumn dc when dc.Value != null:
                             {
                                 Variable variable = Variables.SingleOrDefault(x => x.Type == Date && dc.Value == x.Value);
-                                if (variable == null)
+                                if (variable is null)
                                 {
                                     variable = new Variable($"p{Variables.Count()}", Date, dc.Value);
                                     Variables = Variables.Concat(new[] { variable });
@@ -89,7 +89,7 @@ namespace Queries.Core.Builders
                             foreach (string value in strings)
                             {
                                 Variable variable = Variables.SingleOrDefault(x => x.Type == VariableType.String && Equals(value,x.Value));
-                                if (variable == null)
+                                if (variable is null)
                                 {
                                     variable = new Variable($"p{Variables.Count()}", VariableType.String, value);
                                     variables = variables.Concat(new[] { variable });
@@ -98,7 +98,7 @@ namespace Queries.Core.Builders
                             }
                             if (variables.Any())
                             {
-                                ((WhereClause)instance).Constraint = new VariableValues(variables.First(), variables.Skip(1).ToArray()); /**/
+                                ((WhereClause)instance).Constraint = new VariableValues(variables.First(), variables.Skip(1).ToArray());
                             }
                             break;
                         default:

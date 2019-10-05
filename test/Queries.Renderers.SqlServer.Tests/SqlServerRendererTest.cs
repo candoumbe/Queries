@@ -364,7 +364,7 @@ namespace Queries.Renderers.SqlServer.Tests
         public void SelectTest(SelectQuery query, SqlServerRendererSettings settings, string expectedString)
             => IsQueryOk(query, settings, expectedString);
 
-        public static IEnumerable<object[]> RenderFullCases
+        public static IEnumerable<object[]> CompileCases
         {
             get
             {
@@ -372,11 +372,11 @@ namespace Queries.Renderers.SqlServer.Tests
                 {
                     Select("*").From("members").Where("Firstname".Field(), In, new StringValues("Bruce", "Bane")),
                     new SqlServerRendererSettings{ SkipVariableDeclaration = true },
-                    (Expression<Func<(string sql, IEnumerable<Variable> variables), bool>>)(
-                        query => query.sql == "SELECT * FROM [members] WHERE ([Firstname] IN (@p0, @p1))"
-                            && query.variables.Count() == 2
-                            && query.variables.Once(v => v.Name == "p0" && "Bruce".Equals(v.Value))
-                            && query.variables.Once(v => v.Name == "p1" && "Bane".Equals(v.Value))
+                    (Expression<Func<CompiledQuery, bool>>)(
+                        query => query.Statement == "SELECT * FROM [members] WHERE ([Firstname] IN (@p0, @p1))"
+                            && query.Variables.Exactly(2)
+                            && query.Variables.Once(v => v.Name == "p0" && "Bruce".Equals(v.Value) && v.Type == VariableType.String)
+                            && query.Variables.Once(v => v.Name == "p1" && "Bane".Equals(v.Value) && v.Type == VariableType.String)
                     ),
                     "the statement contains 2 variables with 2 values"
                 };
@@ -390,14 +390,14 @@ namespace Queries.Renderers.SqlServer.Tests
                         Select("Fullname").From("SuperHero").Where("Nickname".Field(), Like, "B%"))
                     ),
                     new SqlServerRendererSettings{ PrettyPrint = false, SkipVariableDeclaration = true },
-                    (Expression<Func<(string sql, IEnumerable<Variable> variables), bool>>)(
-                        query => query.sql == "SELECT * FROM (" +
+                    (Expression<Func<CompiledQuery, bool>>)(
+                        query => query.Statement == "SELECT * FROM (" +
                             "SELECT [Fullname] FROM [People] WHERE ([Firstname] LIKE @p0) " +
                             "UNION " +
                             "SELECT [Fullname] FROM [SuperHero] WHERE ([Nickname] LIKE @p0)" +
                         ")"
-                            && query.variables.Count() == 1
-                            && query.variables.Once(v => v.Name == "p0" && "B%".Equals(v.Value))
+                            && query.Variables.Once()
+                            && query.Variables.Once(v => v.Name == "p0" && "B%".Equals(v.Value) && v.Type == VariableType.String)
                     ),
                     "The select statement as two variables with SAME value"
                 };
@@ -405,20 +405,19 @@ namespace Queries.Renderers.SqlServer.Tests
         }
 
         [Theory]
-        [MemberData(nameof(RenderFullCases))]
-        public void Select_Rendered_With_Explain(SelectQuery query, SqlServerRendererSettings settings, Expression<Func<(string sql, IEnumerable<Variable> variables), bool>> expectation, string reason)
+        [MemberData(nameof(CompileCases))]
+        public void Select_Compile(SelectQuery query, SqlServerRendererSettings settings, Expression<Func<CompiledQuery, bool>> expectation, string reason)
         {
             // Arrange
             SqlServerRenderer renderer = new SqlServerRenderer(settings);
 
             // Assert
-            (string sql, IEnumerable<Variable> variables) = renderer.Explain(query);
+            CompiledQuery compiledQuery = renderer.Compile(query);
 
-            _outputHelper.WriteLine($"sql : '{sql}'");
-            _outputHelper.WriteLine($"variables : '{variables.Stringify()}'");
+            _outputHelper.WriteLine($"{nameof(compiledQuery)} : '{compiledQuery}'");
 
             // Assert
-            (sql, variables).Should()
+            compiledQuery.Should()
                 .Match(expectation, reason);
         }
 

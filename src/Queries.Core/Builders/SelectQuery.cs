@@ -188,13 +188,48 @@ namespace Queries.Core.Builders
                 equals = Columns.SequenceEqual(other.Columns)
                     && ((WhereCriteria == null && other.WhereCriteria == null) || WhereCriteria.Equals(other.WhereCriteria))
                     && Tables.SequenceEqual(other.Tables)
-                    && Unions.SequenceEqual(other.Unions);
+                    && Unions.SequenceEqual(other.Unions)
+                    && Sorts.SequenceEqual(other?.Sorts);
             }
 
             return equals;
         }
 
+#if !NETSTANDARD2_1
         public override int GetHashCode() => (Alias, Columns, HavingCriteria, Joins, NbRows, Sorts, Tables, Unions, WhereCriteria).GetHashCode();
+#else
+        public override int GetHashCode()
+        {
+            HashCode hash = new HashCode();
+            hash.Add(Alias);
+            foreach (IColumn item in Columns)
+            {
+                hash.Add(item);
+            }
+            hash.Add(HavingCriteria);
+            foreach (IJoin item in Joins)
+            {
+                hash.Add(item);
+            }
+            hash.Add(NbRows);
+            foreach (IOrder item in Sorts)
+            {
+                hash.Add(item);
+            }
+            foreach (ITable item in Tables)
+            {
+                hash.Add(item);
+            }
+            foreach (IUnionQuery<SelectQuery> item in Unions)
+            {
+                hash.Add(item);
+            }
+
+            hash.Add(WhereCriteria);
+
+            return hash.ToHashCode();
+        }
+#endif
 
         /// <summary>
         /// Performs a deep copy of the current instance.
@@ -227,22 +262,6 @@ namespace Queries.Core.Builders
 
         IColumn IColumn.Clone() => Clone();
 
-        public override string ToString()
-        {
-            object obj = new
-            {
-                Alias,
-                Columns = Columns?.AtLeastOnce() ?? false ? Columns : null,
-                Having= HavingCriteria?.ToString(),
-                Joins = Joins.AtLeastOnce() ? Joins : null,
-                NbRows,
-                Sorts = Sorts.AtLeastOnce() ? Sorts : null,
-                Tables = Tables.AtLeastOnce() ? Tables : null,
-                Unions = Unions.AtLeastOnce() ? Unions : null,
-                Where = WhereCriteria?.ToString()
-            };
-
-            return $"[{nameof(SelectQuery)}:{obj.Stringify()}]";
-        }
+        public override string ToString() => this.Jsonify();
     }
 }

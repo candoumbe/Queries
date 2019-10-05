@@ -155,9 +155,10 @@ namespace Queries.Core.Tests.Parts.Clauses
             get
             {
                 yield return new object[] { new WhereClause("firstname".Field(), EqualTo, "Bruce"), null, false, "comparing with a null instance" };
-                yield return new object[] { new WhereClause("firstname".Field(), EqualTo, "Bruce"), new WhereClause("firstname".Field(), EqualTo, "Bruce"), true, "comparing two instances with same tableName" };
-                yield return new object[] { new WhereClause("firstname".Field(), EqualTo, "Bruce"), new WhereClause("Firstname".Field(), EqualTo, "Bruce"), false, "comparing two instances with same criteria" };
+                yield return new object[] { new WhereClause("firstname".Field(), EqualTo, "Bruce"), new WhereClause("firstname".Field(), EqualTo, "Bruce"), true, "comparing two instances with same columns and constrains" };
+                yield return new object[] { new WhereClause("firstname".Field(), EqualTo, "Bruce"), new WhereClause("Firstname".Field(), EqualTo, "Bruce"), false, "comparing two instances with same columns but different casing" };
                 yield return new object[] { new WhereClause("firstname".Field(), EqualTo, "Bruce"), Select(1.Literal()), false, "comparing two different types of query" };
+                yield return new object[] { new WhereClause("firstname".Field(), EqualTo, new Variable("p0", VariableType.String, "Bruce")), new WhereClause("firstname".Field(), EqualTo, new Variable("p0", VariableType.String, "Bruce")), true, "comparing two different types with same data" };
             }
         }
 

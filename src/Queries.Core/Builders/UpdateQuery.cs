@@ -70,6 +70,6 @@ namespace Queries.Core.Builders
             return (hashCode * -1521134295) + EqualityComparer<IWhereClause>.Default.GetHashCode(Criteria);
         }
 
-        public override string ToString() => this.Stringify();
+        public override string ToString() => this.Jsonify();
     }
 }

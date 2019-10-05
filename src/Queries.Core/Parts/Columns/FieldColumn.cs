@@ -19,7 +19,7 @@ namespace Queries.Core.Parts.Columns
 
         public FieldColumn(string columnName)
         {
-            if (columnName == null)
+            if (columnName is null)
             {
                 throw new ArgumentNullException(nameof(columnName), $"{nameof(columnName)} cannot be null");
             }
@@ -43,9 +43,12 @@ namespace Queries.Core.Parts.Columns
 
         public override bool Equals(ColumnBase other) => Equals(other as FieldColumn);
 
+#if !NETSTANDARD2_1
         public override int GetHashCode() => (Name, Alias).GetHashCode();
-
-        public override string ToString() => this.Stringify();
+#else
+        public override int GetHashCode() => HashCode.Combine(Name, Alias);
+#endif
+        public override string ToString() => this.Jsonify();
 
         /// <summary>
         /// Performs a deep copy of the current instance

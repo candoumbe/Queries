@@ -114,7 +114,7 @@ namespace Queries.Renderers.SqlServer
             return sbParameters.Append(result).ToString();
         }
 
-        public (string sql, IEnumerable<Variable> variables) Explain(IQuery query)
+        public CompiledQuery Compoile(IQuery query)
         {
             string result = string.Empty;
             CollectVariableVisitor visitor = new CollectVariableVisitor();
@@ -188,7 +188,7 @@ namespace Queries.Renderers.SqlServer
                     }
                 }
             }
-            return (sql : sbParameters.Append(result).ToString(), variables : visitor.Variables);
+            return new CompiledQuery (result, visitor.Variables);
         }
 
         protected override string RenderVariable(Variable variable, bool renderAlias) => $"@{variable.Name}";

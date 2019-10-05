@@ -55,7 +55,7 @@ namespace Queries.Core.Parts.Functions
 
         public override int GetHashCode() => (Column, Alias).GetHashCode();
 
-        public override string ToString() => this.Stringify();
+        public override string ToString() => this.Jsonify();
 
         public abstract IColumn Clone();
     }

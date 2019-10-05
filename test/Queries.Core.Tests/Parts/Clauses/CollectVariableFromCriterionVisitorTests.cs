@@ -1,18 +1,18 @@
 ﻿using FluentAssertions;
+using FluentAssertions.Extensions;
 using Queries.Core.Builders;
 using Queries.Core.Parts.Clauses;
+using Queries.Core.Parts.Columns;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using Xunit;
 using Xunit.Abstractions;
-using static Queries.Core.Builders.Fluent.QueryBuilder;
-using static Queries.Core.Parts.Clauses.ClauseOperator;
-using static Queries.Core.Parts.Clauses.ClauseLogic;
-using Queries.Core.Parts.Columns;
-using FluentAssertions.Extensions;
 using Xunit.Categories;
+using static Queries.Core.Builders.Fluent.QueryBuilder;
+using static Queries.Core.Parts.Clauses.ClauseLogic;
+using static Queries.Core.Parts.Clauses.ClauseOperator;
 
 namespace Queries.Core.Tests.Parts.Clauses
 {
@@ -49,12 +49,13 @@ namespace Queries.Core.Tests.Parts.Clauses
                 {
                     Select("Fullname").From("SuperHero").Where("Nickname".Field(), Like, "Bat%"),
                     (Expression<Func<CollectVariableVisitor, bool>>)(visitor =>
-                        visitor.Variables.Count() == 1
-                        && visitor.Variables.Any(x => x.Name == "p0" && "Bat%".Equals(x.Value) && x.Type == VariableType.String)
+                        visitor.Variables.Once()
+                        && visitor.Variables.Once(x => x.Name == "p0" && "Bat%".Equals(x.Value) && x.Type == VariableType.String)
                     ),
                     (Expression<Func<SelectQuery, bool>>)(query =>
-                        query.Equals(Select("Fullname").From("SuperHero").Where("Nickname".Field(), Like, new Variable("p0", VariableType.String, "Bat%"))))
-                    
+                        query.Equals(Select("Fullname").From("SuperHero")
+                                                       .Where("Nickname".Field(), Like, new Variable("p0", VariableType.String, "Bat%"))))
+
                 };
 
                 yield return new object[]
@@ -68,8 +69,14 @@ namespace Queries.Core.Tests.Parts.Clauses
                     (Expression<Func<SelectQuery, bool>>)(query =>
                         query.Equals(
                             Select("Fullname").From("SuperHero")
-                            .Where("Nickname".Field(), In, new VariableValues(new Variable("p0", VariableType.String, "Batman"), new Variable("p1", VariableType.String, "Superman")))))
-                    
+                            .Where(
+                                "Nickname".Field(),
+                                In,
+                                new VariableValues(
+                                    new Variable("p0", VariableType.String, "Batman"),
+                                    new Variable("p1", VariableType.String, "Superman")
+                                )
+                            )))
                 };
 
                 yield return new object[]
@@ -84,9 +91,9 @@ namespace Queries.Core.Tests.Parts.Clauses
                             }
                         }),
                     (Expression<Func<CollectVariableVisitor, bool>>)(visitor =>
-                        visitor.Variables.Count() == 2
-                        && visitor.Variables.Any(x => x.Name == "p0" && "Bat%".Equals(x.Value) && x.Type == VariableType.String)
-                        && visitor.Variables.Any(x => x.Name == "p1" && true.Equals(x.Value) && x.Type == VariableType.Boolean)
+                        visitor.Variables.Exactly(2)
+                        && visitor.Variables.Once(x => x.Name == "p0" && "Bat%".Equals(x.Value) && x.Type == VariableType.String)
+                        && visitor.Variables.Once(x => x.Name == "p1" && true.Equals(x.Value) && x.Type == VariableType.Boolean)
                     ),
                     (Expression<Func<SelectQuery, bool>>)(query =>
                         query.Equals(
@@ -102,7 +109,7 @@ namespace Queries.Core.Tests.Parts.Clauses
                                     }
                                 })
                         ))
-                    
+
                 };
 
                 yield return new object[]
@@ -125,10 +132,10 @@ namespace Queries.Core.Tests.Parts.Clauses
                                 }
                             }),
                     (Expression<Func<CollectVariableVisitor, bool>>)(visitor =>
-                        visitor.Variables.Count() == 3
-                        && visitor.Variables.Any(x => x.Name == "p0" && 1.January(1990).Equals(x.Value) && x.Type == VariableType.Date)
-                        && visitor.Variables.Any(x => x.Name == "p1" && "Bat%".Equals(x.Value) && x.Type == VariableType.String)
-                        && visitor.Variables.Any(x => x.Name == "p2" && true.Equals(x.Value) && x.Type == VariableType.Boolean)
+                        visitor.Variables.Exactly(3)
+                        && visitor.Variables.Once(x => x.Name == "p0" && 1.January(1990).Equals(x.Value) && x.Type == VariableType.Date)
+                        && visitor.Variables.Once(x => x.Name == "p1" && "Bat%".Equals(x.Value) && x.Type == VariableType.String)
+                        && visitor.Variables.Once(x => x.Name == "p2" && true.Equals(x.Value) && x.Type == VariableType.Boolean)
                     ),
                     (Expression<Func<SelectQuery, bool>>)(query =>
                         query.Equals(
@@ -136,23 +143,22 @@ namespace Queries.Core.Tests.Parts.Clauses
                             .From("SuperHero")
                             .Where(
                                 new CompositeWhereClause
-                            {
-                                Logic = And,
-                                Clauses = new IWhereClause[]
                                 {
-                                    new WhereClause("DateOfBirth".Field(), LessThan, new Variable("p0", VariableType.Date, 1.January(1990))),
-                                    new CompositeWhereClause{
-                                        Logic = Or,
-                                        Clauses = new[]
-                                        {
-                                            new WhereClause("Nickname".Field(), Like, new Variable("p1", VariableType.String, "Bat%")),
-                                            new WhereClause("CanFly".Field(), EqualTo, new Variable("p2", VariableType.Boolean, true))
+                                    Logic = And,
+                                    Clauses = new IWhereClause[]
+                                    {
+                                        new WhereClause("DateOfBirth".Field(), LessThan, new Variable("p0", VariableType.Date, 1.January(1990))),
+                                        new CompositeWhereClause{
+                                            Logic = Or,
+                                            Clauses = new[]
+                                            {
+                                                new WhereClause("Nickname".Field(), Like, new Variable("p1", VariableType.String, "Bat%")),
+                                                new WhereClause("CanFly".Field(), EqualTo, new Variable("p2", VariableType.Boolean, true))
+                                            }
                                         }
                                     }
-                                }
-                            })
+                                })
                         ))
-                    
                 };
 
                 yield return new object[]
@@ -193,6 +199,7 @@ namespace Queries.Core.Tests.Parts.Clauses
             // Arrange
             CollectVariableVisitor visitor = new CollectVariableVisitor();
             _outputHelper.WriteLine($"{nameof(selectQuery)} : {selectQuery}");
+
             // Act
             visitor.Visit(selectQuery);
 
@@ -257,12 +264,12 @@ namespace Queries.Core.Tests.Parts.Clauses
                 {
                     Delete("members").Where("Activity".Field(), NotLike, "%Super hero%"),
                     (Expression<Func<CollectVariableVisitor, bool>>)(visitor =>
-                        visitor.Variables.Count() == 1
-                        && visitor.Variables.Any(x => x.Name == "p0" && "%Super hero%".Equals(x.Value) && x.Type == VariableType.String)
+                        visitor.Variables.Once()
+                        && visitor.Variables.Once(x => x.Name == "p0" && "%Super hero%".Equals(x.Value) && x.Type == VariableType.String)
                     ),
                     (Expression<Func<DeleteQuery, bool>>)(query =>
-                        query.Equals(Delete("members")
-                            .Where("Activity".Field(), NotLike, new Variable("p0", VariableType.String, "%Super hero%")))
+                        query.Table == "members"
+                        && query.Criteria.Equals(new WhereClause("Activity".Field(), NotLike, new Variable("p0", VariableType.String, "%Super hero%")))
                     )
                 };
             }

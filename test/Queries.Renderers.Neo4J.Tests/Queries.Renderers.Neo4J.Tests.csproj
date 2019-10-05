@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Description>Queries.Renderers.Neo4J.Tests Class Library</Description>
     <Authors>Cyrille NDOUMBE</Authors>
-    <TargetFrameworks>netcoreapp2.0;netcoreapp2.1;netcoreapp2.2;netcoreapp3.0</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.1;netcoreapp2.2;netcoreapp3.0</TargetFrameworks>
     <AssemblyName>Queries.Renderers.Neo4J.Tests</AssemblyName>
     <PackageId>Queries.Renderers.Neo4J.Tests</PackageId>
   </PropertyGroup>

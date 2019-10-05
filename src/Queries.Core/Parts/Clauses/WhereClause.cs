@@ -75,11 +75,16 @@ namespace Queries.Core.Parts.Clauses
 
         public bool Equals(IWhereClause other) => Equals(other as WhereClause);
 
-        public bool Equals(WhereClause other) => other != null
-            && (Column, Operator, Constraint).Equals((other.Column, other.Operator, other.Constraint));
+        public bool Equals(WhereClause other)
+            => Column.Equals(other?.Column)
+            && Operator == other?.Operator
+            && ((Constraint == null && other?.Constraint == null) || Constraint.Equals(other.Constraint));
 
+#if !NETSTANDARD2_1
         public override int GetHashCode() => (Column, Operator, Constraint).GetHashCode();
-
+#else
+        public override int GetHashCode() => HashCode.Combine(Column, Operator, Constraint);
+#endif
         public IWhereClause Clone() => new WhereClause(Column.Clone(), Operator, Constraint?.Clone());
 
         public override string ToString() => (Column, Operator, Constraint).ToString();

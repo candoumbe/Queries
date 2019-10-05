@@ -1,9 +1,4 @@
-﻿
-using Queries.Core.Parts.Clauses;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace Queries.Core.Renderers
+﻿namespace Queries.Core.Renderers
 {
     /// <summary>
     /// The extension point to implement to provide conversion from <see cref="IQuery"/> to its a database equivalent <see cref="string"/>
@@ -17,14 +12,13 @@ namespace Queries.Core.Renderers
         /// <returns>The specific string</returns>
         string Render(IQuery query);
 
-#if NETSTANDARD2_1
-        public (string query, IEnumerable<Variable> parameters) Explain(IQuery query)
-        {
-            string queryString = Render(query);
-
-            return (queryString, parameters: Enumerable.Empty<Variable>());
-        }
-#endif
+        /// <summary>
+        /// Performs various operations to gather informations on the current query
+        /// </summary>
+        /// <param name="query">The query to compile</param>
+        /// <returns>a <see cref="CompiledQuery"/> instance</returns>
+        /// <exception cref="System.ArgumentNullException">if <paramref name="query"/> is <c>null</c>.</exception>
+        CompiledQuery Compile(IQuery query);
     }
 }
 

@@ -126,6 +126,8 @@ namespace Queries.Renderers.Postgres
 
         protected override string BeginEscapeWordString => @"""";
 
+        protected override string RenderVariable(Variable variable, bool renderAlias) => $"@{variable.Name}";
+
         protected override string RenderSubstringColumn(SubstringFunction substringColumn, bool renderAlias) => $"SUBSTRING({RenderColumn(substringColumn.Column, false)} FROM {substringColumn.Start}{(substringColumn.Length.HasValue ? $" FOR {substringColumn.Length.Value}" : string.Empty)})";
     }
 }
