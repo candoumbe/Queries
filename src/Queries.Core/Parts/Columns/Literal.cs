@@ -17,38 +17,19 @@ namespace Queries.Core.Parts.Columns
         /// <param name="value"></param>
         public Literal(object value = null)
         {
-            switch (value)
+            Value = value switch
             {
-                case int i:
-                    Value = i;
-                    break;
-                case float f:
-                    Value = f;
-                    break;
-                case double d:
-                    Value = d;
-                    break;
-                case long l:
-                    Value = l;
-                    break;
-                case bool b:
-                    Value = b;
-                    break;
-                case string s:
-                    Value = s;
-                    break;
-                case DateTime dateTime:
-                    Value = dateTime;
-                    break;
-                case DateTimeOffset dateTimeOffset:
-                    Value = dateTimeOffset;
-                    break;
-                case null:
-                    Value = value;
-                    break;
-                default:
-                    throw new ArgumentException(nameof(value), "only bool/int/float/double/long/");
-            }
+                int i => i,
+                float f => f,
+                double d => d,
+                long l => l,
+                bool b => b,
+                string s => s,
+                DateTime dateTime => dateTime,
+                DateTimeOffset dateTimeOffset => dateTimeOffset,
+                null => value,
+                _ => throw new ArgumentException(nameof(value), "only bool/int/float/double/long/string/Datetime/DateTimeOffset are supported"),
+            };
         }
 
         private string _alias;

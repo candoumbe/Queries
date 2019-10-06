@@ -101,8 +101,17 @@ namespace Queries.Core.Builders
                                 ((WhereClause)instance).Constraint = new VariableValues(variables.First(), variables.Skip(1).ToArray());
                             }
                             break;
-                        default:
-                            throw new ArgumentOutOfRangeException($"unsu column type");
+                        case NumericColumn nc when nc.Value != null:
+                            {
+                                Variable variable = Variables.SingleOrDefault(x => x.Type == Numeric && nc.Value == x.Value);
+                                if (variable is null)
+                                {
+                                    variable = new Variable($"p{Variables.Count()}", Numeric, nc.Value);
+                                    Variables = Variables.Concat(new[] { variable });
+                                }
+                                ((WhereClause)instance).Constraint = variable;
+                            }
+                            break;
                     }
 
                     break;

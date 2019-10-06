@@ -1,23 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using FluentAssertions;
 using Queries.Core;
 using Queries.Core.Builders;
 using Queries.Core.Extensions;
 using Queries.Core.Parts.Clauses;
-using Queries.Core.Parts.Sorting;
-using Xunit;
-using static Queries.Core.Builders.Fluent.QueryBuilder;
-using static Queries.Core.Parts.Clauses.ClauseOperator;
-using static Queries.Core.Parts.Columns.SelectColumn;
-using FluentAssertions;
 using Queries.Core.Parts.Columns;
-using Queries.Core.Renderers;
+using Queries.Core.Parts.Sorting;
+using System;
+using System.Collections.Generic;
+using System.Linq.Expressions;
+using Xunit;
 using Xunit.Abstractions;
 using Xunit.Categories;
-using Queries.Renderers.Postgres.Builders;
+using static Queries.Core.Builders.Fluent.QueryBuilder;
+using static Queries.Core.Parts.Clauses.ClauseOperator;
+using static Queries.Core.Parts.Clauses.ClauseLogic;
+using static Queries.Core.Parts.Columns.SelectColumn;
 using static Queries.Renderers.Postgres.Builders.Fluent.ReturnBuilder;
-using System.Linq.Expressions;
-using System.Linq;
 
 namespace Queries.Renderers.Postgres.Tests
 {
@@ -525,6 +523,20 @@ namespace Queries.Renderers.Postgres.Tests
                         ")"
                             && query.Variables.Once()
                             && query.Variables.Once(v => v.Name == "p0" && "B%".Equals(v.Value))
+                    ),
+                    "The select statement as two variables with SAME value"
+                };
+
+                yield return new object[]
+                {
+                    Select("id", "file_id")
+                        .From("documents")
+                        .Where(new WhereClause("userAccount".Field(), Like, "anAccount%".Literal())),
+                    new PostgresRendererSettings{ PrettyPrint = false, SkipVariableDeclaration = true },
+                    (Expression<Func<CompiledQuery, bool>>)(
+                        query => query.Statement == @"SELECT ""id"", ""file_id"" FROM ""documents"" WHERE (""userAccount"" LIKE @p0)"
+                            && query.Variables.Exactly(1)
+                            && query.Variables.Once(v => v.Name == "p0" && "anAccount%".Equals(v.Value) && v.Type == VariableType.String)
                     ),
                     "The select statement as two variables with SAME value"
                 };
