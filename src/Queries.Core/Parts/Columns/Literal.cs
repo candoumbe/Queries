@@ -15,7 +15,7 @@ namespace Queries.Core.Parts.Columns
         /// Builds a <see cref="Literal"/> instance.
         /// </summary>
         /// <param name="value"></param>
-        public Literal(object value = null)
+        internal Literal(object value = null)
         {
             Value = value switch
             {
@@ -53,5 +53,6 @@ namespace Queries.Core.Parts.Columns
 
         public override IColumn Clone() => new Literal(Value);
 
+        public override string ToString() => this.Jsonify();
     }
 }

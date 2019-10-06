@@ -35,7 +35,6 @@ namespace Queries.Core.Renderers
 
         public override string ToString() => this.Jsonify();
 
-
         protected QueryRendererSettings(PaginationKind paginationKind) => PaginationKind = paginationKind;
     }
 }

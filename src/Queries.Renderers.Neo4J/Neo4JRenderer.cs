@@ -68,13 +68,9 @@ namespace Queries.Renderers.Neo4J
                         else
                         {
                             Literal lc = (Literal) column;
-                            if ("*".Equals(lc.Value?.ToString()))
+                            if ("*".Equals(lc.Value?.ToString()) && string.IsNullOrWhiteSpace(table.Alias))
                             {
-                                if (string.IsNullOrWhiteSpace(table.Alias))
-                                {
-                                    table.As(table.Name.Substring(0, 1).ToLower());
-                                }
-                                lc = new Literal(table.Alias).As(lc.Alias);
+                                table.As(table.Name.Substring(0, 1).ToLower());
                             }
                         }
                     }

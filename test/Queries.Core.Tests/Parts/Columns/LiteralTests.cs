@@ -19,67 +19,6 @@ namespace Queries.Core.Tests.Parts.Columns
 
         public void Dispose() => _outputHelper = null;
 
-        [Fact]
-        public void CtorWithNullArgumentDoesNotThrowArgumentNullException()
-        {
-            // Arrange
-            Action action = () => new Literal(null);
-
-            // Assert
-            action.Should().NotThrow<ArgumentException>();
-        }
-
-        [Fact]
-        public void CtorWithNoArgumentDoesNotThrowArgumentNullException()
-        {
-            // Arrange
-            Action action = () => new Literal();
-
-            // Assert
-            action.Should().NotThrow<ArgumentException>();
-        }
-
-        [Fact]
-        public void CtorThrowsArgumentExceptionWhenArgumentIsNotAPrimitiveType()
-        {
-            // Arrange
-            Action action = () => new Literal(new { prop1 = "prop" });
-
-            // Assert
-            ArgumentException exception = action.Should().Throw<ArgumentException>("only bool/int/double/float/long/string are supported").Which;
-
-            exception
-                .ParamName.Should()
-                .NotBeNullOrWhiteSpace();
-
-            exception.Message.Should().NotBeNullOrWhiteSpace();
-        }
-
-        public static IEnumerable<object[]> CtorWithPrimitives
-        {
-            get
-            {
-                yield return new object[] { 1, "int value is supported" };
-                yield return new object[] { true, "boolean value is supported" };
-                yield return new object[] { false, "boolean value is supported" };
-                yield return new object[] { 91f, $"{91f.GetType()} is supported" };
-                yield return new object[] { 91L, $"{91L.GetType()} is supported" };
-                yield return new object[] { new DateTime(1990, 2, 26), $"{nameof(DateTime)} is supported" };
-                yield return new object[] { new DateTimeOffset(1990, 2, 26, 14, 30, 0, TimeSpan.Zero), $"{nameof(DateTimeOffset)} is supported" };
-            }
-        }
-
-        [Theory]
-        [MemberData(nameof(CtorWithPrimitives))]
-        public void CtorSetInternalValueProperly(object value, string because)
-        {
-            // Act
-            Literal literalColumn = new Literal(value);
-
-            // Assert
-            literalColumn.Value.Should().Be(value, because);
-        }
-
         [Theory]
         [InlineData(null)]
         [InlineData("")]
@@ -87,7 +26,7 @@ namespace Queries.Core.Tests.Parts.Columns
         public void SettingAlias(string newAlias)
         {
             // Arrange
-            Literal column = new Literal("column");
+            Literal column = "column".Literal().As(newAlias);
 
             // Act
             column = column.As(newAlias);
@@ -100,11 +39,11 @@ namespace Queries.Core.Tests.Parts.Columns
         {
             get
             {
-                yield return new object[] { new Literal("firstname"), null, false, "object is null" };
-                yield return new object[] { new Literal("firstname"), new Literal("firstname"), true, $"object is a {nameof(Literal)} with exactly the same {nameof(Literal.Value)} and {nameof(Literal.Alias)}" };
+                yield return new object[] { "firstname".Literal(), null, false, "object is null" };
+                yield return new object[] { "firstname".Literal(), "firstname".Literal(), true, $"object is a {nameof(Literal)} with exactly the same {nameof(Literal.Value)} and {nameof(Literal.Alias)}" };
                 
                 {
-                    Literal column = new Literal("firstname");
+                    Literal column =  "firstname".Literal();
                     yield return new object[] { column, column, true, "Equals with same instance" };
                 }
             }
@@ -142,7 +81,7 @@ namespace Queries.Core.Tests.Parts.Columns
 
             // Assert
             copie.Should()
-                .BeOfType<Literal>().Which.Should()
+                .BeAssignableTo<Literal>().Which.Should()
                 .NotBeSameAs(original).And
                 .Be(original);
         }

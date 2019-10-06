@@ -3,12 +3,12 @@ using Queries.Core.Parts.Clauses;
 using Queries.Core.Parts.Columns;
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using Xunit;
 using Xunit.Abstractions;
-using static Queries.Core.Parts.Clauses.ClauseOperator;
-using static Queries.Core.Builders.Fluent.QueryBuilder;
-using System.Linq.Expressions;
 using Xunit.Categories;
+using static Queries.Core.Builders.Fluent.QueryBuilder;
+using static Queries.Core.Parts.Clauses.ClauseOperator;
 
 namespace Queries.Core.Tests.Parts.Clauses
 {
@@ -53,7 +53,7 @@ namespace Queries.Core.Tests.Parts.Clauses
                 {
                     In,
                     null,
-                    "The column constraint cannot be null when using IN  oper"
+                    $"The column constraint cannot be null when using '{nameof(In)}' operator"
                 };
             }
         }
@@ -78,7 +78,7 @@ namespace Queries.Core.Tests.Parts.Clauses
             {
                 yield return new object[]
                 {
-                    new Literal(1), EqualTo, 1,
+                    1.Literal(), EqualTo, 1,
                     (Expression<Func<WhereClause, bool>>)(clause =>
                         1.Literal().Equals(clause.Column)
                         && EqualTo == clause.Operator
@@ -154,11 +154,25 @@ namespace Queries.Core.Tests.Parts.Clauses
         {
             get
             {
-                yield return new object[] { new WhereClause("firstname".Field(), EqualTo, "Bruce"), null, false, "comparing with a null instance" };
+                yield return new object[]
+                {
+                    new WhereClause("firstname".Field(), EqualTo, "Bruce"),
+                    null,
+                    false,
+                    "comparing with a null instance"
+                };
                 yield return new object[] { new WhereClause("firstname".Field(), EqualTo, "Bruce"), new WhereClause("firstname".Field(), EqualTo, "Bruce"), true, "comparing two instances with same columns and constrains" };
                 yield return new object[] { new WhereClause("firstname".Field(), EqualTo, "Bruce"), new WhereClause("Firstname".Field(), EqualTo, "Bruce"), false, "comparing two instances with same columns but different casing" };
                 yield return new object[] { new WhereClause("firstname".Field(), EqualTo, "Bruce"), Select(1.Literal()), false, "comparing two different types of query" };
                 yield return new object[] { new WhereClause("firstname".Field(), EqualTo, new Variable("p0", VariableType.String, "Bruce")), new WhereClause("firstname".Field(), EqualTo, new Variable("p0", VariableType.String, "Bruce")), true, "comparing two different types with same data" };
+                yield return new object[] { new WhereClause("firstname".Field(), EqualTo, new Variable("p0", VariableType.String, "Bruce")), new WhereClause("firstname".Field(), EqualTo, new Variable("p0", VariableType.String, "Bruce")), true, "comparing two different types with same data" };
+                yield return new object[]
+                {
+                    new WhereClause("firstname".Field(), EqualTo, "Bruce"),
+                    "firstname".Field().EqualTo("Bruce"),
+                    true,
+                    "comparing a to a fluent instance with same columns and constrains"
+                };
             }
         }
 

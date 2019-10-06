@@ -531,12 +531,12 @@ namespace Queries.Renderers.Postgres.Tests
                 {
                     Select("id", "file_id")
                         .From("documents")
-                        .Where(new WhereClause("userAccount".Field(), Like, "anAccount%".Literal())),
+                        .Where(new WhereClause("userAccount".Field(), Like, "vp%")),
                     new PostgresRendererSettings{ PrettyPrint = false, SkipVariableDeclaration = true },
                     (Expression<Func<CompiledQuery, bool>>)(
                         query => query.Statement == @"SELECT ""id"", ""file_id"" FROM ""documents"" WHERE (""userAccount"" LIKE @p0)"
                             && query.Variables.Exactly(1)
-                            && query.Variables.Once(v => v.Name == "p0" && "anAccount%".Equals(v.Value) && v.Type == VariableType.String)
+                            && query.Variables.Once(v => v.Name == "p0" && "vp%".Equals(v.Value) && v.Type == VariableType.String)
                     ),
                     "The select statement as two variables with SAME value"
                 };
@@ -548,6 +548,7 @@ namespace Queries.Renderers.Postgres.Tests
         public void Compile(SelectQuery query, PostgresRendererSettings settings, Expression<Func<CompiledQuery, bool>> expectation, string reason)
         {
             // Arrange
+            _outputHelper.WriteLine($"{nameof(query)} : '{ query }'");
             PostgresqlRenderer renderer = new PostgresqlRenderer(settings);
 
             // Assert

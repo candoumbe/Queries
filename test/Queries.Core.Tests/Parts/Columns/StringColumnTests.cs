@@ -62,15 +62,15 @@ namespace Queries.Core.Tests.Parts.Columns
         public void CloneTest()
         {
             // Arrange
-            StringColumn original = "a".Literal();
+            StringColumn original = new StringColumn("a");
             _outputHelper.WriteLine($"{nameof(original)} : {original}");
 
             // Act
-            IColumn copie = original.Clone();
+            IColumn clone = original.Clone();
 
             // Assert
-            copie.Should()
-                .BeOfType<Literal>().Which.Should()
+            clone.Should()
+                .BeOfType<StringColumn>().Which.Should()
                 .NotBeSameAs(original).And
                 .Be(original);
         }

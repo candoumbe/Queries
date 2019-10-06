@@ -35,7 +35,10 @@ namespace Queries.Core.Builders
                         break;
                 }
             }
-            Visit(instance.WhereCriteria);
+            if (instance.WhereCriteria != null)
+            {
+                Visit(instance.WhereCriteria);
+            }
             foreach (SelectQuery unionQuery in instance.Unions)
             {
                 Visit(unionQuery);
@@ -46,7 +49,7 @@ namespace Queries.Core.Builders
         {
             switch (instance)
             {
-                case WhereClause wc when wc.Constraint != null:
+                case WhereClause wc:
                     switch (wc.Constraint)
                     {
                         case StringColumn sc when sc.Value != null:
@@ -121,6 +124,9 @@ namespace Queries.Core.Builders
                         Visit(item);
                     }
                     break;
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(instance), $"Unexpected {instance.GetType()} clause type");
             }
         }
 

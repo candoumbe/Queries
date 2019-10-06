@@ -8,6 +8,8 @@ namespace Queries.Core.Parts.Columns
             : base(value)
         {}
 
+        public override IColumn Clone() => new StringColumn((string)Value).As(Alias);
+
         public bool Equals(StringColumn other) => (Value, Alias).Equals((other?.Value, other?.Alias));
 
         public override bool Equals(object obj) => Equals(obj as StringColumn);
@@ -19,5 +21,7 @@ namespace Queries.Core.Parts.Columns
 #endif
 
         public override string ToString() => this.Jsonify();
+
+        public static implicit operator StringColumn(string input) => new StringColumn(input);
     }
 }
