@@ -350,6 +350,23 @@ namespace Queries.Renderers.SqlServer.Tests
                     "FROM [members]"
                 };
 
+                yield return new object[]
+                {
+                    Select(
+                        "Firstname".Field(),
+                        "Lastname".Field(),
+                        Cases(
+                            When("Age".Field().GreaterThan(18), then : true),
+                            When("Age".Field().IsNull(), then : false)
+                        ).As("IsMajor"))
+                        .From("members"),
+                    new QueryRendererSettings{ PrettyPrint = false },
+
+                    "DECLARE @p0 AS NUMERIC = 18;" +
+                    "SELECT [Firstname], [Lastname], (SELECT CASE WHEN ([Age] > @p0) THEN 1 WHEN ([Age] IS NULL) THEN 0) AS [IsMajor] " +
+                    "FROM [members]"
+                };
+
 
                 yield return new object[]
                 {
@@ -358,7 +375,7 @@ namespace Queries.Renderers.SqlServer.Tests
                         .Else(0)
                     )
                     .From("table1".Table("t1")).InnerJoin("table2".Table("t2"), new WhereClause("t1.Id".Field(), EqualTo, "t2.Id")),
-                    new SqlServerRendererSettings{ PrettyPrint = false },
+                    new QueryRendererSettings{ PrettyPrint = false },
 
                     "DECLARE @p0 AS NUMERIC = 10;" +
                     "DECLARE @p1 AS NUMERIC = 1;" +

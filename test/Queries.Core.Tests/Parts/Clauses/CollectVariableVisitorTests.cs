@@ -12,7 +12,8 @@ using Xunit.Abstractions;
 using Xunit.Categories;
 using static Queries.Core.Builders.Fluent.QueryBuilder;
 using static Queries.Core.Parts.Clauses.ClauseLogic;
-using static Queries.Core.Parts.Clauses.ClauseOperator;
+using Queries.Core.Parts.Columns;
+using static Queries.Core.Parts.Clauses.VariableType;
 
 namespace Queries.Core.Tests.Parts.Clauses
 {
@@ -186,6 +187,34 @@ namespace Queries.Core.Tests.Parts.Clauses
                                 Select("Fullname").From("Superhero").Where("Nickname".Field(), Like, new Variable("p0", VariableType.String, "B%")))
                             ))
                     )
+                };
+
+                yield return new object[]
+                {
+                    Select(
+                        "Firstname".Field(),
+                        "Lastname".Field(),
+                        Cases(
+                            When("Age".Field().GreaterThan(18), then : true),
+                            When("Age".Field().IsNull(), then : false)
+                        ).As("IsMajor"))
+                        .From("members"),
+                   ((Expression<Func<CollectVariableVisitor, bool>>)(visitor =>
+                        visitor.Variables.Count() == 1
+                        && visitor.Variables.Any(x => x.Name == "p0" && 18.Equals(x.Value) && x.Type == Numeric)
+                    )),
+                    ((Expression<Func<SelectQuery, bool>>)(query =>
+                        query.Equals(
+                           Select(
+                            "Firstname".Field(),
+                            "Lastname".Field(),
+                             Cases(
+                                When("Age".Field().GreaterThan(new Variable("p0", Numeric, 18)), true),
+                                When("Age".Field().IsNull(), false)
+                            ).As("IsMajor"))
+                            .From("members")
+                        )
+                    ))
                 };
 
                 yield return new object[]

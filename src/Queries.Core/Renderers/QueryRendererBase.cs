@@ -1,12 +1,3 @@
-using Queries.Core.Attributes;
-using Queries.Core.Builders;
-using Queries.Core.Builders.Fluent;
-using Queries.Core.Parts;
-using Queries.Core.Parts.Clauses;
-using Queries.Core.Parts.Columns;
-using Queries.Core.Parts.Functions;
-using Queries.Core.Parts.Joins;
-using Queries.Core.Parts.Sorting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,8 +6,6 @@ using System.Text;
 
 namespace Queries.Core.Renderers
 {
-    using static PaginationKind;
-
     /// <summary>
     /// Base class for query renderers
     /// </summary>
@@ -484,7 +473,8 @@ namespace Queries.Core.Renderers
                     UniqueIdentifierValue _ => RenderUUIDValue(),
                     Variable variable => RenderVariable(variable, renderAlias),
                     SelectQuery select => RenderInlineSelect(select, renderAlias),
-                    _ => throw new ArgumentOutOfRangeException($"Unhandled {column?.GetType()} rendering as column"),
+                    CasesColumn casesColumn => RenderCasesColumn(casesColumn, renderAlias),
+                    _ => throw new ArgumentOutOfRangeException($"Unhandled {column?.GetType()} rendering as column")
                 };
             }
 
@@ -508,10 +498,8 @@ namespace Queries.Core.Renderers
             }
 
 
-
             return $"SELECT CASE {sb}";
         }
-
 
         protected virtual string RenderVariable(Variable variable, bool renderAlias) => throw new NotSupportedException();
 
@@ -657,9 +645,9 @@ namespace Queries.Core.Renderers
                 DateTimeColumn dc => renderAlias && !string.IsNullOrWhiteSpace(dc.Alias)
                     ? $"'{EscapeString((dc.Value as DateTime?)?.ToString(Settings.DateFormatString))}' AS {EscapeName(dc.Alias)}"
                     : $"'{EscapeString((dc.Value as DateTime?)?.ToString(Settings.DateFormatString))}'",
-                _ => renderAlias && !string.IsNullOrWhiteSpace(lc.Alias)
-                    ? $"{value} AS {EscapeName(lc.Alias)}"
-                    : value.ToString(),
+                _ => columnString = renderAlias && !string.IsNullOrWhiteSpace(lc.Alias)
+                            ? $"{value} AS {EscapeName(lc.Alias)}"
+                            : value.ToString(),
             };
         }
 

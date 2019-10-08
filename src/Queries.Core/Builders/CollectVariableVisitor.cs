@@ -135,6 +135,8 @@ namespace Queries.Core.Builders
                                 ((WhereClause)instance).Constraint = variable;
                             }
                             break;
+                        default:
+                            throw new ArgumentOutOfRangeException($"unknown <{wc.Constraint?.GetType()}> column type");
                     }
 
                     break;
