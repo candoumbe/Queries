@@ -10,19 +10,17 @@ namespace Queries.Core.Parts.Columns
     /// </summary>
     public class CasesColumn : ColumnBase, IAliasable<CasesColumn>, IEquatable<CasesColumn>
     {
-
         /// <summary>
         /// `WHEN` expressions
         /// </summary>
         public IEnumerable<WhenExpression> Cases { get; }
 
-
         public string Alias { get; private set; }
 
-        public Literal Default { get; private set; }
+        public ColumnBase Default { get; set; }
 
         /// <summary>
-        /// Builds a new <see cref=""/>
+        /// Builds a new <see cref="CasesColumn"/> instances
         /// </summary>
         /// <param name="cases"></param>
         /// <exception cref="ArgumentNullException"><paramref name="cases"/> is <c>null</c></exception>
@@ -32,6 +30,14 @@ namespace Queries.Core.Parts.Columns
         }
 
         public override IColumn Clone() => new CasesColumn(Cases);
+
+        public override bool Equals(ColumnBase other)
+        {
+            bool equals = false;
+
+            return equals;
+        }
+
         public CasesColumn As(string alias)
         {
             Alias = alias;
@@ -61,7 +67,7 @@ namespace Queries.Core.Parts.Columns
         /// </summary>
         /// <param name="column"></param>
         /// <returns></returns>
-        public CasesColumn Else(Literal column)
+        public CasesColumn Else(ColumnBase column)
         {
             Default = column;
 

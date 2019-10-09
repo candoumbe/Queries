@@ -1,7 +1,19 @@
-﻿using System;
+﻿using FluentAssertions;
+using FluentAssertions.Extensions;
+using NaughtyStrings;
+using Queries.Core;
+using Queries.Core.Builders;
+using Queries.Core.Parts.Clauses;
+using Queries.Core.Parts.Columns;
+using Queries.Core.Parts.Sorting;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
+using Xunit;
+using Xunit.Abstractions;
+using static Queries.Core.Builders.Fluent.QueryBuilder;
+using static Queries.Core.Parts.Clauses.ClauseOperator;
+using static Queries.Core.Parts.Columns.SelectColumn;
 
 namespace Queries.Renderers.SqlServer.Tests
 {
@@ -346,7 +358,9 @@ namespace Queries.Renderers.SqlServer.Tests
                     new SqlServerRendererSettings(){ PrettyPrint = false },
 
                     "DECLARE @p0 AS NUMERIC = 18;" +
-                    "SELECT [Firstname], [Lastname], (SELECT CASE WHEN ([Age] > @p0) THEN 1 WHEN ([Age] IS NULL) THEN 0) AS [IsMajor] " +
+                    "DECLARE @p1 AS BIT = 1;" +
+                    "DECLARE @p2 AS BIT = 0;" +
+                    "SELECT [Firstname], [Lastname], CASE WHEN ([Age] > @p0) THEN @p1 WHEN ([Age] IS NULL) THEN @p2 AS [IsMajor] " +
                     "FROM [members]"
                 };
 
@@ -360,13 +374,13 @@ namespace Queries.Renderers.SqlServer.Tests
                             When("Age".Field().IsNull(), then : false)
                         ).As("IsMajor"))
                         .From("members"),
-                    new QueryRendererSettings{ PrettyPrint = false },
-
+                    new SqlServerRendererSettings { PrettyPrint = false },
                     "DECLARE @p0 AS NUMERIC = 18;" +
-                    "SELECT [Firstname], [Lastname], (SELECT CASE WHEN ([Age] > @p0) THEN 1 WHEN ([Age] IS NULL) THEN 0) AS [IsMajor] " +
+                    "DECLARE @p1 AS BIT = 1;" +
+                    "DECLARE @p2 AS BIT = 0;" +
+                    "SELECT [Firstname], [Lastname], CASE WHEN ([Age] > @p0) THEN @p1 WHEN ([Age] IS NULL) THEN @p2 AS [IsMajor] " +
                     "FROM [members]"
                 };
-
 
                 yield return new object[]
                 {
@@ -374,16 +388,16 @@ namespace Queries.Renderers.SqlServer.Tests
                         When("left".Field().Substract("right".Field()).LessThan(10), then : 1))
                         .Else(0)
                     )
-                    .From("table1".Table("t1")).InnerJoin("table2".Table("t2"), new WhereClause("t1.Id".Field(), EqualTo, "t2.Id")),
-                    new QueryRendererSettings{ PrettyPrint = false },
-
+                    .From("table1".Table("t1"))
+                    .InnerJoin("table2".Table("t2"), "t1.Id".Field().EqualTo("t2.Id".Field())),
+                    new SqlServerRendererSettings { PrettyPrint = false },
                     "DECLARE @p0 AS NUMERIC = 10;" +
                     "DECLARE @p1 AS NUMERIC = 1;" +
-                    "SELECT CASE WHEN (([left] - [right]) < @p0) THEN 1 ELSE 0) " +
-                    "FROM [table1] AS [t1] INNER JOIN [table2] AS [t2] " +
-                    "ON [t1].[Id] = [t2].[Id]"
+                    "DECLARE @p2 AS NUMERIC = 0;" +
+                    "SELECT CASE WHEN ([left] - [right] < @p0) THEN @p1 ELSE @p2 " +
+                    "FROM [table1] [t1] INNER JOIN [table2] [t2] " +
+                    "ON ([t1].[Id] = [t2].[Id])"
                 };
-
             }
         }
 

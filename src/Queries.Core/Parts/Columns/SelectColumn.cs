@@ -49,8 +49,8 @@ namespace Queries.Core.Parts.Columns
 
         public override int GetHashCode() => (SelectQuery, Alias).GetHashCode();
 
-        public bool Equals(SelectColumn other) => other != null && (SelectQuery, Alias).Equals((other.SelectQuery, other.Alias));
+        public bool Equals(SelectColumn other) => (SelectQuery, Alias).Equals((other?.SelectQuery, other?.Alias));
 
-        public override string ToString() => new { SelectQuery, Alias }.Stringify();
+        public override string ToString() => new { SelectQuery, Alias }.Jsonify();
     }
 }

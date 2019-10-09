@@ -15,15 +15,15 @@ namespace Queries.Core.Tests.Parts.Clauses
 
         public WhenExpressionTests(ITestOutputHelper outputHelper) => _outputHelper = outputHelper;
 
-
         [Fact]
         public void GivenNullParameter_Ctor_ThrowsArgumentNullException()
         {
             // Arrange
-            Action action = () => new WhenExpression(criterion : null, then : 18);
+            Action action = () => new WhenExpression(criterion: null, then: 18);
 
             // Act & Assert
-            action.ShouldThrow<ArgumentNullException>().Which
+            action.Should()
+                .ThrowExactly<ArgumentNullException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }
@@ -32,13 +32,13 @@ namespace Queries.Core.Tests.Parts.Clauses
         {
             get
             {
-                yield return new object[] { When("Age".Field().GreaterThan(18), then : true), null, false, "object is null" };
+                yield return new object[] { When("Age".Field().GreaterThan(18), then: true), null, false, "object is null" };
                 yield return new object[] {
                     When("Age".Field().GreaterThan(18), then : true),
                     When("Age".Field().GreaterThan(18), then : true),
                     true,
                     $"object is a {nameof(WhenExpression)} with exactly the same {nameof(WhenExpression.Criterion)} and {nameof(WhenExpression.ThenValue)}" };
-                yield return new object[] { 
+                yield return new object[] {
                     When("Age".Field().GreaterThan(18), then : true),
                     When("Age".Field().GreaterThan(18), then : false),
                     false,
@@ -56,7 +56,6 @@ namespace Queries.Core.Tests.Parts.Clauses
                     WhenExpression whenExpression = When("Age".Field().GreaterThan(18), then: true);
                     yield return new object[] { whenExpression, whenExpression, true, "Equals with same instance" };
                 }
-
             }
         }
 

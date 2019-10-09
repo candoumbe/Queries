@@ -1,7 +1,6 @@
 ﻿using FluentAssertions;
 using Queries.Core;
 using Queries.Core.Builders;
-using Queries.Core.Extensions;
 using Queries.Core.Parts.Clauses;
 using Queries.Core.Parts.Columns;
 using Queries.Core.Parts.Sorting;
@@ -13,7 +12,6 @@ using Xunit.Abstractions;
 using Xunit.Categories;
 using static Queries.Core.Builders.Fluent.QueryBuilder;
 using static Queries.Core.Parts.Clauses.ClauseOperator;
-using static Queries.Core.Parts.Clauses.ClauseLogic;
 using static Queries.Core.Parts.Columns.SelectColumn;
 using static Queries.Renderers.Postgres.Builders.Fluent.ReturnBuilder;
 

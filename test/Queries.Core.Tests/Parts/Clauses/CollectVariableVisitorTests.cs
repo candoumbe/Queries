@@ -12,7 +12,7 @@ using Xunit.Abstractions;
 using Xunit.Categories;
 using static Queries.Core.Builders.Fluent.QueryBuilder;
 using static Queries.Core.Parts.Clauses.ClauseLogic;
-using Queries.Core.Parts.Columns;
+using static Queries.Core.Parts.Clauses.ClauseOperator;
 using static Queries.Core.Parts.Clauses.VariableType;
 
 namespace Queries.Core.Tests.Parts.Clauses
@@ -138,7 +138,7 @@ namespace Queries.Core.Tests.Parts.Clauses
                             }),
                     (Expression<Func<CollectVariableVisitor, bool>>)(visitor =>
                         visitor.Variables.Exactly(3)
-                        && visitor.Variables.Once(x => x.Name == "p0" && 1.January(1990).Equals(x.Value) && x.Type == VariableType.Date)
+                        && visitor.Variables.Once(x => x.Name == "p0" && 1.January(1990).Equals(x.Value) && x.Type == Date)
                         && visitor.Variables.Once(x => x.Name == "p1" && "Bat%".Equals(x.Value) && x.Type == VariableType.String)
                         && visitor.Variables.Once(x => x.Name == "p2" && true.Equals(x.Value) && x.Type == VariableType.Boolean)
                     ),
@@ -199,22 +199,24 @@ namespace Queries.Core.Tests.Parts.Clauses
                             When("Age".Field().IsNull(), then : false)
                         ).As("IsMajor"))
                         .From("members"),
-                   ((Expression<Func<CollectVariableVisitor, bool>>)(visitor =>
-                        visitor.Variables.Count() == 1
-                        && visitor.Variables.Any(x => x.Name == "p0" && 18.Equals(x.Value) && x.Type == Numeric)
-                    )),
-                    ((Expression<Func<SelectQuery, bool>>)(query =>
+                   (Expression<Func<CollectVariableVisitor, bool>>)(visitor =>
+                       visitor.Variables.Exactly(3)
+                       && visitor.Variables.Any(x => x.Name == "p0" && 18.Equals(x.Value) && x.Type == Numeric)
+                       && visitor.Variables.Any(x => x.Name == "p1" && true.Equals(x.Value) && x.Type == VariableType.Boolean)
+                       && visitor.Variables.Any(x => x.Name == "p2" && false.Equals(x.Value) && x.Type == VariableType.Boolean)
+                   ),
+                    (Expression<Func<SelectQuery, bool>>)(query =>
                         query.Equals(
-                           Select(
-                            "Firstname".Field(),
-                            "Lastname".Field(),
-                             Cases(
-                                When("Age".Field().GreaterThan(new Variable("p0", Numeric, 18)), true),
-                                When("Age".Field().IsNull(), false)
-                            ).As("IsMajor"))
-                            .From("members")
+                            Select(
+                                    "Firstname".Field(),
+                                    "Lastname".Field(),
+                                    Cases(
+                                        When("Age".Field().GreaterThan(new Variable("p0", Numeric, 18)), new Variable("p1", VariableType.Boolean, true)),
+                                        When("Age".Field().IsNull(), new Variable("p2", VariableType.Boolean, false))
+                                    ).As("IsMajor"))
+                                .From("members")
                         )
-                    ))
+                    )
                 };
 
                 yield return new object[]
@@ -227,22 +229,24 @@ namespace Queries.Core.Tests.Parts.Clauses
                             When("Age".Field().IsNull(), then : false)
                         ).As("IsMajor"))
                         .From("members"),
-                   ((Expression<Func<CollectVariableVisitor, bool>>)(visitor =>
-                        visitor.Variables.Count() == 1
-                        && visitor.Variables.Any(x => x.Name == "p0" && 18.Equals(x.Value) && x.Type == Numeric)
-                    )),
-                    ((Expression<Func<SelectQuery, bool>>)(query =>
+                   (Expression<Func<CollectVariableVisitor, bool>>)(visitor =>
+                       visitor.Variables.Exactly(3)
+                       && visitor.Variables.Once(x => x.Name == "p0" && 18.Equals(x.Value) && x.Type == Numeric)
+                       && visitor.Variables.Once(x => x.Name == "p1" && true.Equals(x.Value) && x.Type == VariableType.Boolean)
+                       && visitor.Variables.Once(x => x.Name == "p2" && false.Equals(x.Value) && x.Type == VariableType.Boolean)
+                   ),
+                    (Expression<Func<SelectQuery, bool>>)(query =>
                         query.Equals(
-                           Select(
-                            "Firstname".Field(),
-                            "Lastname".Field(),
-                             Cases(
-                                When("Age".Field().GreaterThan(new Variable("p0", Numeric, 18)), true),
-                                When("Age".Field().IsNull(), false)
-                            ).As("IsMajor"))
-                            .From("members")
+                            Select(
+                                    "Firstname".Field(),
+                                    "Lastname".Field(),
+                                    Cases(
+                                        When("Age".Field().GreaterThan(new Variable("p0", Numeric, 18)), new Variable("p1", VariableType.Boolean, true)),
+                                        When("Age".Field().IsNull(), new Variable("p2", VariableType.Boolean, false))
+                                    ).As("IsMajor"))
+                                .From("members")
                         )
-                    ))
+                    )
                 };
             }
         }

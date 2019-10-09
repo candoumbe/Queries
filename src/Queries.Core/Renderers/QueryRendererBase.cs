@@ -3,6 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Queries.Core.Attributes;
+using Queries.Core.Builders;
+using Queries.Core.Builders.Fluent;
+using Queries.Core.Parts;
+using Queries.Core.Parts.Clauses;
+using Queries.Core.Parts.Columns;
+using Queries.Core.Parts.Functions;
+using Queries.Core.Parts.Functions.Math;
+using Queries.Core.Parts.Joins;
+using Queries.Core.Parts.Sorting;
+using static Queries.Core.Renderers.PaginationKind;
 
 namespace Queries.Core.Renderers
 {
@@ -68,7 +79,7 @@ namespace Queries.Core.Renderers
                 InsertIntoQuery insertIntoQuery => Render(insertIntoQuery),
                 BatchQuery batchQuery => Render(batchQuery),
                 NativeQuery nativeQuery => nativeQuery.Statement,
-                _ => throw new ArgumentOutOfRangeException("Unsupported query type"),
+                _ => throw new ArgumentOutOfRangeException(nameof(query), "Unexpected query type"),
             };
 
         protected virtual string Render(InsertIntoQuery query)
@@ -83,7 +94,7 @@ namespace Queries.Core.Renderers
             if (query.InsertedValue is SelectQuery selectQuery)
             {
                 queryString = $"INSERT INTO {RenderTablename(query.TableName.Table(), renderAlias: false)} {(Settings.PrettyPrint ? Environment.NewLine : string.Empty)}" +
-                    $"{Render(selectQuery)}";
+                    Render(selectQuery);
             }
             else if (query.InsertedValue is IEnumerable<InsertedValue> values)
             {
@@ -309,9 +320,7 @@ namespace Queries.Core.Renderers
                 if (column is CasesColumn cc)
                 {
                     sbFields
-                        .Append("(")
-                        .Append(RenderCasesColumn(cc, renderAlias: false))
-                        .Append(")");
+                        .Append(RenderCasesColumn(cc, renderAlias: false));
 
                     if (!string.IsNullOrWhiteSpace(cc.Alias))
                     {
@@ -497,13 +506,17 @@ namespace Queries.Core.Renderers
                     .Append(RenderColumn(when.ThenValue, false));
             }
 
+            if (caseColumn.Default != null)
+            {
+                sb.Append(" ELSE ").Append(RenderColumn(caseColumn.Default, false));
+            }
 
-            return $"SELECT CASE {sb}";
+            return $"CASE {sb}";
         }
 
         protected virtual string RenderVariable(Variable variable, bool renderAlias) => throw new NotSupportedException();
 
-        protected virtual string RenderUUIDValue() => $"NEWID()";
+        protected virtual string RenderUUIDValue() => "NEWID()";
 
         protected virtual string RenderFunction(IColumn column, bool renderAlias)
             => column switch
@@ -514,7 +527,8 @@ namespace Queries.Core.Renderers
                 LengthFunction lengthColumn => RenderLengthColumn(lengthColumn, renderAlias),
                 SubstringFunction substringColumn => RenderSubstringColumn(substringColumn, renderAlias),
                 UpperFunction upperColumn => RenderUpperColumn(upperColumn, renderAlias),
-                _ => throw new ArgumentOutOfRangeException("Unknown function type"),
+                SubstractFunction substractColumn => RenderSubstractColumn(substractColumn, renderAlias),
+                _ => throw new ArgumentOutOfRangeException(nameof(column), "Unexpected function type"),
             };
 
         /// <summary>
@@ -588,6 +602,9 @@ namespace Queries.Core.Renderers
                 : sbNullColumn;
         }
 
+        protected virtual string RenderSubstractColumn(SubstractFunction substractColumn, bool renderAlias) 
+            => $"{RenderColumn(substractColumn.Left, false)} - {RenderColumn(substractColumn.Right, false)}";
+
         /// <summary>
         /// Gets the string that can be used to start escaping a reserved word
         /// </summary>
@@ -637,6 +654,7 @@ namespace Queries.Core.Renderers
         {
             object value = lc.Value;
             string stringValue = value.ToString();
+
             return lc switch
             {
                 StringColumn sc => renderAlias && !string.IsNullOrWhiteSpace(sc.Alias)
@@ -645,9 +663,12 @@ namespace Queries.Core.Renderers
                 DateTimeColumn dc => renderAlias && !string.IsNullOrWhiteSpace(dc.Alias)
                     ? $"'{EscapeString((dc.Value as DateTime?)?.ToString(Settings.DateFormatString))}' AS {EscapeName(dc.Alias)}"
                     : $"'{EscapeString((dc.Value as DateTime?)?.ToString(Settings.DateFormatString))}'",
-                _ => columnString = renderAlias && !string.IsNullOrWhiteSpace(lc.Alias)
+                BooleanColumn bc => renderAlias && ! string.IsNullOrWhiteSpace(bc.Alias)
+                                    ? $"{(true.Equals(bc.Value) ? "1" : "0")} AS {EscapeName(bc.Alias)}"
+                                    : true.Equals(bc.Value) ? "1" : "0",
+                _ => renderAlias && !string.IsNullOrWhiteSpace(lc.Alias)
                             ? $"{value} AS {EscapeName(lc.Alias)}"
-                            : value.ToString(),
+                            : value.ToString()
             };
         }
 

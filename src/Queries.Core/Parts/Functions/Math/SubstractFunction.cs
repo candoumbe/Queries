@@ -31,10 +31,11 @@ namespace Queries.Core.Parts.Functions.Math
         /// </summary>
         /// <param name="left">First column of the operation</param>
         /// <param name="right">Second column of the operation</param>
+        /// <exception cref="ArgumentNullException">if either <paramref name="left"/> or <paramref name="right"/> is <c>null</c>.</exception>
         public SubstractFunction(IColumn left, IColumn right)
         {
-            Left = left;
-            Right = right;
+            Left = left ?? throw new ArgumentNullException(nameof(left));
+            Right = right ?? throw new ArgumentNullException(nameof(right));
         }
 
         private string _alias;
@@ -58,7 +59,7 @@ namespace Queries.Core.Parts.Functions.Math
 
         public override bool Equals(object obj) => Equals(obj as SubstractFunction);
 
-        public bool Equals(SubstractFunction other) => other != null 
+        public bool Equals(SubstractFunction other) => other != null
             && Alias == other.Alias
             && Left.Equals(other.Left)
             && Right.Equals(other.Right);
@@ -72,7 +73,7 @@ namespace Queries.Core.Parts.Functions.Math
             return hashCode;
         }
 
-        public override string ToString() => SerializeObject(this, Formatting.Indented);
+        public override string ToString() => this.Jsonify();
 
         /// <summary>
         /// Performs a deep copy of the current instance.

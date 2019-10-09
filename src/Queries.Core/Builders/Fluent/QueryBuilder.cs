@@ -171,7 +171,8 @@ namespace Queries.Core.Builders.Fluent
         /// <summary>
         /// Creates a <see cref="CasesColumn"/>
         /// </summary>
-        /// <param name="whenExpressions">expressions associated with the case</param>
+        /// <param name="first"></param>
+        /// <param name="others"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"> if <paramref name="whenExpressions"/> is <c>null</c></exception>
         public static CasesColumn Cases(WhenExpression first, params WhenExpression[] others)
@@ -186,7 +187,6 @@ namespace Queries.Core.Builders.Fluent
                 throw new ArgumentNullException(nameof(others));
             }
 
-
             return new CasesColumn(new[] { first }.Union(others.Where(x => x != null)));
         }
 
@@ -197,8 +197,6 @@ namespace Queries.Core.Builders.Fluent
         /// <param name="then">Value to use when <paramref name="criterion"/> is not satisfied.</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException">either <paramref name="criterion"/> or <paramref name="then"/> is <c>null</c></exception>
-        public static WhenExpression When(WhereClause criterion, Literal then) => new WhenExpression(criterion, then);
-
-        
+        public static WhenExpression When(WhereClause criterion, ColumnBase then) => new WhenExpression(criterion, then);
     }
 }

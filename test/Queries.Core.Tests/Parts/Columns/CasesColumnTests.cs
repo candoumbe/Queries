@@ -10,7 +10,6 @@ namespace Queries.Core.Tests.Parts.Columns
 {
     public class CasesColumnTests
     {
-
         private readonly ITestOutputHelper _outputHelper;
 
         public CasesColumnTests(ITestOutputHelper outputHelper) => _outputHelper = outputHelper;
@@ -22,11 +21,11 @@ namespace Queries.Core.Tests.Parts.Columns
             Action action = () => new CasesColumn(cases: null);
 
             // Act & Assert
-            action.ShouldThrow<ArgumentNullException>()
+            action.Should()
+                .ThrowExactly<ArgumentNullException>()
                 .Which.ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }
-
 
         public static IEnumerable<object[]> EqualsCases
         {
@@ -61,16 +60,15 @@ namespace Queries.Core.Tests.Parts.Columns
                 yield return new object[] {  Cases(
                         When("Age".Field().GreaterThan(18), then : true),
                         When("Age".Field().IsNull(), then : false)
-                    ), new SelectColumn(), false, $"{nameof(CasesColumn)} is always != exactly the same {nameof(SelectColumn)}" };
+                    ), new SelectColumn(Select(1.Literal())), false, $"{nameof(CasesColumn)} is always != exactly the same {nameof(SelectColumn)}" };
 
                 {
                     CasesColumn column = Cases(
-                        When("Age".Field().GreaterThan(18), then : true),
-                        When("Age".Field().IsNull(), then : false)
+                        When("Age".Field().GreaterThan(18), then: true),
+                        When("Age".Field().IsNull(), then: false)
                     );
                     yield return new object[] { column, column, true, "Equals with same instance" };
                 }
-
             }
         }
 

@@ -35,18 +35,17 @@ namespace Queries.Core.Tests.Parts.Functions.Math
         [MemberData(nameof(CtorWithNullAsFirstOrSecondArgumentCases))]
         public void CtorThrowsArgumentNullExceptionIfAnyParameterIsNull(IColumn first, IColumn second)
         {
-
             _outputHelper.WriteLine($"{nameof(first)} : {first}");
             _outputHelper.WriteLine($"{nameof(second)} : {second}");
-            
+
             // Act
             Action action = () => new SubstractFunction(first, second);
 
             // Assert
-            action.ShouldThrow<ArgumentNullException>().Which
+            action.Should()
+                .Throw<ArgumentNullException>().Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
-
         }
 
         [Fact]
@@ -108,7 +107,7 @@ namespace Queries.Core.Tests.Parts.Functions.Math
 
                 yield return new object[]
                 {
-                    new SubstractFunction("left".Literal(), "right".Literal()).As(null),
+                    new SubstractFunction("left".Literal(), "right".Literal()).As(string.Empty),
                     string.Empty,
                 };
             }

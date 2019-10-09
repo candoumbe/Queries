@@ -43,12 +43,11 @@ namespace Queries.Renderers.SqlServer
             CollectVariableVisitor visitor = new CollectVariableVisitor();
             switch (query)
             {
+                case SelectQuery sq:
+                    visitor.Visit(sq);
+                    result = Render(sq);
+                    break;
                 case SelectQueryBase selectQueryBase:
-                    if (selectQueryBase is SelectQuery sq)
-                    {
-                        visitor.Visit(sq);
-                        result = Render(sq);
-                    }
                     result = Render(selectQueryBase);
                     break;
                 case CreateViewQuery createViewQuery:
@@ -91,18 +90,23 @@ namespace Queries.Renderers.SqlServer
                     switch (variable.Type)
                     {
                         case VariableType.Numeric:
-                            sbParameters.Append(" NUMERIC = ").Append(variable.Value).Append(";");
+                            sbParameters.Append(" NUMERIC = ").Append(variable.Value).Append(BatchStatementSeparator);
                             break;
                         case VariableType.String:
-                            sbParameters.Append(" VARCHAR(8000) = '").Append(EscapeString(variable.Value.ToString())).Append("';");
+                            sbParameters.Append(" VARCHAR(8000) = '").Append(EscapeString(variable.Value.ToString())).Append("'")
+                                .Append(BatchStatementSeparator);
                             break;
                         case VariableType.Boolean:
+                            sbParameters.Append(" BIT = ")
+                                .Append(true.Equals(variable.Value) ? "1" : "0")
+                                .Append(BatchStatementSeparator);
                             break;
                         case VariableType.Date:
-                            sbParameters.Append(" DATETIME = '").Append(EscapeString((variable.Value as DateTime?).Value.ToString(Settings.DateFormatString))).Append("'");
+                            sbParameters.Append(" DATETIME = '").Append(EscapeString((variable.Value as DateTime?)?.ToString(Settings.DateFormatString)))
+                                .Append(BatchStatementSeparator);
                             break;
                         default:
-                            throw new ArgumentOutOfRangeException(nameof(variable), $"Unsupported variable type");
+                            throw new ArgumentOutOfRangeException(nameof(variable), $"Unexpected {variable.Type} variable type");
                     }
 
                     if (Settings.PrettyPrint && sbParameters.Length > 0)

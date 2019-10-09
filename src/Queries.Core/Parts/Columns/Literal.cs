@@ -1,6 +1,5 @@
 ﻿using Queries.Core.Builders;
 using System;
-using System.Collections.Generic;
 
 namespace Queries.Core.Parts.Columns
 {
@@ -27,7 +26,7 @@ namespace Queries.Core.Parts.Columns
                 string s => s,
                 DateTime dateTime => dateTime,
                 DateTimeOffset dateTimeOffset => dateTimeOffset,
-                null => value,
+                null => null,
                 _ => throw new ArgumentException(nameof(value), "only bool/int/float/double/long/string/Datetime/DateTimeOffset are supported"),
             };
         }
@@ -54,5 +53,18 @@ namespace Queries.Core.Parts.Columns
         public override IColumn Clone() => new Literal(Value);
 
         public override string ToString() => this.Jsonify();
+
+        public static implicit operator Literal(bool value) => new BooleanColumn(value);
+
+        public static implicit operator Literal(string value) => new StringColumn(value);
+
+        public static implicit operator Literal(int value) => new NumericColumn(value);
+
+        public static implicit operator Literal(float value) => new NumericColumn(value);
+
+        public static implicit operator Literal(short value) => new NumericColumn(value);
+
+        public static implicit operator Literal(long value) => new NumericColumn(value);
+
     }
 }

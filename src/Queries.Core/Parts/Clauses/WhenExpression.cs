@@ -20,7 +20,7 @@ namespace Queries.Core.Parts.Clauses
         /// <summary>
         /// Value to use when <see cref="Criterion"/> is <c>false</c>.
         /// </summary>
-        public ColumnBase ThenValue { get; }
+        public ColumnBase ThenValue { get; set; }
 
 
         /// <summary>
