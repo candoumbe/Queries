@@ -6,6 +6,7 @@ using Queries.Core.Builders;
 using Queries.Core.Parts.Clauses;
 using Queries.Core.Parts.Columns;
 using Queries.Core.Parts.Sorting;
+using Queries.Core.Renderers;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -405,6 +406,66 @@ namespace Queries.Renderers.SqlServer.Tests
         [MemberData(nameof(SelectTestCases))]
         public void SelectTest(SelectQuery query, SqlServerRendererSettings settings, string expectedString)
             => IsQueryOk(query, settings, expectedString);
+
+        public static IEnumerable<object[]> FieldnameCasingStrategyCases
+        {
+            get
+            {
+                yield return new object[]
+                {
+                    Select("FirstName".Field(), "LastName".Field())
+                        .From("members"),
+                    FieldnameCasingStrategy.Default,
+                    @"SELECT [FirstName], [LastName] FROM [members]"
+                };
+
+                yield return new object[]
+                {
+                    Select("FirstName".Field(), "LastName".Field())
+                        .From("members"),
+                    FieldnameCasingStrategy.CamelCase,
+                    @"SELECT [firstName], [lastName] FROM [members]"
+                };
+
+                yield return new object[]
+                {
+                    Select("FirstName".Field(), "LastName".Field())
+                        .From("members"),
+                    FieldnameCasingStrategy.SnakeCase,
+                    @"SELECT [first_name], [last_name] FROM [members]"
+                };
+
+                yield return new object[]
+                {
+                    Select("FirstName".Field(), "LastName".Field())
+                        .From("members")
+                        .Where(new WhereClause(Length(Null("MiddleName".Field(), string.Empty)), EqualTo, 0)),
+                    FieldnameCasingStrategy.SnakeCase,
+                    "DECLARE @p0 NUMERIC = 0;" +
+                    "SELECT [first_name], [last_name] FROM [members] WHERE (LEN(ISNULL([middle_name],'')) = 0)"
+                };
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(FieldnameCasingStrategyCases))]
+        public void CasingStrategy(SelectQuery query, FieldnameCasingStrategy casingStrategy, string expected)
+        {
+            // Arrange
+            SqlServerRendererSettings settings = new SqlServerRendererSettings
+            {
+                FieldnameCasingStrategy = casingStrategy
+            };
+
+            SqlServerRenderer renderer = new SqlServerRenderer(settings);
+
+            // Act
+            string statement = renderer.Render(query);
+
+            // Assert
+            statement.Should()
+                .Be(expected);
+        }
 
         public static IEnumerable<object[]> CompileCases
         {

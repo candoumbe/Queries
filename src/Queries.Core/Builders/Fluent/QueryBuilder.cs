@@ -1,9 +1,7 @@
 using Queries.Core.Parts.Clauses;
 using Queries.Core.Parts.Columns;
 using Queries.Core.Parts.Functions;
-using Queries.Core.Parts.Functions.Math;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Queries.Core.Builders.Fluent
@@ -13,7 +11,7 @@ namespace Queries.Core.Builders.Fluent
     /// </summary>
     public static class QueryBuilder
     {
-#region Columns conversions shortcuts
+        #region Columns conversions shortcuts
 
         /// <summary>
         /// Applies <see cref="LengthFunction"/> to <paramref name="column"/>.
@@ -47,7 +45,6 @@ namespace Queries.Core.Builders.Fluent
         /// <returns></returns>
         public static CountFunction Count(FieldColumn column) => new CountFunction(column);
 
-        
         /// <summary>
         /// Applies <see cref="MinFunction"/> to <paramref name="column"/>.
         /// </summary>

@@ -53,6 +53,6 @@ namespace Queries.Core.Parts.Clauses
             Clauses = Clauses.Select(x => x.Clone()).ToList()
         };
 
-        public override string ToString() => this.Stringify();
+        public override string ToString() => this.Jsonify();
     }
 }

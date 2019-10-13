@@ -65,6 +65,5 @@ namespace Queries.Core.Parts.Columns
         public static implicit operator Literal(short value) => new NumericColumn(value);
 
         public static implicit operator Literal(long value) => new NumericColumn(value);
-
     }
 }

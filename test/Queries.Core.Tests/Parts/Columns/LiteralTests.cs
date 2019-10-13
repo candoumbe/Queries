@@ -41,9 +41,9 @@ namespace Queries.Core.Tests.Parts.Columns
             {
                 yield return new object[] { "firstname".Literal(), null, false, "object is null" };
                 yield return new object[] { "firstname".Literal(), "firstname".Literal(), true, $"object is a {nameof(Literal)} with exactly the same {nameof(Literal.Value)} and {nameof(Literal.Alias)}" };
-                
+
                 {
-                    Literal column =  "firstname".Literal();
+                    Literal column = "firstname".Literal();
                     yield return new object[] { column, column, true, "Equals with same instance" };
                 }
             }

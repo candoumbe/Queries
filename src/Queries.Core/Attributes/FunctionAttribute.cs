@@ -7,6 +7,6 @@ namespace Queries.Core.Attributes
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, Inherited = true, AllowMultiple = false)]
     public sealed class FunctionAttribute : Attribute
-    {        
+    {
     }
 }

@@ -45,7 +45,6 @@ namespace Queries.Core.Tests.Builders
                         .Where("ParameterName".Field().EqualTo("p0")),
                     true,
                     "Two differents instances of the same query"
-
                 };
 
                 yield return new object[]
@@ -61,7 +60,6 @@ namespace Queries.Core.Tests.Builders
                         .Where("ParameterName".Field().EqualTo("p0")),
                     true,
                     "Two differents instances of the same query"
-
                 };
             }
         }
@@ -86,7 +84,6 @@ namespace Queries.Core.Tests.Builders
             {
                 yield return new[] { Select(1.Literal()) };
                 yield return new[] {
-
                     Select("*").From(
                         Select("Firstname".Field(), "Lastname".Field()).From("People")
                         .Union(

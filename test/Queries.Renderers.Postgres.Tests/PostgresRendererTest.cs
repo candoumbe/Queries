@@ -4,6 +4,7 @@ using Queries.Core.Builders;
 using Queries.Core.Parts.Clauses;
 using Queries.Core.Parts.Columns;
 using Queries.Core.Parts.Sorting;
+using Queries.Core.Renderers;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -539,6 +540,56 @@ namespace Queries.Renderers.Postgres.Tests
                     "The select statement as two variables with SAME value"
                 };
             }
+        }
+
+        public static IEnumerable<object[]> FieldnameCasingStrategyCases
+        {
+            get
+            {
+                yield return new object[]
+                {
+                    Select("FirstName".Field(), "LastName".Field())
+                        .From("members"),
+                    FieldnameCasingStrategy.Default,
+                    @"SELECT ""FirstName"", ""LastName"" FROM ""members"""
+                };
+
+                yield return new object[]
+                {
+                    Select("FirstName".Field(), "LastName".Field())
+                        .From("members"),
+                    FieldnameCasingStrategy.CamelCase,
+                    @"SELECT ""firstName"", ""lastName"" FROM ""members"""
+                };
+
+                yield return new object[]
+                {
+                    Select("FirstName".Field(), "LastName".Field())
+                        .From("members"),
+                    FieldnameCasingStrategy.SnakeCase,
+                    @"SELECT ""first_name"", ""last_name"" FROM ""members"""
+                };
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(FieldnameCasingStrategyCases))]
+        public void CasingStrategy(SelectQuery query, FieldnameCasingStrategy casingStrategy, string expected)
+        {
+            // Arrange
+            PostgresRendererSettings settings = new PostgresRendererSettings
+            {
+                FieldnameCasingStrategy = casingStrategy
+            };
+
+            PostgresqlRenderer renderer = new PostgresqlRenderer(settings);
+
+            // Act
+            string statement = renderer.Render(query);
+
+            // Assert
+            statement.Should()
+                .Be(expected);
         }
 
         [Theory]

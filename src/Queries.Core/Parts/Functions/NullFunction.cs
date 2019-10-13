@@ -16,14 +16,13 @@ namespace Queries.Core.Parts.Functions
         /// Column onto which the function must be applied.
         /// </summary>
         public IColumn Column { get; }
+
         /// <summary>
         /// Value to use as replacement when <see cref="Column"/>'s value is <c>null</c>
         /// </summary>
         public IColumn DefaultValue { get; }
 
         public IEnumerable<IColumn> AdditionalDefaultValues { get; }
-
-
 
         /// <summary>
         /// Builds a new <see cref="NullFunction"/> instance.
@@ -60,7 +59,6 @@ namespace Queries.Core.Parts.Functions
         public bool Equals(NullFunction other) => (Column, DefaultValue).Equals((other?.Column, other?.DefaultValue));
 
         public override int GetHashCode() => (Column, DefaultValue).GetHashCode();
-
 
         /// <summary>
         /// Performs a deep copy of the current instance.

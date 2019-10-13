@@ -33,8 +33,19 @@ namespace Queries.Core.Renderers
         /// </remarks>
         public bool SkipVariableDeclaration { get; set; }
 
+        /// <summary>
+        /// Defines which casing strategy to use when <see cref="Queries.Core.Parts.Columns.FieldColumn"/>'s <see cref="Parts.Columns.FieldColumn.Name"/> should be rendered
+        /// </summary>
+        public FieldnameCasingStrategy FieldnameCasingStrategy { get => _fieldnameCasingStrategy; set => _fieldnameCasingStrategy = value ?? FieldnameCasingStrategy.Default; }
+
+        private FieldnameCasingStrategy _fieldnameCasingStrategy;
+
         public override string ToString() => this.Jsonify();
 
-        protected QueryRendererSettings(PaginationKind paginationKind) => PaginationKind = paginationKind;
+        protected QueryRendererSettings(PaginationKind paginationKind)
+        {
+            PaginationKind = paginationKind;
+            _fieldnameCasingStrategy = FieldnameCasingStrategy.Default;
+        }
     }
 }

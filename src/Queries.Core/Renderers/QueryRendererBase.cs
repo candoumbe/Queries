@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
 using Queries.Core.Attributes;
 using Queries.Core.Builders;
 using Queries.Core.Builders.Fluent;
@@ -13,6 +8,11 @@ using Queries.Core.Parts.Functions;
 using Queries.Core.Parts.Functions.Math;
 using Queries.Core.Parts.Joins;
 using Queries.Core.Parts.Sorting;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Text;
 using static Queries.Core.Renderers.PaginationKind;
 
 namespace Queries.Core.Renderers
@@ -475,15 +475,15 @@ namespace Queries.Core.Renderers
                 columnString = column switch
                 {
                     FieldColumn fieldColumn => !renderAlias || string.IsNullOrWhiteSpace(fieldColumn.Alias)
-                        ? EscapeName(fieldColumn.Name)
-                        : RenderColumnnameWithAlias(EscapeName(fieldColumn.Name), EscapeName(fieldColumn.Alias)),
+                        ? EscapeName(Settings.FieldnameCasingStrategy.Handle(fieldColumn.Name))
+                        : RenderColumnnameWithAlias(EscapeName(Settings.FieldnameCasingStrategy.Handle(fieldColumn.Name)), EscapeName(fieldColumn.Alias)),
                     Literal literalColumn => RenderLiteralColumn(literalColumn, renderAlias),
                     SelectColumn selectColumn => RenderInlineSelect(selectColumn, renderAlias),
                     UniqueIdentifierValue _ => RenderUUIDValue(),
                     Variable variable => RenderVariable(variable, renderAlias),
                     SelectQuery select => RenderInlineSelect(select, renderAlias),
                     CasesColumn casesColumn => RenderCasesColumn(casesColumn, renderAlias),
-                    _ => throw new ArgumentOutOfRangeException($"Unhandled {column?.GetType()} rendering as column")
+                    _ => throw new ArgumentOutOfRangeException($"Unexpected {column?.GetType()} rendering as column")
                 };
             }
 
@@ -602,7 +602,7 @@ namespace Queries.Core.Renderers
                 : sbNullColumn;
         }
 
-        protected virtual string RenderSubstractColumn(SubstractFunction substractColumn, bool renderAlias) 
+        protected virtual string RenderSubstractColumn(SubstractFunction substractColumn, bool renderAlias)
             => $"{RenderColumn(substractColumn.Left, false)} - {RenderColumn(substractColumn.Right, false)}";
 
         /// <summary>
@@ -663,7 +663,7 @@ namespace Queries.Core.Renderers
                 DateTimeColumn dc => renderAlias && !string.IsNullOrWhiteSpace(dc.Alias)
                     ? $"'{EscapeString((dc.Value as DateTime?)?.ToString(Settings.DateFormatString))}' AS {EscapeName(dc.Alias)}"
                     : $"'{EscapeString((dc.Value as DateTime?)?.ToString(Settings.DateFormatString))}'",
-                BooleanColumn bc => renderAlias && ! string.IsNullOrWhiteSpace(bc.Alias)
+                BooleanColumn bc => renderAlias && !string.IsNullOrWhiteSpace(bc.Alias)
                                     ? $"{(true.Equals(bc.Value) ? "1" : "0")} AS {EscapeName(bc.Alias)}"
                                     : true.Equals(bc.Value) ? "1" : "0",
                 _ => renderAlias && !string.IsNullOrWhiteSpace(lc.Alias)
