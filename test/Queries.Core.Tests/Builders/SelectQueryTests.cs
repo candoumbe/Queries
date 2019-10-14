@@ -35,31 +35,33 @@ namespace Queries.Core.Tests.Builders
                 yield return new object[]
                 {
                     Select(Null("RealValue".Field(), "TextValue".Field()))
-                        .Limit(1)
                         .From("Parameter")
-                        .Where("ParameterName".Field().EqualTo("p0")),
+                        .Where("ParameterName".Field().EqualTo("p0"))
+                        .OrderBy(1.Literal().Desc())
+                        .Paginate(pageIndex: 1, 1),
 
                     Select(Null("RealValue".Field(), "TextValue".Field()))
-                        .Limit(1)
                         .From("Parameter")
-                        .Where("ParameterName".Field().EqualTo("p0")),
+                        .Where("ParameterName".Field().EqualTo("p0"))
+                        .OrderBy(1.Literal().Desc())
+                        .Paginate(pageIndex: 1, 1),
                     true,
                     "Two differents instances of the same query"
                 };
 
                 yield return new object[]
                 {
-                    Select("RealValue".Field(), "TextValue".Field())
-                        .Limit(1)
-                        .From("Parameter")
-                        .Where("ParameterName".Field().EqualTo("p0")),
+                    Select("Firstname".Field(), "Lastname".Field())
+                    .From("People")
+                    .OrderBy(1.Literal().Desc())
+                    .Paginate(pageIndex:1, pageSize:1),
 
-                    Select("RealValue".Field(), "TextValue".Field())
-                        .Limit(1)
-                        .From("Parameter")
-                        .Where("ParameterName".Field().EqualTo("p0")),
+                    Select("Firstname".Field(), "Lastname".Field())
+                    .From("People")
+                    .OrderBy(1.Literal().Desc())
+                    .Paginate(pageIndex:1, pageSize:1),
                     true,
-                    "Two differents instances of the same query"
+                    "Two select queries with pagination"
                 };
             }
         }
@@ -82,15 +84,21 @@ namespace Queries.Core.Tests.Builders
         {
             get
             {
-                yield return new[] { Select(1.Literal()) };
-                yield return new[] {
+                yield return new object[] { Select(1.Literal()) };
+                yield return new object[] {
                     Select("*").From(
                         Select("Firstname".Field(), "Lastname".Field()).From("People")
                         .Union(
                             Select("Username".Field(), "Nickname".Field()).From("SuperHeroes")))
                 };
 
-                yield return new[] { Select("Firstname".Field(), "Lastname".Field()).Limit(3).From("People") };
+                yield return new object[]
+                {
+                    Select("Firstname".Field(), "Lastname".Field())
+                    .From("People")
+                    .OrderBy(1.Literal().Desc())
+                    .Paginate(pageIndex:1, pageSize:1)
+                };
             }
         }
 

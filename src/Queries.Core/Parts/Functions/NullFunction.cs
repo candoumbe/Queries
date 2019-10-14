@@ -76,7 +76,7 @@ namespace Queries.Core.Parts.Functions
                 [nameof(AdditionalDefaultValues)] = AdditionalDefaultValues.Where(val => val != null)
             };
 
-            return props.Stringify();
+            return props.Jsonify();
         }
     }
 }

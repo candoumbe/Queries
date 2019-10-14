@@ -127,36 +127,40 @@ namespace Queries.Core.Renderers
                     fieldsString = RenderColumns(query.Columns);
                 }
 
-                if (query is SelectQuery)
+                switch (query)
                 {
-                    SelectQuery selectQuery = (SelectQuery)query;
-                    if (selectQuery.Tables.Any())
-                    {
-                        string tableString = RenderTables(selectQuery.Tables);
-                        int? limit = selectQuery.NbRows;
+                    case SelectQuery selectQuery:
+                        {
+                            if (selectQuery.Tables.Any())
+                            {
+                                string tableString = RenderTables(selectQuery.Tables);
+                                int? pageSize = selectQuery.PageSize;
+                                int? pageIndex = selectQuery.PageIndex;
 
-                        if (limit.HasValue && (Settings.PaginationKind & Top) == Top)
-                        {
-                            sb.Append($"SELECT TOP {limit.Value} {fieldsString} ");
+                                if (pageIndex.GetValueOrDefault(1) == 1 && pageSize >= 1 && (Settings.PaginationKind & Top) == Top)
+                                {
+                                    sb.Append($"SELECT TOP {pageSize.Value} {fieldsString} ");
+                                }
+                                else
+                                {
+                                    sb.AppendFormat("SELECT {0} ", fieldsString);
+                                }
+                                sb.Append(Settings.PrettyPrint ? Environment.NewLine : string.Empty)
+                                    .AppendFormat("FROM {0}", tableString);
+                            }
+                            else
+                            {
+                                sb.AppendFormat("SELECT {0}", fieldsString);
+                            }
+
+                            break;
                         }
-                        else
-                        {
-                            sb.AppendFormat("SELECT {0} ", fieldsString);
-                        }
-                        sb.Append(Settings.PrettyPrint ? Environment.NewLine : string.Empty)
-                            .AppendFormat("FROM {0}", tableString);
-                    }
-                    else
-                    {
-                        sb.AppendFormat("SELECT {0}", fieldsString);
-                    }
-                }
-                else if (query is SelectIntoQuery selectInto)
-                {
-                    sb.Append(
-                        $"SELECT {fieldsString} {(Settings.PrettyPrint ? Environment.NewLine : string.Empty)}" +
-                        $"INTO {RenderTablename(selectInto.Destination, false)} {(Settings.PrettyPrint ? Environment.NewLine : string.Empty)}" +
-                        $"FROM {RenderTables(new[] { selectInto.Source })}");
+                    case SelectIntoQuery selectInto:
+                        sb.Append(
+                            $"SELECT {fieldsString} {(Settings.PrettyPrint ? Environment.NewLine : string.Empty)}" +
+                            $"INTO {RenderTablename(selectInto.Destination, false)} {(Settings.PrettyPrint ? Environment.NewLine : string.Empty)}" +
+                            $"FROM {RenderTables(new[] { selectInto.Source })}");
+                        break;
                 }
 
                 if (query.Joins.Any())
@@ -219,9 +223,9 @@ namespace Queries.Core.Renderers
                             .Append($"ORDER BY {sbOrderBy}");
                 }
 
-                if (query is SelectQuery selectQuery2)
+                if (query is SelectQuery sq)
                 {
-                    SelectQuery selectQuery = selectQuery2;
+                    SelectQuery selectQuery = sq;
 
                     if (selectQuery.Unions != null)
                     {
@@ -237,11 +241,21 @@ namespace Queries.Core.Renderers
                         }
                     }
 
-                    if ((Settings.PaginationKind & Limit) == Limit && selectQuery2.NbRows.HasValue)
+                    int? pageSize = sq.PageSize;
+                    int? pageIndex = sq.PageIndex;
+                    if (pageIndex >= 2 && pageSize > 0)
+                    {
+                        sb
+                            .Append(' ')
+                            .Append(Settings.PrettyPrint ? Environment.NewLine : string.Empty)
+                            .Append(RenderPagination(pageIndex.Value, pageSize.Value));
+                    }
+
+                    if ((Settings.PaginationKind & Limit) == Limit && sq.PageSize.HasValue && sq.PageIndex.GetValueOrDefault(1) == 1)
                     {
                         sb.Append(' ')
                             .Append("LIMIT ")
-                            .Append(selectQuery2.NbRows);
+                            .Append(sq.PageSize);
                     }
                 }
 
@@ -249,6 +263,21 @@ namespace Queries.Core.Renderers
             }
 
             return queryString;
+        }
+
+        protected virtual string RenderPagination(int pageIndex, int pageSize)
+        {
+            StringBuilder sb = new StringBuilder()
+                .Append("OFFSET ").Append(pageSize);
+
+            if (pageIndex - 1 > 1)
+            {
+                sb.Append(pageSize > 1 ? $" * ({pageIndex} - 1)" : string.Empty);
+            }
+
+            sb.Append(" ROWS ").Append("FETCH NEXT ").Append(pageSize).Append(" ROWS ONLY");
+
+            return sb.ToString();
         }
 
         protected virtual string RenderJoins(IEnumerable<IJoin> joins)

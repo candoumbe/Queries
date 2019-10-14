@@ -640,6 +640,48 @@ namespace Queries.Renderers.Postgres.Tests
         public void BatchQueryTest(BatchQuery query, PostgresRendererSettings settings, string expectedString)
             => IsQueryOk(query, settings, expectedString);
 
+        public static IEnumerable<object[]> PaginateCases
+        {
+            get
+            {
+                yield return new object[]
+                {
+                    Select("col1")
+                        .From("table")
+                        .Paginate(pageIndex: 1, pageSize:10),
+                    new PostgresRendererSettings(), 
+                    @"SELECT ""col1"" FROM ""table"" LIMIT 10"
+                };
+                {
+                    (int pageIndex, int pageSize) = (2, 10);
+                    yield return new object[]
+                    {
+                        Select("col1")
+                            .From("table")
+                            .Paginate(pageIndex: pageIndex, pageSize: pageSize),
+                        new PostgresRendererSettings(), 
+                        $@"SELECT ""col1"" FROM ""table"" LIMIT {pageSize} OFFSET {pageSize}"
+                    };
+                }
+                {
+                    (int pageIndex, int pageSize) = (3, 10);
+                    yield return new object[]
+                    {
+                        Select("col1")
+                            .From("table")
+                            .Paginate(pageIndex: pageIndex, pageSize: pageSize),
+                        new PostgresRendererSettings(),
+                        $@"SELECT ""col1"" FROM ""table"" LIMIT {pageSize} OFFSET {pageSize} * {(pageIndex - 1)}"
+                    };
+                }
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(PaginateCases))]
+        public void PaginateTest(SelectQuery query, PostgresRendererSettings settings, string expectedString)
+            => IsQueryOk(query, settings, expectedString);
+
         private void IsQueryOk(IQuery query, PostgresRendererSettings settings, string expectedString)
         {
             _outputHelper.WriteLine($"Expected string : {expectedString}");

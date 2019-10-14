@@ -402,6 +402,51 @@ namespace Queries.Renderers.SqlServer.Tests
             }
         }
 
+        public static IEnumerable<object[]> PaginateCases
+        {
+            get
+            {
+                yield return new object[]
+                {
+                    Select("col1")
+                        .From("table")
+                        .Paginate(pageIndex: 1, pageSize:10),
+                    new SqlServerRendererSettings(),
+                    "SELECT TOP 10 [col1] FROM [table]"
+                };
+                {
+                    var pagination = ( pageIndex: 2, pageSize: 10 );
+                    yield return new object[]
+                    {
+                        Select("col1")
+                            .From("table")
+                            .Paginate(pageIndex: pagination.pageIndex, pageSize: pagination.pageSize),
+                        new SqlServerRendererSettings(),
+                        $"SELECT [col1] FROM [table] OFFSET {pagination.pageSize} ROWS " +
+                        $"FETCH NEXT {pagination.pageSize} ROWS ONLY"
+                    };
+                }
+
+                {
+                    var pagination = (pageIndex: 3, pageSize: 10);
+                    yield return new object[]
+                    {
+                        Select("col1")
+                            .From("table")
+                            .Paginate(pageIndex: pagination.pageIndex, pageSize: pagination.pageSize),
+                        new SqlServerRendererSettings(),
+                        $"SELECT [col1] FROM [table] OFFSET {pagination.pageSize} * ({pagination.pageIndex} - 1) ROWS " +
+                        $"FETCH NEXT {pagination.pageSize} ROWS ONLY"
+                    };
+                }
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(PaginateCases))]
+        public void PaginateTest(SelectQuery query, SqlServerRendererSettings settings, string expectedString)
+            => IsQueryOk(query, settings, expectedString);
+
         [Theory]
         [MemberData(nameof(SelectTestCases))]
         public void SelectTest(SelectQuery query, SqlServerRendererSettings settings, string expectedString)

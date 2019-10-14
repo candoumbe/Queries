@@ -37,9 +37,10 @@ namespace Queries.Renderers.Sqlite
         {
             string result = string.Empty;
             ReplaceParameterBySelectQueryVisitor visitor = new ReplaceParameterBySelectQueryVisitor(
-                v => Select(Null("RealValue".Field(), "IntegerValue".Field(), "BlobValue".Field(), "TextValue".Field())).Limit(1)
+                v => Select(Null("RealValue".Field(), "IntegerValue".Field(), "BlobValue".Field(), "TextValue".Field()))
                     .From(VariablesTempTablename)
                     .Where(ParameterFieldName.Field().EqualTo(v.Name))
+                    .Paginate(pageIndex: 1, pageSize:1)
                     .Build()
             );
             switch (query)

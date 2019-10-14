@@ -42,5 +42,7 @@ namespace Queries.Core.Parts.Columns
         /// <param name="value"></param>
         public NumericColumn(long? value = null) : base(value)
         { }
+
+        public static implicit operator NumericColumn(int value) => new NumericColumn(value);
     }
 }

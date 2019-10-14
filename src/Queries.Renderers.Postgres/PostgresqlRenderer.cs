@@ -54,15 +54,13 @@ namespace Queries.Renderers.Postgres
                 ? returnQuery.Return.Match(
                     columnBase =>
                     {
-                        string returnString = string.Empty;
-                        returnString = columnBase switch
+                        return columnBase switch
                         {
                             FieldColumn field => $"RETURN {RenderColumn(field, renderAlias: false)}",
                             Literal literal => $"RETURN {Render(Select(literal)).Substring("SELECT ".Length)}",
                             null => "RETURN",
                             _ => throw new InvalidQueryException(),
                         };
-                        return returnString;
                     },
                     select => $"RETURN {base.Render(select)}"
                 )
@@ -129,5 +127,23 @@ namespace Queries.Renderers.Postgres
         protected override string RenderVariable(Variable variable, bool renderAlias) => $"@{variable.Name}";
 
         protected override string RenderSubstringColumn(SubstringFunction substringColumn, bool renderAlias) => $"SUBSTRING({RenderColumn(substringColumn.Column, false)} FROM {substringColumn.Start}{(substringColumn.Length.HasValue ? $" FOR {substringColumn.Length.Value}" : string.Empty)})";
+
+        protected override string RenderPagination(int pageIndex, int pageSize)
+        {
+            StringBuilder sb = new StringBuilder()
+                .Append("LIMIT ").Append(pageSize);
+
+            if (pageIndex >= 1)
+            {
+                sb.Append(" OFFSET ").Append(pageSize);
+            }
+
+            if ((pageIndex - 1) >= 2)
+            {
+                sb.Append(" * ").Append(pageIndex - 1);
+            }
+
+            return sb.ToString();
+        }
     }
 }

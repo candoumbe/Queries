@@ -175,8 +175,8 @@ namespace Queries.Core.Tests.Parts.Clauses
                         Select("Fullname").From("Superhero").Where("Nickname".Field(), Like, "B%"))
                     ),
                     (Expression<Func<CollectVariableVisitor, bool>>)(visitor =>
-                        visitor.Variables.Count() == 1
-                        && visitor.Variables.Any(x => x.Name == "p0" && "B%".Equals(x.Value) && x.Type == VariableType.String)
+                        visitor.Variables.Exactly(1)
+                        && visitor.Variables.Once(x => x.Name == "p0" && "B%".Equals(x.Value) && x.Type == VariableType.String)
                     ),
                     (Expression<Func<SelectQuery, bool>>)(query =>
                         query.Equals(
@@ -250,6 +250,35 @@ namespace Queries.Core.Tests.Parts.Clauses
                 };
             }
         }
+
+        public static IEnumerable<object[]> VisitPaginateQueryCases
+        {
+            get
+            {
+                yield return new object[]
+                {
+                    Select("*")
+                        .From("table")
+                        .Paginate(pageIndex: 1, pageSize: 1),
+                    (Expression<Func<CollectVariableVisitor, bool>> )(visitor =>
+                        visitor.Variables.Exactly(0)),
+                    (Expression<Func<SelectQuery, bool>>)(query
+                        => query.Equals(
+                            Select("*")
+                                .From("table")
+                                .Paginate( 1, 1)
+                            )
+                        )
+                };
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(VisitPaginateQueryCases))]
+        public void VisitPaginateQuery(SelectQuery selectQuery,
+            Expression<Func<CollectVariableVisitor, bool>> visitorExpectation,
+            Expression<Func<SelectQuery, bool>> selectQueryExpectation)
+            => VisitSelectQuery(selectQuery, visitorExpectation, selectQueryExpectation);
 
         /// <summary>
         /// Tests <see cref="CollectVariableVisitor.Visit(SelectQuery)"/>.

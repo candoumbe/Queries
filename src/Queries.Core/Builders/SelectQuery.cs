@@ -17,7 +17,9 @@ namespace Queries.Core.Builders
         /// <summary>
         /// Defines the max number of records to retrieve
         /// </summary>
-        public int? NbRows { get; private set; }
+        public int? PageIndex { get; private set; }
+
+        public int? PageSize { get; private set; }
 
         public IList<ITable> Tables { get; }
         public IList<IUnionQuery<SelectQuery>> Unions { get; set; }
@@ -31,7 +33,7 @@ namespace Queries.Core.Builders
         /// </remarks>
         public SelectQuery(params IColumn[] columns)
         {
-            if (!columns.Any(x => x != null))
+            if (columns.All(x => x == null))
             {
                 throw new ArgumentOutOfRangeException(nameof(columns), "at least one column must be provided");
             }
@@ -45,9 +47,18 @@ namespace Queries.Core.Builders
         {
         }
 
-        public ISelectQuery<SelectQuery> Limit(int limit)
+        /// <summary>
+        /// Specified that the query should return <see cref="pageSize"/> elements at most
+        /// </summary>
+        /// <param name="pageIndex">1-based index of the page</param>
+        /// <param name="pageSize">Maximum number of elements a page should contains</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentOutOfRangeException">if either <paramref name="pageIndex"/> is &lt; 1 or <paramref name="pageSize"/> is negative </exception>.
+        public SelectQuery Paginate(int pageIndex, int pageSize)
         {
-            NbRows = limit;
+            PageIndex = pageIndex;
+            PageSize = pageSize;
+
             return this;
         }
 
@@ -141,7 +152,7 @@ namespace Queries.Core.Builders
         {
             Sorts.Add(sort);
 
-            foreach (IOrder items in sorts.Where(s => s != default))
+            foreach (IOrder items in sorts.Where(s => Equals(s, default)))
             {
                 Sorts.Add(sort);
             }
@@ -183,7 +194,7 @@ namespace Queries.Core.Builders
         {
             bool equals = false;
 
-            if (other != null && other.NbRows == NbRows && other.Alias == Alias)
+            if (other != null && other.PageSize == PageSize && other.PageIndex == PageIndex && other.Alias == Alias)
             {
                 equals = Columns.SequenceEqual(other.Columns)
                     && ((WhereCriteria == null && other.WhereCriteria == null) || WhereCriteria.Equals(other.WhereCriteria))
@@ -196,7 +207,7 @@ namespace Queries.Core.Builders
         }
 
 #if !NETSTANDARD2_1
-        public override int GetHashCode() => (Alias, Columns, HavingCriteria, Joins, NbRows, Sorts, Tables, Unions, WhereCriteria).GetHashCode();
+        public override int GetHashCode() => (Alias, Columns, HavingCriteria, Joins, PageIndex, PageSize, Sorts, Tables, Unions, WhereCriteria).GetHashCode();
 #else
         public override int GetHashCode()
         {
@@ -211,7 +222,8 @@ namespace Queries.Core.Builders
             {
                 hash.Add(item);
             }
-            hash.Add(NbRows);
+            hash.Add(PageIndex);
+            hash.Add(PageSize);
             foreach (IOrder item in Sorts)
             {
                 hash.Add(item);
@@ -221,6 +233,10 @@ namespace Queries.Core.Builders
                 hash.Add(item);
             }
             foreach (IUnionQuery<SelectQuery> item in Unions)
+            {
+                hash.Add(item);
+            }
+            foreach (IOrder item in Sorts)
             {
                 hash.Add(item);
             }
@@ -242,17 +258,21 @@ namespace Queries.Core.Builders
                 Alias = Alias,
                 Columns = Columns.Select(x => x.Clone()).ToList(),
                 HavingCriteria = HavingCriteria?.Clone(),
-                WhereCriteria = WhereCriteria?.Clone()
+                WhereCriteria = WhereCriteria?.Clone(),
+                PageIndex = PageIndex,
+                PageSize = PageSize
             };
-            if (NbRows.HasValue)
-            {
-                query.Limit(NbRows.Value);
-            }
+
             query.From(Tables.Select(t => t.Clone()).ToArray());
 
             foreach (IUnionQuery<SelectQuery> item in Unions)
             {
                 query.Union(item.Build().Clone());
+            }
+
+            foreach (IOrder item in Sorts)
+            {
+                query.OrderBy(item);
             }
 
             return query;

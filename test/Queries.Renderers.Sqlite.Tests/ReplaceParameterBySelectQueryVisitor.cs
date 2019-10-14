@@ -47,17 +47,16 @@ namespace Queries.Renderers.Sqlite
                     Select("*").From("superHeroes")
                         .Where("Fullname".Field().Like("Bat%")),
                     (Func<Variable, SelectQuery>)(param => Select(Null("RealValue".Field(), "TextValue".Field()))
-                        .Limit(1)
                         .From("Parameter")
-                        .Where("ParameterName".Field().EqualTo(param.Name)).Build()),
+                        .Where("ParameterName".Field().EqualTo(param.Name))
+                        .Paginate(pageIndex:1, pageSize:1)),
                     Select("*").From("superHeroes")
                         .Where("Fullname".Field()
                             .Like(
                                 Select(Null("RealValue".Field(), "TextValue".Field()))
-                                .Limit(1)
-                                .From("Parameter")
-                                .Where("ParameterName".Field().EqualTo("p0"))
-                                .Build()
+                                    .From("Parameter")
+                                    .Where("ParameterName".Field().EqualTo("p0"))
+                                    .Paginate(pageIndex:1, pageSize:1)
                             )
                         )
                 };
