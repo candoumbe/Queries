@@ -8,6 +8,7 @@ using Queries.Core.Renderers;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using FluentAssertions.Extensions;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Categories;
@@ -494,7 +495,9 @@ namespace Queries.Renderers.Postgres.Tests
             {
                 yield return new object[]
                 {
-                    Select("*").From("members").Where("Firstname".Field(), In, new StringValues("Bruce", "Bane")),
+                    Select("*")
+                        .From("members")
+                        .Where("Firstname".Field(), In, new StringValues("Bruce", "Bane")),
                     new PostgresRendererSettings{ SkipVariableDeclaration = true },
                     (Expression<Func<CompiledQuery, bool>>)(
                         query => query.Statement == @"SELECT * FROM ""members"" WHERE (""Firstname"" IN (@p0, @p1))"
@@ -536,6 +539,34 @@ namespace Queries.Renderers.Postgres.Tests
                         query => query.Statement == @"SELECT ""id"", ""file_id"" FROM ""documents"" WHERE (""userAccount"" LIKE @p0)"
                             && query.Variables.Exactly(1)
                             && query.Variables.Once(v => v.Name == "p0" && "vp%".Equals(v.Value) && v.Type == VariableType.String)
+                    ),
+                    "The select statement as two variables with SAME value"
+                };
+
+                yield return new object[]
+                {
+                    Select("id".Field(), "file_id".Field(), new Literal("COUNT(*) OVER()").As("fullcount"))
+                        .From("documents")
+                        .Where(new CompositeWhereClause()
+                        {
+                            Logic = ClauseLogic.And,
+                            Clauses = new []
+                            {
+                                "userAccount".Field().Like("vp%"),
+                                "created_on".Field().EqualTo(10.April(2010))
+                            }
+                        })
+                        .OrderBy("timestamp".Field().Desc())
+                        .Paginate(pageIndex: 2, pageSize: 3),
+                    new PostgresRendererSettings{ PrettyPrint = false, SkipVariableDeclaration = true, FieldnameCasingStrategy = FieldnameCasingStrategy.SnakeCase },
+                    (Expression<Func<CompiledQuery, bool>>)(
+                        query => query.Statement == @"SELECT ""id"", ""file_id"", COUNT(*) OVER() AS ""fullcount"" FROM ""documents"" " +
+                                 @"WHERE ((""user_account"" LIKE @p0) AND (""created_on"" = @p1)) " +
+                                 @"ORDER BY ""timestamp"" DESC " +
+                                 "LIMIT 3 OFFSET 3"
+                                 && query.Variables.Exactly(2)
+                                 && query.Variables.Once(v => v.Name == "p0" && "vp%".Equals(v.Value) && v.Type == VariableType.String)
+                                 && query.Variables.Once(v => v.Name == "p1" && 10.April(2010).Equals(v.Value) && v.Type == VariableType.Date)
                     ),
                     "The select statement as two variables with SAME value"
                 };
@@ -597,7 +628,7 @@ namespace Queries.Renderers.Postgres.Tests
         public void Compile(SelectQuery query, PostgresRendererSettings settings, Expression<Func<CompiledQuery, bool>> expectation, string reason)
         {
             // Arrange
-            _outputHelper.WriteLine($"{nameof(query)} : '{ query }'");
+            _outputHelper.WriteLine($"{nameof(query)} : '{query}'");
             PostgresqlRenderer renderer = new PostgresqlRenderer(settings);
 
             // Assert

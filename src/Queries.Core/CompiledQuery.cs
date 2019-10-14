@@ -45,5 +45,7 @@ namespace Queries.Core
         {
             return !(left == right);
         }
+
+        public override string ToString() => this.Jsonify();
     }
 }

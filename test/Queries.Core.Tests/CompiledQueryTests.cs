@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using Queries.Core.Parts.Clauses;
 using System.Collections.Generic;
+using FluentAssertions.Extensions;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -40,6 +41,20 @@ namespace Queries.Core.Tests
                     }),
                     new CompiledQuery("a statement", new []{
                         new Variable("p1", VariableType.String, "No strength"),
+                        new Variable("p0", VariableType.String, "Cape"),
+                    }),
+                    true,
+                    "the current instance is compared to another instance with same statement and variables are not in the same order"
+                };
+
+                yield return new object[]
+                {
+                    new CompiledQuery("a statement", new []{
+                        new Variable("p0", VariableType.String, "Cape"),
+                        new Variable("p1", VariableType.Date, 10.April(2010)),
+                    }),
+                    new CompiledQuery("a statement", new []{
+                        new Variable("p1", VariableType.Date, 10.April(2010)),
                         new Variable("p0", VariableType.String, "Cape"),
                     }),
                     true,

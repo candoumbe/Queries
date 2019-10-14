@@ -8,13 +8,11 @@ namespace System
     public static class StringExtensions
     {
         /// <summary>
-        /// Turns the specified <paramref name="columnName"/> into <see cref="Parts.Columns.FieldColumn"/>
+        /// Turns the specified <paramref name="columnName"/> into <see cref="Queries.Core.Parts.Columns.FieldColumn"/>
         /// </summary>
         /// <param name="columnName">Name of the field</param>
         /// <returns></returns>
         public static FieldColumn Field(this string columnName) => new FieldColumn(columnName);
-
-
 
         /// <summary>
         /// Turns the specified <paramref name="tableName"/> into a <see cref="Queries.Core.Parts.Table"/>
@@ -29,8 +27,7 @@ namespace System
         /// </summary>
         /// <param name="columnName"></param>
         /// <param name="column"></param>
-        /// <returns></returns>
-        /// <see cref="FieldColumnExtensions.InsertValue(IColumn)"/>
+        /// <returns><see cref="InsertedValue"/></returns>
         public static InsertedValue InsertValue(this string columnName, IColumn column)
             => columnName.Field().InsertValue(column);
 
