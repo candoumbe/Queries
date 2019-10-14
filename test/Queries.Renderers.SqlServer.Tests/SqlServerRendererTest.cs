@@ -442,7 +442,7 @@ namespace Queries.Renderers.SqlServer.Tests
                         .Where(new WhereClause(Length(Null("MiddleName".Field(), string.Empty)), EqualTo, 0)),
                     FieldnameCasingStrategy.SnakeCase,
                     "DECLARE @p0 AS NUMERIC = 0;" +
-                    "SELECT [first_name], [last_name] FROM [members] WHERE (LEN(ISNULL([middle_name],'')) = @p0)"
+                    "SELECT [first_name], [last_name] FROM [members] WHERE (LEN(ISNULL([middle_name], '')) = @p0)"
                 };
             }
         }
