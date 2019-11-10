@@ -7,11 +7,15 @@ variables :
     azureArtifactFeed : '/d192f2a9-5822-4570-b0d6-553bec034363'
 
 pr:
-    branches:
-        include:
-            - master
-            - features/*
-            - fixes/*
+  - master
+
+trigger:
+  batch: true
+  branches:
+   include:
+      - master
+      - features/*
+      - fixes/*
 
 pool:
   name: Hosted VS2017
