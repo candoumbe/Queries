@@ -1,0 +1,66 @@
+variables :
+    configuration: 'Release'
+    Parameters.projects: '**/*.csproj'
+    Parameters.projects.tests: '**/*Tests/*.csproj'
+    version: '1.0.0'
+    projectName: 'Queries'
+    azureArtifactFeed : '/d192f2a9-5822-4570-b0d6-553bec034363'
+
+pool:
+  name: Hosted VS2017
+#Your build pipeline references an undefined variable named ‘Parameters.projects’. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab. See https://go.microsoft.com/fwlink/?linkid=865972
+#Your build pipeline references a secret variable named ‘github.apiKey’. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab, and then select the option to make it secret. See https://go.microsoft.com/fwlink/?linkid=865972
+
+steps:
+- task: UseDotNet@2
+  displayName: 'Use .NET Core sdk 3.0.100'
+  inputs:
+    version: 3.0.100
+
+- task: UseDotNet@2
+  displayName: 'Use .NET Core sdk 2.2.401'
+  inputs:
+    version: 2.2.401
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet restore'
+  inputs:
+    command: restore
+    projects: '$(Parameters.projects)'
+    feedsToUse: config
+    nugetConfigPath: Nuget.config
+    verbosityRestore: Normal
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet build'
+  inputs:
+    projects: '$(Parameters.projects)'
+    arguments: '--no-restore -c $(configuration)'
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet test'
+  inputs:
+    command: test
+    projects: '$(Parameters.projects.tests)'
+    arguments: '--no-build -c $(configuration)'
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet pack'
+  inputs:
+    command: pack
+    nobuild: true
+    versioningScheme: byPrereleaseNumber
+  condition: succeededOrFailed()
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet push'
+  inputs:
+    command: push
+    publishVstsFeed: '$(azureArtifactFeed)'
+  enabled: false
+
+- task: nkdagility.gittasks.gitsync-task.gitsync@1
+  displayName: 'Git Publish to https://$(github.apiKey)@github.com/candoumbe/$(projectName).git'
+  inputs:
+    GitRepoUrl: 'https://$(github.apiKey)@github.com/candoumbe/$(projectName).git'
+  condition: succeededOrFailed()
