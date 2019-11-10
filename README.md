@@ -1,6 +1,6 @@
 # Queries <img src='https://candoumbe.visualstudio.com/Queries/_apis/build/status/Queries%20(master)'/>
 
-This is a "basic" database agnostic query builder.
+This is a "basic" datastore agnostic query builder.
 
 ## Why?
 The idea of this project came to me when I dealt with Entity Framework 6.x Code First for a project I was working on as Architect.
@@ -14,8 +14,8 @@ I wanted something more dynamic allowing to code SQL once in the migrations and 
 Writing tightly coupled SQL means that you're writing SQL statements that are specific to a database engine. <br />
 
 The following SQL string
-```csharp
-    string sql = "SELECT [Firstname] + ' ' + [Lastname] AS [fullname] FROM [members]"
+```SQL
+SELECT [Firstname] + ' ' + [Lastname] AS [fullname] FROM [members]
 ```
 is tightly coupled to SQL Server engine and won't work if dealing with Postgres whereas
 ```csharp
@@ -99,19 +99,22 @@ using (var conn = GetConnectionSomehow() )
 The code is shorter, clearer as the boilerplate code is no longer a distraction
 
 ## Renderers
-Renderers are special classes that can produce a SQL string given a [IQuery](./src/Queries.Core/IQuery.cs) instance. <br />
+Renderers are special classes that can produce a SQL string given a [IQuery][class-iquery] instance. <br />
 
 ```csharp
 IQuery query = GetQuery();
 string sql = query.ForXXX() // where XXX stand for a database engine to target
 ```
+
+
 ### Settings
-The "shape" of the SQL string (date format, parameterized query) can 
-be customized by providing a [QueryRendererSettings](./src/Queries.Core/Renderers/QueryRendererSettings.cs) instance.
+The "shape" of the output string (date format, parameterized query) can 
+be customized by providing an implementation of [QueryRendererSettings][class-query-renderer-settings] instance.
 to the <code>ForXXXX()</code> method.
 ```csharp
 IQuery query = ...
-string sql = query.ForXXX(new QueryRendererSettings { PrettyPrint = false}) // where XXX stand for a database engine to target
+QueryRendererSettings settings = new MyCustomRendererSettings();
+string sql = query.ForXXX(settings) // where XXX stand for a database engine to target
 ```
 ### [SQL Server Query Renderer](https://www.nuget.org/packages/Queries.Renderers.SqlServer)
 Builds SQL string that can be used with SQL Server Database Engine
@@ -126,7 +129,7 @@ string sql = query.ForSqlServer(new QueryRendererSettings { PrettyPrint = true }
 Console.WriteLine(sql); "DECLARE @p0 NUMERIC = 18; SELECT [Firstname] + ' ' + [Lastname] FROM [members] WHERE [Age] >= @p0" 
 ```
 
-### MySQL Query Renderer
+### <a href='#' id='renderer-mysql'>MySQL Query Renderer</a>
 Builds SQL string that can be used with MySQL Database Engine
 
 ```csharp
@@ -140,13 +143,15 @@ Console.WriteLine(sql); "DECLARE @p0 NUMERIC = 18; SELECT [Firstname] + ' ' + [L
 ```
 ## Build queries
 
-### Columns
+### <a href='#' id='section-columns'>Columns</a>
 
-#### [FieldColumn](./src/Queries.Core/Parts/Columns/FieldColumn.cs)
-Use 
-#### Literals
+[IColumn][class-columns-icolumn] is the base interface for all column types.
+
+[FieldColumn][class-columns-field]
+ 
+Literals
 Uses the following classes whenever you want to write a "raw" data in a query
-- [BooleanColumn](./src/Queries.Core/Parts/Columns/BooleanColumn.cs) :  column that can contains a boolean value.<br />
+- [BooleanColumn][class-columns-boolean] :  a column that can contains a boolean value.<br />
 Use this class to output a boolean value in the query
 
 ```csharp
@@ -160,9 +165,12 @@ IQuery query = Select("Firstname".Field(), "Lastname".Field())
     .From("members")
     .Where("IsActive", EqualTo, true);
 ```
-which will output <code>SELECT [Firstname], [Lastname] FROM [members] WHERE [IsActive] = 1</code>
-- [DateTimeColumn](./src/Queries.Core/Parts/Columns/DateTimeColumn.cs) :  column that can contains a date/time/datetime value.<br />
-Use this class to output a DateTime/DateTimeOffset value.
+which will output
+```SQL
+SELECT [Firstname], [Lastname] FROM [members] WHERE [IsActive] = 1
+```
+- [DateTimeColumn][class-columns-datetime] :  column that can contains a `date`/`time`/`datetime` value.<br />
+Use this class to output a `DateTime`/`DateTimeOffset` value.
 
 ```csharp
 IQuery query = Select("Firstname".Field(), "Lastname".Field())
@@ -218,7 +226,7 @@ IQuery query = Update("members")
     .Where("Nickname", EqualTo, "Robin");
 ```
 
-or even combine them using a [BatchQuery](./src/Queries.Core/Builders/BatchQuery.cs)
+or even combine them using a [BatchQuery][class-builders-batch-query]
 
 ```csharp
 BatchQuery batch = new BatchQuery(
@@ -231,15 +239,14 @@ BatchQuery batch = new BatchQuery(
 UUse he <code>.Clone()</code> method to duplicate any instance
 
 
-### Clauses 
+### Criterias 
 <code>Queries.Core.Parts.Clauses</code> namespace contains classes to add filters to <code>IQuery</code> instances.
 #### Where
-- [WhereClause](./src/Queries.Core/Parts/Clauses/WhereClause.cs) 
-- [CompositeWhereClause](./src/Queries.Core/Parts/Clauses/CompositeWhereClause.cs) : combine multiple <code>WhereClause</code> instances together.
+- [WhereClause][class-where-clause] : a criterion that will be applied to only one field of a [IQuery][class-iquery]
+- [CompositeWhereClause][class-complex-where-clause] : combine several [WhereClause][class-where-clause] instances together.
 #### Having
-- [HavingClause](./src/Queries.Core/Parts/Clauses/HavingClause.cs) 
-- [CompositeHavingClause](./src/Queries.Core/Parts/Clauses/CompositeHavingClause.cs) : combine multiple <code>HavingClause</code> instances together.
-
+- [HavingClause][class-having-clause] : a criterion that will be applied to only one field of a [IQuery][class-iquery]
+- [CompositeHavingClause][class-complex-having-clause] : combine several [HavingClause][class-having-clause] instances together.
 
 
 
@@ -249,10 +256,22 @@ UUse he <code>.Clone()</code> method to duplicate any instance
     package and references it in your project.<br />
     From this point you can start building queries in your code.
 2.  Download the Queries.Renderers.XXXXX that is specific to the database engine you're targeting.
-    This will add extensions methods ForXXXX to all <code>IQuery</code> instances that produces SQL statements
+    This will add extensions methods ForXXXX to all [IQuery][class-iquery] instances that produces SQL statements
 3.  Enjoy !!!
 
 # Contribute
 Check out the [contribution guidelines](./CONTRIBUTING.md)
 if you want to contribute to this project.
 
+
+[class-iquery]: ./src/Queries.Core/IQuery.cs
+[class-where-clause]: ./src/Queries.Core/Parts/Clauses/WhereClause.cs
+[class-having-clause]: ./src/Queries.Core/Parts/Clauses/HavingClause.cs
+[class-complex-where-clause]: ./src/Queries.Core/Parts/Clauses/CompositeWhereClause.cs
+[class-complex-having-clause]: ./src/Queries.Core/Parts/Clauses/CompositeHavingClause.cs
+[class-query-renderer-settings]: ./src/Queries.Core/Renderers/QueryRendererSettings.cs
+[class-builders-batch-query]: ./src/Queries.Core/Builders/BatchQuery.cs
+[class-columns-icolumn]: ./src/Queries.Core/Parts/Columns/IColumn.cs
+[class-columns-datetime]: ./src/Queries.Core/Parts/Columns/DateTimeColumn.cs
+[class-columns-boolean]: ./src/Queries.Core/Parts/Columns/BooleanColumn.cs
+[class-columns-field]: ./src/Queries.Core/Parts/Columns/FieldColumn.cs
