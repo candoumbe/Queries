@@ -6,11 +6,17 @@ variables :
     projectName: 'Queries'
     azureArtifactFeed : '/d192f2a9-5822-4570-b0d6-553bec034363'
 
+pr:
+    branches:
+        include:
+            - master
+            - features/*
+            - fixes/*
+
 pool:
   name: Hosted VS2017
-#Your build pipeline references an undefined variable named ‘Parameters.projects’. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab. See https://go.microsoft.com/fwlink/?linkid=865972
-#Your build pipeline references a secret variable named ‘github.apiKey’. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab, and then select the option to make it secret. See https://go.microsoft.com/fwlink/?linkid=865972
-
+#Your build pipeline references a secret variable named â€˜github.apiKeyâ€™. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab, and then select the option to make it secret. See https://go.microsoft.com/fwlink/?linkid=865972
+        
 steps:
 - task: UseDotNet@2
   displayName: 'Use .NET Core sdk 3.0.100'
