@@ -1,4 +1,4 @@
-# Queries <img src='https://candoumbe.visualstudio.com/Queries/_apis/build/status/Queries%20(master)'/>
+# Queries [![Build Status](https://candoumbe.visualstudio.com/Queries/_apis/build/status/Queries?branchName=master)](https://candoumbe.visualstudio.com/Queries/_build/latest?branchName=master)
 
 This is a "basic" datastore agnostic query builder.
 
