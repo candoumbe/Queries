@@ -1,10 +1,17 @@
 variables :
-    configuration: 'Release'
-    Parameters.projects: '**/*.csproj'
-    Parameters.projects.tests: '**/*Tests/*.csproj'
-    version: '1.0.0'
-    projectName: 'Queries'
-    azureArtifactFeed : '/d192f2a9-5822-4570-b0d6-553bec034363'
+  - name: 'configuration'
+    value: 'Release'
+  - name: 'Parameters.projects'
+    value: '**/*.csproj'
+  - name: 'Parameters.projects.tests'
+    value: '**/*Tests/*.csproj'
+  - name: 'version'
+    value: '1.0.0'
+  - name : 'projectName'
+    value: 'Queries'
+  - name: 'azureArtifactFeed'
+    value: '/d192f2a9-5822-4570-b0d6-553bec034363'
+  - group: Security
 
 pr:
   - master
