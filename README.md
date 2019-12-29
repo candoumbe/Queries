@@ -145,7 +145,7 @@ Console.WriteLine(sql); "DECLARE @p0 NUMERIC = 18; SELECT [Firstname] + ' ' + [L
 
 ### <a href='#' id='section-columns'>Columns</a>
 
-[IColumn][class-columns-icolumn] is the base interface for all column types.
+[IColumn][class-columns-icolumn] is the base interface that all column like types implement.
 
 [FieldColumn][class-columns-field]
  
@@ -159,17 +159,19 @@ IQuery query = Select("Firstname".Field(), "Lastname".Field())
     .From("members")
     .Where("IsActive", EqualTo, new BooleanColumn(true));
 ```
+
 can also be written 
+
 ```csharp
 IQuery query = Select("Firstname".Field(), "Lastname".Field())
     .From("members")
     .Where("IsActive", EqualTo, true);
 ```
-which will output
+which will output for
 ```SQL
 SELECT [Firstname], [Lastname] FROM [members] WHERE [IsActive] = 1
 ```
-- [DateTimeColumn][class-columns-datetime] :  column that can contains a `date`/`time`/`datetime` value.<br />
+- [DateTimeColumn][class-columns-datetime] : a [IColumn][class-columns-icolumn] implementation that can contains a `date`/`time`/`datetime` value.<br />
 Use this class to output a `DateTime`/`DateTimeOffset` value.
 
 ```csharp
@@ -178,12 +180,14 @@ IQuery query = Select("Firstname".Field(), "Lastname".Field())
     .Where("DateOfBirth", EqualTo, 1.April(1990));
 ```
 
-Optionally specify a format to use when rendering the query.
+You can optionally specify a format to use when rendering the query with the `Format(string format)` extension method.
 ```csharp
 IQuery query = Select("Firstname".Field(), "Lastname".Field())
     .From("members")
     .Where("DateOfBirth", EqualTo, 1.April(1990).Format("dd-MM-yyyy"));
 ```
+
+
 The <code>Queries.Core.Builders</code> namespace contains various classes that can be used to build queries. <br />
 You can build various queries
 
@@ -235,8 +239,9 @@ BatchQuery batch = new BatchQuery(
 );
 ```
 <strong>Warning</strong>
-<code>IQuery</code> classes are all mutable (except when specified otherwise) meaning that any instance can be modified once created.
-UUse he <code>.Clone()</code> method to duplicate any instance
+<code>IQuery</code> classes are all mutable (except when specified otherwise) meaning that any instance can be modified 
+<strong>AFTER</strong> being created.
+Use he <code>.Clone()</code> method to duplicate any instance.
 
 
 ### Criterias 

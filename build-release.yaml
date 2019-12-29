@@ -10,7 +10,7 @@ variables :
   - name : 'projectName'
     value: 'Queries'
   - name: 'azureArtifactFeed'
-    value: '/d192f2a9-5822-4570-b0d6-553bec034363'
+    value: 'Queries'
   - group: Security
 
 pr:
