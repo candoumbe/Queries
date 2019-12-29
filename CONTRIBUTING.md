@@ -158,4 +158,47 @@ included in the project:
   like [BatchFormat](http://visualstudiogallery.msdn.microsoft.com/a7f75c34-82b4-4357-9c66-c18e32b9393e).
 - Before committing, run Code Analysis in `Debug` configuration and follow the guidelines
   to fix CA issues. Code Analysis commits can be made separately.
-- ``var`` keyword is only allowed when used with anonymous type. 
+- `var` keyword is only allowed when used with anonymous type. 
+- A method should have one entry point and one exit
+
+Instead of
+
+``` csharp
+public void myMethod()
+{
+    if (conditionA)
+    {
+        return aValue;
+    }
+
+    if (conditionB)
+    {
+        return anotherValue;
+    }
+}
+
+```
+
+should be rewritten to
+
+``` csharp
+public void myMethod()
+{
+    int result;
+    if (conditionA)
+    {
+        result = aValue;
+    }
+
+    if (conditionB)
+    {
+        result = anotherValue;
+    }
+
+    return result;
+}
+
+```
+
+A code with one exit point is easier to read as we are assured to not miss it.
+
