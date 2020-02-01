@@ -68,6 +68,7 @@ namespace Queries.Core.Renderers
             return escapedColumnName;
         }
 
+        
         public virtual string Render(IQuery query)
             => query switch
             {
@@ -79,7 +80,7 @@ namespace Queries.Core.Renderers
                 InsertIntoQuery insertIntoQuery => Render(insertIntoQuery),
                 BatchQuery batchQuery => Render(batchQuery),
                 NativeQuery nativeQuery => nativeQuery.Statement,
-                _ => throw new ArgumentOutOfRangeException(nameof(query), "Unexpected query type"),
+                _ => throw new ArgumentOutOfRangeException(nameof(query), query, $"Unexpected {query.GetType()} query type"),
             };
 
         protected virtual string Render(InsertIntoQuery query)
@@ -381,14 +382,14 @@ namespace Queries.Core.Renderers
                 ClauseOperator.In => clause.Constraint switch
                 {
                     VariableValues variables => $"{RenderColumn(clause.Column, false)} IN ({string.Join(", ", variables.Select(x => RenderVariable(x, false)))})",
-                    _ => throw new ArgumentOutOfRangeException(nameof(clause), $"Unsupported constraint type for {nameof(ClauseOperator)}.{nameof(ClauseOperator.In)} operator."),
+                    _ => throw new ArgumentOutOfRangeException(nameof(clause), clause?.Constraint, $"Unsupported constraint type for {nameof(ClauseOperator)}.{nameof(ClauseOperator.In)} operator."),
                 },
                 ClauseOperator.NotIn => clause.Constraint switch
                 {
                     VariableValues variables => $"{RenderColumn(clause.Column, false)} NOT IN ({string.Join(", ", variables.Select(x => RenderVariable(x, false)))})",
-                    _ => throw new ArgumentOutOfRangeException(nameof(clause), $"Unsupported constraint type for {nameof(ClauseOperator)}.{nameof(ClauseOperator.NotIn)} operator."),
+                    _ => throw new ArgumentOutOfRangeException(nameof(clause), clause?.Constraint, $"Unsupported constraint type for {nameof(ClauseOperator)}.{nameof(ClauseOperator.NotIn)} operator."),
                 },
-                _ => throw new ArgumentOutOfRangeException(nameof(clause.Operator), "Unknown clause operator"),
+                _ => throw new ArgumentOutOfRangeException(nameof(clause.Operator), clause?.Operator, "Unknown clause operator"),
             };
 
         protected virtual string RenderWhere(IWhereClause clause)
@@ -425,7 +426,7 @@ namespace Queries.Core.Renderers
                             }
                             break;
                         default:
-                            throw new ArgumentOutOfRangeException(nameof(compositeClause.Logic), "Unknown logic");
+                            throw new ArgumentOutOfRangeException(nameof(compositeClause.Logic), compositeClause.Logic, "Unknown logic");
                     }
 
                     break;
@@ -512,7 +513,7 @@ namespace Queries.Core.Renderers
                     Variable variable => RenderVariable(variable, renderAlias),
                     SelectQuery select => RenderInlineSelect(select, renderAlias),
                     CasesColumn casesColumn => RenderCasesColumn(casesColumn, renderAlias),
-                    _ => throw new ArgumentOutOfRangeException($"Unexpected {column?.GetType()} rendering as column")
+                    _ => throw new ArgumentOutOfRangeException(nameof(column), column, $"Unexpected {column?.GetType()} rendering as column")
                 };
             }
 
@@ -557,7 +558,7 @@ namespace Queries.Core.Renderers
                 SubstringFunction substringColumn => RenderSubstringColumn(substringColumn, renderAlias),
                 UpperFunction upperColumn => RenderUpperColumn(upperColumn, renderAlias),
                 SubstractFunction substractColumn => RenderSubstractColumn(substractColumn, renderAlias),
-                _ => throw new ArgumentOutOfRangeException(nameof(column), "Unexpected function type"),
+                _ => throw new ArgumentOutOfRangeException(nameof(column), column, "Unexpected function type"),
             };
 
         /// <summary>
@@ -676,7 +677,7 @@ namespace Queries.Core.Renderers
                 AggregateType.Count => !renderAlias || string.IsNullOrWhiteSpace(ac.Alias)
                         ? $"COUNT({RenderColumn(ac.Column, renderAlias: false)})"
                         : RenderColumnnameWithAlias($"COUNT({RenderColumn(ac.Column, renderAlias: false)})", EscapeName(ac.Alias)),
-                _ => throw new ArgumentOutOfRangeException(),
+                _ => throw new ArgumentOutOfRangeException(nameof(ac), ac, "Unexpected aggregate function type"),
             };
 
         protected virtual string RenderLiteralColumn<T>(T lc, bool renderAlias) where T : Literal

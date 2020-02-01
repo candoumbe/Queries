@@ -238,7 +238,7 @@ namespace Queries.Core.Builders
                     break;
 
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(instance), $"Unexpected {instance.GetType()} clause type");
+                    throw new ArgumentOutOfRangeException(nameof(instance), instance, $"Unexpected {instance.GetType()} clause type");
             }
         }
 

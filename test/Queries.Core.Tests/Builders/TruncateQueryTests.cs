@@ -43,7 +43,7 @@ namespace Queries.Core.Tests.Builders
             Action action = () => new TruncateQuery(tableName);
 
             // Assert
-            action.Should().Throw<ArgumentOutOfRangeException>("name of the table to delete cannot be null").Which
+            action.Should().Throw<ArgumentOutOfRangeException>("name of the table to delete cannot be null or whitespace only").Which
                 .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
         }
@@ -52,9 +52,27 @@ namespace Queries.Core.Tests.Builders
         {
             get
             {
-                yield return new object[] { Truncate("SuperHero"), null, false, "comparing with a null instance" };
-                yield return new object[] { Truncate("SuperHero"), Truncate("SuperHero"), true, "comparing two instances with same tableName" };
-                yield return new object[] { Truncate("SuperHero"), Select(1.Literal()), false, "comparing two different types of query" };
+                yield return new object[]
+                {
+                    Truncate("SuperHero"),
+                    null,
+                    false,
+                    "comparing with a null instance"
+                };
+                yield return new object[]
+                {
+                    Truncate("SuperHero"),
+                    Truncate("SuperHero"),
+                    true,
+                    "comparing two instances with same tableName"
+                };
+                yield return new object[]
+                {
+                    Truncate("SuperHero"),
+                    Select(1.Literal()),
+                    false,
+                    "comparing two different types of query"
+                };
             }
         }
 

@@ -40,12 +40,12 @@ namespace Queries.Core.Parts.Functions
         {
             if (start < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(start), $"{nameof(start)} must be greater or equal to 0");
+                throw new ArgumentOutOfRangeException(nameof(start), start, $"{nameof(start)} must be greater or equal to 0");
             }
 
             if (length.HasValue && length.Value < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(length), $"{nameof(length)} must be greater or equal to 0");
+                throw new ArgumentOutOfRangeException(nameof(length), length, $"{nameof(length)} must be greater or equal to 0");
             }
 
             Column = column ?? throw new ArgumentNullException(nameof(column), $"{nameof(column)} cannot be null");

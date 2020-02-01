@@ -31,7 +31,7 @@ namespace Queries.Core.Builders
 
             if (string.IsNullOrWhiteSpace(tableName))
             {
-                throw new ArgumentOutOfRangeException(nameof(tableName), $"{nameof(tableName)} cannot be empty or whitespace");
+                throw new ArgumentOutOfRangeException(nameof(tableName), tableName, $"{nameof(tableName)} cannot be empty or whitespace");
             }
 
             Table = tableName.Table();

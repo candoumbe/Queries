@@ -106,7 +106,7 @@ namespace Queries.Renderers.SqlServer
                                 .Append(BatchStatementSeparator);
                             break;
                         default:
-                            throw new ArgumentOutOfRangeException(nameof(variable), $"Unexpected {variable.Type} variable type");
+                            throw new ArgumentOutOfRangeException(nameof(variable), variable, $"Unexpected {variable.Type} variable type");
                     }
 
                     if (Settings.PrettyPrint && sbParameters.Length > 0)
@@ -183,7 +183,7 @@ namespace Queries.Renderers.SqlServer
                             sbParameters.Append(" DATETIME = '").Append(EscapeString((variable.Value as DateTime?).Value.ToString(Settings.DateFormatString))).Append("'");
                             break;
                         default:
-                            throw new ArgumentOutOfRangeException(nameof(variable), $"Unsupported variable type");
+                            throw new ArgumentOutOfRangeException(nameof(variable),variable, $"Unsupported variable type");
                     }
 
                     if (Settings.PrettyPrint && sbParameters.Length > 0)

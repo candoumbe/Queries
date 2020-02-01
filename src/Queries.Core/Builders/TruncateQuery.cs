@@ -33,7 +33,7 @@ namespace Queries.Core.Builders
 
             if (string.IsNullOrWhiteSpace(collection))
             {
-                throw new ArgumentOutOfRangeException(nameof(collection), $"{nameof(collection)} cannot be empty or whitespace only");
+                throw new ArgumentOutOfRangeException(nameof(collection), collection, $"{nameof(collection)} cannot be empty or whitespace only");
             }
             Name = collection;
         }

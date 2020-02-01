@@ -31,11 +31,12 @@ namespace Queries.Core.Builders
         /// <remarks>
         /// This constructor filters out <c>null</c> value from <paramref name="columns"/>.
         /// </remarks>
+        /// <exception cref="ArgumentOutOfRangeException">the constructor is called with no argument</exception>
         public SelectQuery(params IColumn[] columns)
         {
             if (columns.All(x => x == null))
             {
-                throw new ArgumentOutOfRangeException(nameof(columns), "at least one column must be provided");
+                throw new ArgumentOutOfRangeException(nameof(columns), columns, "at least one column must be provided");
             }
 
             Columns = columns;

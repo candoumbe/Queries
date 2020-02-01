@@ -44,9 +44,8 @@ namespace Queries.Core.Tests.Builders
             Action action = () => new CreateViewQuery(viewName);
 
             // Assert
-            action.Should().Throw<ArgumentOutOfRangeException>("viewName is empty or whitespace").Which
-                .ParamName.Should()
-                .NotBeNullOrWhiteSpace();
+            action.Should().Throw<ArgumentOutOfRangeException>("viewName is empty or whitespace")
+                .Where( ex => !string.IsNullOrWhiteSpace(ex.ParamName));
         }
 
         public static IEnumerable<object[]> EqualsCases

@@ -25,7 +25,7 @@ namespace Queries.Core.Parts.Columns
             }
             if (string.IsNullOrWhiteSpace(columnName))
             {
-                throw new ArgumentOutOfRangeException(nameof(columnName), $"{nameof(columnName)} cannot be empty or whitespace only");
+                throw new ArgumentOutOfRangeException(nameof(columnName), columnName, $"{nameof(columnName)} cannot be empty or whitespace only");
             }
             Name = columnName;
         }
