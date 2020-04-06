@@ -66,7 +66,23 @@ steps:
   inputs:
     command: test
     projects: '$(Parameters.projects.tests)'
-    arguments: '--no-build -c $(configuration)'
+    arguments: '--no-build -c $(configuration) /p:CoverletOutput=$(Agent.TempDirectory)\ /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura'
+
+- task: DotNetCoreCLI@2
+  inputs:
+    command: custom
+    custom: tool
+    arguments: install --global dotnet-reportgenerator-globaltool
+    displayName: Install ReportGenerator tool
+  
+- script: reportgenerator -reports:$(Agent.TempDirectory)\**\coverage.*.cobertura.xml -targetdir:$(Build.SourcesDirectory)\coverlet\reports -reporttypes:"Cobertura"
+  displayName: Create reports
+  
+- task: PublishCodeCoverageResults@1
+  displayName: 'Publish code coverage'
+  inputs:
+    codeCoverageTool: Cobertura
+    summaryFileLocation: $(Build.SourcesDirectory)\coverlet\reports\Cobertura.xml  
 
 - task: DotNetCoreCLI@2
   displayName: 'dotnet pack'
@@ -79,16 +95,16 @@ steps:
     patchVersion: '$(patchVersion)'
   condition: succeededOrFailed()
 
-- task: DotNetCoreCLI@2
-  displayName: 'dotnet push'
-  inputs:
-    command: push
-    publishVstsFeed: '$(azureArtifactFeed)'
-  enabled: true
-
 # the following step sync the repo with the Github repo
 - task: nkdagility.gittasks.gitsync-task.gitsync@1
   displayName: 'Git Publish to https://$(github.apiKey)@github.com/candoumbe/$(projectName).git'
   inputs:
     GitRepoUrl: 'https://$(github.apiKey)@github.com/candoumbe/$(projectName).git'
   condition: succeededOrFailed()
+
+- task: DotNetCoreCLI@2
+  displayName: 'dotnet push'
+  inputs:
+    command: push
+    publishVstsFeed: '$(azureArtifactFeed)'
+  enabled: true
