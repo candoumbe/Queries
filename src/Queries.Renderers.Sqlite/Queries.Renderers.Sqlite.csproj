@@ -1,8 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <Import Project="..\..\library.props"/>
   <PropertyGroup>
     <TargetFramework>netstandard1.0</TargetFramework>
-    <Authors>Cyrille NDOUMBE</Authors>
   </PropertyGroup>
 
   <ItemGroup>

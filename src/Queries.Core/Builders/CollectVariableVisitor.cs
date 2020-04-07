@@ -11,7 +11,6 @@ namespace Queries.Core.Builders
 {
     /// <summary>
     /// Collects <see cref="Literal"/>s from queries and replaces each of them by a <see cref="Variable"/> counterpart. 
-    /// the collected variables.
     /// </summary>
     public class CollectVariableVisitor : IVisitor<SelectQuery>, IVisitor<IWhereClause>, IVisitor<InsertIntoQuery>, IVisitor<DeleteQuery>
     {

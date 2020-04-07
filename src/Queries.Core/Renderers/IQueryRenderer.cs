@@ -13,7 +13,7 @@
         string Render(IQuery query);
 
         /// <summary>
-        /// Performs various operations to gather informations on the current query
+        /// Performs various operations to gather informations on the current <paramref name="query"/>
         /// </summary>
         /// <param name="query">The query to compile</param>
         /// <returns>a <see cref="CompiledQuery"/> instance</returns>

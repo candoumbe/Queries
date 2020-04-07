@@ -12,12 +12,14 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using Xunit;
 using Xunit.Abstractions;
+using Xunit.Categories;
 using static Queries.Core.Builders.Fluent.QueryBuilder;
 using static Queries.Core.Parts.Clauses.ClauseOperator;
 using static Queries.Core.Parts.Columns.SelectColumn;
 
 namespace Queries.Renderers.SqlServer.Tests
 {
+    [UnitTest]
     public class SqlServerRendererTest : IDisposable
     {
         private ITestOutputHelper _outputHelper;
@@ -549,6 +551,27 @@ namespace Queries.Renderers.SqlServer.Tests
                     ),
                     "The select statement as two variables with SAME value"
                 };
+
+                //yield return new object[]
+                //{
+                //    Select("*")
+                //    .From(
+                //        Select("Fullname").From("People").Where("Firstname".Field(), Like, "B%")
+                //        .Union(
+                //        Select("Fullname").From("SuperHero").Where("Nickname".Field(), Like, "B%"))
+                //    ),
+                //    new SqlServerRendererSettings{ PrettyPrint = true, SkipVariableDeclaration = true },
+                //    (Expression<Func<CompiledQuery, bool>>)(
+                //        query => query.Statement == $"SELECT * {Environment.NewLine}FROM ("
+                //                                    + $"SELECT [Fullname] {Environment.NewLine}FROM [People] {Environment.NewLine}WHERE ([Firstname] LIKE @p0) "
+                //                                    + $"UNION {Environment.NewLine}"
+                //                                    + $"SELECT [Fullname] {Environment.NewLine}FROM [SuperHero] {Environment.NewLine}WHERE ([Nickname] LIKE @p0)"
+                //                                    + ")"
+                //            && query.Variables.Once()
+                //            && query.Variables.Once(v => v.Name == "p0" && "B%".Equals(v.Value) && v.Type == VariableType.String)
+                //    ),
+                //    "The select statement as two variables with SAME value"
+                //};
             }
         }
 
@@ -563,6 +586,7 @@ namespace Queries.Renderers.SqlServer.Tests
             CompiledQuery compiledQuery = renderer.Compile(query);
 
             _outputHelper.WriteLine($"{nameof(compiledQuery)} : '{compiledQuery}'");
+            _outputHelper.WriteLine($"{nameof(CompiledQuery)}.{nameof(CompiledQuery.Statement)} : '{compiledQuery.Statement}'");
 
             // Assert
             compiledQuery.Should()
@@ -742,6 +766,51 @@ namespace Queries.Renderers.SqlServer.Tests
         [Theory]
         [MemberData(nameof(SqlInjectionAttackCases))]
         public void PreventSqlInjectionAttack(IQuery query, SqlServerRendererSettings settings, string expectedString) => IsQueryOk(query, settings, expectedString);
+
+        public static IEnumerable<object[]> CreateViewCases
+        {
+            get
+            {
+                yield return new object[]
+                {
+                    CreateView("active_users")
+                    .As(Select(Concat("Firstname".Field(), " ".Literal(), "Lastname".Field() ))
+                        .From("members")
+                        .Where("IsActive".Field().EqualTo(true))
+                        .Build()),
+                    new SqlServerRendererSettings (),
+                    "CREATE VIEW [active_users] " +
+                    "AS SELECT [Firstname] + ' ' + [Lastname] FROM [members] WHERE ([IsActive] = 1)"
+                };
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(CreateViewCases))]
+        public void CreateViewTest(CreateViewQuery query, SqlServerRendererSettings settings, string expectedString)
+            => IsQueryOk(query, settings, expectedString);
+
+        public static IEnumerable<object[]> InsertIntoQueryCases
+        {
+            get
+            {
+                yield return new object[]
+                {
+                    InsertInto("members")
+                    .Values(
+                        "Firstname".Field().InsertValue("Bruce".Literal()),
+                        "Lastname".Field().InsertValue("Wayne".Literal())
+                    ),
+                    new SqlServerRendererSettings(),
+                    "INSERT INTO [members] ([Firstname], [Lastname]) VALUES ('Bruce', 'Wayne')"
+                };
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(InsertIntoQueryCases))]
+        public void InsertIntoQueryTest(InsertIntoQuery query, SqlServerRendererSettings settings, string expectedString)
+            => IsQueryOk(query, settings, expectedString);
 
         private void IsQueryOk(IQuery query, SqlServerRendererSettings settings, string expectedString)
         {

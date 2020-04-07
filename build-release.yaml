@@ -32,20 +32,10 @@ trigger:
      - '**/*.md'
 
 pool:
-  name: Hosted VS2017
+  vmImage : windows-latest
 #Your build pipeline references a secret variable named ‘github.apiKey’. Create or edit the build pipeline for this YAML file, define the variable on the Variables tab, and then select the option to make it secret. See https://go.microsoft.com/fwlink/?linkid=865972
         
 steps:
-- task: UseDotNet@2
-  displayName: 'Use .NET Core sdk 3.0.100'
-  inputs:
-    version: 3.0.100
-
-- task: UseDotNet@2
-  displayName: 'Use .NET Core sdk 2.2.401'
-  inputs:
-    version: 2.2.401
-
 - task: DotNetCoreCLI@2
   displayName: 'dotnet restore'
   inputs:
@@ -62,7 +52,7 @@ steps:
     arguments: '--no-restore -c $(configuration)'
 
 - task: DotNetCoreCLI@2
-  displayName: 'dotnet test'
+  displayName: 'Run tests and collect code coverage'
   inputs:
     command: test
     projects: '$(Parameters.projects.tests)'
@@ -72,8 +62,8 @@ steps:
   inputs:
     command: custom
     custom: tool
-    arguments: install --global dotnet-reportgenerator-globaltool
-    displayName: Install ReportGenerator tool
+    arguments: install -g dotnet-reportgenerator-globaltool --ignore-failed-sources
+  displayName: Install ReportGenerator tool
   
 - script: reportgenerator -reports:$(Agent.TempDirectory)\**\coverage.*.cobertura.xml -targetdir:$(Build.SourcesDirectory)\coverlet\reports -reporttypes:"Cobertura"
   displayName: Create reports

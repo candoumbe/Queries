@@ -70,7 +70,7 @@ namespace Queries.Renderers.SqlServer
                     result = Render(batchQuery);
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException("Unknown type of query");
+                    throw new ArgumentOutOfRangeException(nameof(query), "Unknown type of query");
             }
             StringBuilder sbParameters = new StringBuilder(visitor.Variables.Count() * 100);
 
@@ -118,7 +118,7 @@ namespace Queries.Renderers.SqlServer
             return sbParameters.Append(result).ToString();
         }
 
-        public CompiledQuery Compoile(IQuery query)
+        public override CompiledQuery Compile(IQuery query)
         {
             string result = string.Empty;
             CollectVariableVisitor visitor = new CollectVariableVisitor();

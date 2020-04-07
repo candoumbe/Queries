@@ -812,7 +812,8 @@ namespace Queries.Core.Renderers
 
         public virtual string BatchStatementSeparator => ";";
 
-        public CompiledQuery Compile(IQuery query)
+        /// <inheritdoc/>
+        public virtual CompiledQuery Compile(IQuery query)
         {
             CollectVariableVisitor visitor = new CollectVariableVisitor();
             CompiledQuery compiledQuery;
