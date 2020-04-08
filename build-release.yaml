@@ -91,6 +91,7 @@ steps:
   inputs:
     GitRepoUrl: 'https://$(github.apiKey)@github.com/candoumbe/$(projectName).git'
   condition: succeededOrFailed()
+  enabled: false
 
 - task: DotNetCoreCLI@2
   displayName: 'dotnet push'
