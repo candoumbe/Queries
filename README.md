@@ -1,4 +1,4 @@
-# Queries [![Build Status](https://candoumbe.visualstudio.com/Queries/_apis/build/status/Queries?branchName=master)](https://candoumbe.visualstudio.com/Queries/_build/latest?branchName=master)
+# Queries [![Build Status](https://dev.azure.com/candoumbe/Queries/_apis/build/status/Queries?branchName=master)](https://dev.azure.com/candoumbe/Queries/_build/latest?definitionId=21&branchName=master)
 
 This is a "basic" datastore agnostic query builder.
 
