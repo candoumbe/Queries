@@ -25,8 +25,9 @@ trigger:
   branches:
    include:
       - master
-      - features/*
-      - fixes/*
+      - feature/*
+      - fix/*
+      - release/*
   paths:
    exclude:
      - '**/*.md'
