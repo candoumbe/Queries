@@ -3,8 +3,7 @@
   <Import Project="..\..\test.props" />
   <PropertyGroup>
     <Description>Queries.Core.Tests Class Library</Description>
-    <Authors>Cyrille NDOUMBE</Authors>
-    <TargetFrameworks>netcoreapp2.1;netcoreapp2.2;netcoreapp3.0</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.1;netcoreapp2.2;netcoreapp3.0;netcoreapp3.1</TargetFrameworks>
     <AssemblyName>Queries.Core.Tests</AssemblyName>
     <PackageId>Queries.Core.Tests</PackageId>
   </PropertyGroup>
