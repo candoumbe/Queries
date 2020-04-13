@@ -47,6 +47,13 @@ namespace System
         public static NumericColumn Literal(this long value) => new NumericColumn(value);
 
         /// <summary>
+        /// Converts an <see cref="decimal"/> to <see cref="NumericColumn"/>
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static NumericColumn Literal(this decimal value) => new NumericColumn(value);
+
+        /// <summary>
         /// Converts an <see cref="DateTime"/> to <see cref="DateTimeColumn"/>
         /// </summary>
         /// <param name="value"></param>

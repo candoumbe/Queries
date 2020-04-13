@@ -85,6 +85,30 @@ namespace Queries.Core.Tests.Parts.Columns
                 .Should().BeApproximately(value, double.Epsilon, $"{nameof(NumericColumn)}.{nameof(NumericColumn.Value)} should be equal to the ctor input");
         }
 
+        public static IEnumerable<object[]> CtorWithDecimalArgumentCases
+        {
+            get
+            {
+                yield return new object[] { 0m };
+                yield return new object[] { 6.4m };
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(CtorWithDecimalArgumentCases))]
+        public void CtorWithDecimalArgument(decimal value)
+        {
+            _outputHelper.WriteLine($"{nameof(value)} : {value}");
+
+            // Act
+            NumericColumn column = new NumericColumn(value);
+
+            // Assert
+            column.Value.Should()
+                .BeAssignableTo<decimal>().Which
+                .Should().Be(value, $"{nameof(NumericColumn)}.{nameof(NumericColumn.Value)} should be equal to the ctor input");
+        }
+
         [Theory]
         [InlineData(0F)]
         [InlineData(float.MinValue)]

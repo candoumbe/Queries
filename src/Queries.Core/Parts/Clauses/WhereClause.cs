@@ -20,7 +20,7 @@ namespace Queries.Core.Parts.Clauses
         /// <summary>
         /// Builds a new <see cref="WhereClause"/> instance.
         /// </summary>
-        /// <param name="column"><see cref="IColumn"/> where to apply the clase onto</param>
+        /// <param name="column"><see cref="IColumn"/> where to apply the clause onto</param>
         /// <param name="operator"><see cref="ClauseOperator"/> to apply</param>
         /// <param name="constraint">constraint to apply to <paramref name="column"/>.</param>
         /// <exception cref="ArgumentNullException">if <paramref name="column"/> is <c>null</c>.</exception>
@@ -51,24 +51,63 @@ namespace Queries.Core.Parts.Clauses
             }
         }
 
+        /// <summary>
+        /// Builds a new <see cref="WhereClause"/> instance with a <see cref="string"/> constraint.
+        /// </summary>
+        /// <param name="column"><see cref="IColumn"/> where to apply the clause onto</param>
+        /// <param name="operator"><see cref="ClauseOperator"/> to apply</param>
+        /// <param name="constraint">constraint to apply to <paramref name="column"/>.</param>
+        /// <exception cref="ArgumentNullException">if <paramref name="column"/> is <c>null</c>.</exception>
         public WhereClause(IColumn column, ClauseOperator @operator, string constraint) : this(column, @operator, constraint?.Literal())
         {
-
         }
 
+        /// <summary>
+        /// Builds a new <see cref="WhereClause"/> instance with a <see cref="DateTime"/> constraint.
+        /// </summary>
+        /// <param name="column"><see cref="IColumn"/> where to apply the clause onto</param>
+        /// <param name="operator"><see cref="ClauseOperator"/> to apply</param>
+        /// <param name="constraint">constraint to apply to <paramref name="column"/>.</param>
+        /// <exception cref="ArgumentNullException">if <paramref name="column"/> is <c>null</c>.</exception>
         public WhereClause(IColumn column, ClauseOperator @operator, DateTime? constraint) : this(column, @operator, constraint?.Literal())
         {
-
         }
 
         public WhereClause(IColumn column, ClauseOperator @operator, bool? constraint) : this(column, @operator, constraint?.Literal())
         {
-
         }
 
+        /// <summary>
+        /// Builds a new <see cref="WhereClause"/> instance with a <see cref="long"/> constraint.
+        /// </summary>
+        /// <param name="column"><see cref="IColumn"/> where to apply the clause onto</param>
+        /// <param name="operator"><see cref="ClauseOperator"/> to apply</param>
+        /// <param name="constraint">constraint to apply to <paramref name="column"/>.</param>
+        /// <exception cref="ArgumentNullException">if <paramref name="column"/> is <c>null</c>.</exception>
         public WhereClause(IColumn column, ClauseOperator @operator, long? constraint) : this(column, @operator, constraint?.Literal())
         {
+        }
 
+        /// <summary>
+        /// Builds a new <see cref="WhereClause"/> instance with a <see cref="decimal"/> constraint.
+        /// </summary>
+        /// <param name="column"><see cref="IColumn"/> where to apply the clause onto</param>
+        /// <param name="operator"><see cref="ClauseOperator"/> to apply</param>
+        /// <param name="constraint">constraint to apply to <paramref name="column"/>.</param>
+        /// <exception cref="ArgumentNullException">if <paramref name="column"/> is <c>null</c>.</exception>
+        public WhereClause(IColumn column, ClauseOperator @operator, decimal? constraint) : this(column, @operator, constraint?.Literal())
+        {
+        }
+
+        /// <summary>
+        /// Builds a new <see cref="WhereClause"/> instance with a <see cref="float"/> constraint.
+        /// </summary>
+        /// <param name="column"><see cref="IColumn"/> where to apply the clause onto</param>
+        /// <param name="operator"><see cref="ClauseOperator"/> to apply</param>
+        /// <param name="constraint">constraint to apply to <paramref name="column"/>.</param>
+        /// <exception cref="ArgumentNullException">if <paramref name="column"/> is <c>null</c>.</exception>
+        public WhereClause(IColumn column, ClauseOperator @operator, float? constraint) : this(column, @operator, constraint?.Literal())
+        {
         }
 
         public override bool Equals(object obj) => Equals(obj as WhereClause);

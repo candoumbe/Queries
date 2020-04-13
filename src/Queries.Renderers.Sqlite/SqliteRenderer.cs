@@ -116,9 +116,8 @@ namespace Queries.Renderers.Sqlite
                         default:
                             throw new ArgumentOutOfRangeException($"Unsupported {variable.Type} as variable type");
                     }
-
-                    
                 }
+
                 BatchQuery batch = new BatchQuery()
                     .AddStatement("BEGIN".AsNative())
                     .AddStatement("PRAGMA temp_store = 2".AsNative())
@@ -148,7 +147,6 @@ namespace Queries.Renderers.Sqlite
                     .Append(RenderColumn(defaultValue, false));
             }
             sbNullColumn.Append(")");
-
 
             return renderAlias && !string.IsNullOrWhiteSpace(nullColumn.Alias)
                 ? RenderColumnnameWithAlias(sbNullColumn.ToString(), EscapeName(nullColumn.Alias))

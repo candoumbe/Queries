@@ -20,13 +20,11 @@ namespace Queries.Core.Parts.Columns
         /// </summary>
         /// <param name="first">First valuue</param>
         /// <param name="others">Other values</param>
-        public MultipleValues(T first, params T[] others) => Values = new[] { first }.Concat(others);
-
+        protected MultipleValues(T first, params T[] others) => Values = new[] { first }.Concat(others);
 
         public override bool Equals(object obj) => Equals(obj as MultipleValues<T>);
         public bool Equals(MultipleValues<T> other) => other != null && Values.SequenceEqual(other.Values);
         public override int GetHashCode() => 1291433875 + Values.GetHashCode();
-
 
         public override string ToString() => $"[{string.Join(",", Values)}]";
         public IEnumerator<T> GetEnumerator() => Values.GetEnumerator();

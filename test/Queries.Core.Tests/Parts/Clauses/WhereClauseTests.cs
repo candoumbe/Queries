@@ -179,7 +179,23 @@ namespace Queries.Core.Tests.Parts.Clauses
                     new WhereClause("XP".Field(), LessThanOrEqualTo, 10),
                     new WhereClause("XP".Field(), LessThanOrEqualTo, 10L),
                     true,
-                    "Comparing 2 where clauses with same field and numeric constraint"
+                    "Comparing 2 where clauses with same field and long/int constraint"
+                };
+
+                yield return new object[]
+                {
+                    new WhereClause("XP".Field(), LessThanOrEqualTo, 6.4m),
+                    new WhereClause("XP".Field(), LessThanOrEqualTo, 6.4m),
+                    true,
+                    "Comparing 2 where clauses with same field and decimal constraint"
+                };
+
+                yield return new object[]
+                {
+                    new WhereClause("XP".Field(), LessThanOrEqualTo, 6m),
+                    new WhereClause("XP".Field(), LessThanOrEqualTo, 6),
+                    true,
+                    "Comparing 2 where clauses with same field and decimal/int constraints"
                 };
             }
         }
@@ -208,6 +224,7 @@ namespace Queries.Core.Tests.Parts.Clauses
                 yield return new[] { new WhereClause(1.Literal(), LessThan, 2) };
                 yield return new[] { new WhereClause(1.Literal(), GreaterThan, 2) };
                 yield return new[] { new WhereClause(1.Literal(), GreaterThanOrEqualTo, 2) };
+                yield return new[] { new WhereClause("Height".Field(), GreaterThanOrEqualTo, 2.3m) };
             }
         }
 

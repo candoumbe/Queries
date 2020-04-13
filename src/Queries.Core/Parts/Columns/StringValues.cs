@@ -25,7 +25,6 @@ namespace Queries.Core.Parts.Columns
 
         public override bool Equals(ColumnBase other) => Equals(other as StringValues);
 
-
         public override string ToString() => $"[{string.Join(",", Values)}]";
     }
 }

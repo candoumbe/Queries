@@ -20,6 +20,7 @@ namespace Queries.Core.Parts.Columns
             {
                 int i => i,
                 float f => f,
+                decimal d => d,
                 double d => d,
                 long l => l,
                 bool b => b,
@@ -27,7 +28,7 @@ namespace Queries.Core.Parts.Columns
                 DateTime dateTime => dateTime,
                 DateTimeOffset dateTimeOffset => dateTimeOffset,
                 null => null,
-                _ => throw new ArgumentException(nameof(value), "only bool/int/float/double/long/string/Datetime/DateTimeOffset are supported"),
+                _ => throw new ArgumentException(nameof(value), "only bool/int/float/decimal/double/long/string/Datetime/DateTimeOffset are supported"),
             };
         }
 
