@@ -109,7 +109,7 @@ namespace Queries.Core.Tests.Parts.Columns
         public void CtorWithFloatNullArgument()
         {
             // Act
-            NumericColumn column = new NumericColumn((float?) null);
+            NumericColumn column = new NumericColumn((float?)null);
 
             // Assert
             column.Value.Should()
@@ -143,12 +143,42 @@ namespace Queries.Core.Tests.Parts.Columns
             get
             {
                 yield return new object[] { new NumericColumn(1), null, false, "object is null" };
-                yield return new object[] { new NumericColumn(1), new NumericColumn(1), true, $"object is a {nameof(NumericColumn)} with exactly the same {nameof(NumericColumn.Value)} and {nameof(NumericColumn.Alias)}" };
-                
+                yield return new object[]
+                {
+                    new NumericColumn(1),
+                    new NumericColumn(1),
+                    true,
+                    $"object is a {nameof(NumericColumn)} with exactly the same {nameof(NumericColumn.Value)} and {nameof(NumericColumn.Alias)}"
+                };
+
                 {
                     NumericColumn column = new NumericColumn(1);
                     yield return new object[] { column, column, true, "Equals with same instance" };
                 }
+
+                yield return new object[]
+                {
+                    new NumericColumn(10L),
+                    new NumericColumn(10L),
+                    true,
+                    "both instances contain same value (long)"
+                };
+
+                yield return new object[]
+                {
+                    new NumericColumn(10L),
+                    new NumericColumn(10),
+                    true,
+                    "the first instance holds 10L which equals 10"
+                };
+
+                yield return new object[]
+                {
+                    new NumericColumn(10f),
+                    new NumericColumn(10),
+                    true,
+                    "the first instance holds 10f which is roughly equals to 10"
+                };
             }
         }
 

@@ -173,6 +173,14 @@ namespace Queries.Core.Tests.Parts.Clauses
                     true,
                     "comparing a to a fluent instance with same columns and constrains"
                 };
+
+                yield return new object[]
+                {
+                    new WhereClause("XP".Field(), LessThanOrEqualTo, 10),
+                    new WhereClause("XP".Field(), LessThanOrEqualTo, 10L),
+                    true,
+                    "Comparing 2 where clauses with same field and numeric constraint"
+                };
             }
         }
 

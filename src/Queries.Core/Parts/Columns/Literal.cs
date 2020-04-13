@@ -44,7 +44,9 @@ namespace Queries.Core.Parts.Columns
 
         public override bool Equals(object obj) => Equals(obj as Literal);
 
-        public bool Equals(Literal other) => (Value, Alias).Equals((other?.Value, other?.Alias));
+        public bool Equals(Literal other) => other != null
+            && (other.Value?.Equals(Value) ?? false)
+            && (Alias == other.Alias);
 
         public override bool Equals(ColumnBase other) => Equals(other as Literal);
 
