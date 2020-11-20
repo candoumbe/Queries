@@ -4,16 +4,9 @@
 
   <PropertyGroup>
     <Description>Renderer specific to MySQL database engine</Description>
-    <VersionPrefix>3.0.0-alpha-01</VersionPrefix>
     <TargetFramework>netstandard1.0</TargetFramework>
-    <AssemblyName>Queries.Renderers.MySQL</AssemblyName>
-    <PackageId>Queries.Renderers.MySQL</PackageId>
     <PackageTags>Query;Builder;SQL;MySQL</PackageTags>
     <PackageReleaseNotes>Added dedicated class for each renderer settings</PackageReleaseNotes>
-    <PackageProjectUrl>https://candoumbe.visualstudio.com/Queries</PackageProjectUrl>
-    <Version>3.0.1-alpha-01</Version>
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>$(PackageProjectUrl)</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>

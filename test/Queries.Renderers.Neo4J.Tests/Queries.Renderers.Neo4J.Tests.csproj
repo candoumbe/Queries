@@ -3,9 +3,7 @@
   <Import Project="..\..\test.props" />
   <PropertyGroup>
     <Description>Queries.Renderers.Neo4J.Tests Class Library</Description>
-    <TargetFrameworks>netcoreapp2.1;netcoreapp2.2;netcoreapp3.0;netcoreapp3.1</TargetFrameworks>
-    <AssemblyName>Queries.Renderers.Neo4J.Tests</AssemblyName>
-    <PackageId>Queries.Renderers.Neo4J.Tests</PackageId>
+    <TargetFrameworks>netcoreapp3.1;net5</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>

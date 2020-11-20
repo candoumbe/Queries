@@ -125,7 +125,7 @@ namespace Queries.Core.Tests.Parts.Clauses
                                 Logic = And,
                                 Clauses = new IWhereClause[]
                                 {
-                                    new WhereClause("DateOfBirth".Field(), LessThan, 1.January(1990)),
+                                    new WhereClause("DateOfBirth".Field(), ClauseOperator.LessThan, 1.January(1990)),
                                     new CompositeWhereClause{
                                         Logic = Or,
                                         Clauses = new[]
@@ -152,7 +152,7 @@ namespace Queries.Core.Tests.Parts.Clauses
                                     Logic = And,
                                     Clauses = new IWhereClause[]
                                     {
-                                        new WhereClause("DateOfBirth".Field(), LessThan, new Variable("p0", VariableType.Date, 1.January(1990))),
+                                        new WhereClause("DateOfBirth".Field(), ClauseOperator.LessThan, new Variable("p0", VariableType.Date, 1.January(1990))),
                                         new CompositeWhereClause{
                                             Logic = Or,
                                             Clauses = new[]

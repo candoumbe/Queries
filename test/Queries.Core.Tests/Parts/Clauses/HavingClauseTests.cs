@@ -43,7 +43,7 @@ namespace Queries.Core.Tests.Parts.Clauses
                     NotEqualTo,
                     GreaterThan,
                     GreaterThanOrEqualTo,
-                    LessThan,
+                    ClauseOperator.LessThan,
                     LessThanOrEqualTo,
                     NotEqualTo
                 };

@@ -5,8 +5,6 @@
     <Description>Contains the core classes to build queries.</Description>
     <AssemblyTitle>Queries.Core</AssemblyTitle>
     <TargetFrameworks>netstandard1.0; netstandard1.1; netstandard1.3;netstandard2.1</TargetFrameworks>
-    <AssemblyName>Queries.Core</AssemblyName>
-    <PackageId>Queries.Core</PackageId>
     <PackageTags>Queries;Query;SQL;Builder</PackageTags>
     <PackageReleaseNotes>
       Added NativeQuery which allows to build querie that are specific to the target engine. The query built will be rendered "as is".
@@ -18,7 +16,6 @@
     <PackageProjectUrl>https://dev.azure.com/candoumbe/Queries</PackageProjectUrl>
     <RepositoryUrl>https://dev.azure.com/candoumbe/Queries</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>  
   <Choose>
     <When Condition="'$(TargetFramework)' == 'netstandard1.0' OR '$(TargetFramework)' == 'netstandard1.3'">

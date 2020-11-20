@@ -29,7 +29,7 @@ namespace Queries.Core.Tests.Parts.Clauses
         [InlineData(In)]
         [InlineData(IsNotNull)]
         [InlineData(IsNull)]
-        [InlineData(LessThan)]
+        [InlineData(ClauseOperator.LessThan)]
         [InlineData(LessThanOrEqualTo)]
         [InlineData(Like)]
         [InlineData(NotEqualTo)]
@@ -98,10 +98,10 @@ namespace Queries.Core.Tests.Parts.Clauses
 
                 yield return new object[]
                 {
-                    "Firstname".Field(), LessThan, "Bruce",
+                    "Firstname".Field(), ClauseOperator.LessThan, "Bruce",
                     (Expression<Func<WhereClause, bool>>)(clause =>
                         "Firstname".Field().Equals(clause.Column)
-                        && LessThan == clause.Operator
+                        && ClauseOperator.LessThan == clause.Operator
                         && "Bruce".Literal().Equals(clause.Constraint)
                     )
                 };
@@ -221,7 +221,7 @@ namespace Queries.Core.Tests.Parts.Clauses
                 yield return new[] { new WhereClause("Firstname".Field(), EqualTo, "Bruce") };
                 yield return new[] { new WhereClause("Firstname".Field(), IsNull) };
                 yield return new[] { new WhereClause("Firstname".Field(), IsNotNull, "Bruce") };
-                yield return new[] { new WhereClause(1.Literal(), LessThan, 2) };
+                yield return new[] { new WhereClause(1.Literal(), ClauseOperator.LessThan, 2) };
                 yield return new[] { new WhereClause(1.Literal(), GreaterThan, 2) };
                 yield return new[] { new WhereClause(1.Literal(), GreaterThanOrEqualTo, 2) };
                 yield return new[] { new WhereClause("Height".Field(), GreaterThanOrEqualTo, 2.3m) };

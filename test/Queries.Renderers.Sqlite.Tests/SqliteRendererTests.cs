@@ -18,7 +18,7 @@ namespace Queries.Renderers.Sqlite.Tests
     [Feature("Sqlite")]
     public class SqliteRendererTests
     {
-        private ITestOutputHelper _outputHelper;
+        private readonly ITestOutputHelper _outputHelper;
 
         public SqliteRendererTests(ITestOutputHelper outputHelper)
         {

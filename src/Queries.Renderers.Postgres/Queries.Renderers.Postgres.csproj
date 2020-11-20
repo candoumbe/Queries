@@ -4,16 +4,12 @@
     <Description>
       Queries.Renderers.Postgres Class Library
     </Description>
-    <VersionPrefix>3.0.0-alpha-01</VersionPrefix>
     <TargetFramework>netstandard1.0</TargetFramework>
-    <AssemblyName>Queries.Renderers.Postgres</AssemblyName>
-    <PackageId>Queries.Renderers.Postgres</PackageId>
     <PackageTags>Query;Builder;SQL;Postgres</PackageTags>
     <PackageReleaseNotes>This is an alpha version</PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/candoumbe/Queries</PackageProjectUrl>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>git://github.com/candoumbe/Queries</RepositoryUrl>
-    <Version>3.0.1-alpha-01</Version>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Optional" Version="4.0.0" />
