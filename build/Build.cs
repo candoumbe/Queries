@@ -26,22 +26,34 @@ using static Nuke.Common.Tools.ReportGenerator.ReportGeneratorTasks;
 namespace Queries.Pipelines
 {
     [AzurePipelines(
+        suffix: "pull-request",
         AzurePipelinesImage.WindowsLatest,
-        InvokedTargets = new[] { nameof(Pack) },
+        InvokedTargets = new[] { nameof(Tests) },
         NonEntryTargets = new[] { nameof(Restore) },
-        ExcludedTargets = new [] { nameof(Clean) },
+        ExcludedTargets = new[] { nameof(Clean) },
         PullRequestsAutoCancel = true,
         PullRequestsBranchesInclude = new[] { MainBranch },
         TriggerBranchesInclude = new[] {
-            MainBranch,
             FeatureBranch + "/*",
             SupportBranch + "/*",
             HotfixBranch + "/*"
         },
         TriggerPathsExclude = new[]
         {
-        "docs/*",
-        "README.md"
+            "docs/*",
+            "README.md"
+        }
+    )]
+    [AzurePipelines(
+        AzurePipelinesImage.WindowsLatest,
+        InvokedTargets = new[] { nameof(Pack) },
+        NonEntryTargets = new[] { nameof(Restore) },
+        ExcludedTargets = new [] { nameof(Clean) },
+        TriggerBranchesInclude = new[] { MainBranch },
+        TriggerPathsExclude = new[]
+        {
+            "docs/*",
+            "README.md"
         }
     )]
     [CheckBuildProjectConfigurations]
