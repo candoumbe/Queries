@@ -126,7 +126,6 @@ namespace Queries.Pipelines
             {
                 IEnumerable<Project> projects = Solution.GetProjects("*.Tests");
                 
-                Info("Before running 'dotnet test'");
                 DotNetTest(s => s
                     .SetConfiguration(Configuration)
                     .EnableCollectCoverage()
@@ -139,14 +138,14 @@ namespace Queries.Pipelines
                         .CombineWith(project.GetTargetFrameworks(), (setting, framework) => setting
                             .SetFramework(framework)
                             .SetLogger($"trx;LogFileName={project.Name}.{framework}.trx")
-                            .SetCoverletOutput(TestResultDirectory / $"{project.Name}.{framework}.xml"))
+                            .SetCoverletOutput(TestResultDirectory / $"{project.Name}.xml"))
                         )
                 );
                 
                 TestResultDirectory.GlobFiles("*.trx")
-                                .ForEach(testFileResult => AzurePipelines?.PublishTestResults(type: AzurePipelinesTestResultsType.VSTest,
-                                                                                                title: $"{Path.GetFileNameWithoutExtension(testFileResult)} ({AzurePipelines.StageDisplayName})",
-                                                                                                files: new string[] { testFileResult })
+                                   .ForEach(testFileResult => AzurePipelines?.PublishTestResults(type: AzurePipelinesTestResultsType.VSTest,
+                                                                                                 title: $"{Path.GetFileNameWithoutExtension(testFileResult)} ({AzurePipelines.StageDisplayName})",
+                                                                                                 files: new string[] { testFileResult })
                 );
 
                 // TODO Move this to a separate "coverage" target once https://github.com/nuke-build/nuke/issues/562 is solved !
@@ -158,7 +157,7 @@ namespace Queries.Pipelines
                         );
 
                 TestResultDirectory.GlobFiles("*.xml")
-                                .ForEach(file => AzurePipelines?.PublishCodeCoverage(coverageTool: AzurePipelinesCodeCoverageToolType.Cobertura,
+                                   .ForEach(file => AzurePipelines?.PublishCodeCoverage(coverageTool: AzurePipelinesCodeCoverageToolType.Cobertura,
                                                                                         summaryFile: file,
                                                                                         reportDirectory: CoverageReportDirectory));
             });
