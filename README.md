@@ -55,7 +55,7 @@ using (var conn = GetConnectionSomehow() )
     nicknameParam.Value = "Bat%";
 
     SqlCommand cmd = new SqlCommand();
-    cmd.Connection = conn;
+    cmd.Connection = conn;
     
     cmd.CommandText = "SELECT Firstname + ' ' + 'Lastname' FROM SuperHero WHERE Nickname LIKE @nickname";
 

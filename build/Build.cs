@@ -29,6 +29,7 @@ namespace Queries.Pipelines
         AzurePipelinesImage.WindowsLatest,
         InvokedTargets = new[] { nameof(Pack) },
         NonEntryTargets = new[] { nameof(Restore) },
+        ExcludedTargets = new [] { nameof(Clean) },
         PullRequestsAutoCancel = true,
         PullRequestsBranchesInclude = new[] { MainBranch },
         TriggerBranchesInclude = new[] {
