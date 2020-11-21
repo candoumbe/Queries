@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Queries.Core\Queries.Core.csproj" />
     <ProjectReference Include="..\..\src\Queries.Renderers.SqlServer\Queries.Renderers.SqlServer.csproj" />
   </ItemGroup>
 
