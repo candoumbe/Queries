@@ -3,7 +3,6 @@
   <Import Project="..\..\test.props" />
   <PropertyGroup>
     <TargetFrameworks>netcoreapp3.1;net5</TargetFrameworks>
-    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
