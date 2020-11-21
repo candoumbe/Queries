@@ -122,63 +122,45 @@ namespace Queries.Pipelines
             .Description("Run unit tests and collect code")
             .Produces(TestResultDirectory / "*.trx")
             .Produces(TestResultDirectory / "*.xml")
-            .Partition(() => TestPartition)
             .Executes(() =>
             {
                 IEnumerable<Project> projects = Solution.GetProjects("*.Tests");
-                IEnumerable<Project> testsProjects = TestPartition.GetCurrent(projects);
+                
+                Info("Before running 'dotnet test'");
+                DotNetTest(s => s
+                    .SetConfiguration(Configuration)
+                    .EnableCollectCoverage()
+                    .EnableUseSourceLink()
+                    .SetNoBuild(InvokedTargets.Contains(Compile))
+                    .SetResultsDirectory(TestResultDirectory)
+                    .SetCoverletOutputFormat(CoverletOutputFormat.cobertura)
+                    .AddProperty("ExcludeByAttribute", "Obsolete")
+                    .CombineWith(projects, (cs, project) => cs.SetProjectFile(project)
+                        .CombineWith(project.GetTargetFrameworks(), (setting, framework) => setting
+                            .SetFramework(framework)
+                            .SetLogger($"trx;LogFileName={project.Name}.{framework}.trx")
+                            .SetCoverletOutput(TestResultDirectory / $"{project.Name}.{framework}.xml"))
+                        )
+                );
+                
+                TestResultDirectory.GlobFiles("*.trx")
+                                .ForEach(testFileResult => AzurePipelines?.PublishTestResults(type: AzurePipelinesTestResultsType.VSTest,
+                                                                                                title: $"{Path.GetFileNameWithoutExtension(testFileResult)} ({AzurePipelines.StageDisplayName})",
+                                                                                                files: new string[] { testFileResult })
+                );
 
-                testsProjects.ForEach(project => Info(project));
+                // TODO Move this to a separate "coverage" target once https://github.com/nuke-build/nuke/issues/562 is solved !
+                ReportGenerator(_ => _
+                            .SetFramework("net5.0")
+                            .SetReports(TestResultDirectory / "*.xml")
+                            .SetReportTypes(ReportTypes.Badges, ReportTypes.HtmlChart, ReportTypes.HtmlInline_AzurePipelines_Dark)
+                            .SetTargetDirectory(CoverageReportDirectory)
+                        );
 
-                if (testsProjects.Any())
-                {
-
-                    Info("Before running 'dotnet test'");
-                    DotNetTest(s => s
-                        .SetConfiguration(Configuration)
-                        .EnableCollectCoverage()
-                        .EnableUseSourceLink()
-                        .SetNoBuild(InvokedTargets.Contains(Compile))
-                        .SetResultsDirectory(TestResultDirectory)
-                        .SetCoverletOutputFormat(CoverletOutputFormat.cobertura)
-                        .AddProperty("ExcludeByAttribute", "Obsolete")
-                        .CombineWith(testsProjects, (cs, project) => cs.SetProjectFile(project)
-                            .CombineWith(project.GetTargetFrameworks(), (setting, framework) => setting
-                                .SetFramework(framework)
-                                .SetLogger($"trx;LogFileName={project.Name}.{framework}.trx")
-                                .SetCoverletOutput(TestResultDirectory / $"{project.Name}.{framework}.xml"))
-                            )
-                    );
-                    Trace("After running 'dotnet test'");
-
-                    Trace("Before publishing test results");
-                    TestResultDirectory.GlobFiles("*.trx")
-                                    .ForEach(testFileResult => AzurePipelines?.PublishTestResults(type: AzurePipelinesTestResultsType.VSTest,
-                                                                                                    title: $"{Path.GetFileNameWithoutExtension(testFileResult)} ({AzurePipelines.StageDisplayName})",
-                                                                                                    files: new string[] { testFileResult })
-                    );
-                    Trace("After publishing test results");
-
-
-                    // TODO Move this to a separate "coverage" target once https://github.com/nuke-build/nuke/issues/562 is solved !
-                    Trace("Before reporting code coverage");
-                    ReportGenerator(_ => _
-                                .SetFramework("net5.0")
-                                .SetReports(TestResultDirectory / "*.xml")
-                                .SetReportTypes(ReportTypes.Badges, ReportTypes.HtmlChart, ReportTypes.HtmlInline_AzurePipelines_Dark)
-                                .SetTargetDirectory(CoverageReportDirectory)
-                            );
-                    Trace("After reporting code coverage");
-
-                    Trace("Before publishing code coverage");
-                    TestResultDirectory.GlobFiles("*.xml")
-                                    .ForEach(file => AzurePipelines?.PublishCodeCoverage(coverageTool: AzurePipelinesCodeCoverageToolType.Cobertura,
-                                                                                            summaryFile: file,
-                                                                                            reportDirectory: CoverageReportDirectory));
-                    Trace("After publishing code coverage");
-                    Info("Fin d'exécution des tests");
-
-                }
+                TestResultDirectory.GlobFiles("*.xml")
+                                .ForEach(file => AzurePipelines?.PublishCodeCoverage(coverageTool: AzurePipelinesCodeCoverageToolType.Cobertura,
+                                                                                        summaryFile: file,
+                                                                                        reportDirectory: CoverageReportDirectory));
             });
 
         public Target Pack => _ => _
