@@ -10,7 +10,7 @@ using Nuke.Common.Tools.Coverlet;
 using Nuke.Common.Tools.DotNet;
 using Nuke.Common.Tools.GitVersion;
 using Nuke.Common.Tools.ReportGenerator;
-using Utilities;
+using Nuke.Common.Utilities.Collections;
 
 using System;
 using System.Collections.Generic;
