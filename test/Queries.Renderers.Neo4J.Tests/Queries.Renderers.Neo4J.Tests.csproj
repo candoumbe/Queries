@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Queries.Core\Queries.Core.csproj" />
     <ProjectReference Include="..\..\src\Queries.Renderers.Neo4J\Queries.Renderers.Neo4J.csproj" />
   </ItemGroup>
 </Project>
