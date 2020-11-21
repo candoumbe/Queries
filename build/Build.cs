@@ -152,21 +152,18 @@ namespace Queries.Pipelines
                 );
 
                 // TODO Move this to a separate "coverage" target once https://github.com/nuke-build/nuke/issues/562 is solved !
-                IEnumerable<AbsolutePath> testCoverageFiles = TestResultDirectory.GlobFiles("*.xml");
-                if (testCoverageFiles.AtLeastOnce())
-                {
-                    ReportGenerator(_ => _
+                ReportGenerator(_ => _
                             .SetFramework("net5.0")
                             .SetReports(TestResultDirectory / "*.xml")
                             .SetReportTypes(ReportTypes.Badges, ReportTypes.HtmlChart, ReportTypes.HtmlInline_AzurePipelines_Dark)
                             .SetTargetDirectory(CoverageReportDirectory)
                         );
 
-                    TestResultDirectory.GlobFiles("*.xml")
-                                    .ForEach(file => AzurePipelines?.PublishCodeCoverage(coverageTool: AzurePipelinesCodeCoverageToolType.Cobertura,
-                                                                                            summaryFile: file,
-                                                                                            reportDirectory: CoverageReportDirectory));
-                }
+                TestResultDirectory.GlobFiles("*.xml")
+                                .ForEach(file => AzurePipelines?.PublishCodeCoverage(coverageTool: AzurePipelinesCodeCoverageToolType.Cobertura,
+                                                                                        summaryFile: file,
+                                                                                        reportDirectory: CoverageReportDirectory));
+            
             });
 
         public Target Pack => _ => _
