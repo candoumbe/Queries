@@ -161,7 +161,6 @@ namespace Queries.Renderers.SqlServer
             {
                 Debug.Assert(visitor.Variables.All(x => x.Value != null), $"{nameof(visitor)}.{nameof(visitor.Variables)} must not contains variables with null value");
             }
-
 #endif
 
             if (!Settings.SkipVariableDeclaration)

@@ -1,16 +1,17 @@
-using System;
 using System.ComponentModel;
-using System.Linq;
 using Nuke.Common.Tooling;
 
-[TypeConverter(typeof(TypeConverter<Configuration>))]
-public class Configuration : Enumeration
+namespace Queries.Pipelines
 {
-    public static Configuration Debug = new Configuration { Value = nameof(Debug) };
-    public static Configuration Release = new Configuration { Value = nameof(Release) };
-
-    public static implicit operator string(Configuration configuration)
+    [TypeConverter(typeof(TypeConverter<Configuration>))]
+    public class Configuration : Enumeration
     {
-        return configuration.Value;
+        public static readonly Configuration Debug = new Configuration { Value = nameof(Debug) };
+        public static readonly Configuration Release = new Configuration { Value = nameof(Release) };
+
+        public static implicit operator string(Configuration configuration)
+        {
+            return configuration.Value;
+        }
     }
 }

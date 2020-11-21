@@ -122,6 +122,7 @@ namespace Queries.Pipelines
             .Description("Run unit tests and collect code")
             .Produces(TestResultDirectory / "*.trx")
             .Produces(TestResultDirectory / "*.xml")
+            .Partition(() => TestPartition)
             .Executes(() =>
             {
                 IEnumerable<Project> projects = Solution.GetProjects("*.Tests");
@@ -141,7 +142,7 @@ namespace Queries.Pipelines
                         .CombineWith(project.GetTargetFrameworks(), (setting, framework) => setting
                             .SetFramework(framework)
                             .SetLogger($"trx;LogFileName={project.Name}.{framework}.trx")
-                            .SetCoverletOutput(TestResultDirectory / $"{project.Name}.xml"))
+                            .SetCoverletOutput(TestResultDirectory / $"{project.Name}.{framework}.xml"))
                         )
                 );
 
