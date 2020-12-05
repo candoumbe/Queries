@@ -1,10 +1,10 @@
 <Project>
   <Import Project="core.props"/>
-	
+
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.*" />
     <PackageReference Include="System.Collections.Immutable" Version="1.5.0" />
     <PackageReference Include="System.Linq.Queryable" Version="4.3.0" />
-    <PackageReference Include="Utilities" Version="2019.*" />
+    <PackageReference Include="Candoumbe.MiscUtilities" Version="2019.*" />
   </ItemGroup>
 </Project>

@@ -88,6 +88,8 @@ namespace Queries.Pipelines
 
         public AbsolutePath ArtifactsDirectory => OutputDirectory / "artifacts";
 
+        public AbsolutePath CoverageReportHistory => OutputDirectory / "coverage-history";
+
         public const string MainBranch = "main";
         public const string FeatureBranch = "feature";
         public const string HotfixBranch = "hotfix";
@@ -100,7 +102,9 @@ namespace Queries.Pipelines
             {
                 SourceDirectory.GlobDirectories("**/bin", "**/obj").ForEach(DeleteDirectory);
                 TestDirectory.GlobDirectories("**/bin", "**/obj").ForEach(DeleteDirectory);
-                EnsureCleanDirectory(OutputDirectory);
+                EnsureCleanDirectory(ArtifactsDirectory);
+                EnsureCleanDirectory(CoverageReportDirectory);
+                EnsureCleanDirectory(TestResultDirectory);
             });
 
         public Target Restore => _ => _
@@ -166,6 +170,7 @@ namespace Queries.Pipelines
                             .SetReports(TestResultDirectory / "*.xml")
                             .SetReportTypes(ReportTypes.Badges, ReportTypes.HtmlChart, ReportTypes.HtmlInline_AzurePipelines_Dark)
                             .SetTargetDirectory(CoverageReportDirectory)
+                            .SetHistoryDirectory(CoverageReportHistory)
                         );
 
                 TestResultDirectory.GlobFiles("*.xml")
@@ -178,6 +183,7 @@ namespace Queries.Pipelines
             .DependsOn(Tests, Compile)
             .Consumes(Compile)
             .Produces(ArtifactsDirectory / "*.nupkg")
+            .Produces(ArtifactsDirectory / "*.snupkg")
             .Executes(() =>
             {
                 DotNetPack(s => s
@@ -190,6 +196,7 @@ namespace Queries.Pipelines
                     .SetFileVersion(GitVersion.AssemblySemFileVer)
                     .SetInformationalVersion(GitVersion.InformationalVersion)
                     .SetVersion(GitVersion.NuGetVersion)
+                    .SetSymbolPackageFormat(DotNetSymbolPackageFormat.snupkg)
                 );
             });
 
