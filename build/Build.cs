@@ -163,7 +163,7 @@ public class Build : NukeBuild
         .Produces(CoverageReportHistoryDirectory / "*.xml")
         .Executes(() =>
         {
-            IEnumerable<Project> projects = Solution.GetProjects("*.UnitTests");
+            IEnumerable<Project> projects = Solution.GetProjects("*Tests");
             IEnumerable<Project> testsProjects = TestPartition.GetCurrent(projects);
 
             testsProjects.ForEach(project => Info(project));
