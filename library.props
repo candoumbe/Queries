@@ -5,6 +5,6 @@
     <PackageReference Include="Newtonsoft.Json" Version="12.*" />
     <PackageReference Include="System.Collections.Immutable" Version="1.5.0" />
     <PackageReference Include="System.Linq.Queryable" Version="4.3.0" />
-    <PackageReference Include="Candoumbe.MiscUtilities" Version="2019.*" />
+    <PackageReference Include="Candoumbe.MiscUtilities" Version="0.1.0" />
   </ItemGroup>
 </Project>

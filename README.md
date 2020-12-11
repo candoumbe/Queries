@@ -1,8 +1,8 @@
-# Queries [![Build Status](https://dev.azure.com/candoumbe/Queries/_apis/build/status/Queries?branchName=master)](https://dev.azure.com/candoumbe/Queries/_build/latest?definitionId=21&branchName=master)
+# Queries [![Build Status](https://dev.azure.com/candoumbe/Queries/_apis/build/status/Queries?branchName=main)](https://dev.azure.com/candoumbe/Queries/_build/latest?branchName=main&definitionId=32)
 
 This is a "basic" datastore agnostic query builder.
 
-## Why?
+## <p id="lnk-why">Why?</p>
 The idea of this project came to me when I dealt with Entity Framework 6.x Code First for a project I was working on as Architect.
 
 We used Migrations to make changes to our database and sometimes we needed to write plain SQL statements as part of migrations.
@@ -10,7 +10,7 @@ For this, the EF 6.x <code>Sql(...)</code> command allows to add additional SQL 
 But I wasn't happy with that approach as the written SQL was tightly coupled to the database engine those migrations were run against. 
 I wanted something more dynamic allowing to code SQL once in the migrations and be sure that it will run smoothly if we switch from SQL Server to PostgreSQL / MySQL / ... .
 
-### No more tightly coupled SQL string
+### <p id="lnk-coupling">No more tightly coupled SQL string<p>
 Writing tightly coupled SQL means that you're writing SQL statements that are specific to a database engine. <br />
 
 The following SQL string
@@ -230,6 +230,16 @@ IQuery query = Update("members")
     .Where("Nickname", EqualTo, "Robin");
 ```
 
+- [INSERT](https://www.w3schools.com/sql/sql_insert.asp)
+```csharp
+// ... Fluent syntax
+IQuery query = InsertInto("members")
+    .Values(
+        "Nickname".Field().EqualTo("NightWing"),
+        "Nickname".Field().EqualTo("Sport master")
+    ;
+```
+
 or even combine them using a [BatchQuery][class-builders-batch-query]
 
 ```csharp
@@ -254,7 +264,6 @@ Use he <code>.Clone()</code> method to duplicate any instance.
 - [CompositeHavingClause][class-complex-having-clause] : combine several [HavingClause][class-having-clause] instances together.
 
 
-
 ## How to install ?
 
 1.  Run <code>dotnet add package Queries.Core</code><br /> command to get the latest version of the [Queries.Core](https://www.nuget.org/packages/Queries.Core/) 
@@ -268,6 +277,8 @@ Use he <code>.Clone()</code> method to duplicate any instance.
 Check out the [contribution guidelines](./CONTRIBUTING.md)
 if you want to contribute to this project.
 
+# What's new
+Check out the [changelog](CHANGELOG.md) to see what's new
 
 [class-iquery]: ./src/Queries.Core/IQuery.cs
 [class-where-clause]: ./src/Queries.Core/Parts/Clauses/WhereClause.cs
