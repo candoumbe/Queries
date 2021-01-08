@@ -4,7 +4,6 @@ using Queries.Core.Parts.Columns;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using static Queries.Core.Parts.Clauses.VariableType;
 
 namespace Queries.Core.Builders
@@ -100,37 +99,37 @@ namespace Queries.Core.Builders
                         }
                         break;
                     case DateTimeColumn dc:
-                    {
-                        Variable variable = _variables.SingleOrDefault(x => x.Type == Date && dc.Value == x.Value);
-                        if (variable is null)
                         {
-                            variable = new Variable($"p{_variables.Count}", Date, dc.Value);
-                            _variables.Add(variable);
+                            Variable variable = _variables.SingleOrDefault(x => x.Type == Date && dc.Value == x.Value);
+                            if (variable is null)
+                            {
+                                variable = new Variable($"p{_variables.Count}", Date, dc.Value);
+                                _variables.Add(variable);
+                            }
+                            item.Default = variable;
                         }
-                        item.Default = variable;
-                    }
                         break;
                     case NumericColumn nc:
-                    {
-                        Variable variable = _variables.SingleOrDefault(x => x.Type == Numeric && nc.Value == x.Value);
-                        if (variable is null)
                         {
-                            variable = new Variable($"p{_variables.Count}", Numeric, nc.Value);
-                            _variables.Add(variable);
+                            Variable variable = _variables.SingleOrDefault(x => x.Type == Numeric && nc.Value == x.Value);
+                            if (variable is null)
+                            {
+                                variable = new Variable($"p{_variables.Count}", Numeric, nc.Value);
+                                _variables.Add(variable);
+                            }
+                            item.Default = variable;
                         }
-                        item.Default = variable;
-                    }
                         break;
                     case StringColumn sc:
-                    {
-                        Variable variable = _variables.SingleOrDefault(x => x.Type == VariableType.String && sc.Value == x.Value);
-                        if (variable is null)
                         {
-                            variable = new Variable($"p{_variables.Count}", VariableType.String, sc.Value);
-                            _variables.Add(variable);
+                            Variable variable = _variables.SingleOrDefault(x => x.Type == VariableType.String && sc.Value == x.Value);
+                            if (variable is null)
+                            {
+                                variable = new Variable($"p{_variables.Count}", VariableType.String, sc.Value);
+                                _variables.Add(variable);
+                            }
+                            item.Default = variable;
                         }
-                        item.Default = variable;
-                    }
                         break;
                 }
             }

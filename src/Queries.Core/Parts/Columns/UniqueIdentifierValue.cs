@@ -5,12 +5,8 @@
     /// </summary>
     public sealed class UniqueIdentifierValue : ColumnBase
     {
-        public UniqueIdentifierValue()
-        {
-
-        }
-
         public override IColumn Clone() => new UniqueIdentifierValue();
-        public override bool Equals(ColumnBase other) => throw new System.NotImplementedException();
+
+        public override bool Equals(ColumnBase other) => other is UniqueIdentifierValue;
     }
 }

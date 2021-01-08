@@ -2,12 +2,12 @@
   <Import Project="..\..\test.props" />
   <PropertyGroup>
     <Description>Queries.Renderers.Postgres.Tests Class Library</Description>
-    <TargetFrameworks>netcoreapp3.1;net5</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.1;net5.0</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Queries.Renderers.Postgres\Queries.Renderers.Postgres.csproj" />
   </ItemGroup>
 
-  
+
 </Project>

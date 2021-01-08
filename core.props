@@ -1,13 +1,13 @@
 <Project>
-	<PropertyGroup>
+  <PropertyGroup>
     <Authors>Cyrille NDOUMBE</Authors>
     <LangVersion>latest</LangVersion>
-	</PropertyGroup>
+  </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Roslynator.Analyzers" Version="2.*">
+    <PackageReference Include="Roslynator.Analyzers" Version="3.*">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-    
+
   </ItemGroup>
 </Project>

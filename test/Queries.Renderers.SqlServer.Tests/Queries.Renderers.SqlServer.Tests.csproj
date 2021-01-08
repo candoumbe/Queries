@@ -3,7 +3,9 @@
   <Import Project="..\..\test.props" />
   <PropertyGroup>
     <Description>Queries.Renderers.SqlServer.Tests Class Library</Description>
-    <TargetFrameworks>netcoreapp3.1;net5</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.1;net5.0</TargetFrameworks>
+    <AssemblyName>Queries.Renderers.SqlServer.Tests</AssemblyName>
+    <PackageId>Queries.Renderers.SqlServer.Tests</PackageId>
   </PropertyGroup>
 
   <ItemGroup>

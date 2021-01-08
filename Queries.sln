@@ -46,7 +46,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Queries.Renderers.Sqlite.Te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Queries.Renderers.Sqlite", "src\Queries.Renderers.Sqlite\Queries.Renderers.Sqlite.csproj", "{DCD6E411-8A79-4477-A16E-6EC776D4FFBC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_build", "build\_build.csproj", "{E446F34A-AE02-4F08-8A7B-89ED8224D488}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_build", "build\_build.csproj", "{FEFE22D1-FFEE-4150-BDCD-81FD321CE775}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -54,8 +54,8 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{E446F34A-AE02-4F08-8A7B-89ED8224D488}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E446F34A-AE02-4F08-8A7B-89ED8224D488}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FEFE22D1-FFEE-4150-BDCD-81FD321CE775}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FEFE22D1-FFEE-4150-BDCD-81FD321CE775}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A6749F70-2E7C-4030-AA1B-F48FF036ADFB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A6749F70-2E7C-4030-AA1B-F48FF036ADFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A6749F70-2E7C-4030-AA1B-F48FF036ADFB}.Release|Any CPU.ActiveCfg = Release|Any CPU

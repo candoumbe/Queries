@@ -1,16 +1,35 @@
-# Queries [![Build Status](https://dev.azure.com/candoumbe/Queries/_apis/build/status/Queries?branchName=main)](https://dev.azure.com/candoumbe/Queries/_build/latest?branchName=main&definitionId=32)
+# Queries <!-- omit in toc -->
+
+![Coverage](https://img.shields.io/azure-devops/coverage/candoumbe/Queries/32?style=for-the-badge) ![Tests](https://img.shields.io/azure-devops/tests/candoumbe/Queries/32?style=for-the-badge&compact_message) [![Nuget](https://img.shields.io/nuget/v/Queries?label=Nuget&style=for-the-badge)](https://www.nuget.org/packages/Queries)
 
 This is a "basic" datastore agnostic query builder.
 
-## <p id="lnk-why">Why?</p>
+**Table of contents**
+- [<a href="#" id="lnk-why">Why?</a>](#why)
+- [<a href="#" id="lnk-coupling">No more tightly coupled SQL string<a>](#a-href-idlnk-couplingno-more-tightly-coupled-sql-stringa)
+- [<a href="#" id="lnk-secured">SQL queries secured by default</a>](#sql-queries-secured-by-default)
+  - [Renderers](#renderers)
+    - [Settings](#settings)
+    - [SQL Server Query Renderer](#sql-server-query-renderer)
+    - [<a href='#' id='renderer-mysql'>MySQL Query Renderer</a>](#mysql-query-renderer)
+  - [Build queries](#build-queries)
+    - [<a href='#' id='section-columns'>Columns</a>](#columns)
+    - [Criterias](#criterias)
+      - [Where](#where)
+      - [Having](#having)
+  - [How to install ?](#how-to-install-)
+- [Contribute](#contribute)
+- [What's new](#whats-new)
+
+# <a href="#" id="lnk-why">Why?</a>
 The idea of this project came to me when I dealt with Entity Framework 6.x Code First for a project I was working on as Architect.
 
-We used Migrations to make changes to our database and sometimes we needed to write plain SQL statements as part of migrations.
+We used Migrations to make changes to our database and sometimes we needed to write plain SQL statements as part of migratinuons.
 For this, the EF 6.x <code>Sql(...)</code> command allows to add additional SQL statements that will be executed alongside the migrations. 
 But I wasn't happy with that approach as the written SQL was tightly coupled to the database engine those migrations were run against. 
 I wanted something more dynamic allowing to code SQL once in the migrations and be sure that it will run smoothly if we switch from SQL Server to PostgreSQL / MySQL / ... .
 
-### <p id="lnk-coupling">No more tightly coupled SQL string<p>
+# <a href="#" id="lnk-coupling">No more tightly coupled SQL string<a>
 Writing tightly coupled SQL means that you're writing SQL statements that are specific to a database engine. <br />
 
 The following SQL string
@@ -37,7 +56,7 @@ is tightly coupled to SQL Server engine and won't work if dealing with Postgres 
     string postgresSqlString = query.ForPostgres(); 
     Console.Writeline(postgresSqlString);// SELECT "Firstname" + ' ' + "Lastname" "fullname" FROM "members"
 ```
-### SQL queries secured by default
+# <a href="#" id="lnk-secured">SQL queries secured by default</a>
 
 Most developers know about [SQL injection](https://en.wikipedia.org/wiki/SQL_injection) and how to protect from it.
 But when using SQL string throughout one's codebase, it can quickly become a tedious task to secure each and every SQL query.<br />
@@ -55,7 +74,7 @@ using (var conn = GetConnectionSomehow() )
     nicknameParam.Value = "Bat%";
 
     SqlCommand cmd = new SqlCommand();
-    cmd.Connection = conn;
+����cmd.Connection = conn;
     
     cmd.CommandText = "SELECT Firstname + ' ' + 'Lastname' FROM SuperHero WHERE Nickname LIKE @nickname";
 
@@ -67,7 +86,7 @@ using (var conn = GetConnectionSomehow() )
 }
 ```
 
-whereas with Queries :
+whereas with `Queries` :
 
 ```csharp
 using (var conn = GetConnectionSomehow() )
@@ -164,8 +183,8 @@ can also be written
 
 ```csharp
 IQuery query = Select("Firstname".Field(), "Lastname".Field())
-    .From("members")
-    .Where("IsActive", EqualTo, true);
+                .From("members")
+                .Where("IsActive", EqualTo, true);
 ```
 which will output for
 ```SQL
@@ -266,16 +285,15 @@ Use he <code>.Clone()</code> method to duplicate any instance.
 
 ## How to install ?
 
-1.  Run <code>dotnet add package Queries.Core</code><br /> command to get the latest version of the [Queries.Core](https://www.nuget.org/packages/Queries.Core/) 
+1.  Run `dotnet add package Queries.Core`  command to get the latest version of the [Queries.Core](https://www.nuget.org/packages/Queries.Core/) 
     package and references it in your project.<br />
     From this point you can start building queries in your code.
 2.  Download the Queries.Renderers.XXXXX that is specific to the database engine you're targeting.
-    This will add extensions methods ForXXXX to all [IQuery][class-iquery] instances that produces SQL statements
+    This will add extensions methods `ForXXXX` to all [IQuery][class-iquery] instances that produces SQL statements
 3.  Enjoy !!!
 
 # Contribute
-Check out the [contribution guidelines](./CONTRIBUTING.md)
-if you want to contribute to this project.
+Check out the [contribution guidelines](./CONTRIBUTING.md) if you want to contribute to this project.
 
 # What's new
 Check out the [changelog](CHANGELOG.md) to see what's new

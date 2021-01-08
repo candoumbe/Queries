@@ -16,8 +16,8 @@ namespace Queries.Core.Builders
         /// Builds a new <see cref="BatchQuery"/> instance.
         /// </summary>
         /// <param name="queries">queries of the batch.</param>
-        public BatchQuery(params IQuery[] queries) => _statements = queries.Where(x => x != null)
-                .ToList();
+        public BatchQuery(params IQuery[] queries) => _statements = queries.Where(x => x is not null)
+                                                                           .ToList();
 
         /// <summary>
         /// Adds a statement to this instance

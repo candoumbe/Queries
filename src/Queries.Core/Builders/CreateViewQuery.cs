@@ -16,7 +16,7 @@ namespace Queries.Core.Builders
         /// <summary>
         /// Name of the view
         /// </summary>
-        public string ViewName { get;}
+        public string ViewName { get; }
 
         /// <summary>
         /// <see cref="Builders.SelectQuery"/> the view will be built from
@@ -50,7 +50,9 @@ namespace Queries.Core.Builders
         }
 
         public CreateViewQuery Build() => this;
+
         public override bool Equals(object obj) => Equals(obj as CreateViewQuery);
+
         public bool Equals(CreateViewQuery other) => other != null && ViewName == other.ViewName && EqualityComparer<SelectQuery>.Default.Equals(SelectQuery, other.SelectQuery);
 
         public override int GetHashCode()

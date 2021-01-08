@@ -13,6 +13,7 @@ namespace Queries.Core.Parts.Columns
         /// </summary>
         /// <returns></returns>
         public abstract IColumn Clone();
+
         public abstract bool Equals(ColumnBase other);
 
         public static implicit operator ColumnBase(int value) => new NumericColumn(value);

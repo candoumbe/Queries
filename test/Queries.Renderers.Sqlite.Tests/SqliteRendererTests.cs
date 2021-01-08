@@ -46,7 +46,7 @@ namespace Queries.Renderers.Sqlite.Tests
                 yield return new object[]
                 {
                     Select(12.July(2010).Literal()), new SqliteRendererSettings { PrettyPrint = false, DateFormatString = "dd/MM/yyyy" },
-                    $"SELECT '{12.July(2010).ToString("dd/MM/yyyy")}'"
+                    $"SELECT '{12.July(2010):dd/MM/yyyy}'"
                 };
 
                 yield return new object[]

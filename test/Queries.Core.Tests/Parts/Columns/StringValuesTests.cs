@@ -3,9 +3,11 @@ using Queries.Core.Parts.Columns;
 using System.Collections.Generic;
 using Xunit;
 using Xunit.Abstractions;
+using Xunit.Categories;
 
 namespace Queries.Core.Tests.Parts.Columns
 {
+    [UnitTest]
     public class StringValuesTests
     {
         private readonly ITestOutputHelper _outputHelper;

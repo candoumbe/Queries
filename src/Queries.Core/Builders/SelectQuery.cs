@@ -22,6 +22,7 @@ namespace Queries.Core.Builders
         public int? PageSize { get; private set; }
 
         public IList<ITable> Tables { get; }
+
         public IList<IUnionQuery<SelectQuery>> Unions { get; set; }
 
         /// <summary>
@@ -63,6 +64,7 @@ namespace Queries.Core.Builders
             return this;
         }
 
+        ///<inheritdoc/>
         public IFromQuery<SelectQuery> From(params ITable[] tables)
         {
             foreach (ITable tableTerm in tables)
@@ -149,6 +151,7 @@ namespace Queries.Core.Builders
 
         public SelectQuery Build() => this;
 
+        ///<inheritdoc/>
         IOrderQuery<SelectQuery> IWhereQuery<SelectQuery>.OrderBy(IOrder sort, params IOrder[] sorts)
         {
             Sorts.Add(sort);
@@ -254,7 +257,7 @@ namespace Queries.Core.Builders
         /// <returns>a <see cref="SelectQuery"/> instance that is a deep copy of the current instance.</returns>
         public SelectQuery Clone()
         {
-            SelectQuery query = new SelectQuery(Columns.Select(x => x.Clone()).ToArray())
+            SelectQuery query = new(Columns.Select(x => x.Clone()).ToArray())
             {
                 Alias = Alias,
                 Columns = Columns.Select(x => x.Clone()).ToList(),

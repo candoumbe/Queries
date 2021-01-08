@@ -35,7 +35,7 @@ namespace Queries.Core.Parts.Columns
         /// </summary>
         public SelectQuery SelectQuery { get; }
 
-        public static UniqueIdentifierValue UUID() => new UniqueIdentifierValue();
+        public static UniqueIdentifierValue UUID() => new();
 
         /// <summary>
         /// Performs a deep copy of the current instance.
@@ -43,7 +43,7 @@ namespace Queries.Core.Parts.Columns
         /// <returns><see cref="SelectColumn"/> that is a deeo copy of the current instance.</returns>
         public IColumn Clone() => new SelectColumn(SelectQuery.Clone()).As(_alias);
 
-        public static implicit operator SelectColumn(SelectQuery select) => new SelectColumn(select);
+        public static implicit operator SelectColumn(SelectQuery select) => new(select);
 
         public override bool Equals(object obj) => Equals(obj as SelectColumn);
 

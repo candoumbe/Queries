@@ -20,13 +20,12 @@ using static Queries.Core.Parts.Columns.SelectColumn;
 namespace Queries.Renderers.SqlServer.Tests
 {
     [UnitTest]
-    public class SqlServerRendererTest : IDisposable
+    [Feature("Sql Server")]
+    public class SqlServerRendererTest
     {
-        private ITestOutputHelper _outputHelper;
+        private readonly ITestOutputHelper _outputHelper;
 
         public SqlServerRendererTest(ITestOutputHelper outputHelper) => _outputHelper = outputHelper;
-
-        public void Dispose() => _outputHelper = null;
 
         [Fact]
         public void DefaultConstructor()
@@ -417,7 +416,7 @@ namespace Queries.Renderers.SqlServer.Tests
                     "SELECT TOP 10 [col1] FROM [table]"
                 };
                 {
-                    var pagination = ( pageIndex: 2, pageSize: 10 );
+                    var pagination = (pageIndex: 2, pageSize: 10);
                     yield return new object[]
                     {
                         Select("col1")
@@ -463,7 +462,7 @@ namespace Queries.Renderers.SqlServer.Tests
                     Select("FirstName".Field(), "LastName".Field())
                         .From("members"),
                     FieldnameCasingStrategy.Default,
-                    @"SELECT [FirstName], [LastName] FROM [members]"
+                    "SELECT [FirstName], [LastName] FROM [members]"
                 };
 
                 yield return new object[]
@@ -471,7 +470,7 @@ namespace Queries.Renderers.SqlServer.Tests
                     Select("FirstName".Field(), "LastName".Field())
                         .From("members"),
                     FieldnameCasingStrategy.CamelCase,
-                    @"SELECT [firstName], [lastName] FROM [members]"
+                    "SELECT [firstName], [lastName] FROM [members]"
                 };
 
                 yield return new object[]
@@ -479,7 +478,7 @@ namespace Queries.Renderers.SqlServer.Tests
                     Select("FirstName".Field(), "LastName".Field())
                         .From("members"),
                     FieldnameCasingStrategy.SnakeCase,
-                    @"SELECT [first_name], [last_name] FROM [members]"
+                    "SELECT [first_name], [last_name] FROM [members]"
                 };
 
                 yield return new object[]
@@ -499,12 +498,12 @@ namespace Queries.Renderers.SqlServer.Tests
         public void CasingStrategy(SelectQuery query, FieldnameCasingStrategy casingStrategy, string expected)
         {
             // Arrange
-            SqlServerRendererSettings settings = new SqlServerRendererSettings
+            SqlServerRendererSettings settings = new()
             {
                 FieldnameCasingStrategy = casingStrategy
             };
 
-            SqlServerRenderer renderer = new SqlServerRenderer(settings);
+            SqlServerRenderer renderer = new(settings);
 
             // Act
             string statement = renderer.Render(query);
@@ -551,27 +550,6 @@ namespace Queries.Renderers.SqlServer.Tests
                     ),
                     "The select statement as two variables with SAME value"
                 };
-
-                //yield return new object[]
-                //{
-                //    Select("*")
-                //    .From(
-                //        Select("Fullname").From("People").Where("Firstname".Field(), Like, "B%")
-                //        .Union(
-                //        Select("Fullname").From("SuperHero").Where("Nickname".Field(), Like, "B%"))
-                //    ),
-                //    new SqlServerRendererSettings{ PrettyPrint = true, SkipVariableDeclaration = true },
-                //    (Expression<Func<CompiledQuery, bool>>)(
-                //        query => query.Statement == $"SELECT * {Environment.NewLine}FROM ("
-                //                                    + $"SELECT [Fullname] {Environment.NewLine}FROM [People] {Environment.NewLine}WHERE ([Firstname] LIKE @p0) "
-                //                                    + $"UNION {Environment.NewLine}"
-                //                                    + $"SELECT [Fullname] {Environment.NewLine}FROM [SuperHero] {Environment.NewLine}WHERE ([Nickname] LIKE @p0)"
-                //                                    + ")"
-                //            && query.Variables.Once()
-                //            && query.Variables.Once(v => v.Name == "p0" && "B%".Equals(v.Value) && v.Type == VariableType.String)
-                //    ),
-                //    "The select statement as two variables with SAME value"
-                //};
             }
         }
 

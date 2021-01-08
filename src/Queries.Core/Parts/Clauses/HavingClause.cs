@@ -1,7 +1,6 @@
 using Queries.Core.Parts.Columns;
 using Queries.Core.Parts.Functions;
 using System;
-using System.Collections.Generic;
 
 namespace Queries.Core.Parts.Clauses
 {
@@ -14,10 +13,11 @@ namespace Queries.Core.Parts.Clauses
         /// Column the clause will be applied onto
         /// </summary>
         public AggregateFunction Column { get; }
+
         /// <summary>
         /// Operator to apply beetwen <see cref="Column"/> and <see cref="Constraint"/>.
         /// </summary>
-        public ClauseOperator Operator { get;  }
+        public ClauseOperator Operator { get; }
 
         /// <summary>
         /// Constraint to apply
@@ -52,10 +52,12 @@ namespace Queries.Core.Parts.Clauses
         {
         }
 
-            public IHavingClause Clone() => new HavingClause(Column, Operator, Constraint);
+        public IHavingClause Clone() => new HavingClause(Column, Operator, Constraint);
+
         public override bool Equals(object obj) => Equals(obj as HavingClause);
+
         public bool Equals(HavingClause other) => other != null
-            && (Column, Operator, Constraint).Equals((other.Column, other.Operator, other.Constraint));
+                                                  && (Column, Operator, Constraint).Equals((other.Column, other.Operator, other.Constraint));
 
         public override int GetHashCode() => (Column, Operator, Constraint).GetHashCode();
     }

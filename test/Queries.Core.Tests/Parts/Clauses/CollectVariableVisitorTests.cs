@@ -19,24 +19,22 @@ namespace Queries.Core.Tests.Parts.Clauses
 {
     [UnitTest]
     [Feature("Parameterized query")]
-    public class CollectVariableVisitorTests : IDisposable
+    public class CollectVariableVisitorTests
     {
-        private ITestOutputHelper _outputHelper;
+        private readonly ITestOutputHelper _outputHelper;
         private readonly CollectVariableVisitor _sut;
 
         public CollectVariableVisitorTests(ITestOutputHelper outputHelper)
         {
             _outputHelper = outputHelper;
-            _sut = new CollectVariableVisitor();
+            _sut = new();
         }
-
-        public void Dispose() => _outputHelper = null;
 
         [Fact]
         public void CtorShouldBuildValidInstance()
         {
             // Act
-            CollectVariableVisitor instance = new CollectVariableVisitor();
+            CollectVariableVisitor instance = new();
 
             // Assert
             instance.Should()
@@ -67,7 +65,7 @@ namespace Queries.Core.Tests.Parts.Clauses
                 {
                     Select("Fullname").From("SuperHero").Where("Nickname".Field(), In, new StringValues("Batman", "Superman")),
                     (Expression<Func<CollectVariableVisitor, bool>>)(visitor =>
-                        visitor.Variables.Count() == 2
+                        visitor.Variables.Exactly(2)
                         && visitor.Variables.Any(x => x.Name == "p0" && "Batman".Equals(x.Value) && x.Type == VariableType.String)
                         && visitor.Variables.Any(x => x.Name == "p1" && "Superman".Equals(x.Value) && x.Type == VariableType.String)
                     ),
@@ -260,13 +258,9 @@ namespace Queries.Core.Tests.Parts.Clauses
                     Select("*")
                         .From("table")
                         .Paginate(pageIndex: 1, pageSize: 1),
-                    (Expression<Func<CollectVariableVisitor, bool>> )(visitor =>
-                        visitor.Variables.Exactly(0)),
-                    (Expression<Func<SelectQuery, bool>>)(query
-                        => query.Equals(
-                            Select("*")
-                                .From("table")
-                                .Paginate( 1, 1)
+                    (Expression<Func<CollectVariableVisitor, bool>> )(visitor => visitor.Variables.Exactly(0)),
+                    (Expression<Func<SelectQuery, bool>>)(query => query.Equals(Select("*").From("table")
+                                                                                           .Paginate( 1, 1)
                             )
                         )
                 };
@@ -408,7 +402,7 @@ namespace Queries.Core.Tests.Parts.Clauses
         public void VisitInsertIntoQuery(InsertIntoQuery insertIntoQuery, Expression<Func<CollectVariableVisitor, bool>> visitorExpectation, Expression<Func<InsertIntoQuery, bool>> insertIntoQueryExpectation)
         {
             // Arrange
-            CollectVariableVisitor _sut = new CollectVariableVisitor();
+            CollectVariableVisitor _sut = new();
 
             // Act
             _sut.Visit(insertIntoQuery);
@@ -444,7 +438,7 @@ namespace Queries.Core.Tests.Parts.Clauses
         public void VisitDeleteQuery(DeleteQuery deleteQuery, Expression<Func<CollectVariableVisitor, bool>> visitorExpectation, Expression<Func<DeleteQuery, bool>> queryAfterVisitExpectation)
         {
             // Arrange
-            CollectVariableVisitor _sut = new CollectVariableVisitor();
+            CollectVariableVisitor _sut = new();
 
             // Act
             _sut.Visit(deleteQuery);
