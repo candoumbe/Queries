@@ -6,10 +6,6 @@
     </Description>
     <TargetFramework>netstandard1.0</TargetFramework>
     <PackageTags>Query;Builder;SQL;Postgres</PackageTags>
-    <PackageReleaseNotes>This is an alpha version</PackageReleaseNotes>
-    <PackageProjectUrl>https://github.com/candoumbe/Queries</PackageProjectUrl>
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>git://github.com/candoumbe/Queries</RepositoryUrl>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Optional" Version="4.0.0" />
