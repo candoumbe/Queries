@@ -9,26 +9,26 @@ using TestsHelpers;
 namespace Queries.EntityFrameworkCore.Extensions.Tests.Operations
 {
     [UnitTest]
-    public class CreateViewMigrationOperationTests
+    public class DeleteMigrationOperationTests
     {
         [Property]
         public Property Ctor_throws_ArgumentNullException_when_query_is_null(string schema)
         {
             // Act
-            Lazy<CreateViewMigrationOperation> ctorWithNullLazy = new(() => new CreateViewMigrationOperation(null, schema));
+            Lazy<DeleteMigrationOperation> ctorWithNullLazy = new(() => new DeleteMigrationOperation(null, schema));
 
             // Assert
-            return Prop.Throws<ArgumentNullException, CreateViewMigrationOperation>(ctorWithNullLazy);
+            return Prop.Throws<ArgumentNullException, DeleteMigrationOperation>(ctorWithNullLazy);
         }
 
         [Property(Arbitrary = new[] { typeof(QueryGenerators) })]
-        public Property Ctor_populates_properties(CreateViewQuery query, string schema)
+        public Property Ctor_populates_properties(DeleteQuery query, string schema)
         {
-            CreateViewMigrationOperation operation = new(query, schema);
+            DeleteMigrationOperation operation = new(query, schema);
 
             return operation.Query.Equals(query).Label("Query")
                 .And(operation.Schema == schema).Label("Schema")
-                .And(!operation.IsDestructiveChange).Label(nameof(operation.IsDestructiveChange));
+                .And(operation.IsDestructiveChange).Label(nameof(operation.IsDestructiveChange));
         }
     }
 }
