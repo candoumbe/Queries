@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Queries.EntityFrameworkCore.Extensions\Queries.EntityFrameworkCore.Extensions.csproj" />
+    <ProjectReference Include="..\TestsHelpers\TestsHelpers.csproj" />
   </ItemGroup>
 
 </Project>

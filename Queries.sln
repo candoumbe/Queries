@@ -56,6 +56,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Queries.EntityFrameworkCore
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Queries.EntityFrameworkCore.Extensions.SqlServer.Tests", "test\Queries.EntityFrameworkCore.Extensions.SqlServer.Tests\Queries.EntityFrameworkCore.Extensions.SqlServer.Tests.csproj", "{E7A5E075-4294-4F4F-ADCB-7CBF1E39CA00}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestsHelpers", "test\TestsHelpers\TestsHelpers.csproj", "{1F1FE22E-2D41-4EB2-A12F-A0C691BD9907}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -128,6 +130,10 @@ Global
 		{E7A5E075-4294-4F4F-ADCB-7CBF1E39CA00}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E7A5E075-4294-4F4F-ADCB-7CBF1E39CA00}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E7A5E075-4294-4F4F-ADCB-7CBF1E39CA00}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1F1FE22E-2D41-4EB2-A12F-A0C691BD9907}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F1FE22E-2D41-4EB2-A12F-A0C691BD9907}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F1FE22E-2D41-4EB2-A12F-A0C691BD9907}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F1FE22E-2D41-4EB2-A12F-A0C691BD9907}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -149,6 +155,7 @@ Global
 		{FE1083C8-5503-4E29-8198-894CA3C29A2D} = {357A11A7-39EE-4782-85BB-0B5B9E6DBD9A}
 		{830B247B-358B-4FD9-965D-7797F69FE6CD} = {4EAF8F5E-4703-416F-ACD9-277726BD78EF}
 		{E7A5E075-4294-4F4F-ADCB-7CBF1E39CA00} = {357A11A7-39EE-4782-85BB-0B5B9E6DBD9A}
+		{1F1FE22E-2D41-4EB2-A12F-A0C691BD9907} = {357A11A7-39EE-4782-85BB-0B5B9E6DBD9A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A80F3874-CE69-426F-BEEB-F241B73D3A1D}

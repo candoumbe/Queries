@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using Queries.EntityFrameworkCore.Extensions.Operations;
 using Queries.Renderers.SqlServer;
+using Queries.Core;
 
 namespace Queries.EntityFrameworkCore.Extensions.SqlServer
 {
@@ -23,26 +24,32 @@ namespace Queries.EntityFrameworkCore.Extensions.SqlServer
             _renderer = new SqlServerRenderer();
         }
 
+        /// <inheritdoc />
         protected override void Generate(MigrationOperation operation, IModel model, MigrationCommandListBuilder builder)
         {
-
-            if (operation is CreateViewMigrationOperation createViewMigrationOperation)
+            switch (operation)
             {
-                if (createViewMigrationOperation.Schema is not null)
-                {
-                    Generate(new EnsureSchemaOperation { Name = createViewMigrationOperation.Schema }, model, builder);
-                }
-                Generate(createViewMigrationOperation, builder);
-            }
-            else
-            {
-                base.Generate(operation, model, builder);
+                case CreateViewMigrationOperation createViewMigrationOperation:
+                    if (createViewMigrationOperation.Schema is not null)
+                    {
+                        Generate(new EnsureSchemaOperation { Name = createViewMigrationOperation.Schema }, model, builder);
+                    }
+                    Generate(createViewMigrationOperation.Query, builder);
+                    break;
+                case DeleteMigrationOperation deleteMigrationOperation:
+                    if (deleteMigrationOperation.Schema is not null)
+                    {
+                        Generate(new EnsureSchemaOperation { Name = deleteMigrationOperation.Schema }, model, builder);
+                    }
+                    Generate(deleteMigrationOperation.Query, builder);
+                    break;
+                default:
+                    base.Generate(operation, model, builder);
+                    break;
             }
         }
 
-        private void Generate(in CreateViewMigrationOperation operation, in MigrationCommandListBuilder builder)
-        {
-            builder.AppendLine(_renderer.Render(operation.Query));
-        }
+        private void Generate(in IQuery query, in MigrationCommandListBuilder builder)
+            => builder.AppendLine(_renderer.Render(query));
     }
 }
