@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\..\test.props" />
+  <PropertyGroup>
+    <TargetFrameworks>netcoreapp3.1;net5.0</TargetFrameworks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Queries.EntityFrameworkCore.Extensions.SqlServer\Queries.EntityFrameworkCore.Extensions.SqlServer.csproj" />
+    <ProjectReference Include="..\TestsHelpers\TestsHelpers.csproj" />
+  </ItemGroup>
+
+</Project>

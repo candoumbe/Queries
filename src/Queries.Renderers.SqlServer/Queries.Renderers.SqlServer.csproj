@@ -3,9 +3,10 @@
 
   <PropertyGroup>
     <Description>Queries.Renderers.SqlServer Class Library</Description>
-    <TargetFrameworks>netstandard1.0;netstandard2.0;netstandard2.1</TargetFrameworks>
+    <TargetFrameworks>netstandard1.0;netstandard2.1</TargetFrameworks>
+    <AssemblyName>Queries.Renderers.SqlServer</AssemblyName>
+    <PackageId>Queries.Renderers.SqlServer</PackageId>
     <PackageTags>Queries;Query;SQL;Builder;SQL Server</PackageTags>
-    <PackageReleaseNotes>Staements in a BtachQuery are not separated by a semi-colon</PackageReleaseNotes>
     <PackageProjectUrl>https://github.com/candoumbe/Queries</PackageProjectUrl>
   </PropertyGroup>
   <ItemGroup>

@@ -7,5 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] / 2021-01-30
+- Adds `Queries.EntityFrameworkCore.Extensions` to provide additional `MigrationOperation` implementations.
+- Adds [`CreateViewMigrationOperation`](src/Queries.EntiyFrameworkCore.Extensions/Operations/CreateViewMigrationOperation) to create a SQL view.
+- Adds [`DeleteMigrationOperation`](src/Queries.EntityFrameworkCore.Extensions/Operations/DeleteMigrationOperation.cs) to perform a DELETE statement.
+- Fixes `ArgumentOutOfRangeException` thrown when using `ClauseOperator.In` with string values 
+
 ## [0.1.0] / 2021-01-08
 - Initial release
+

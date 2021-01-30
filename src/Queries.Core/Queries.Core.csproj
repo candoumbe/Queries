@@ -6,13 +6,6 @@
     <AssemblyTitle>Queries.Core</AssemblyTitle>
     <TargetFrameworks>netstandard1.0; netstandard1.1; netstandard1.3;netstandard2.1;net5.0</TargetFrameworks>
     <PackageTags>Queries;Query;SQL;Builder</PackageTags>
-    <PackageReleaseNotes>
-      Added NativeQuery which allows to build querie that are specific to the target engine. The query built will be rendered "as is".
-      Renamed FieldColumnExtensions.EqualTo() extensions method to UpdateValueTo()
-      Added FieldColumnExtensions.EqualTo() which create a WhereClause instance.
-
-      Added method to AddStatement to a BatchQuery instance
-    </PackageReleaseNotes>
     <PackageProjectUrl>https://dev.azure.com/candoumbe/Queries</PackageProjectUrl>
     <RepositoryUrl>https://dev.azure.com/candoumbe/Queries</RepositoryUrl>
     <RepositoryType>git</RepositoryType>

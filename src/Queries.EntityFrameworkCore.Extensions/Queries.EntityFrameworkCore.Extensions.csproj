@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netcoreapp3.1;net5.0</TargetFrameworks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.10" Condition="'$(TargetFramework)' == 'netcoreapp3.1'"/>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="5.0.1" Condition="'$(TargetFramework)' == 'net5.0'"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Queries.Core\Queries.Core.csproj"/>
+  </ItemGroup>
+</Project>

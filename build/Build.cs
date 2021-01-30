@@ -171,44 +171,69 @@ public class Build : NukeBuild
             testsProjects.ForEach(project => Info(project));
 
             DotNetTest(s => s
-                .SetConfiguration("Debug")
-                .EnableCollectCoverage()
-                .EnableUseSourceLink()
-                .SetNoBuild(InvokedTargets.Contains(Compile))
-                .SetResultsDirectory(TestResultDirectory)
-                .SetCoverletOutputFormat(CoverletOutputFormat.cobertura)
-                .AddProperty("ExcludeByAttribute", "Obsolete")
-                .CombineWith(testsProjects, (cs, project) => cs.SetProjectFile(project)
-                                                               .CombineWith(project.GetTargetFrameworks(), (setting, framework) => setting.SetFramework(framework)
-                                                                                                                                          .SetLogger($"trx;LogFileName={project.Name}.{framework}.trx")
-                                                                                                                                          .SetCoverletOutput(TestResultDirectory / $"{project.Name}.xml")))
-                );
+                    .SetConfiguration(Configuration)
+                    .SetUseSourceLink(IsServerBuild)
+                    .SetNoBuild(InvokedTargets.Contains(Compile))
+                    .SetResultsDirectory(TestResultDirectory)
+                    .AddProperty("ExcludeByAttribute", "Obsolete")
+                    .EnableCollectCoverage()
+                    .SetCoverletOutputFormat(IsLocalBuild ? CoverletOutputFormat.lcov : CoverletOutputFormat.cobertura)
+                    .CombineWith(testsProjects, (cs, project) => cs.SetProjectFile(project)
+                                                                   .CombineWith(project.GetTargetFrameworks(), (setting, framework) => setting.SetFramework(framework)
+                                                                                                                                              .SetLogger($"trx;LogFileName={project.Name}.trx")
+                                                                                                                                              .SetCoverletOutput(TestResultDirectory / $"{project.Name}.{(IsLocalBuild ? "lcov.info" : "xml")}")
+                                                                                )
+                                                                    )
+            );
 
-            Trace("Before publishing tests results");
             TestResultDirectory.GlobFiles("*.trx")
-                                    .ForEach(testFileResult => AzurePipelines?.PublishTestResults(type: AzurePipelinesTestResultsType.VSTest,
-                                                                                                    title: $"{Path.GetFileNameWithoutExtension(testFileResult)} ({AzurePipelines.StageDisplayName})",
-                                                                                                    files: new string[] { testFileResult })
+                               .ForEach(testFileResult => AzurePipelines?.PublishTestResults(type: AzurePipelinesTestResultsType.VSTest,
+                                                                                             title: $"{Path.GetFileNameWithoutExtension(testFileResult)} ({AzurePipelines.StageDisplayName})",
+                                                                                             files: new string[] { testFileResult
+})
                     );
-
-            Trace("After publishing tests results");
 
             // TODO Move this to a separate "coverage" target once https://github.com/nuke-build/nuke/issues/562 is solved !
 
             ReportGenerator(_ => _
-                .SetFramework("net5.0")
-                .SetReports(TestResultDirectory / "*.xml")
-                .SetReportTypes(ReportTypes.Badges, ReportTypes.HtmlChart, ReportTypes.HtmlInline_AzurePipelines_Dark)
-                .SetTargetDirectory(CoverageReportDirectory)
-                .SetHistoryDirectory(CoverageReportHistoryDirectory)
-                .SetTag(MajorMinorPatchVersion)
-            );
+                    .SetFramework("net5.0")
+                    .SetReports(TestResultDirectory / (IsLocalBuild ? "*.info" : "*.xml"))
+                    .SetReportTypes(ReportTypes.Badges, ReportTypes.HtmlChart, ReportTypes.HtmlInline_AzurePipelines_Dark)
+                    .SetTargetDirectory(CoverageReportDirectory)
+                    .SetHistoryDirectory(CoverageReportHistoryDirectory)
+                    .SetTag(MajorMinorPatchVersion)
+                );
 
-            Trace("Before publishing code coverage report");
-            TestResultDirectory.GlobFiles("*.xml")
-                            .ForEach(file => AzurePipelines?.PublishCodeCoverage(coverageTool: AzurePipelinesCodeCoverageToolType.Cobertura,
-                                                                                    summaryFile: file,
-                                                                                    reportDirectory: CoverageReportDirectory));
+            if (IsServerBuild)
+            {
+                TestResultDirectory.GlobFiles("*.xml")
+                                .ForEach(file => AzurePipelines?.PublishCodeCoverage(coverageTool: AzurePipelinesCodeCoverageToolType.Cobertura,
+                                                                                        summaryFile: file,
+                                                                                        reportDirectory: CoverageReportDirectory));
+            }
+        });
+
+    public Target Coverage => _ => _
+        .Description("Gathers and report code coverage")
+        .DependsOn(Tests)
+        .Consumes(Tests, TestResultDirectory / "*.xml", TestResultDirectory / "*.lcov.info")
+        .Executes(() =>
+        {
+            ReportGenerator(_ => _
+                    .SetFramework("net5.0")
+                    .SetReports(TestResultDirectory / "*.xml", TestResultDirectory / "*.lcov.info")
+                    .SetReportTypes(ReportTypes.Badges, ReportTypes.HtmlChart, ReportTypes.HtmlInline_AzurePipelines_Dark)
+                    .SetTargetDirectory(CoverageReportDirectory)
+                    .SetHistoryDirectory(CoverageReportHistoryDirectory)
+                );
+
+            if (IsServerBuild)
+            {
+                TestResultDirectory.GlobFiles("*.xml")
+                                .ForEach(file => AzurePipelines?.PublishCodeCoverage(coverageTool: AzurePipelinesCodeCoverageToolType.Cobertura,
+                                                                                        summaryFile: file,
+                                                                                        reportDirectory: CoverageReportDirectory));
+            }
         });
 
     public Target Pack => _ => _
@@ -239,8 +264,8 @@ public class Build : NukeBuild
 
     public Target Changelog => _ => _
         .Requires(() => IsLocalBuild)
-        .Requires(() => !GitRepository.IsOnReleaseBranch() || GitHasCleanWorkingCopy())
         .Description("Finalizes the change log so that its up to date for the release. ")
+        .OnlyWhenStatic(() => GitRepository.IsOnReleaseBranch() || GitRepository.IsOnHotfixBranch())
         .Executes(() =>
         {
             FinalizeChangelog(ChangeLogFile, GitVersion.MajorMinorPatch, GitRepository);
@@ -377,7 +402,7 @@ public class Build : NukeBuild
 
         Git($"branch -D {GitRepository.Branch}");
 
-        Git($"push origin {MainBranchName} {DevelopBranch} {MajorMinorPatchVersion}");
+        Git($"push origin --follow-tags {MainBranchName} {DevelopBranch} {MajorMinorPatchVersion}");
     }
 
     private void FinishFeature()

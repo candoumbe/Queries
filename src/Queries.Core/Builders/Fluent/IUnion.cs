@@ -9,7 +9,7 @@ namespace Queries.Core.Builders.Fluent
     public interface IUnionQuery<T> : IAliasable<ITable>, ITable, IPaginatedQuery<T>
     {
         /// <summary>
-        /// Called union between the current instance and <see cref="query"/>.
+        /// Calls UNION between the current instance and <paramref name="query"/>.
         /// </summary>
         /// <param name="query"></param>
         /// <returns></returns>
