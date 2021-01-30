@@ -7,7 +7,7 @@ using System.Linq;
 namespace Queries.Core.Builders.Fluent
 {
     /// <summary>
-    /// Helper to create <see cref="IQuery"/> instances.
+    /// Helper class start to building <see cref="IQuery"/> instances.
     /// </summary>
     public static class QueryBuilder
     {

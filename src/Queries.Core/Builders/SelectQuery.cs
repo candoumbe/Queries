@@ -75,6 +75,7 @@ namespace Queries.Core.Builders
             return this;
         }
 
+        ///<inheritdoc/>
         public IFromQuery<SelectQuery> From(params string[] tables)
         {
             foreach (string tablename in tables)
@@ -85,6 +86,7 @@ namespace Queries.Core.Builders
             return this;
         }
 
+        ///<inheritdoc/>
         public IWhereQuery<SelectQuery> Where(IWhereClause clause)
         {
             WhereCriteria = clause ?? throw new ArgumentNullException(nameof(clause), $"{clause} cannot be null");
@@ -92,12 +94,15 @@ namespace Queries.Core.Builders
             return this;
         }
 
+        ///<inheritdoc/>
         public IWhereQuery<SelectQuery> Where(IColumn column, ClauseOperator @operator, IColumn constraint)
             => Where(new WhereClause(column, @operator, constraint));
 
+        ///<inheritdoc/>
         public IWhereQuery<SelectQuery> Where(IColumn column, ClauseOperator @operator, string constraint)
             => Where(column, @operator, constraint?.Literal());
 
+        ///<inheritdoc/>
         public IJoinQuery<SelectQuery> InnerJoin(Table table, IWhereClause clause)
         {
             if (table == null)
@@ -115,6 +120,7 @@ namespace Queries.Core.Builders
             return this;
         }
 
+        ///<inheritdoc/>
         public IJoinQuery<SelectQuery> LeftOuterJoin(Table table, IWhereClause clause)
         {
             if (table == null)
@@ -132,6 +138,7 @@ namespace Queries.Core.Builders
             return this;
         }
 
+        ///<inheritdoc/>
         public IJoinQuery<SelectQuery> RightOuterJoin(Table table, IWhereClause clause)
         {
             if (table == null)
@@ -149,6 +156,7 @@ namespace Queries.Core.Builders
             return this;
         }
 
+        ///<inheritdoc/>
         public SelectQuery Build() => this;
 
         ///<inheritdoc/>
@@ -163,12 +171,14 @@ namespace Queries.Core.Builders
             return this;
         }
 
+        ///<inheritdoc/>
         public IUnionQuery<SelectQuery> Union(IUnionQuery<SelectQuery> select)
         {
             Unions.Add(select);
             return this;
         }
 
+        ///<inheritdoc/>
         public IOrderQuery<SelectQuery> OrderBy(params IOrder[] sorts)
         {
             foreach (IOrder sort in sorts)
@@ -178,14 +188,17 @@ namespace Queries.Core.Builders
             return this;
         }
 
+        ///<inheritdoc/>
         public IOrderQuery<SelectQuery> Having(IHavingClause clause)
         {
             HavingCriteria = clause;
             return this;
         }
 
+        ///<inheritdoc/>
         public string Alias { get; private set; }
 
+        ///<inheritdoc/>
         public ITable As(string alias)
         {
             Alias = alias;
@@ -282,8 +295,10 @@ namespace Queries.Core.Builders
             return query;
         }
 
+        ///<inheritdoc/>
         ITable ITable.Clone() => Clone();
 
+        ///<inheritdoc/>
         IColumn IColumn.Clone() => Clone();
 
         public override string ToString() => this.Jsonify();

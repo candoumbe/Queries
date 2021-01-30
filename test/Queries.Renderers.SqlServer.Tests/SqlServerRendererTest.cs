@@ -39,6 +39,51 @@ namespace Queries.Renderers.SqlServer.Tests
             renderer.Settings.DateFormatString.Should().Be("yyyy-MM-dd");
         }
 
+
+        public static IEnumerable<object[]> PaginateCases
+        {
+            get
+            {
+                yield return new object[]
+                {
+                    Select("col1")
+                        .From("table")
+                        .Paginate(pageIndex: 1, pageSize:10),
+                    new SqlServerRendererSettings(),
+                    "SELECT TOP 10 [col1] FROM [table]"
+                };
+                {
+                    var pagination = (pageIndex: 2, pageSize: 10);
+                    yield return new object[]
+                    {
+                        Select("col1")
+                            .From("table")
+                            .Paginate(pageIndex: pagination.pageIndex, pageSize: pagination.pageSize),
+                        new SqlServerRendererSettings(),
+                        $"SELECT [col1] FROM [table] OFFSET {pagination.pageSize} ROWS " +
+                        $"FETCH NEXT {pagination.pageSize} ROWS ONLY"
+                    };
+                }
+
+                {
+                    var pagination = (pageIndex: 3, pageSize: 10);
+                    yield return new object[]
+                    {
+                        Select("col1")
+                            .From("table")
+                            .Paginate(pageIndex: pagination.pageIndex, pageSize: pagination.pageSize),
+                        new SqlServerRendererSettings(),
+                        $"SELECT [col1] FROM [table] OFFSET {pagination.pageSize} * ({pagination.pageIndex} - 1) ROWS " +
+                        $"FETCH NEXT {pagination.pageSize} ROWS ONLY"
+                    };
+                }
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(PaginateCases))]
+        public void PaginateTest(SelectQuery query, SqlServerRendererSettings settings, string expectedString)
+            => IsQueryOk(query, settings, expectedString);
         public static IEnumerable<object[]> SelectTestCases
         {
             get
@@ -400,53 +445,20 @@ namespace Queries.Renderers.SqlServer.Tests
                     "FROM [table1] [t1] INNER JOIN [table2] [t2] " +
                     "ON ([t1].[Id] = [t2].[Id])"
                 };
-            }
-        }
 
-        public static IEnumerable<object[]> PaginateCases
-        {
-            get
-            {
+
                 yield return new object[]
                 {
-                    Select("col1")
-                        .From("table")
-                        .Paginate(pageIndex: 1, pageSize:10),
-                    new SqlServerRendererSettings(),
-                    "SELECT TOP 10 [col1] FROM [table]"
+                    Select("col1", "col2")
+                    .From("table")
+                    .Where("col1".Field().In("val1", "val2")),
+                    new SqlServerRendererSettings { PrettyPrint = false },
+                    "DECLARE @p0 AS VARCHAR(8000) = 'val1';" +
+                    "DECLARE @p1 AS VARCHAR(8000) = 'val2';" +
+                    "SELECT [col1], [col2] FROM [table] WHERE ([col1] IN (@p0, @p1))"
                 };
-                {
-                    var pagination = (pageIndex: 2, pageSize: 10);
-                    yield return new object[]
-                    {
-                        Select("col1")
-                            .From("table")
-                            .Paginate(pageIndex: pagination.pageIndex, pageSize: pagination.pageSize),
-                        new SqlServerRendererSettings(),
-                        $"SELECT [col1] FROM [table] OFFSET {pagination.pageSize} ROWS " +
-                        $"FETCH NEXT {pagination.pageSize} ROWS ONLY"
-                    };
-                }
-
-                {
-                    var pagination = (pageIndex: 3, pageSize: 10);
-                    yield return new object[]
-                    {
-                        Select("col1")
-                            .From("table")
-                            .Paginate(pageIndex: pagination.pageIndex, pageSize: pagination.pageSize),
-                        new SqlServerRendererSettings(),
-                        $"SELECT [col1] FROM [table] OFFSET {pagination.pageSize} * ({pagination.pageIndex} - 1) ROWS " +
-                        $"FETCH NEXT {pagination.pageSize} ROWS ONLY"
-                    };
-                }
             }
         }
-
-        [Theory]
-        [MemberData(nameof(PaginateCases))]
-        public void PaginateTest(SelectQuery query, SqlServerRendererSettings settings, string expectedString)
-            => IsQueryOk(query, settings, expectedString);
 
         [Theory]
         [MemberData(nameof(SelectTestCases))]
@@ -757,8 +769,39 @@ namespace Queries.Renderers.SqlServer.Tests
                         .Where("IsActive".Field().EqualTo(true))
                         .Build()),
                     new SqlServerRendererSettings (),
+                    "DECLARE @p0 AS BIT = 1;" +
                     "CREATE VIEW [active_users] " +
-                    "AS SELECT [Firstname] + ' ' + [Lastname] FROM [members] WHERE ([IsActive] = 1)"
+                    "AS SELECT [Firstname] + ' ' + [Lastname] FROM [members] WHERE ([IsActive] = @p0)"
+                };
+
+                yield return new object[]
+                {
+                    CreateView("active_users")
+                    .As(Select(Concat("Firstname".Field(), " ".Literal(), "Lastname".Field() ))
+                        .From("members")
+                        .Where("IsActive".Field().In("val1", "val2"))
+                        .Build()),
+                    new SqlServerRendererSettings (),
+                    "DECLARE @p0 AS VARCHAR(8000) = 'val1';" +
+                    "DECLARE @p1 AS VARCHAR(8000) = 'val2';" +
+                    "CREATE VIEW [active_users] " +
+                    "AS SELECT [Firstname] + ' ' + [Lastname] FROM [members] WHERE ([IsActive] IN (@p0, @p1))"
+                };
+
+                yield return new object[]
+                {
+                    CreateView("viewName")
+                    .As(Select("col1", "col2")
+                        .From("table1").InnerJoin("table2".Table(), "table1.Id".Field().EqualTo("table2.Id".Field()))
+                        .Where("IsActive".Field().In("val1", "val2"))
+                        .Build()),
+                    new SqlServerRendererSettings (),
+                    "DECLARE @p0 AS VARCHAR(8000) = 'val1';" +
+                    "DECLARE @p1 AS VARCHAR(8000) = 'val2';" +
+                    "CREATE VIEW [viewName] " +
+                    "AS SELECT [col1], [col2] " +
+                    "FROM [table1] INNER JOIN [table2] ON ([table1].[Id] = [table2].[Id]) " +
+                    "WHERE ([IsActive] IN (@p0, @p1))"
                 };
             }
         }

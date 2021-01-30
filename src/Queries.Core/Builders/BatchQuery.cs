@@ -10,6 +10,9 @@ namespace Queries.Core.Builders
     {
         private readonly List<IQuery> _statements;
 
+        /// <summary>
+        /// Statements that the current instance holds.
+        /// </summary>
         public IEnumerable<IQuery> Statements => _statements;
 
         /// <summary>
@@ -32,13 +35,13 @@ namespace Queries.Core.Builders
         }
 
         /// <summary>
-        /// Adds multiple statements to this instance
+        /// Adds multiple statements to the current instance
         /// </summary>
         /// <param name="queries"></param>
-        /// <returns></returns>
+        /// <returns>The current instance</returns>
         public BatchQuery AddStatements(IEnumerable<IQuery> queries)
         {
-            _statements.AddRange(queries);
+            _statements.AddRange(queries.Where(q => q is not null));
 
             return this;
         }
