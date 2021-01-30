@@ -176,28 +176,32 @@ public class Build : NukeBuild
                     .SetNoBuild(InvokedTargets.Contains(Compile))
                     .SetResultsDirectory(TestResultDirectory)
                     .AddProperty("ExcludeByAttribute", "Obsolete")
-                    .When(InvokedTargets.Contains(Coverage), _ => _.EnableCollectCoverage()
-                                                                   .SetCoverletOutputFormat(IsLocalBuild ? CoverletOutputFormat.lcov : CoverletOutputFormat.cobertura))
+                    .EnableCollectCoverage()
+                    .SetCoverletOutputFormat(IsLocalBuild ? CoverletOutputFormat.lcov : CoverletOutputFormat.cobertura)
                     .CombineWith(testsProjects, (cs, project) => cs.SetProjectFile(project)
                                                                    .CombineWith(project.GetTargetFrameworks(), (setting, framework) => setting.SetFramework(framework)
                                                                                                                                               .SetLogger($"trx;LogFileName={project.Name}.trx")
-                                                                                                                                              .When(InvokedTargets.Contains(Coverage) || IsServerBuild, _ => _.SetCoverletOutput(TestResultDirectory / $"{project.Name}.{framework}.{(IsLocalBuild ? "lcov.info" : "xml")}"))))
-                    );
+                                                                                                                                              .SetCoverletOutput(TestResultDirectory / $"{project.Name}.{(IsLocalBuild ? "lcov.info" : "xml")}")
+                                                                                )
+                                                                    )
+            );
 
             TestResultDirectory.GlobFiles("*.trx")
-                                    .ForEach(testFileResult => AzurePipelines?.PublishTestResults(type: AzurePipelinesTestResultsType.VSTest,
-                                                                                                    title: $"{Path.GetFileNameWithoutExtension(testFileResult)} ({AzurePipelines.StageDisplayName})",
-                                                                                                    files: new string[] { testFileResult })
+                               .ForEach(testFileResult => AzurePipelines?.PublishTestResults(type: AzurePipelinesTestResultsType.VSTest,
+                                                                                             title: $"{Path.GetFileNameWithoutExtension(testFileResult)} ({AzurePipelines.StageDisplayName})",
+                                                                                             files: new string[] { testFileResult
+})
                     );
 
             // TODO Move this to a separate "coverage" target once https://github.com/nuke-build/nuke/issues/562 is solved !
 
             ReportGenerator(_ => _
                     .SetFramework("net5.0")
-                    .SetReports(TestResultDirectory / "*.xml", TestResultDirectory / "*.lcov.info")
+                    .SetReports(TestResultDirectory / (IsLocalBuild ? "*.info" : "*.xml"))
                     .SetReportTypes(ReportTypes.Badges, ReportTypes.HtmlChart, ReportTypes.HtmlInline_AzurePipelines_Dark)
                     .SetTargetDirectory(CoverageReportDirectory)
                     .SetHistoryDirectory(CoverageReportHistoryDirectory)
+                    .SetTag(MajorMinorPatchVersion)
                 );
 
             if (IsServerBuild)
@@ -260,7 +264,7 @@ public class Build : NukeBuild
 
     public Target Changelog => _ => _
         .Requires(() => IsLocalBuild)
-        .Requires(() => !GitRepository.IsOnReleaseBranch() || GitHasCleanWorkingCopy())
+        .Requires(() => GitRepository.IsOnReleaseBranch() || GitRepository.IsOnHotfixBranch())
         .Description("Finalizes the change log so that its up to date for the release. ")
         .Executes(() =>
         {
@@ -398,7 +402,7 @@ public class Build : NukeBuild
 
         Git($"branch -D {GitRepository.Branch}");
 
-        Git($"push origin {MainBranchName} {DevelopBranch} {MajorMinorPatchVersion}");
+        Git($"push origin --follow-tags {MainBranchName} {DevelopBranch} {MajorMinorPatchVersion}");
     }
 
     private void FinishFeature()

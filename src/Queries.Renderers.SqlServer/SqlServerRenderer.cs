@@ -26,7 +26,7 @@ namespace Queries.Renderers.SqlServer
         ///     each part of a staemtn will be layed in onto a newline.
         /// </remarks>
         public SqlServerRenderer(SqlServerRendererSettings settings = null)
-            : base(settings ?? new SqlServerRendererSettings { DateFormatString = "yyyy-MM-dd", PrettyPrint = true } )
+            : base(settings ?? new SqlServerRendererSettings { DateFormatString = "yyyy-MM-dd", PrettyPrint = true })
         { }
 
         protected override string BeginEscapeWordString => "[";
@@ -51,6 +51,7 @@ namespace Queries.Renderers.SqlServer
                     result = Render(selectQueryBase);
                     break;
                 case CreateViewQuery createViewQuery:
+                    visitor.Visit(createViewQuery.SelectQuery);
                     result = Render(createViewQuery);
                     break;
                 case DeleteQuery deleteQuery:
@@ -182,7 +183,7 @@ namespace Queries.Renderers.SqlServer
                             sbParameters.Append(" DATETIME = '").Append(EscapeString((variable.Value as DateTime?).Value.ToString(Settings.DateFormatString))).Append("'");
                             break;
                         default:
-                            throw new ArgumentOutOfRangeException(nameof(variable),variable, $"Unsupported variable type");
+                            throw new ArgumentOutOfRangeException(nameof(variable), variable, $"Unsupported variable type");
                     }
 
                     if (Settings.PrettyPrint && sbParameters.Length > 0)
@@ -191,7 +192,7 @@ namespace Queries.Renderers.SqlServer
                     }
                 }
             }
-            return new CompiledQuery (result, visitor.Variables);
+            return new CompiledQuery(result, visitor.Variables);
         }
 
         protected override string RenderVariable(Variable variable, bool renderAlias) => $"@{variable.Name}";

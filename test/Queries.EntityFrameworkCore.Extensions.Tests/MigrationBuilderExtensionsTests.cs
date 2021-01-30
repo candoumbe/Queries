@@ -43,7 +43,7 @@ namespace Queries.EntityFrameworkCore.Extensions.Tests
             return Prop.Throws<ArgumentNullException, MigrationBuilder>(deleteQueryLazy).Label("ArgumentNullCases")
                        .When(deleteQuery is null)
                        .Or(deleteQueryLazy.Value.Operations.Once(op => op is DeleteMigrationOperation)).When(deleteQuery is not null)
-                                                                                                           .Label("Builder must have the corresponding operation");
+                                                                                                       .Label("Builder must have the corresponding operation");
         }
     }
 }

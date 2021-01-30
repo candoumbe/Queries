@@ -3,7 +3,7 @@
     /// <summary>
     /// Interface for fluent builders.
     /// </summary>
-    /// <typeparam name="TQuery">Type of query that the current instance can will build</typeparam>
+    /// <typeparam name="TQuery">Type of query that the current instance will build</typeparam>
     public interface IBuild<out TQuery> : IQuery
     {
         /// <summary>
