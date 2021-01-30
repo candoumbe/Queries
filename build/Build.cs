@@ -264,8 +264,8 @@ public class Build : NukeBuild
 
     public Target Changelog => _ => _
         .Requires(() => IsLocalBuild)
-        .Requires(() => GitRepository.IsOnReleaseBranch() || GitRepository.IsOnHotfixBranch())
         .Description("Finalizes the change log so that its up to date for the release. ")
+        .OnlyWhenStatic(() => GitRepository.IsOnReleaseBranch() || GitRepository.IsOnHotfixBranch())
         .Executes(() =>
         {
             FinalizeChangelog(ChangeLogFile, GitVersion.MajorMinorPatch, GitRepository);
