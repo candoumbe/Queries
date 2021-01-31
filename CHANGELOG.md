@@ -6,7 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-- Replaced `SkipVariableDeclaration` from `bool` to a [`ParametrizationSettings`](src/Queries.Core/Renderers/ParametrizationSettings.cs) enum `[BREAKING]`
+- Replaces `SkipVariableDeclaration` from `bool` to a [`ParametrizationSettings`](src/Queries.Core/Renderers/ParametrizationSettings.cs) enum `[BREAKING]`
+- Fixes incorrect rendering of [`CasesColumn`].
+- Fixes `ÀrgumentOutOfRangeException` thrown when using `ClauseOperator.In` with `SelectQuery`
+- Fixes `ÀrgumentOutOfRangeException` thrown when using `ClauseOperator.NotIn` with `SelectQuery`
 
 ## [0.2.0] / 2021-01-30
 - Adds `Queries.EntityFrameworkCore.Extensions` to provide additional `MigrationOperation` implementations.
