@@ -9,6 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
 		build-release.yaml = build-release.yaml
+		CHANGELOG.md = CHANGELOG.md
 		CONTRIBUTING.md = CONTRIBUTING.md
 		core.props = core.props
 		global.json = global.json
@@ -48,15 +49,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Queries.Renderers.Sqlite", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_build", "build\_build.csproj", "{FEFE22D1-FFEE-4150-BDCD-81FD321CE775}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Queries.EntityFrameworkCore.Extensions", "src\Queries.EntityFrameworkCore.Extensions\Queries.EntityFrameworkCore.Extensions.csproj", "{5E8FA512-FAED-4551-AAB3-EDEA9B66BBDD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Queries.EntityFrameworkCore.Extensions", "src\Queries.EntityFrameworkCore.Extensions\Queries.EntityFrameworkCore.Extensions.csproj", "{5E8FA512-FAED-4551-AAB3-EDEA9B66BBDD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Queries.EntityFrameworkCore.Extensions.Tests", "test\Queries.EntityFrameworkCore.Extensions.Tests\Queries.EntityFrameworkCore.Extensions.Tests.csproj", "{FE1083C8-5503-4E29-8198-894CA3C29A2D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Queries.EntityFrameworkCore.Extensions.Tests", "test\Queries.EntityFrameworkCore.Extensions.Tests\Queries.EntityFrameworkCore.Extensions.Tests.csproj", "{FE1083C8-5503-4E29-8198-894CA3C29A2D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Queries.EntityFrameworkCore.Extensions.SqlServer", "src\Queries.EntityFrameworkCore.Extensions.SqlServer\Queries.EntityFrameworkCore.Extensions.SqlServer.csproj", "{830B247B-358B-4FD9-965D-7797F69FE6CD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Queries.EntityFrameworkCore.Extensions.SqlServer", "src\Queries.EntityFrameworkCore.Extensions.SqlServer\Queries.EntityFrameworkCore.Extensions.SqlServer.csproj", "{830B247B-358B-4FD9-965D-7797F69FE6CD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Queries.EntityFrameworkCore.Extensions.SqlServer.Tests", "test\Queries.EntityFrameworkCore.Extensions.SqlServer.Tests\Queries.EntityFrameworkCore.Extensions.SqlServer.Tests.csproj", "{E7A5E075-4294-4F4F-ADCB-7CBF1E39CA00}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Queries.EntityFrameworkCore.Extensions.SqlServer.Tests", "test\Queries.EntityFrameworkCore.Extensions.SqlServer.Tests\Queries.EntityFrameworkCore.Extensions.SqlServer.Tests.csproj", "{E7A5E075-4294-4F4F-ADCB-7CBF1E39CA00}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestsHelpers", "test\TestsHelpers\TestsHelpers.csproj", "{1F1FE22E-2D41-4EB2-A12F-A0C691BD9907}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestsHelpers", "test\TestsHelpers\TestsHelpers.csproj", "{1F1FE22E-2D41-4EB2-A12F-A0C691BD9907}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -64,8 +65,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{FEFE22D1-FFEE-4150-BDCD-81FD321CE775}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FEFE22D1-FFEE-4150-BDCD-81FD321CE775}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A6749F70-2E7C-4030-AA1B-F48FF036ADFB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A6749F70-2E7C-4030-AA1B-F48FF036ADFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A6749F70-2E7C-4030-AA1B-F48FF036ADFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -114,6 +113,8 @@ Global
 		{DCD6E411-8A79-4477-A16E-6EC776D4FFBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DCD6E411-8A79-4477-A16E-6EC776D4FFBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DCD6E411-8A79-4477-A16E-6EC776D4FFBC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FEFE22D1-FFEE-4150-BDCD-81FD321CE775}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FEFE22D1-FFEE-4150-BDCD-81FD321CE775}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5E8FA512-FAED-4551-AAB3-EDEA9B66BBDD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5E8FA512-FAED-4551-AAB3-EDEA9B66BBDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5E8FA512-FAED-4551-AAB3-EDEA9B66BBDD}.Release|Any CPU.ActiveCfg = Release|Any CPU

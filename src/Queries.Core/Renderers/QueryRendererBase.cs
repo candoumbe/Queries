@@ -382,14 +382,14 @@ namespace Queries.Core.Renderers
                 ClauseOperator.In => clause.Constraint switch
                 {
                     VariableValues variables => $"{RenderColumn(clause.Column, false)} IN ({string.Join(", ", variables.Select(x => RenderVariable(x, false)))})",
-                    StringValues variables => $"{RenderColumn(clause.Column, false)} NOT IN ({string.Join(", ", variables.Select(x => RenderColumn(x.Literal(), false)))})",
-                    _ => throw new ArgumentOutOfRangeException(nameof(clause), clause?.Constraint, $"Unsupported constraint type for {nameof(ClauseOperator)}.{nameof(ClauseOperator.In)} operator."),
+                    StringValues variables => $"{RenderColumn(clause.Column, false)} IN ({string.Join(", ", variables.Select(x => RenderColumn(x.Literal(), false)))})",
+                    _ => throw new ArgumentOutOfRangeException(nameof(clause.Constraint), clause?.Constraint?.GetType(), $"Unsupported constraint type for {nameof(ClauseOperator)}.{nameof(ClauseOperator.In)} operator."),
                 },
                 ClauseOperator.NotIn => clause.Constraint switch
                 {
                     VariableValues variables => $"{RenderColumn(clause.Column, false)} NOT IN ({string.Join(", ", variables.Select(x => RenderVariable(x, false)))})",
                     StringValues variables => $"{RenderColumn(clause.Column, false)} NOT IN ({string.Join(", ", variables.Select(x => RenderColumn(x.Literal(), false)))})",
-                    _ => throw new ArgumentOutOfRangeException(nameof(clause), clause?.Constraint, $"Unsupported constraint type for {nameof(ClauseOperator)}.{nameof(ClauseOperator.NotIn)} operator."),
+                    _ => throw new ArgumentOutOfRangeException(nameof(clause.Constraint), clause?.Constraint?.GetType(), $"Unsupported constraint type for {nameof(ClauseOperator)}.{nameof(ClauseOperator.NotIn)} operator."),
                 },
                 _ => throw new ArgumentOutOfRangeException(nameof(clause.Operator), clause?.Operator, "Unknown clause operator"),
             };

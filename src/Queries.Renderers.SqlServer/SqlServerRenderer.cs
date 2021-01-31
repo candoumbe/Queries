@@ -44,18 +44,27 @@ namespace Queries.Renderers.SqlServer
             switch (query)
             {
                 case SelectQuery sq:
-                    visitor.Visit(sq);
+                    if (Settings.Parametrization != ParametrizationSettings.None)
+                    {
+                        visitor.Visit(sq);
+                    }
                     result = Render(sq);
                     break;
                 case SelectQueryBase selectQueryBase:
                     result = Render(selectQueryBase);
                     break;
                 case CreateViewQuery createViewQuery:
-                    visitor.Visit(createViewQuery.SelectQuery);
+                    if (Settings.Parametrization != ParametrizationSettings.None)
+                    {
+                        visitor.Visit(createViewQuery.SelectQuery);
+                    }
                     result = Render(createViewQuery);
                     break;
                 case DeleteQuery deleteQuery:
-                    visitor.Visit(deleteQuery);
+                    if (Settings.Parametrization != ParametrizationSettings.None)
+                    {
+                        visitor.Visit(deleteQuery);
+                    }
                     result = Render(deleteQuery);
                     break;
                 case UpdateQuery updateQuery:
@@ -83,7 +92,7 @@ namespace Queries.Renderers.SqlServer
 
 #endif
 
-            if (!Settings.SkipVariableDeclaration)
+            if (Settings.Parametrization == ParametrizationSettings.Default)
             {
                 foreach (Variable variable in visitor.Variables)
                 {
@@ -137,7 +146,10 @@ namespace Queries.Renderers.SqlServer
                     result = Render(createViewQuery);
                     break;
                 case DeleteQuery deleteQuery:
-                    visitor.Visit(deleteQuery);
+                    if (Settings.Parametrization != ParametrizationSettings.None)
+                    {
+                        visitor.Visit(deleteQuery);
+                    }
                     result = Render(deleteQuery);
                     break;
                 case UpdateQuery updateQuery:
@@ -164,7 +176,7 @@ namespace Queries.Renderers.SqlServer
             }
 #endif
 
-            if (!Settings.SkipVariableDeclaration)
+            if (Settings.Parametrization == ParametrizationSettings.Default)
             {
                 foreach (Variable variable in visitor.Variables)
                 {
