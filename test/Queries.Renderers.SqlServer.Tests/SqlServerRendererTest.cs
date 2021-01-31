@@ -457,6 +457,15 @@ namespace Queries.Renderers.SqlServer.Tests
                     "DECLARE @p1 AS VARCHAR(8000) = 'val2';" +
                     "SELECT [col1], [col2] FROM [table] WHERE ([col1] IN (@p0, @p1))"
                 };
+
+                yield return new object[]
+                {
+                    Select("col1", "col2")
+                    .From("table")
+                    .Where("col1".Field().In("val1", "val2")),
+                    new SqlServerRendererSettings { PrettyPrint = false, Parametrization = ParametrizationSettings.None },
+                    "SELECT [col1], [col2] FROM [table] WHERE ([col1] IN ('val1', 'val2'))"
+                };
             }
         }
 
@@ -532,7 +541,7 @@ namespace Queries.Renderers.SqlServer.Tests
                 yield return new object[]
                 {
                     Select("*").From("members").Where("Firstname".Field(), In, new StringValues("Bruce", "Bane")),
-                    new SqlServerRendererSettings{ SkipVariableDeclaration = true },
+                    new SqlServerRendererSettings{ Parametrization = ParametrizationSettings.SkipVariableDeclaration },
                     (Expression<Func<CompiledQuery, bool>>)(
                         query => query.Statement == "SELECT * FROM [members] WHERE ([Firstname] IN (@p0, @p1))"
                             && query.Variables.Exactly(2)
@@ -550,7 +559,7 @@ namespace Queries.Renderers.SqlServer.Tests
                         .Union(
                         Select("Fullname").From("SuperHero").Where("Nickname".Field(), Like, "B%"))
                     ),
-                    new SqlServerRendererSettings{ PrettyPrint = false, SkipVariableDeclaration = true },
+                    new SqlServerRendererSettings{ PrettyPrint = false, Parametrization = ParametrizationSettings.SkipVariableDeclaration },
                     (Expression<Func<CompiledQuery, bool>>)(
                         query => query.Statement == "SELECT * FROM (" +
                             "SELECT [Fullname] FROM [People] WHERE ([Firstname] LIKE @p0) " +

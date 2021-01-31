@@ -31,7 +31,7 @@ namespace Queries.Core.Renderers
         /// <remarks>
         /// Depending on the renderer implementation, this may or may not be fullfilled
         /// </remarks>
-        public bool SkipVariableDeclaration { get; set; }
+        public ParametrizationSettings Parametrization { get; set; }
 
         /// <summary>
         /// Defines which casing strategy to use when <see cref="Queries.Core.Parts.Columns.FieldColumn"/>'s <see cref="Parts.Columns.FieldColumn.Name"/> should be rendered

@@ -498,7 +498,7 @@ namespace Queries.Renderers.Postgres.Tests
                     Select("*")
                         .From("members")
                         .Where("Firstname".Field(), In, new StringValues("Bruce", "Bane")),
-                    new PostgresRendererSettings{ SkipVariableDeclaration = true },
+                    new PostgresRendererSettings{ Parametrization = ParametrizationSettings.SkipVariableDeclaration },
                     (Expression<Func<CompiledQuery, bool>>)(
                         query => query.Statement == @"SELECT * FROM ""members"" WHERE (""Firstname"" IN (@p0, @p1))"
                             && query.Variables.Exactly(2)
@@ -516,7 +516,7 @@ namespace Queries.Renderers.Postgres.Tests
                         .Union(
                         Select("Fullname").From("SuperHero").Where("Nickname".Field(), Like, "B%"))
                     ),
-                    new PostgresRendererSettings{ PrettyPrint = false, SkipVariableDeclaration = true },
+                    new PostgresRendererSettings{ PrettyPrint = false, Parametrization = ParametrizationSettings.SkipVariableDeclaration },
                     (Expression<Func<CompiledQuery, bool>>)(
                         query => query.Statement == "SELECT * FROM (" +
                             @"SELECT ""Fullname"" FROM ""People"" WHERE (""Firstname"" LIKE @p0) " +
@@ -534,7 +534,7 @@ namespace Queries.Renderers.Postgres.Tests
                     Select("id", "file_id")
                         .From("documents")
                         .Where(new WhereClause("userAccount".Field(), Like, "vp%")),
-                    new PostgresRendererSettings{ PrettyPrint = false, SkipVariableDeclaration = true },
+                    new PostgresRendererSettings{ PrettyPrint = false, Parametrization = ParametrizationSettings.SkipVariableDeclaration },
                     (Expression<Func<CompiledQuery, bool>>)(
                         query => query.Statement == @"SELECT ""id"", ""file_id"" FROM ""documents"" WHERE (""userAccount"" LIKE @p0)"
                             && query.Variables.Exactly(1)
@@ -558,7 +558,7 @@ namespace Queries.Renderers.Postgres.Tests
                         })
                         .OrderBy("timestamp".Field().Desc())
                         .Paginate(pageIndex: 2, pageSize: 3),
-                    new PostgresRendererSettings{ PrettyPrint = false, SkipVariableDeclaration = true, FieldnameCasingStrategy = FieldnameCasingStrategy.SnakeCase },
+                    new PostgresRendererSettings{ PrettyPrint = false, Parametrization = ParametrizationSettings.SkipVariableDeclaration, FieldnameCasingStrategy = FieldnameCasingStrategy.SnakeCase },
                     (Expression<Func<CompiledQuery, bool>>)(
                         query => query.Statement == @"SELECT ""id"", ""file_id"", COUNT(*) OVER() AS ""fullcount"" FROM ""documents"" " +
                                  @"WHERE ((""user_account"" LIKE @p0) AND (""created_on"" = @p1)) " +
