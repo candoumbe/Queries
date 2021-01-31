@@ -37,6 +37,7 @@ namespace Queries.Renderers.SqlServer.Tests
             renderer.Settings.Should().NotBeNull();
             renderer.Settings.PrettyPrint.Should().BeTrue($"{nameof(SqlServerRenderer)}.{nameof(SqlServerRenderer.Settings)}.{nameof(SqlServerRendererSettings.PrettyPrint)} should be set to true by default");
             renderer.Settings.DateFormatString.Should().Be("yyyy-MM-dd");
+            renderer.Settings.Parametrization.Should().Be(ParametrizationSettings.Default);
         }
 
 
@@ -84,6 +85,7 @@ namespace Queries.Renderers.SqlServer.Tests
         [MemberData(nameof(PaginateCases))]
         public void PaginateTest(SelectQuery query, SqlServerRendererSettings settings, string expectedString)
             => IsQueryOk(query, settings, expectedString);
+        
         public static IEnumerable<object[]> SelectTestCases
         {
             get
@@ -407,7 +409,7 @@ namespace Queries.Renderers.SqlServer.Tests
                     "DECLARE @p0 AS NUMERIC = 18;" +
                     "DECLARE @p1 AS BIT = 1;" +
                     "DECLARE @p2 AS BIT = 0;" +
-                    "SELECT [Firstname], [Lastname], CASE WHEN ([Age] > @p0) THEN @p1 WHEN ([Age] IS NULL) THEN @p2 AS [IsMajor] " +
+                    "SELECT [Firstname], [Lastname], CASE WHEN ([Age] > @p0) THEN @p1 WHEN ([Age] IS NULL) THEN @p2 END AS [IsMajor] " +
                     "FROM [members]"
                 };
 
@@ -425,7 +427,7 @@ namespace Queries.Renderers.SqlServer.Tests
                     "DECLARE @p0 AS NUMERIC = 18;" +
                     "DECLARE @p1 AS BIT = 1;" +
                     "DECLARE @p2 AS BIT = 0;" +
-                    "SELECT [Firstname], [Lastname], CASE WHEN ([Age] > @p0) THEN @p1 WHEN ([Age] IS NULL) THEN @p2 AS [IsMajor] " +
+                    "SELECT [Firstname], [Lastname], CASE WHEN ([Age] > @p0) THEN @p1 WHEN ([Age] IS NULL) THEN @p2 END AS [IsMajor] " +
                     "FROM [members]"
                 };
 
@@ -441,7 +443,7 @@ namespace Queries.Renderers.SqlServer.Tests
                     "DECLARE @p0 AS NUMERIC = 10;" +
                     "DECLARE @p1 AS NUMERIC = 1;" +
                     "DECLARE @p2 AS NUMERIC = 0;" +
-                    "SELECT CASE WHEN ([left] - [right] < @p0) THEN @p1 ELSE @p2 " +
+                    "SELECT CASE WHEN ([left] - [right] < @p0) THEN @p1 ELSE @p2 END " +
                     "FROM [table1] [t1] INNER JOIN [table2] [t2] " +
                     "ON ([t1].[Id] = [t2].[Id])"
                 };
@@ -465,6 +467,33 @@ namespace Queries.Renderers.SqlServer.Tests
                     .Where("col1".Field().In("val1", "val2")),
                     new SqlServerRendererSettings { PrettyPrint = false, Parametrization = ParametrizationSettings.None },
                     "SELECT [col1], [col2] FROM [table] WHERE ([col1] IN ('val1', 'val2'))"
+                };
+
+                yield return new object[]
+                {
+                    Select("col1", "col2")
+                    .From("table")
+                    .Where("col1".Field().In(Select("col3").From("table2").Build())),
+                    new SqlServerRendererSettings { PrettyPrint = false },
+                    "SELECT [col1], [col2] FROM [table] WHERE ([col1] IN (SELECT [col3] FROM [table2]))"
+                };
+
+                yield return new object[]
+                {
+                    Select("col1", "col2")
+                    .From("table")
+                    .Where("col1".Field().NotIn("val1", "val2")),
+                    new SqlServerRendererSettings { PrettyPrint = false, Parametrization = ParametrizationSettings.None },
+                    "SELECT [col1], [col2] FROM [table] WHERE ([col1] NOT IN ('val1', 'val2'))"
+                };
+
+                yield return new object[]
+                {
+                    Select("col1", "col2")
+                    .From("table")
+                    .Where("col1".Field().NotIn(Select("col3").From("table2").Build())),
+                    new SqlServerRendererSettings { PrettyPrint = false },
+                    "SELECT [col1], [col2] FROM [table] WHERE ([col1] NOT IN (SELECT [col3] FROM [table2]))"
                 };
             }
         }
