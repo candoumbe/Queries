@@ -382,16 +382,18 @@ namespace Queries.Core.Renderers
                 ClauseOperator.In => clause.Constraint switch
                 {
                     VariableValues variables => $"{RenderColumn(clause.Column, false)} IN ({string.Join(", ", variables.Select(x => RenderVariable(x, false)))})",
-                    StringValues variables => $"{RenderColumn(clause.Column, false)} NOT IN ({string.Join(", ", variables.Select(x => RenderColumn(x.Literal(), false)))})",
-                    _ => throw new ArgumentOutOfRangeException(nameof(clause), clause?.Constraint, $"Unsupported constraint type for {nameof(ClauseOperator)}.{nameof(ClauseOperator.In)} operator."),
+                    StringValues variables => $"{RenderColumn(clause.Column, false)} IN ({string.Join(", ", variables.Select(x => RenderColumn(x.Literal(), false)))})",
+                    SelectQuery select => $"{RenderColumn(clause.Column, false)} IN ({Render(select)})",
+                    _ => throw new ArgumentOutOfRangeException(nameof(clause.Constraint), clause?.Constraint?.GetType(), $"Unsupported constraint type for {nameof(ClauseOperator)}.{nameof(ClauseOperator.In)} operator."),
                 },
                 ClauseOperator.NotIn => clause.Constraint switch
                 {
                     VariableValues variables => $"{RenderColumn(clause.Column, false)} NOT IN ({string.Join(", ", variables.Select(x => RenderVariable(x, false)))})",
                     StringValues variables => $"{RenderColumn(clause.Column, false)} NOT IN ({string.Join(", ", variables.Select(x => RenderColumn(x.Literal(), false)))})",
-                    _ => throw new ArgumentOutOfRangeException(nameof(clause), clause?.Constraint, $"Unsupported constraint type for {nameof(ClauseOperator)}.{nameof(ClauseOperator.NotIn)} operator."),
+                    SelectQuery select => $"{RenderColumn(clause.Column, false)} NOT IN ({Render(select)})",
+                    _ => throw new ArgumentOutOfRangeException(nameof(clause.Constraint), clause?.Constraint?.GetType(), $"Unsupported constraint type for {nameof(ClauseOperator)}.{nameof(ClauseOperator.NotIn)} operator."),
                 },
-                _ => throw new ArgumentOutOfRangeException(nameof(clause.Operator), clause?.Operator, "Unknown clause operator"),
+                _ => throw new ArgumentOutOfRangeException(nameof(clause.Operator), clause?.Operator, "Unsupported clause operator"),
             };
 
         protected virtual string RenderWhere(IWhereClause clause)
@@ -538,12 +540,12 @@ namespace Queries.Core.Renderers
                     .Append(RenderColumn(when.ThenValue, false));
             }
 
-            if (caseColumn.Default != null)
+            if (caseColumn.Default is not null)
             {
                 sb.Append(" ELSE ").Append(RenderColumn(caseColumn.Default, false));
             }
 
-            return $"CASE {sb}";
+            return $"CASE {sb} END";
         }
 
         protected virtual string RenderVariable(Variable variable, bool renderAlias) => throw new NotSupportedException();
