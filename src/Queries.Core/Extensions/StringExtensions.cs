@@ -13,7 +13,14 @@ namespace System
         /// <param name="columnName">Name of the field</param>
         /// <param name="alias">optional alias of the <paramref name="columnName"/></param>
         /// <returns></returns>
-        public static FieldColumn Field(this string columnName, string alias = null) => new FieldColumn(columnName).As(alias);
+        public static FieldColumn Field(this string columnName, string alias) => new FieldColumn(columnName).As(alias);
+
+        /// <summary>
+        /// Turns the specified <paramref name="columnName"/> into <see cref="FieldColumn"/>.
+        /// </summary>
+        /// <param name="columnName">Name of the field</param>
+        /// <returns></returns>
+        public static FieldColumn Field(this string columnName) => columnName.Field(null);
 
         /// <summary>
         /// Turns the specified <paramref name="tableName"/> into a <see cref="Queries.Core.Parts.Table"/>
@@ -21,7 +28,15 @@ namespace System
         /// <param name="tableName">Name of the table</param>
         /// <param name="alias">Alias of the table</param>
         /// <returns><see cref="Table"/></returns>
-        public static Table Table(this string tableName, string alias = null) => new Table(tableName, alias);
+        public static Table Table(this string tableName, string alias) => new Table(tableName, alias);
+
+        /// <summary>
+        /// Turns the specified <paramref name="tableName"/> into a <see cref="Queries.Core.Parts.Table"/>
+        /// </summary>
+        /// <param name="tableName">Name of the table</param>
+        /// <returns><see cref="Table"/></returns>
+        public static Table Table(this string tableName) => tableName.Table(null);
+
 
         /// <summary>
         /// Create an <see cref="InsertedValue"/> instance.
