@@ -1,8 +1,9 @@
 ﻿using Newtonsoft.Json;
+
 using Queries.Core.Attributes;
 using Queries.Core.Parts.Columns;
+
 using System;
-using System.Collections.Generic;
 
 namespace Queries.Core.Parts.Functions
 {

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 using Queries.Core.Renderers;
 using Queries.Core.Parts.Functions;
 using Queries.Core.Parts.Columns;

@@ -1,11 +1,10 @@
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+
 using Queries.Core.Attributes;
 using Queries.Core.Parts.Columns;
+
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using static Newtonsoft.Json.JsonConvert;
 
 namespace Queries.Core.Parts.Functions.Math
 {

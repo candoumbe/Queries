@@ -1,7 +1,7 @@
 ﻿using Queries.Core.Builders.Fluent;
 using Queries.Core.Parts.Columns;
+
 using System;
-using System.Collections.Generic;
 
 namespace Queries.Core.Builders
 {

@@ -1,6 +1,6 @@
 ﻿using Queries.Core.Parts.Columns;
+
 using System;
-using System.Collections.Generic;
 
 namespace Queries.Core.Parts.Clauses
 {

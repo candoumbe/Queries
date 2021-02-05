@@ -1,14 +1,17 @@
 ﻿using FluentAssertions;
+
 using FluentValidation;
 using FluentValidation.Results;
+
 using Queries.Core.Parts.Columns;
 using Queries.Core.Validators;
+
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Queries.Core.Tests.Validators
 {

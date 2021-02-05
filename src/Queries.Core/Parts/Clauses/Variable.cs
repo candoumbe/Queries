@@ -1,8 +1,6 @@
-﻿using Newtonsoft.Json;
-using Queries.Core.Parts.Columns;
+﻿using Queries.Core.Parts.Columns;
+
 using System;
-using System.Collections.Generic;
-using static Newtonsoft.Json.JsonConvert;
 
 namespace Queries.Core.Parts.Clauses
 {

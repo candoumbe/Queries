@@ -1,13 +1,16 @@
 ﻿using FluentAssertions;
+
 using Queries.Core.Attributes;
 using Queries.Core.Parts.Columns;
 using Queries.Core.Parts.Functions;
+
 using System;
 using System.Collections.Generic;
-using System.Reflection;
+
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Categories;
+
 using static Queries.Core.Builders.Fluent.QueryBuilder;
 
 namespace Queries.Core.Tests.Parts.Functions

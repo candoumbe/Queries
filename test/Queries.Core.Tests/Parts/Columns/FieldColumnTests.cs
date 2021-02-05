@@ -5,7 +5,6 @@ using Xunit;
 using Queries.Core.Parts.Functions;
 using FluentAssertions;
 using Xunit.Abstractions;
-using Newtonsoft.Json.Linq;
 using Xunit.Categories;
 
 namespace Queries.Core.Tests.Parts.Columns

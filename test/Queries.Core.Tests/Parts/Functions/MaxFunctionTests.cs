@@ -5,7 +5,6 @@ using Xunit;
 using Queries.Core.Parts.Functions;
 using FluentAssertions;
 using Queries.Core.Attributes;
-using System.Reflection;
 using Xunit.Categories;
 
 namespace Queries.Core.Tests.Parts.Functions

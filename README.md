@@ -264,7 +264,7 @@ IQuery query = InsertInto("members")
 or even combine them using a [BatchQuery][class-builders-batch-query]
 
 
-#### Combine 
+#### [BatchQuery][class-batch-query] 
 
 ```csharp
 BatchQuery batch = new BatchQuery(
@@ -390,12 +390,13 @@ QueryRendererSettings settings = new MyCustomRendererSettings();
 string sql = query.ForXXX(settings) // where XXX stand for a database engine to target
 ```
 
-| Settings                  | Description                                                                                                                                                                                  | Default value                 |
-| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
-| `DateFormatString`        | Defines how DateTimes should be printed                                                                                                                                                      | `YYYY-MM-dd`                  |
-| `FieldnameCasingStrategy` | Defines the column name casing strategy                                                                                                                                                      | `Default` (no transformation) |
-| `PrettyPrint`             | Defines how to ouput statements                                                                                                                                                              | `false`                       |
-| `SkipVariableDeclaration` | Informs the renderer to skip variables declaration (if any). This is useful when variables declaration has already been taken care of (see [CollectVariableDeclaration](#collect-variables)) |
+- `DateFormatString` : defines how DateTimes should be printed (`YYYY-MM-DD` by default)
+- `FieldnameCasingStrategy` : Defines the column name casing strategy (`Default` meaning no transformation)
+- `PrettyPrint`
+- `Parametrization` : a hint for renderers on how to handle all variables a [IQuery] my embbed. 
+This is useful when variables declaration has already been taken care of (see [CollectVariableDeclaration](#collect-variables)) 
+
+|
 
 ## How to install ?
 
@@ -413,6 +414,7 @@ Check out the [contribution guidelines](./CONTRIBUTING.md) if you want to contri
 Check out the [changelog](CHANGELOG.md) to see what's new
 
 [class-iquery]: ./src/Queries.Core/IQuery.cs
+[class-batch-query]: ./src/Queries.Core/Builders/BatchQuery.cs
 [class-select-query]: ./src/Queries.Core/Builders/SelectQuery.cs
 [class-update-query]: ./src/Queries.Core/Builders/UpdateQuery.cs
 [class-delete-query]: ./src/Queries.Core/Builders/DeleteQuery.cs

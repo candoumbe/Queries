@@ -1,12 +1,8 @@
 ﻿using Optional;
+
 using Queries.Core;
 using Queries.Core.Builders;
 using Queries.Core.Parts.Columns;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Queries.Renderers.Postgres.Builders
 {

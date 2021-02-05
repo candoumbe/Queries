@@ -8,11 +8,12 @@ namespace System
     public static class StringExtensions
     {
         /// <summary>
-        /// Turns the specified <paramref name="columnName"/> into <see cref="Queries.Core.Parts.Columns.FieldColumn"/>
+        /// Turns the specified <paramref name="columnName"/> into <see cref="FieldColumn"/>.
         /// </summary>
         /// <param name="columnName">Name of the field</param>
+        /// <param name="alias">optional alias of the <paramref name="columnName"/></param>
         /// <returns></returns>
-        public static FieldColumn Field(this string columnName) => new FieldColumn(columnName);
+        public static FieldColumn Field(this string columnName, string alias = null) => new FieldColumn(columnName).As(alias);
 
         /// <summary>
         /// Turns the specified <paramref name="tableName"/> into a <see cref="Queries.Core.Parts.Table"/>

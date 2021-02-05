@@ -6,8 +6,6 @@
 It's allow to build Neo4J queries</Description>
     <TargetFramework>netstandard1.0</TargetFramework>
     <PackageTags>Query;Builder;SQL;Neo4J</PackageTags>
-    <PackageReleaseNotes>This is an alpha version</PackageReleaseNotes>
-    <PackageProjectUrl>https://github.com/candoumbe/Queries</PackageProjectUrl>
   </PropertyGroup>
 
 

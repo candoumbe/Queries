@@ -4,13 +4,14 @@ using Queries.Core.Parts.Clauses;
 using Queries.Core.Parts.Columns;
 using Queries.Core.Parts.Functions;
 using Queries.Core.Renderers;
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+
 using static Queries.Core.Builders.Fluent.QueryBuilder;
-using static Queries.Core.Renderers.PaginationKind;
 
 namespace Queries.Renderers.Sqlite
 {
