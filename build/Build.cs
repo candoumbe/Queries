@@ -1,6 +1,7 @@
 using Nuke.Common;
 using Nuke.Common.CI;
 using Nuke.Common.CI.AzurePipelines;
+using Nuke.Common.CI.GitHubActions;
 using Nuke.Common.Execution;
 using Nuke.Common.Git;
 using Nuke.Common.IO;
@@ -26,6 +27,24 @@ using static Nuke.Common.Tools.Git.GitTasks;
 using static Nuke.Common.Tools.GitVersion.GitVersionTasks;
 using Nuke.Common.Utilities;
 
+[GitHubActions(
+    "continuous",
+    GitHubActionsImage.UbuntuLatest,
+    OnPushBranchesIgnore = new[] { MainBranchName, ReleaseBranchPrefix + "/*" },
+    OnPullRequestBranches = new[] { DevelopBranch },
+    PublishArtifacts = false,
+    InvokedTargets = new[] { nameof(Tests), nameof(Pack) } )]
+[GitHubActions(
+    "deployment",
+    GitHubActionsImage.UbuntuLatest,
+    OnPushBranches = new[] { MainBranchName, ReleaseBranchPrefix + "/*" },
+    InvokedTargets = new[] { nameof(Publish) },
+    ImportGitHubTokenAs = nameof(GitHubToken),
+    ImportSecrets =
+        new[]
+        {
+            nameof(NugetApiKey),
+        })]
 [AzurePipelines(
     suffix: "release",
     AzurePipelinesImage.WindowsLatest,
@@ -87,10 +106,14 @@ public class Build : NukeBuild
     [Parameter("Indicates wheter to restore nuget in interactive mode - Default is false")]
     public readonly bool Interactive = false;
 
+    [Parameter] readonly string GitHubToken;
+
     [Required] [Solution] public readonly Solution Solution;
     [Required] [GitRepository] public readonly GitRepository GitRepository;
     [Required] [GitVersion(Framework = "net5.0", NoFetch = true)] public readonly GitVersion GitVersion;
+    
     [CI] public readonly AzurePipelines AzurePipelines;
+    [CI] public readonly GitHubActions GitHubActions;
 
     [Partition(3)] public readonly Partition TestPartition;
 
@@ -423,6 +446,10 @@ public class Build : NukeBuild
     [Parameter(@"URI where packages should be published (default : ""https://api.nuget.org/v3/index.json""")]
     public string NugetPackageSource => "https://api.nuget.org/v3/index.json";
 
+    public string GitHubPackageSource => $"https://nuget.pkg.github.com/{GitHubActions.GitHubRepositoryOwner}/index.json";
+
+    public bool IsOnGithub => GitHubActions is not null;
+
     public Target Publish => _ => _
         .Description($"Published packages (*.nupkg and *.snupkg) to the destination server set with {nameof(NugetPackageSource)} settings ")
         .DependsOn(Clean, Tests, Pack)
@@ -451,6 +478,13 @@ public class Build : NukeBuild
                     completeOnFailure: true);
             }
 
+            if (!IsOnGithub)
+            {
+                DotNetNuGetAddSource(_ => _
+                    .SetSource(GitHubPackageSource)
+                    .SetUsername(GitHubActions.GitHubActor)
+                    .SetPassword(GitHubToken));
+            }
             PushPackages(ArtifactsDirectory.GlobFiles("*.nupkg"));
             PushPackages(ArtifactsDirectory.GlobFiles("*.snupkg"));
         });
