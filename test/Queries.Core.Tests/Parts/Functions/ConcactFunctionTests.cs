@@ -4,7 +4,6 @@ using Queries.Core.Parts.Columns;
 using Queries.Core.Parts.Functions;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using Xunit;
 using Xunit.Abstractions;
 using static Queries.Core.Builders.Fluent.QueryBuilder;

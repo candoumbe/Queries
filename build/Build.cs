@@ -25,6 +25,7 @@ using static Nuke.Common.Tools.ReportGenerator.ReportGeneratorTasks;
 using static Nuke.Common.ChangeLog.ChangelogTasks;
 using static Nuke.Common.Tools.Git.GitTasks;
 using static Nuke.Common.Tools.GitVersion.GitVersionTasks;
+
 using Nuke.Common.Utilities;
 
 [GitHubActions(

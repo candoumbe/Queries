@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
-using Microsoft.EntityFrameworkCore.Migrations.Operations.Builders;
+
 using Queries.Core.Builders;
 using Queries.EntityFrameworkCore.Extensions.Operations;
 

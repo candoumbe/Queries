@@ -2,16 +2,9 @@ using Microsoft.EntityFrameworkCore.Migrations;
 #if NET5_0
 using Microsoft.EntityFrameworkCore.Metadata;
 #endif
-using Queries.Core.Builders;
 using static Moq.MockBehavior;
 using Moq;
-using Queries.EntityFrameworkCore.Extensions.Operations;
-using Microsoft.EntityFrameworkCore.Migrations.Operations;
-using System.Collections.Generic;
-using FsCheck;
 using Queries.Renderers.SqlServer;
-using FsCheck.Xunit;
-using TestsHelpers;
 
 namespace Queries.EntityFrameworkCore.Extensions.SqlServer.Tests
 {

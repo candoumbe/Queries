@@ -1,5 +1,4 @@
-﻿using Queries.Core.Renderers;
-using Queries.Renderers.Neo4J;
+﻿using Queries.Renderers.Neo4J;
 
 namespace Queries.Core.Builders
 {

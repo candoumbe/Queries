@@ -1,5 +1,4 @@
 ﻿using FluentAssertions;
-using Newtonsoft.Json.Linq;
 using Queries.Core.Parts.Columns;
 using Queries.Core.Parts.Functions.Math;
 using System;
@@ -7,8 +6,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using Xunit;
 using Xunit.Abstractions;
-using static Queries.Core.Builders.Fluent.QueryBuilder;
-using static Newtonsoft.Json.JsonConvert;
 using Queries.Core.Attributes;
 
 namespace Queries.Core.Tests.Parts.Functions.Math
