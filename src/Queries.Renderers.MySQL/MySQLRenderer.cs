@@ -4,46 +4,36 @@ using System.Text;
 using Queries.Core.Renderers;
 using Queries.Core.Parts.Functions;
 
-namespace Queries.Renderers.MySQL;
-
-/// <summary>
-/// Renders <see cref="Core.IQuery"/> as a MySQL compatible <see langword="string"/>
-/// </summary>
-public class MySQLRenderer : QueryRendererBase
+namespace Queries.Renderers.MySQL
 {
-    /// <summary>
-    /// Builds a new <see cref="MySQLRenderer"/> instance.
-    /// </summary>
-    /// <param name="settings">Settings that the renderer will use when rendering MySQL strings</param>
-    public MySQLRenderer(QueryRendererSettings settings) : base(settings)
+    // This project can output the Class library as a NuGet Package.
+    // To enable this option, right-click on the project and select the Properties menu item. In the Build tab select "Produce outputs on build".
+    public class MySQLRenderer : QueryRendererBase
     {
-    }
-
-    ///<inheritdoc/>
-    protected override string BeginEscapeWordString => @"""";
-
-    ///<inheritdoc/>
-    protected override string EndEscapeWordString => @"""";
-
-    ///<inheritdoc/>
-    protected override string ConcatOperator => "||";
-
-    ///<inheritdoc/>
-    protected override string RenderConcatColumn(ConcatFunction concatColumn, bool renderAlias)
-    {
-        if (concatColumn == null)
+        public MySQLRenderer(QueryRendererSettings settings) : base(settings)
         {
-            throw new ArgumentNullException(nameof(concatColumn));
         }
 
-        StringBuilder sbConcat = new();
-        sbConcat = concatColumn.Columns
-            .Aggregate(sbConcat, (current, column) => current.Append($"{(current.Length > 0 ? ", " : string.Empty)}{RenderColumn(column, renderAlias: false)}"));
+        protected override string BeginEscapeWordString => @"""";
+        protected override string EndEscapeWordString => @"""";
+        protected override string ConcatOperator => "||";
 
-        sbConcat.Insert(0, "CONCAT(").Append(")");
+        protected override string RenderConcatColumn(ConcatFunction concatColumn, bool renderAlias)
+        {
+            if (concatColumn == null)
+            {
+                throw new ArgumentNullException(nameof(concatColumn));
+            }
 
-        return renderAlias && !string.IsNullOrWhiteSpace(concatColumn.Alias)
-            ? RenderColumnnameWithAlias(sbConcat.ToString(), EscapeName(concatColumn.Alias))
-            : sbConcat.ToString();
+            StringBuilder sbConcat = new();
+            sbConcat = concatColumn.Columns
+                .Aggregate(sbConcat, (current, column) => current.Append($"{(current.Length > 0 ? ", " : string.Empty)}{RenderColumn(column, renderAlias: false)}"));
+
+            sbConcat.Insert(0, "CONCAT(").Append(")");
+
+            return renderAlias && !string.IsNullOrWhiteSpace(concatColumn.Alias)
+                ? RenderColumnnameWithAlias(sbConcat.ToString(), EscapeName(concatColumn.Alias))
+                : sbConcat.ToString();
+        }
     }
 }

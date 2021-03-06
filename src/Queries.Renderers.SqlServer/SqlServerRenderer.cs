@@ -1,14 +1,4 @@
-﻿using Queries.Core;
-using Queries.Core.Builders;
-using Queries.Core.Parts.Clauses;
-using Queries.Core.Renderers;
-
-using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-
-namespace Queries.Renderers.SqlServer;
+﻿namespace Queries.Renderers.SqlServer;
 
 /// <summary>
 /// <see cref="IQueryRenderer"/> implementation for SQL Server

@@ -1,7 +1,4 @@
-﻿using Queries.Core.Builders.Fluent;
-using Queries.Core.Parts.Clauses;
-
-namespace Queries.Core.Builders;
+﻿namespace Queries.Core.Builders;
 
 /// <summary>
 /// Helps to build <see cref="Variable"/> instances.
@@ -68,5 +65,5 @@ public class DeclareVariableQuery : IBuild<Variable>
     }
 
     ///<inheritdoc/>
-    public Variable Build() => new (_name, _type, _value);
+    public Variable Build() => new(_name, _type, _value);
 }

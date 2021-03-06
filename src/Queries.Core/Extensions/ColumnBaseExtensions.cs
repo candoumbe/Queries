@@ -1,7 +1,4 @@
-﻿using Queries.Core.Parts.Functions.Math;
-using Queries.Core.Parts.Sorting;
-
-namespace Queries.Core.Parts.Columns;
+﻿namespace Queries.Core.Parts.Columns;
 
 /// <summary>
 /// Extensions methods for <see cref="ColumnBase"/> type
@@ -28,5 +25,5 @@ public static class ColumnBaseExtensions
     /// <param name="left">left operand</param>
     /// <param name="right">right operand</param>
     /// <returns></returns>
-    public static SubstractFunction Substract(this ColumnBase left, IColumn right) => new (left, right);
+    public static SubstractFunction Substract(this ColumnBase left, IColumn right) => new(left, right);
 }

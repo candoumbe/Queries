@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Queries.Core.Renderers;
+﻿namespace Queries.Core.Renderers;
 
 /// <summary>
 /// Settings to use when computing string representation of a <see cref="IQuery"/> instance.
@@ -34,9 +32,13 @@ public abstract class QueryRendererSettings
     public ParametrizationSettings Parametrization { get; set; }
 
     /// <summary>
-    /// Defines which casing strategy to use when <see cref="Queries.Core.Parts.Columns.FieldColumn"/>'s <see cref="Parts.Columns.FieldColumn.Name"/> should be rendered
+    /// Defines which casing strategy to use when <see cref="Parts.Columns.FieldColumn"/>'s <see cref="Parts.Columns.FieldColumn.Name"/> should be rendered
     /// </summary>
-    public FieldnameCasingStrategy FieldnameCasingStrategy { get => _fieldnameCasingStrategy; set => _fieldnameCasingStrategy = value ?? FieldnameCasingStrategy.Default; }
+    public FieldnameCasingStrategy FieldnameCasingStrategy
+    {
+        get => _fieldnameCasingStrategy;
+        set => _fieldnameCasingStrategy = value ?? FieldnameCasingStrategy.Default;
+    }
 
     private FieldnameCasingStrategy _fieldnameCasingStrategy;
 

@@ -1,9 +1,3 @@
-using Queries.Core.Parts.Clauses;
-using Queries.Core.Parts.Columns;
-using Queries.Core.Parts.Functions;
-using System;
-using System.Linq;
-
 namespace Queries.Core.Builders.Fluent;
 
 /// <summary>
@@ -13,6 +7,12 @@ public static class QueryBuilder
 {
     #region Columns conversions shortcuts
 
+    /// <summary>
+    /// Applies <see cref="LengthFunction"/> to <paramref name="column"/>.
+    /// </summary>
+    /// <param name="column">column onto which the function will be applied.</param>
+    /// <returns><see cref="LengthFunction"/></returns>
+    public static LengthFunction Length(IColumn column) => new(column);
     /// <summary>
     /// Applies <see cref="LengthFunction"/> to <paramref name="column"/>.
     /// </summary>
@@ -37,7 +37,7 @@ public static class QueryBuilder
     /// <param name="fallBackValue"></param>
     /// <param name="otherFallbackValues"></param>
     /// <returns>A <see cref="NullFunction"/> that will default to either <paramref name="fallBackValue"/> or one of the <paramref name="otherFallbackValues"/></returns>
-    public static NullFunction Null(FieldColumn column, ColumnBase fallBackValue, params ColumnBase[] otherFallbackValues) => new (column, fallBackValue, otherFallbackValues);
+    public static NullFunction Null(FieldColumn column, ColumnBase fallBackValue, params ColumnBase[] otherFallbackValues) => new(column, fallBackValue, otherFallbackValues);
 
     /// <summary>
     /// Applies <see cref="CountFunction"/> to <paramref name="column"/>.
@@ -81,7 +81,7 @@ public static class QueryBuilder
     /// <param name="start">position where the substring will start</param>
     /// <param name="length">position where the substring will end</param>
     /// <returns><see cref="SubstringFunction"/></returns>
-    public static SubstringFunction Substring(IColumn column, int start, int? length = null) => new (column, start, length);
+    public static SubstringFunction Substring(IColumn column, int start, int? length = null) => new(column, start, length);
 
     /// <summary>
     /// Applies the "UPPER" function to the specified column

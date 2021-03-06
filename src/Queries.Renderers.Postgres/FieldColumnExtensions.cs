@@ -1,6 +1,4 @@
-﻿using Queries.Renderers.Postgres.Parts.Columns;
-
-namespace Queries.Core.Parts.Columns;
+﻿namespace Queries.Core.Parts.Columns;
 
 /// <summary>
 /// Extensions method
