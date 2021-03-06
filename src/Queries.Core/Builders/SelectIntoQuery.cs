@@ -1,7 +1,3 @@
-using System;
-using Queries.Core.Builders.Fluent;
-using Queries.Core.Parts;
-
 namespace Queries.Core.Builders;
 
 /// <summary>

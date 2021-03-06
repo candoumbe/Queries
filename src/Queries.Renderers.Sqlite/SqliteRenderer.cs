@@ -1,19 +1,4 @@
-﻿using Queries.Core;
-using Queries.Core.Builders;
-using Queries.Core.Parts.Clauses;
-using Queries.Core.Parts.Columns;
-using Queries.Core.Parts.Functions;
-using Queries.Core.Renderers;
-
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-
-using static Queries.Core.Builders.Fluent.QueryBuilder;
-
-namespace Queries.Renderers.Sqlite;
+﻿namespace Queries.Renderers.Sqlite;
 
 /// <summary>
 /// A renderer that can convert <see cref="IQuery"/> to a SQLite compatible <see langword="string"/>.
@@ -72,7 +57,7 @@ public class SqliteRenderer : QueryRendererBase
             v => Select(Null("RealValue".Field(), "IntegerValue".Field(), "BlobValue".Field(), "TextValue".Field()))
                 .From(VariablesTempTablename)
                 .Where(ParameterFieldName.Field().EqualTo(v.Name))
-                .Paginate(pageIndex: 1, pageSize:1)
+                .Paginate(pageIndex: 1, pageSize: 1)
                 .Build()
         );
         switch (query)
@@ -153,7 +138,7 @@ public class SqliteRenderer : QueryRendererBase
             BatchQuery batch = new BatchQuery()
                 .AddStatement("BEGIN".AsNative())
                 .AddStatement("PRAGMA temp_store = 2".AsNative())
-                .AddStatement($"CREATE TEMP TABLE {RenderTablename(VariablesTempTablename.Table(), renderAlias:false)}(ParameterName TEXT PRIMARY KEY, RealValue REAL, IntegerValue INTEGER, BlobValue BLOB, TextValue TEXT)"
+                .AddStatement($"CREATE TEMP TABLE {RenderTablename(VariablesTempTablename.Table(), renderAlias: false)}(ParameterName TEXT PRIMARY KEY, RealValue REAL, IntegerValue INTEGER, BlobValue BLOB, TextValue TEXT)"
                     .AsNative()
                 )
                 .AddStatements(insertParameters)

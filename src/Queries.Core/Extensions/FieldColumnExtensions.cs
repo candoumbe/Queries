@@ -1,8 +1,4 @@
-﻿using System;
-using Queries.Core.Builders;
-using Queries.Core.Parts.Clauses;
-
-namespace Queries.Core.Parts.Columns;
+﻿namespace Queries.Core.Parts.Columns;
 
 /// <summary>
 /// Extension methods for <see cref="FieldColumn"/> type

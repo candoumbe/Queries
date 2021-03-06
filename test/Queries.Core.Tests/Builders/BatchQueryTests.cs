@@ -1,13 +1,4 @@
-﻿using FluentAssertions;
-using Queries.Core.Builders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Xunit;
-using Xunit.Categories;
-using static Queries.Core.Builders.Fluent.QueryBuilder;
-
-namespace Queries.Core.Tests.Builders;
+﻿namespace Queries.Core.Tests.Builders;
 
 [UnitTest]
 [Feature("Batch query")]
@@ -65,7 +56,7 @@ public class BatchQueryTests
 
         // Assert 
         batchQuery.Statements.Should()
-            .Equal(new []
+            .Equal(new[]
             {
                 Select(1.Literal()),
                 Select(2.Literal()),

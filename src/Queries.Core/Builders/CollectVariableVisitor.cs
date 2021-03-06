@@ -1,71 +1,57 @@
-﻿using Queries.Core.Parts;
-using Queries.Core.Parts.Clauses;
-using Queries.Core.Parts.Columns;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using static Queries.Core.Parts.Clauses.VariableType;
-
-namespace Queries.Core.Builders;
-
-/// <summary>
-/// Collects <see cref="Literal"/>s from queries and replaces each of them by a <see cref="Variable"/> counterpart. 
-/// </summary>
-public class CollectVariableVisitor : IVisitor<SelectQuery>, IVisitor<IWhereClause>, IVisitor<InsertIntoQuery>, IVisitor<DeleteQuery>
+﻿namespace Queries.Core.Builders
 {
     /// <summary>
-    /// Collection of variables that 
+    /// Collects <see cref="Literal"/>s from queries and replaces each of them by a <see cref="Variable"/> counterpart. 
     /// </summary>
-    public IEnumerable<Variable> Variables
-#if NETSTANDARD
-        => _variables.ToArray();
-#else
-        => _variables.AsReadOnly();
-#endif
-    private readonly List<Variable> _variables;
-
-    /// <summary>
-    /// Builds a new <see cref="CollectVariableVisitor"/> instance.
-    /// </summary>
-    public CollectVariableVisitor() => _variables = new();
-
-    ///<inheritdoc/>
-    public void Visit(SelectQuery instance)
+    public class CollectVariableVisitor : IVisitor<SelectQuery>, IVisitor<IWhereClause>, IVisitor<InsertIntoQuery>, IVisitor<DeleteQuery>
     {
-        foreach (CasesColumn item in instance.Columns.OfType<CasesColumn>())
+        public IEnumerable<Variable> Variables => _variables;
+
+        private readonly IList<Variable> _variables;
+
+        /// <summary>
+        /// Builds a new <see cref="CollectVariableVisitor"/> instance.
+        /// </summary>
+        public CollectVariableVisitor()
         {
-            foreach (WhenExpression when in item.Cases)
+            _variables = new List<Variable>();
+        }
+
+        ///<inheritdoc/>
+        public void Visit(SelectQuery instance)
+        {
+            foreach (CasesColumn item in instance.Columns.OfType<CasesColumn>())
             {
-                Visit(when.Criterion);
-                switch (when.ThenValue)
+                foreach (WhenExpression when in item.Cases)
                 {
-                    case BooleanColumn bc:
-                        {
-                            Variable variable = _variables.SingleOrDefault(x => x.Type == VariableType.Boolean && bc.Value == x.Value);
-                            if (variable == null)
+                    Visit(when.Criterion);
+                    switch (when.ThenValue)
+                    {
+                        case BooleanColumn bc:
                             {
-                                variable = new Variable($"p{_variables.Count}", VariableType.Boolean, bc.Value);
-                                _variables.Add(variable);
+                                Variable variable = _variables.SingleOrDefault(x => x.Type == VariableType.Boolean && bc.Value == x.Value);
+                                if (variable == null)
+                                {
+                                    variable = new Variable($"p{_variables.Count}", VariableType.Boolean, bc.Value);
+                                    _variables.Add(variable);
+                                }
+
+                                when.ThenValue = variable;
                             }
-
-                            when.ThenValue = variable;
-                        }
-                        break;
-                    case DateTimeColumn dc:
-                        {
-                            Variable variable = _variables.SingleOrDefault(x => x.Type == Date && dc.Value == x.Value);
-
-                            if (variable == null)
+                            break;
+                        case DateTimeColumn dc:
                             {
-                                variable = new Variable($"p{_variables.Count}", Date, dc.Value);
-                                _variables.Add(variable);
-                            }
+                                Variable variable = _variables.SingleOrDefault(x => x.Type == Date && dc.Value == x.Value);
 
-                            when.ThenValue = variable;
-                        }
-                        break;
+                                if (variable == null)
+                                {
+                                    variable = new Variable($"p{_variables.Count}", Date, dc.Value);
+                                    _variables.Add(variable);
+                                }
+
+                                when.ThenValue = variable;
+                            }
+                            break;
 #if NET6_0_OR_GREATER
                     case DateColumn dc:
                         {
@@ -81,138 +67,38 @@ public class CollectVariableVisitor : IVisitor<SelectQuery>, IVisitor<IWhereClau
                         }
                         break;
 #endif
-                    case NumericColumn nc:
-                        {
-                            Variable variable = _variables.SingleOrDefault(x => x.Type == Numeric && nc.Value == x.Value);
-
-                            if (variable == null)
+                        case NumericColumn nc:
                             {
-                                variable = new Variable($"p{_variables.Count}", Numeric, nc.Value);
-                                _variables.Add(variable);
+                                Variable variable = _variables.SingleOrDefault(x => x.Type == Numeric && nc.Value == x.Value);
+
+                                if (variable == null)
+                                {
+                                    variable = new Variable($"p{_variables.Count}", Numeric, nc.Value);
+                                    _variables.Add(variable);
+                                }
+
+                                when.ThenValue = variable;
                             }
-
-                            when.ThenValue = variable;
-                        }
-                        break;
-                    case StringColumn sc:
-                        {
-                            Variable variable = _variables.SingleOrDefault(x => x.Type == VariableType.String && sc.Value == x.Value);
-
-                            if (variable == null)
+                            break;
+                        case StringColumn sc:
                             {
-                                variable = new Variable($"p{_variables.Count}", VariableType.String, sc.Value);
-                                _variables.Add(variable);
-                            }
+                                Variable variable = _variables.SingleOrDefault(x => x.Type == VariableType.String && sc.Value == x.Value);
 
-                            when.ThenValue = variable;
-                        }
-                        break;
+                                if (variable == null)
+                                {
+                                    variable = new Variable($"p{_variables.Count}", VariableType.String, sc.Value);
+                                    _variables.Add(variable);
+                                }
+
+                                when.ThenValue = variable;
+                            }
+                            break;
+                    }
                 }
-            }
 
-            switch (item.Default)
-            {
-                case BooleanColumn bc:
-                    {
-                        Variable variable = _variables.SingleOrDefault(x => x.Type == VariableType.Boolean && bc.Value == x.Value);
-                        if (variable is null)
-                        {
-                            variable = new Variable($"p{_variables.Count}", VariableType.Boolean, bc.Value);
-                            _variables.Add(variable);
-                        }
-                        item.Default = variable;
-                    }
-                    break;
-                case DateTimeColumn dc:
-                    {
-                        Variable variable = _variables.SingleOrDefault(x => x.Type == Date && dc.Value == x.Value);
-                        if (variable is null)
-                        {
-                            variable = new Variable($"p{_variables.Count}", Date, dc.Value);
-                            _variables.Add(variable);
-                        }
-                        item.Default = variable;
-                    }
-                    break;
-                case NumericColumn nc:
-                    {
-                        Variable variable = _variables.SingleOrDefault(x => x.Type == Numeric && nc.Value == x.Value);
-                        if (variable is null)
-                        {
-                            variable = new Variable($"p{_variables.Count}", Numeric, nc.Value);
-                            _variables.Add(variable);
-                        }
-                        item.Default = variable;
-                    }
-                    break;
-                case StringColumn sc:
-                    {
-                        Variable variable = _variables.SingleOrDefault(x => x.Type == VariableType.String && sc.Value == x.Value);
-                        if (variable is null)
-                        {
-                            variable = new Variable($"p{_variables.Count}", VariableType.String, sc.Value);
-                            _variables.Add(variable);
-                        }
-                        item.Default = variable;
-                    }
-                    break;
-            }
-        }
-        foreach (ITable item in instance.Tables)
-        {
-            switch (item)
-            {
-                case SelectTable st:
-                    Visit(st.Select);
-                    break;
-                case SelectQuery sq:
-                    Visit(sq);
-                    break;
-            }
-        }
-        if (instance.WhereCriteria is not null)
-        {
-            Visit(instance.WhereCriteria);
-        }
-        foreach (SelectQuery unionQuery in instance.Unions)
-        {
-            Visit(unionQuery);
-        }
-    }
-
-    ///<inheritdoc/>
-    public virtual void Visit(IWhereClause instance)
-    {
-        switch (instance)
-        {
-            case WhereClause wc:
-                switch (wc.Constraint)
+                switch (item.Default)
                 {
-                    case NumericColumn nc:
-                        {
-                            Variable variable = _variables.SingleOrDefault(x => x.Type == Numeric && nc.Value == x.Value);
-                            if (variable == null)
-                            {
-                                variable = new Variable($"p{_variables.Count}", Numeric, nc.Value);
-                                _variables.Add(variable);
-                            }
-                            wc.Constraint = variable;
-                        }
-                        break;
-
-                    case StringColumn sc when sc.Value is not null:
-                        {
-                            Variable variable = _variables.SingleOrDefault(x => x.Type == VariableType.String && Equals(sc.Value, x.Value));
-                            if (variable is null)
-                            {
-                                variable = new Variable($"p{_variables.Count}", VariableType.String, sc.Value);
-                                _variables.Add(variable);
-                            }
-                            wc.Constraint = variable;
-                        }
-                        break;
-
-                    case BooleanColumn bc when bc.Value is not null:
+                    case BooleanColumn bc:
                         {
                             Variable variable = _variables.SingleOrDefault(x => x.Type == VariableType.Boolean && bc.Value == x.Value);
                             if (variable is null)
@@ -220,11 +106,10 @@ public class CollectVariableVisitor : IVisitor<SelectQuery>, IVisitor<IWhereClau
                                 variable = new Variable($"p{_variables.Count}", VariableType.Boolean, bc.Value);
                                 _variables.Add(variable);
                             }
-                            wc.Constraint = variable;
+                            item.Default = variable;
                         }
                         break;
-
-                    case DateTimeColumn dc when dc.Value is not null:
+                    case DateTimeColumn dc:
                         {
                             Variable variable = _variables.SingleOrDefault(x => x.Type == Date && dc.Value == x.Value);
                             if (variable is null)
@@ -232,9 +117,110 @@ public class CollectVariableVisitor : IVisitor<SelectQuery>, IVisitor<IWhereClau
                                 variable = new Variable($"p{_variables.Count}", Date, dc.Value);
                                 _variables.Add(variable);
                             }
-                            wc.Constraint = variable;
+                            item.Default = variable;
                         }
                         break;
+                    case NumericColumn nc:
+                        {
+                            Variable variable = _variables.SingleOrDefault(x => x.Type == Numeric && nc.Value == x.Value);
+                            if (variable is null)
+                            {
+                                variable = new Variable($"p{_variables.Count}", Numeric, nc.Value);
+                                _variables.Add(variable);
+                            }
+                            item.Default = variable;
+                        }
+                        break;
+                    case StringColumn sc:
+                        {
+                            Variable variable = _variables.SingleOrDefault(x => x.Type == VariableType.String && sc.Value == x.Value);
+                            if (variable is null)
+                            {
+                                variable = new Variable($"p{_variables.Count}", VariableType.String, sc.Value);
+                                _variables.Add(variable);
+                            }
+                            item.Default = variable;
+                        }
+                        break;
+                }
+            }
+            foreach (ITable item in instance.Tables)
+            {
+                switch (item)
+                {
+                    case SelectTable st:
+                        Visit(st.Select);
+                        break;
+                    case SelectQuery sq:
+                        Visit(sq);
+                        break;
+                }
+            }
+            if (instance.WhereCriteria is not null)
+            {
+                Visit(instance.WhereCriteria);
+            }
+            foreach (SelectQuery unionQuery in instance.Unions)
+            {
+                Visit(unionQuery);
+            }
+        }
+
+        ///<inheritdoc/>
+        public virtual void Visit(IWhereClause instance)
+        {
+            switch (instance)
+            {
+                case WhereClause wc:
+                    switch (wc.Constraint)
+                    {
+                        case NumericColumn nc:
+                            {
+                                Variable variable = _variables.SingleOrDefault(x => x.Type == Numeric && nc.Value == x.Value);
+                                if (variable == null)
+                                {
+                                    variable = new Variable($"p{_variables.Count}", Numeric, nc.Value);
+                                    _variables.Add(variable);
+                                }
+                                wc.Constraint = variable;
+                            }
+                            break;
+
+                        case StringColumn sc when sc.Value is not null:
+                            {
+                                Variable variable = _variables.SingleOrDefault(x => x.Type == VariableType.String && Equals(sc.Value, x.Value));
+                                if (variable is null)
+                                {
+                                    variable = new Variable($"p{_variables.Count}", VariableType.String, sc.Value);
+                                    _variables.Add(variable);
+                                }
+                                wc.Constraint = variable;
+                            }
+                            break;
+
+                        case BooleanColumn bc when bc.Value is not null:
+                            {
+                                Variable variable = _variables.SingleOrDefault(x => x.Type == VariableType.Boolean && bc.Value == x.Value);
+                                if (variable is null)
+                                {
+                                    variable = new Variable($"p{_variables.Count}", VariableType.Boolean, bc.Value);
+                                    _variables.Add(variable);
+                                }
+                                wc.Constraint = variable;
+                            }
+                            break;
+
+                        case DateTimeColumn dc when dc.Value is not null:
+                            {
+                                Variable variable = _variables.SingleOrDefault(x => x.Type == Date && dc.Value == x.Value);
+                                if (variable is null)
+                                {
+                                    variable = new Variable($"p{_variables.Count}", Date, dc.Value);
+                                    _variables.Add(variable);
+                                }
+                                wc.Constraint = variable;
+                            }
+                            break;
 #if NET6_0_OR_GREATER
                     case DateColumn dc when dc.Value is not null:
                         {
@@ -260,70 +246,70 @@ public class CollectVariableVisitor : IVisitor<SelectQuery>, IVisitor<IWhereClau
                         }
                         break;
 #endif
-                    case StringValues strings:
-                        IList<Variable> stringValueVariables = new List<Variable>();
-                        foreach (string value in strings)
-                        {
-                            Variable variable = _variables.SingleOrDefault(x => x.Type == VariableType.String && Equals(value, x.Value));
-                            if (variable is null)
+                        case StringValues strings:
+                            IList<Variable> stringValueVariables = new List<Variable>();
+                            foreach (string value in strings)
                             {
-                                variable = new Variable($"p{Variables.Count()}", VariableType.String, value);
-                                stringValueVariables.Add(variable);
-                                _variables.Add(variable);
+                                Variable variable = _variables.SingleOrDefault(x => x.Type == VariableType.String && Equals(value, x.Value));
+                                if (variable is null)
+                                {
+                                    variable = new Variable($"p{Variables.Count()}", VariableType.String, value);
+                                    stringValueVariables.Add(variable);
+                                    _variables.Add(variable);
+                                }
                             }
-                        }
-                        if (stringValueVariables.Any())
-                        {
-                            wc.Constraint = new VariableValues(stringValueVariables.First(), stringValueVariables.Skip(1).ToArray());
-                        }
-                        break;
-                }
+                            if (stringValueVariables.Any())
+                            {
+                                wc.Constraint = new VariableValues(stringValueVariables.First(), stringValueVariables.Skip(1).ToArray());
+                            }
+                            break;
+                    }
 
-                break;
-            case CompositeWhereClause cwc:
-                foreach (IWhereClause item in cwc.Clauses)
-                {
-                    Visit(item);
-                }
-                break;
+                    break;
+                case CompositeWhereClause cwc:
+                    foreach (IWhereClause item in cwc.Clauses)
+                    {
+                        Visit(item);
+                    }
+                    break;
 
-            default:
-                throw new ArgumentOutOfRangeException(nameof(instance), instance, $"Unexpected {instance.GetType()} clause type");
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(instance), instance, $"Unexpected {instance.GetType()} clause type");
+            }
         }
-    }
 
-    ///<inheritdoc/>
-    public void Visit(InsertIntoQuery instance)
-    {
-        if (instance.InsertedValue is InsertedValues insertValues)
+        ///<inheritdoc/>
+        public void Visit(InsertIntoQuery instance)
         {
-            foreach (InsertedValue item in insertValues)
+            if (instance.InsertedValue is InsertedValues insertValues)
             {
-                switch (item.Value)
+                foreach (InsertedValue item in insertValues)
                 {
-                    case StringColumn sc when sc.Value is not null:
-                        {
-                            Variable variable = new($"p{_variables.Count}", VariableType.String, sc.Value);
-                            _variables.Add(variable);
-                            item.Value = variable;
-                        }
-                        break;
+                    switch (item.Value)
+                    {
+                        case StringColumn sc when sc.Value is not null:
+                            {
+                                Variable variable = new($"p{_variables.Count}", VariableType.String, sc.Value);
+                                _variables.Add(variable);
+                                item.Value = variable;
+                            }
+                            break;
 
-                    case BooleanColumn bc when bc.Value is not null:
-                        {
-                            Variable variable = new($"p{_variables.Count}", VariableType.Boolean, bc.Value);
-                            _variables.Add(variable);
-                            item.Value = variable;
-                        }
-                        break;
+                        case BooleanColumn bc when bc.Value is not null:
+                            {
+                                Variable variable = new($"p{_variables.Count}", VariableType.Boolean, bc.Value);
+                                _variables.Add(variable);
+                                item.Value = variable;
+                            }
+                            break;
 
-                    case DateTimeColumn dc when dc.Value is not null:
-                        {
-                            Variable variable = new($"p{_variables.Count}", Date, dc.Value);
-                            _variables.Add(variable);
-                            item.Value = variable;
-                        }
-                        break;
+                        case DateTimeColumn dc when dc.Value is not null:
+                            {
+                                Variable variable = new($"p{_variables.Count}", Date, dc.Value);
+                                _variables.Add(variable);
+                                item.Value = variable;
+                            }
+                            break;
 #if NET6_0_OR_GREATER
                     case DateColumn dc when dc.Value is not null:
                         {
@@ -333,17 +319,17 @@ public class CollectVariableVisitor : IVisitor<SelectQuery>, IVisitor<IWhereClau
                         }
                         break;
 #endif
+                    }
                 }
             }
         }
-    }
 
-    ///<inheritdoc/>
-    public void Visit(DeleteQuery instance)
-    {
-        if (instance.Criteria is not null)
+        ///<inheritdoc/>
+        public void Visit(DeleteQuery instance)
         {
-            Visit(instance.Criteria);
+            if (instance.Criteria is not null)
+            {
+                Visit(instance.Criteria);
+            }
         }
     }
-}

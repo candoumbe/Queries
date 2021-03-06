@@ -1,11 +1,4 @@
-﻿using Optional;
-
-using Queries.Core.Builders;
-using Queries.Core.Parts.Columns;
-
-using System;
-
-namespace Queries.Renderers.Postgres.Builders.Fluent;
+﻿namespace Queries.Renderers.Postgres.Builders.Fluent;
 
 /// <summary>
 /// Fluent builder for <see cref="ReturnQuery"/>

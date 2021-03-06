@@ -1,15 +1,5 @@
 #if !SYSTEM_TEXT_JSON
-using Newtonsoft.Json;
 #endif
-using Queries.Core.Builders.Fluent;
-using Queries.Core.Parts;
-using Queries.Core.Parts.Clauses;
-using Queries.Core.Parts.Columns;
-using Queries.Core.Parts.Joins;
-using Queries.Core.Parts.Sorting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Queries.Core.Builders;
 

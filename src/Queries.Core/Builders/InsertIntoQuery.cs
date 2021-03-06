@@ -1,9 +1,4 @@
-﻿using Queries.Core.Builders.Fluent;
-using Queries.Core.Parts.Columns;
-
-using System;
-
-namespace Queries.Core.Builders;
+﻿namespace Queries.Core.Builders;
 
 /// <summary>
 /// A query to insert data 

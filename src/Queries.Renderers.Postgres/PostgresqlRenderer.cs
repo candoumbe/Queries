@@ -1,16 +1,4 @@
-﻿using System.Text;
-using Queries.Core.Renderers;
-using Queries.Core.Parts.Functions;
-using Queries.Core.Parts.Columns;
-using Queries.Renderers.Postgres.Parts.Columns;
-using System.Linq;
-using Queries.Core.Parts.Clauses;
-using Queries.Renderers.Postgres.Builders;
-using Queries.Core;
-using Queries.Core.Exceptions;
-using static Queries.Core.Builders.Fluent.QueryBuilder;
-
-namespace Queries.Renderers.Postgres;
+﻿namespace Queries.Renderers.Postgres;
 
 public class PostgresqlRenderer : QueryRendererBase
 {
@@ -43,7 +31,7 @@ public class PostgresqlRenderer : QueryRendererBase
         }
         else
         {
-            string path = $"{string.Join(" -> ", columnParts.Take(columnParts.Length - 1).Select(EscapeName))} {(json.RenderAsString ? "->>" : "->")} '{ columnParts.Last() }'";
+            string path = $"{string.Join(" -> ", columnParts.Take(columnParts.Length - 1).Select(EscapeName))} {(json.RenderAsString ? "->>" : "->")} '{columnParts.Last()}'";
             result = $"{RenderColumn(json.Column, renderAlias: false)} -> {path}";
         }
 

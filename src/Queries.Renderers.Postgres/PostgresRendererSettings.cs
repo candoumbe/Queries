@@ -1,7 +1,4 @@
-﻿using Queries.Core.Renderers;
-using static Queries.Core.Renderers.PaginationKind;
-
-namespace Queries.Renderers.Postgres;
+﻿namespace Queries.Renderers.Postgres;
 
 /// <summary>
 /// Extends <see cref="QueryRendererSettings"/> to customize the behavior of <see cref="PostgresqlRenderer"/>.

@@ -1,8 +1,4 @@
-﻿using Queries.Core.Parts.Clauses;
-using Queries.Core.Parts.Columns;
-using Queries.Renderers.Postgres.Parts.Columns;
-
-namespace Queries.Renderers.Postgres;
+﻿namespace Queries.Renderers.Postgres;
 
 /// <summary>
 /// Extension method for <see cref="JsonFieldColumn"/> types.
@@ -15,5 +11,5 @@ public static class JsonFieldColumnExtensions
     /// <param name="column"></param>
     /// <param name="constraint"></param>
     /// <returns></returns>
-    public static WhereClause EqualTo(this JsonFieldColumn column, ColumnBase constraint) => new (column, ClauseOperator.EqualTo, constraint);
+    public static WhereClause EqualTo(this JsonFieldColumn column, ColumnBase constraint) => new(column, ClauseOperator.EqualTo, constraint);
 }
