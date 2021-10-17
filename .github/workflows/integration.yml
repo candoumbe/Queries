@@ -33,13 +33,13 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v1
-      - name: Cache .nuke/temp, ~/.nuget/packages
+      - name: Cache global.json, src/**/*.csproj
         uses: actions/cache@v2
         with:
           path: |
-            .nuke/temp
-            ~/.nuget/packages
-          key: ${{ runner.os }}-${{ hashFiles('global.json', 'src/**/*.csproj') }}
+            global.json
+            src/**/*.csproj
+          key: ${{ runner.os }}-${{ hashFiles('**/global.json', '**/*.csproj') }}
       - name: Run './build.cmd Tests ReportCoverage Pack'
         run: ./build.cmd Tests ReportCoverage Pack
         env:
@@ -66,13 +66,13 @@ jobs:
     runs-on: macOS-latest
     steps:
       - uses: actions/checkout@v1
-      - name: Cache .nuke/temp, ~/.nuget/packages
+      - name: Cache global.json, src/**/*.csproj
         uses: actions/cache@v2
         with:
           path: |
-            .nuke/temp
-            ~/.nuget/packages
-          key: ${{ runner.os }}-${{ hashFiles('global.json', 'src/**/*.csproj') }}
+            global.json
+            src/**/*.csproj
+          key: ${{ runner.os }}-${{ hashFiles('**/global.json', '**/*.csproj') }}
       - name: Run './build.cmd Tests ReportCoverage Pack'
         run: ./build.cmd Tests ReportCoverage Pack
         env:

@@ -65,6 +65,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "config", "config", "{7B2279
 		.config\dotnet-tools.json = .config\dotnet-tools.json
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{3FB4C979-F283-4BD0-BC68-CFF37B149E2B}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\delivery.yml = .github\workflows\delivery.yml
+		.github\workflows\integration.yml = .github\workflows\integration.yml
+		.github\workflows\pull-request.yml = .github\workflows\pull-request.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -165,6 +172,7 @@ Global
 		{1F1FE22E-2D41-4EB2-A12F-A0C691BD9907} = {357A11A7-39EE-4782-85BB-0B5B9E6DBD9A}
 		{EB2D61E9-8E42-4946-A84A-6A374936284A} = {852F1208-CA32-45FA-8E26-D8D4A2DCFC26}
 		{7B227969-B5F1-4F05-A6D7-4EBA556CE38F} = {852F1208-CA32-45FA-8E26-D8D4A2DCFC26}
+		{3FB4C979-F283-4BD0-BC68-CFF37B149E2B} = {EB2D61E9-8E42-4946-A84A-6A374936284A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A80F3874-CE69-426F-BEEB-F241B73D3A1D}
