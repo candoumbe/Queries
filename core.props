@@ -1,10 +1,12 @@
 <Project>
   <PropertyGroup>
-    <Authors>Cyrille NDOUMBE</Authors>
     <LangVersion>latest</LangVersion>
-    <PackageProjectUrl>$(RepositoryUrl)</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/candoumbe/Queries</RepositoryUrl>
+    <Authors>Cyrille NDOUMBE</Authors>
     <RepositoryType>git</RepositoryType>
+    <RepositoryUrl>https://github.com/candoumbe/Queries</RepositoryUrl>
+    <PackageProjectUrl>$(RepositoryUrl)</PackageProjectUrl>
+    <PublishUrl>true</PublishUrl>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -12,11 +14,48 @@
     <IsTestProject Condition="$(MSBuildProjectName.EndsWith('Tests'))">true</IsTestProject>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(IsTestProject)' == 'false'">
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <!-- Publish the repository URL in the built .nupkg (in the NuSpec <Repository> element) -->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <!-- Embed source files that are not tracked by the source control manager in the PDB -->
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <!-- Recommended: Embed symbols containing Source Link in the main file (exe/dll) -->
+    <DebugType>embedded</DebugType>
+  </PropertyGroup>
+
+  <Choose>
+    <When Condition="'$(TF_BUILD)' == 'true' or '$(GITHUB_ACTIONS)' == 'true'">
+      <PropertyGroup>
+        <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+      </PropertyGroup>
+      <ItemGroup Condition="'$(IsTestProject)' == 'false'">
+        <PackageReference Include="Microsoft.SourceLink.AzureRepos.Git" Version="1.0.0" PrivateAssets="All" Condition="'$(TF_BUILD)' == 'true'"/>
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" Condition="'$(GITHUB_ACTIONS)' == 'true'"/>
+      </ItemGroup>
+    </When>
+  </Choose>
+
+  <!-- Set package references based on target framework -->
+  <Choose>
+    <When Condition="'$(TargetFramework)' == 'net5.0'">
+      <ItemGroup>
+        <PackageReference Include="Ultimately" Version="2.1.1" />
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <PackageReference Include="Optional" Version="4.0.0"/>
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
   <ItemGroup>
+    <PackageReference Include="Candoumbe.MiscUtilities" Version="0.5.3"/>
     <PackageReference Include="Roslynator.Analyzers" Version="3.*">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)' != 'netstandard1.3'">
   </ItemGroup>
 </Project>

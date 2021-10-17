@@ -4,7 +4,6 @@
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.*" />
     <PackageReference Include="System.Linq.Queryable" Version="4.3.0" />
-    <PackageReference Include="Candoumbe.MiscUtilities" Version="0.1.0" />
   </ItemGroup>
 
   <Choose>

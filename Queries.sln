@@ -8,7 +8,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
-		build-release.yaml = build-release.yaml
 		CHANGELOG.md = CHANGELOG.md
 		CONTRIBUTING.md = CONTRIBUTING.md
 		core.props = core.props
@@ -47,7 +46,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Queries.Renderers.Sqlite.Te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Queries.Renderers.Sqlite", "src\Queries.Renderers.Sqlite\Queries.Renderers.Sqlite.csproj", "{DCD6E411-8A79-4477-A16E-6EC776D4FFBC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_build", "build\_build.csproj", "{FEFE22D1-FFEE-4150-BDCD-81FD321CE775}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Queries.ContinuousIntegration", "build\Queries.ContinuousIntegration.csproj", "{FEFE22D1-FFEE-4150-BDCD-81FD321CE775}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Queries.EntityFrameworkCore.Extensions", "src\Queries.EntityFrameworkCore.Extensions\Queries.EntityFrameworkCore.Extensions.csproj", "{5E8FA512-FAED-4551-AAB3-EDEA9B66BBDD}"
 EndProject
@@ -61,10 +60,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestsHelpers", "test\TestsH
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "github", "github", "{EB2D61E9-8E42-4946-A84A-6A374936284A}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{2087F6D2-5A26-48E1-8A09-2A63E4E5A3FC}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "config", "config", "{7B227969-B5F1-4F05-A6D7-4EBA556CE38F}"
 	ProjectSection(SolutionItems) = preProject
-		.github\workflows\continuous.yml = .github\workflows\continuous.yml
-		.github\workflows\deployment.yml = .github\workflows\deployment.yml
+		.config\dotnet-tools.json = .config\dotnet-tools.json
 	EndProjectSection
 EndProject
 Global
@@ -166,7 +164,7 @@ Global
 		{E7A5E075-4294-4F4F-ADCB-7CBF1E39CA00} = {357A11A7-39EE-4782-85BB-0B5B9E6DBD9A}
 		{1F1FE22E-2D41-4EB2-A12F-A0C691BD9907} = {357A11A7-39EE-4782-85BB-0B5B9E6DBD9A}
 		{EB2D61E9-8E42-4946-A84A-6A374936284A} = {852F1208-CA32-45FA-8E26-D8D4A2DCFC26}
-		{2087F6D2-5A26-48E1-8A09-2A63E4E5A3FC} = {EB2D61E9-8E42-4946-A84A-6A374936284A}
+		{7B227969-B5F1-4F05-A6D7-4EBA556CE38F} = {852F1208-CA32-45FA-8E26-D8D4A2DCFC26}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A80F3874-CE69-426F-BEEB-F241B73D3A1D}
