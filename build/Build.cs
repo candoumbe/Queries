@@ -183,7 +183,6 @@ using Nuke.Common.Utilities.Collections;
         public readonly bool AutoStash = true;
 
         public Target Clean => _ => _
-            .Before(Restore)
             .Executes(() =>
             {
                 SourceDirectory.GlobDirectories("**/bin", "**/obj").ForEach(action: DeleteDirectory);
@@ -194,8 +193,10 @@ using Nuke.Common.Utilities.Collections;
             });
 
         public Target Restore => _ => _
+            .After(Clean)
             .Executes(() =>
             {
+                DotNetToolRestore();
                 DotNetRestore(s => s
                     .SetProjectFile(Solution)
                     .SetIgnoreFailedSources(true)
@@ -203,8 +204,6 @@ using Nuke.Common.Utilities.Collections;
                     .When(IsLocalBuild && Interactive, _ => _.SetProperty("NugetInteractive", IsLocalBuild && Interactive))
 
                 );
-
-                DotNetToolRestore();
             });
 
         public Target Compile => _ => _
@@ -262,20 +261,20 @@ using Nuke.Common.Utilities.Collections;
 
         public Target ReportCoverage => _ => _
             .DependsOn(Tests)
-            .Requires(() => IsServerBuild || CodecovToken != null)
+            .OnlyWhenDynamic(() => IsServerBuild || CodecovToken != null)
             .Consumes(Tests, TestResultDirectory / "*.xml")
             .Produces(CoverageReportDirectory / "*.xml")
             .Produces(CoverageReportHistoryDirectory / "*.xml")
             .Executes(() =>
             {
                 ReportGenerator(_ => _
-                        .SetFramework("net5.0")
-                        .SetReports(TestResultDirectory / "*.xml")
-                        .SetReportTypes(ReportTypes.Badges, ReportTypes.HtmlChart, ReportTypes.HtmlInline_AzurePipelines_Dark)
-                        .SetTargetDirectory(CoverageReportDirectory)
-                        .SetHistoryDirectory(CoverageReportHistoryDirectory)
-                        .SetTag(GitRepository.Commit)
-                    );
+                       .SetFramework("net5.0")
+                       .SetReports(TestResultDirectory / "*.xml")
+                       .SetReportTypes(ReportTypes.Badges, ReportTypes.HtmlChart, ReportTypes.HtmlInline_AzurePipelines_Dark)
+                       .SetTargetDirectory(CoverageReportDirectory)
+                       .SetHistoryDirectory(CoverageReportHistoryDirectory)
+                       .SetTag(GitRepository.Commit)
+                   );
 
                 Codecov(s => s
                     .SetFiles(TestResultDirectory.GlobFiles("*.xml").Select(x => x.ToString()))
