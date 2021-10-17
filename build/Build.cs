@@ -39,7 +39,6 @@ using Nuke.Common.Utilities.Collections;
         OnPullRequestBranches = new[] { DevelopBranch },
         PublishArtifacts = true,
         InvokedTargets = new[] { nameof(Tests), nameof(ReportCoverage) },
-        CacheIncludePatterns = new[] { "global.json", "src/**/*.csproj" },
         ImportSecrets = new[]
         {
             nameof(CodecovToken)
@@ -58,7 +57,6 @@ using Nuke.Common.Utilities.Collections;
         OnPushBranchesIgnore = new[] { MainBranchName },
         PublishArtifacts = true,
         InvokedTargets = new[] { nameof(Tests), nameof(ReportCoverage), nameof(Pack) },
-        CacheIncludePatterns = new[] { "global.json", "src/**/*.csproj" },
         ImportSecrets = new[]
         {
             nameof(NugetApiKey),
@@ -78,7 +76,6 @@ using Nuke.Common.Utilities.Collections;
         OnPushBranches = new[] { MainBranchName, ReleaseBranchPrefix + "/*" },
         InvokedTargets = new[] { nameof(ReportCoverage), nameof(Publish), nameof(AddGithubRelease) },
         ImportGitHubTokenAs = nameof(GitHubToken),
-        CacheIncludePatterns = new[] { "global.json", "src/**/*.csproj" },
         PublishArtifacts = true,
         ImportSecrets = new[]
         {
