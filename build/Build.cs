@@ -258,6 +258,7 @@ using Nuke.Common.Utilities.Collections;
 
         public Target ReportCoverage => _ => _
             .DependsOn(Tests)
+            .After(Tests)
             .OnlyWhenDynamic(() => IsServerBuild || CodecovToken != null)
             .Consumes(Tests, TestResultDirectory / "*.xml")
             .Produces(CoverageReportDirectory / "*.xml")
