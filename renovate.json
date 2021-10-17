@@ -1,5 +1,12 @@
 {
   "extends": [
     "config:base"
-  ]
+  ],
+  "additionalReviewers": [ "candoumbe" ],
+  "addLabels": [ "dependencies" ],
+  "automergeStrategy": "auto",
+  "assignAutomerge": true,
+  "automergeType": "pr",
+  "automerge":true
+
 }
