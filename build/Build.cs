@@ -38,7 +38,7 @@ using Nuke.Common.Utilities.Collections;
         GitHubActionsImage.WindowsLatest, GitHubActionsImage.MacOsLatest,
         OnPullRequestBranches = new[] { DevelopBranch },
         PublishArtifacts = true,
-        InvokedTargets = new[] { nameof(Tests), nameof(ReportCoverage) },
+        InvokedTargets = new[] { nameof(Tests) },
         ImportSecrets = new[]
         {
             nameof(CodecovToken)
@@ -56,7 +56,7 @@ using Nuke.Common.Utilities.Collections;
         GitHubActionsImage.WindowsLatest, GitHubActionsImage.MacOsLatest,
         OnPushBranchesIgnore = new[] { MainBranchName },
         PublishArtifacts = true,
-        InvokedTargets = new[] { nameof(Tests), nameof(ReportCoverage), nameof(Pack) },
+        InvokedTargets = new[] { nameof(Tests), nameof(Pack) },
         ImportSecrets = new[]
         {
             nameof(NugetApiKey),
