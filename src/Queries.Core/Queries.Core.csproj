@@ -16,7 +16,7 @@
     </When>
     <Otherwise>
       <ItemGroup>
-        <PackageReference Include="FluentValidation" Version="8.0.100" />
+        <PackageReference Include="FluentValidation" Version="8.6.3" />
       </ItemGroup>
     </Otherwise>
   </Choose>
