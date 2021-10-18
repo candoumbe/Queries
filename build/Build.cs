@@ -74,7 +74,7 @@ using Nuke.Common.Utilities.Collections;
         "delivery",
         GitHubActionsImage.WindowsLatest, GitHubActionsImage.MacOsLatest,
         OnPushBranches = new[] { MainBranchName, ReleaseBranchPrefix + "/*" },
-        InvokedTargets = new[] { nameof(ReportCoverage), nameof(Publish), nameof(AddGithubRelease) },
+        InvokedTargets = new[] { nameof(Tests), nameof(Publish), nameof(AddGithubRelease) },
         ImportGitHubTokenAs = nameof(GitHubToken),
         PublishArtifacts = true,
         ImportSecrets = new[]
@@ -225,7 +225,7 @@ using Nuke.Common.Utilities.Collections;
             .Triggers(ReportCoverage)
             .Executes(() =>
             {
-                IEnumerable<Project> projects = Solution.GetProjects("*.UnitTests");
+                IEnumerable<Project> projects = Solution.GetProjects("*.Tests");
                 IEnumerable<Project> testsProjects = TestPartition.GetCurrent(projects);
 
                 testsProjects.ForEach(action: project => Info(project));
@@ -243,7 +243,8 @@ using Nuke.Common.Utilities.Collections;
                     .CombineWith(testsProjects, (cs, project) => cs.SetProjectFile(project)
                                                                    .CombineWith(project.GetTargetFrameworks(), (setting, framework) => setting.SetFramework(framework)
                                                                                                                                               .AddLoggers($"trx;LogFileName={project.Name}.trx")
-                                                                                                                                              .SetCoverletOutput(TestResultDirectory / $"{project.Name}.{framework}.xml")))
+                                                                                                                                              .SetCoverletOutput(TestResultDirectory / $"{project.Name}.{framework}.xml"))),
+                                                                                                                                              completeOnFailure: true
                     );
 
                 TestResultDirectory.GlobFiles("*.trx")
@@ -256,6 +257,7 @@ using Nuke.Common.Utilities.Collections;
                                 .ForEach(action: file => AzurePipelines?.PublishCodeCoverage(coverageTool: AzurePipelinesCodeCoverageToolType.Cobertura,
                                                                                         summaryFile: file,
                                                                                         reportDirectory: CoverageReportDirectory));
+
             });
 
         public Target ReportCoverage => _ => _
@@ -558,8 +560,8 @@ using Nuke.Common.Utilities.Collections;
                         completeOnFailure: true);
                 }
 
-                PushPackages(ArtifactsDirectory.GlobFiles("*.nupkg", "!*TestObjects.*nupkg", "!*PerformanceTests.*nupkg"));
-                PushPackages(ArtifactsDirectory.GlobFiles("*.snupkg", "!*TestObjects.*nupkg", "!*PerformanceTests.*nupkg"));
+                PushPackages(ArtifactsDirectory.GlobFiles("*.nupkg", "!*TestsHelpers.*nupkg", "!*PerformanceTests.*nupkg"));
+                PushPackages(ArtifactsDirectory.GlobFiles("*.snupkg", "!*TestsHelpers.*nupkg", "!*PerformanceTests.*nupkg"));
             });
 
         public Target AddGithubRelease => _ => _
