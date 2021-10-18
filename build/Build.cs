@@ -232,12 +232,14 @@ using Nuke.Common.Utilities.Collections;
 
                 DotNetTest(s => s
                     .SetConfiguration(Configuration)
-                    .EnableCollectCoverage()
-                    .EnableUseSourceLink()
                     .SetNoBuild(InvokedTargets.Contains(Compile))
+                    .ResetVerbosity()
+                    .EnableCollectCoverage()
                     .SetResultsDirectory(TestResultDirectory)
                     .SetCoverletOutputFormat(CoverletOutputFormat.lcov)
+                    .When(IsServerBuild, _ => _.EnableUseSourceLink())
                     .AddProperty("ExcludeByAttribute", "Obsolete")
+                    .SetExcludeByFile("*.Generated.cs")
                     .CombineWith(testsProjects, (cs, project) => cs.SetProjectFile(project)
                                                                    .CombineWith(project.GetTargetFrameworks(), (setting, framework) => setting.SetFramework(framework)
                                                                                                                                               .AddLoggers($"trx;LogFileName={project.Name}.trx")
