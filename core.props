@@ -38,7 +38,7 @@
 
   <!-- Set package references based on target framework -->
   <Choose>
-    <When Condition="'$(TargetFramework)' == 'net5.0'">
+    <When Condition="'$(TargetFramework)' == 'net6.0' or '$(TargetFramework)' == 'net5.0'">
       <ItemGroup>
         <PackageReference Include="Ultimately" Version="2.1.1" />
       </ItemGroup>

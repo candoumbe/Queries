@@ -27,5 +27,9 @@ namespace Queries.Core.Parts.Columns
         public static implicit operator ColumnBase(bool value) => new BooleanColumn(value);
 
         public static implicit operator ColumnBase(DateTime value) => new DateTimeColumn(value);
+
+#if NET6_0_OR_GREATER
+        public static implicit operator ColumnBase(DateOnly value) => new DateColumn(value); 
+#endif
     }
 }

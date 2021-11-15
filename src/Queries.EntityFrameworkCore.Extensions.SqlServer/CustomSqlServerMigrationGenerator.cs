@@ -15,7 +15,8 @@ namespace Queries.EntityFrameworkCore.Extensions.SqlServer
     {
         private readonly SqlServerRenderer _renderer;
 
-#if NET5_0
+        ///<inheritdoc/>
+#if NET5_0_OR_GREATER
         public CustomSqlServerMigrationGenerator([NotNull] MigrationsSqlGeneratorDependencies dependencies, [NotNull] IRelationalAnnotationProvider relationalAnnotations) : base(dependencies, relationalAnnotations)
 #else
         public CustomSqlServerMigrationGenerator([NotNull] MigrationsSqlGeneratorDependencies dependencies, [NotNull] IMigrationsAnnotationProvider migrationsAnnotations) : base(dependencies, migrationsAnnotations)

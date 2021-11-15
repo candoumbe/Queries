@@ -13,7 +13,14 @@ namespace Queries.Core.Builders
     /// </summary>
     public class CollectVariableVisitor : IVisitor<SelectQuery>, IVisitor<IWhereClause>, IVisitor<InsertIntoQuery>, IVisitor<DeleteQuery>
     {
-        public IEnumerable<Variable> Variables => _variables;
+        /// <summary>
+        /// Collection of variables that 
+        /// </summary>
+        public IEnumerable<Variable> Variables => _variables
+#if NET5_0_OR_GREATER
+                .ToList().AsReadOnly()
+#endif
+            ;
 
         private readonly IList<Variable> _variables;
 
@@ -22,6 +29,7 @@ namespace Queries.Core.Builders
         /// </summary>
         public CollectVariableVisitor() => _variables = new List<Variable>();
 
+        ///<inheritdoc/>
         public void Visit(SelectQuery instance)
         {
             foreach (CasesColumn item in instance.Columns.OfType<CasesColumn>())
@@ -56,6 +64,21 @@ namespace Queries.Core.Builders
                                 when.ThenValue = variable;
                             }
                             break;
+#if NET6_0_OR_GREATER
+                        case DateColumn dc:
+                            {
+                                Variable variable = _variables.SingleOrDefault(x => x.Type == Date && dc.Value == x.Value);
+
+                                if (variable == null)
+                                {
+                                    variable = new Variable($"p{_variables.Count}", Date, dc.Value);
+                                    _variables.Add(variable);
+                                }
+
+                                when.ThenValue = variable;
+                            }
+                            break;
+#endif
                         case NumericColumn nc:
                             {
                                 Variable variable = _variables.SingleOrDefault(x => x.Type == Numeric && nc.Value == x.Value);
@@ -155,6 +178,7 @@ namespace Queries.Core.Builders
             }
         }
 
+        ///<inheritdoc/>
         public virtual void Visit(IWhereClause instance)
         {
             switch (instance)
@@ -209,6 +233,19 @@ namespace Queries.Core.Builders
                                 wc.Constraint = variable;
                             }
                             break;
+#if NET6_0_OR_GREATER
+                        case DateColumn dc when dc.Value != null:
+                            {
+                                Variable variable = _variables.SingleOrDefault(x => x.Type == Date && dc.Value == x.Value);
+                                if (variable is null)
+                                {
+                                    variable = new Variable($"p{_variables.Count}", Date, dc.Value);
+                                    _variables.Add(variable);
+                                }
+                                wc.Constraint = variable;
+                            }
+                            break;
+#endif
                         case StringValues strings:
                             IList<Variable> stringValueVariables = new List<Variable>();
                             foreach (string value in strings)
@@ -241,6 +278,7 @@ namespace Queries.Core.Builders
             }
         }
 
+        ///<inheritdoc/>
         public void Visit(InsertIntoQuery instance)
         {
             if (instance.InsertedValue is InsertedValues insertValues)
@@ -272,11 +310,21 @@ namespace Queries.Core.Builders
                                 item.Value = variable;
                             }
                             break;
+#if NET6_0_OR_GREATER
+                        case DateColumn dc when dc.Value is not null:
+                            {
+                                Variable variable = new Variable($"p{_variables.Count}", Date, dc.Value);
+                                _variables.Add(variable);
+                                item.Value = variable;
+                            }
+                            break;
+#endif
                     }
                 }
             }
         }
 
+        ///<inheritdoc/>
         public void Visit(DeleteQuery instance)
         {
             if (instance.Criteria != null)

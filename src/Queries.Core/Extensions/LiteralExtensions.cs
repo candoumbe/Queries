@@ -2,6 +2,9 @@
 
 namespace System
 {
+    /// <summary>
+    /// Extension methods for converting primitive types to their <see cref="IColumn"/> equivalent.
+    /// </summary>
     public static class LiteralExtensions
     {
         /// <summary>
@@ -62,5 +65,17 @@ namespace System
         public static DateTimeColumn Literal(this DateTime value, string format = default) => format == default
             ? new DateTimeColumn(value)
             : new DateTimeColumn(value, format);
+
+#if NET6_0_OR_GREATER
+        /// <summary>
+        /// Converts an <see cref="DateOnly"/> to <see cref="DateColumn"/>
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="format">format to use when converting <paramref name="value"/> to its string representation</param>
+        /// <returns></returns>
+        public static DateColumn Literal(this DateOnly value, string format = default) => format == default
+            ? new DateColumn(value)
+            : new DateColumn(value, format);
+#endif
     }
 }

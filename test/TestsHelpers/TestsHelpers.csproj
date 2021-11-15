@@ -2,17 +2,27 @@
 
   <Import Project="..\..\test.props" />
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.1;net5.0</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.1;net5.0;net6.0</TargetFrameworks>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net5.0'">
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="5.0.1" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.10" />
-  </ItemGroup>
-
+  <Choose>
+    <When Condition="'$(TargetFramework)' == 'net6.0'">
+      <ItemGroup>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="6.0.0" />
+      </ItemGroup>
+    </When>
+    <When Condition="'$(TargetFramework)' == 'net5.0'">
+      <ItemGroup>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="5.0.1" />
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.10" />
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
+  
   <ItemGroup>
     <ProjectReference Include="..\..\src\Queries.Core\Queries.Core.csproj" />
   </ItemGroup>

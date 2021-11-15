@@ -15,8 +15,10 @@ namespace Queries.Core.Parts.Columns
         /// </summary>
         public IEnumerable<WhenExpression> Cases { get; }
 
+        ///<inheritdoc/>
         public string Alias { get; private set; }
 
+        
         public ColumnBase Default { get; set; }
 
         /// <summary>
@@ -29,8 +31,10 @@ namespace Queries.Core.Parts.Columns
             Cases = cases ?? throw new ArgumentNullException(nameof(cases));
         }
 
+        ///<inheritdoc/>
         public override IColumn Clone() => new CasesColumn(Cases);
 
+        ///<inheritdoc/>
         public override bool Equals(ColumnBase other)
         {
             bool equals = false;
@@ -38,13 +42,17 @@ namespace Queries.Core.Parts.Columns
             return equals;
         }
 
+        ///<inheritdoc/>
         public CasesColumn As(string alias)
         {
             Alias = alias;
             return this;
         }
 
+        ///<inheritdoc/>
         public override bool Equals(object obj) => Equals(obj as CasesColumn);
+
+        ///<inheritdoc/>
         public bool Equals(CasesColumn other)
         {
             bool equals = other != null
@@ -54,6 +62,7 @@ namespace Queries.Core.Parts.Columns
             return equals;
         }
 
+        ///<inheritdoc/>
         public override int GetHashCode()
         {
             int hashCode = 1689548013;
@@ -74,11 +83,13 @@ namespace Queries.Core.Parts.Columns
             return this;
         }
 
+        ///<inheritdoc/>
         public static bool operator ==(CasesColumn column1, CasesColumn column2)
         {
             return EqualityComparer<CasesColumn>.Default.Equals(column1, column2);
         }
 
+        ///<inheritdoc/>
         public static bool operator !=(CasesColumn column1, CasesColumn column2)
         {
             return !(column1 == column2);

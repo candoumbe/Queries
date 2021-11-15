@@ -11,14 +11,13 @@ namespace Queries.Core.Parts.Columns
         public static IOrder Asc(this ColumnBase field) => new OrderExpression(field);
 
         public static IOrder Desc(this ColumnBase field) => new OrderExpression(field, OrderDirection.Descending);
-        
+
         /// <summary>
         /// Builds a <see cref="SubstractFunction"/> operation
         /// </summary>
         /// <param name="left">left operand</param>
         /// <param name="right">right operand</param>
         /// <returns></returns>
-        public static SubstractFunction Substract(this ColumnBase left, IColumn right) => new SubstractFunction(left, right);
-        
+        public static SubstractFunction Substract(this ColumnBase left, IColumn right) => new (left, right);
     }
 }
