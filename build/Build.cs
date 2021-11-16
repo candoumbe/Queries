@@ -35,7 +35,7 @@ using Nuke.Common.Utilities.Collections;
 
     [GitHubActions(
         "pull-request",
-        GitHubActionsImage.WindowsLatest, GitHubActionsImage.MacOsLatest,
+        GitHubActionsImage.MacOsLatest,
         OnPullRequestBranches = new[] { DevelopBranch },
         PublishArtifacts = true,
         InvokedTargets = new[] { nameof(Tests) },
@@ -53,7 +53,7 @@ using Nuke.Common.Utilities.Collections;
     )]
     [GitHubActions(
         "integration",
-        GitHubActionsImage.WindowsLatest, GitHubActionsImage.MacOsLatest,
+        GitHubActionsImage.MacOsLatest,
         OnPushBranchesIgnore = new[] { MainBranchName },
         PublishArtifacts = true,
         InvokedTargets = new[] { nameof(Tests), nameof(Pack) },
@@ -72,7 +72,7 @@ using Nuke.Common.Utilities.Collections;
     )]
     [GitHubActions(
         "delivery",
-        GitHubActionsImage.WindowsLatest, GitHubActionsImage.MacOsLatest,
+        GitHubActionsImage.MacOsLatest,
         OnPushBranches = new[] { MainBranchName, ReleaseBranchPrefix + "/*" },
         InvokedTargets = new[] { nameof(Tests), nameof(Publish), nameof(AddGithubRelease) },
         ImportGitHubTokenAs = nameof(GitHubToken),
