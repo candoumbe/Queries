@@ -1,6 +1,4 @@
-﻿using Queries.Core.Parts.Columns;
-
-namespace Queries.Core.Builders.Fluent
+﻿namespace Queries.Core.Builders.Fluent
 {
     public interface IPaginatedQuery<out T> : IBuild<T>
     {

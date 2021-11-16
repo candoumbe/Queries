@@ -1,8 +1,10 @@
 ﻿using FluentAssertions;
+
 using Queries.Core.Parts;
-using Queries.Core.Parts.Columns;
+
 using System;
 using System.Collections.Generic;
+
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Categories;

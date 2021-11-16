@@ -2,12 +2,11 @@
 using Queries.Core.Builders;
 using Queries.Core.Parts.Clauses;
 using Queries.Core.Renderers;
+
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using static Queries.Core.Renderers.PaginationKind;
 
 namespace Queries.Renderers.SqlServer
 {

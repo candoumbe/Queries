@@ -1,5 +1,4 @@
 using System;
-using System.Reflection.Metadata;
 using Queries.Core.Parts.Columns;
 using Xunit.Abstractions;
 using Xunit.Categories;

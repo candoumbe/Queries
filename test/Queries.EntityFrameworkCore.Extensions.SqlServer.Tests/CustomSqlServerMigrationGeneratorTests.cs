@@ -1,17 +1,10 @@
 using Microsoft.EntityFrameworkCore.Migrations;
-#if NET5_0
+#if NET5_0_OR_GREATER
 using Microsoft.EntityFrameworkCore.Metadata;
 #endif
-using Queries.Core.Builders;
 using static Moq.MockBehavior;
 using Moq;
-using Queries.EntityFrameworkCore.Extensions.Operations;
-using Microsoft.EntityFrameworkCore.Migrations.Operations;
-using System.Collections.Generic;
-using FsCheck;
 using Queries.Renderers.SqlServer;
-using FsCheck.Xunit;
-using TestsHelpers;
 
 namespace Queries.EntityFrameworkCore.Extensions.SqlServer.Tests
 {
@@ -19,7 +12,7 @@ namespace Queries.EntityFrameworkCore.Extensions.SqlServer.Tests
     {
         private readonly CustomSqlServerMigrationGenerator _sut;
         private readonly Mock<MigrationsSqlGeneratorDependencies> _dependenciesMock;
-#if NET5_0
+#if NET5_0_OR_GREATER
         private readonly Mock<IRelationalAnnotationProvider> _annotationProviderMock;
 #else
         private readonly Mock<IMigrationsAnnotationProvider> _annotationProviderMock;

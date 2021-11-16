@@ -67,6 +67,12 @@ namespace Queries.Core.Parts.Columns
         /// <returns></returns>
         public static WhereClause GreaterThanOrEqualTo(this FieldColumn column, ColumnBase constraint) => new WhereClause(column, ClauseOperator.GreaterThanOrEqualTo, constraint);
 
+        /// <summary>
+        /// Creates a <see cref="WhereClause"/> equivalent to <code>column = constraint</code>
+        /// </summary>
+        /// <param name="column"></param>
+        /// <param name="constraint"></param>
+        /// <returns></returns>
         public static WhereClause EqualTo(this FieldColumn column, ColumnBase constraint) => new WhereClause(column, ClauseOperator.EqualTo, constraint);
 
         /// <summary>

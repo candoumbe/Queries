@@ -1,5 +1,4 @@
-﻿using Queries.Core.Renderers;
-using Queries.Renderers.SqlServer;
+﻿using Queries.Renderers.SqlServer;
 
 namespace Queries.Core
 {

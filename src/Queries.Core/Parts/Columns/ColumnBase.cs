@@ -14,18 +14,33 @@ namespace Queries.Core.Parts.Columns
         /// <returns></returns>
         public abstract IColumn Clone();
 
+        ///<inheritdoc/>
         public abstract bool Equals(ColumnBase other);
 
+        ///<inheritdoc/>
         public static implicit operator ColumnBase(int value) => new NumericColumn(value);
 
+        ///<inheritdoc/>
         public static implicit operator ColumnBase(double value) => new NumericColumn(value);
 
+        ///<inheritdoc/>
         public static implicit operator ColumnBase(float value) => new NumericColumn(value);
 
+        ///<inheritdoc/>
         public static implicit operator ColumnBase(string value) => new StringColumn(value);
 
+        ///<inheritdoc/>
         public static implicit operator ColumnBase(bool value) => new BooleanColumn(value);
 
+        ///<inheritdoc/>
         public static implicit operator ColumnBase(DateTime value) => new DateTimeColumn(value);
+
+#if NET6_0_OR_GREATER
+        ///<inheritdoc/>
+        public static implicit operator ColumnBase(DateOnly value) => new DateColumn(value);
+
+        ///<inheritdoc/>
+        public static implicit operator ColumnBase(TimeOnly value) => new TimeColumn(value);
+#endif
     }
 }

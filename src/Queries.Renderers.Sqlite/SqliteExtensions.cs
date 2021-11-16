@@ -1,5 +1,4 @@
-﻿using Queries.Core.Renderers;
-using Queries.Renderers.Sqlite;
+﻿using Queries.Renderers.Sqlite;
 
 namespace Queries.Core.Builders
 {

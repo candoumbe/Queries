@@ -4,7 +4,6 @@ using Queries.Core.Parts.Columns;
 using Xunit;
 using Queries.Core.Parts.Functions;
 using FluentAssertions;
-using System.Reflection;
 using Queries.Core.Attributes;
 using Xunit.Categories;
 
