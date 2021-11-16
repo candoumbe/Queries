@@ -76,6 +76,16 @@ namespace System
         public static DateColumn Literal(this DateOnly value, string format = default) => format == default
             ? new DateColumn(value)
             : new DateColumn(value, format);
+
+        /// <summary>
+        /// Converts an <see cref="DateOnly"/> to <see cref="DateColumn"/>
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="format">format to use when converting <paramref name="value"/> to its string representation</param>
+        /// <returns></returns>
+        public static TimeColumn Literal(this TimeOnly value, string format = default) => format == default
+            ? new TimeColumn(value)
+            : new TimeColumn(value, format);
 #endif
     }
 }

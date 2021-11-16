@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 - Added `DateOnly` support ([#41](https://github.com/candoumbe/queries/issues/41))
+- Added `TimeOnly` support ([#41](https://github.com/candoumbe/queries/issues/42))
 
 ## [0.3.0] / 2021-01-31
 - Changed `SkipVariableDeclaration` from `bool` to a [`ParametrizationSettings`](src/Queries.Core/Renderers/ParametrizationSettings.cs) enum `[BREAKING]`

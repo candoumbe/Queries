@@ -1,15 +1,19 @@
 ﻿using FluentAssertions;
 using FluentAssertions.Extensions;
+
 using Queries.Core.Builders;
 using Queries.Core.Parts.Clauses;
 using Queries.Core.Parts.Columns;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Categories;
+
 using static Queries.Core.Builders.Fluent.QueryBuilder;
 using static Queries.Core.Parts.Clauses.ClauseLogic;
 using static Queries.Core.Parts.Clauses.ClauseOperator;
@@ -165,7 +169,7 @@ namespace Queries.Core.Tests.Parts.Clauses
                 };
 
 #if NET6_0_OR_GREATER
-yield return new object[]
+                yield return new object[]
                 {
                     Select("Fullname").From("SuperHero")
                         .Where(new CompositeWhereClause
@@ -201,6 +205,55 @@ yield return new object[]
                                     Clauses = new IWhereClause[]
                                     {
                                         new WhereClause("DateOfBirth".Field(), ClauseOperator.LessThan, new Variable("p0", Date, DateOnly.FromDateTime(1.January(1990)))),
+                                        new CompositeWhereClause{
+                                            Logic = Or,
+                                            Clauses = new[]
+                                            {
+                                                new WhereClause("Nickname".Field(), Like, new Variable("p1", VariableType.String, "Bat%")),
+                                                new WhereClause("CanFly".Field(), EqualTo, new Variable("p2", VariableType.Boolean, true))
+                                            }
+                                        }
+                                    }
+                                })
+                        ))
+                };
+
+                yield return new object[]
+                {
+                    Select("Fullname").From("SuperHero")
+                        .Where(new CompositeWhereClause
+                            {
+                                Logic = And,
+                                Clauses = new IWhereClause[]
+                                {
+                                    new WhereClause("TimeOfTheDay".Field(), ClauseOperator.LessThan, TimeOnly.FromDateTime(1.January(1990).Add(18.Hours().And(43.Minutes())))),
+                                    new CompositeWhereClause{
+                                        Logic = Or,
+                                        Clauses = new[]
+                                        {
+                                            new WhereClause("Nickname".Field(), Like, "Bat%"),
+                                            new WhereClause("CanFly".Field(), EqualTo, true)
+                                        }
+                                    }
+                                }
+                            }),
+                    (Expression<Func<CollectVariableVisitor, bool>>)(visitor =>
+                        visitor.Variables.Exactly(3)
+                        && visitor.Variables.Once(x => x.Name == "p0" && TimeOnly.FromDateTime(1.January(1990).Add(18.Hours().And(43.Minutes()))).Equals(x.Value) && x.Type == Time)
+                        && visitor.Variables.Once(x => x.Name == "p1" && "Bat%".Equals(x.Value) && x.Type == VariableType.String)
+                        && visitor.Variables.Once(x => x.Name == "p2" && true.Equals(x.Value) && x.Type == VariableType.Boolean)
+                    ),
+                    (Expression<Func<SelectQuery, bool>>)(query =>
+                        query.Equals(
+                            Select("Fullname")
+                            .From("SuperHero")
+                            .Where(
+                                new CompositeWhereClause
+                                {
+                                    Logic = And,
+                                    Clauses = new IWhereClause[]
+                                    {
+                                        new WhereClause("TimeOfTheDay".Field(), ClauseOperator.LessThan, new Variable("p0", Time, TimeOnly.FromDateTime(1.January(1990).Add(18.Hours().And(43.Minutes()))))),
                                         new CompositeWhereClause{
                                             Logic = Or,
                                             Clauses = new[]
@@ -495,6 +548,25 @@ yield return new object[]
                         && query.Criteria.Equals(new WhereClause("Activity".Field(), NotLike, new Variable("p0", VariableType.String, "%Super hero%")))
                     )
                 };
+
+#if NET6_0_OR_GREATER
+                yield return new object[]
+                {
+                    Delete("members").Where("LastActivity".Field().GreaterThan(TimeOnly.FromTimeSpan(18.Hours()))),
+                    (Expression<Func<CollectVariableVisitor, bool>>)(visitor =>
+                        visitor.Variables.Once()
+                        && visitor.Variables.Once(x => x.Name == "p0"
+                                                       && TimeOnly.FromTimeSpan(18.Hours()).Equals(x.Value)
+                                                       && x.Type == Time)
+                    ),
+                    (Expression<Func<DeleteQuery, bool>>)(query =>
+                        query.Table == "members"
+                        && query.Criteria.Equals(new WhereClause("LastActivity".Field(),
+                                                                 GreaterThan,
+                                                                 new Variable("p0", Time, TimeOnly.FromTimeSpan(18.Hours()))))
+                    )
+                };
+#endif
             }
         }
 
