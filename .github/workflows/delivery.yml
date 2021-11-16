@@ -20,7 +20,6 @@ on:
   push:
     branches:
       - main
-      - 'release/*'
   pull_request:
     paths:
       - '!docs/*'
@@ -29,9 +28,9 @@ on:
       - '!LICENSE'
 
 jobs:
-  macOS-latest:
-    name: macOS-latest
-    runs-on: macOS-latest
+  ubuntu-latest:
+    name: ubuntu-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
       - name: Cache .nuke/temp, ~/.nuget/packages
@@ -40,7 +39,7 @@ jobs:
           path: |
             .nuke/temp
             ~/.nuget/packages
-          key: ${{ runner.os }}-${{ hashFiles('**/global.json', '**/*.csproj') }}
+          key: ${{ runner.os }}-${{ hashFiles('global.json', 'src/**/*.csproj', 'test/**/*.csproj') }}
       - name: Run './build.cmd Tests Publish AddGithubRelease'
         run: ./build.cmd Tests Publish AddGithubRelease
         env:
