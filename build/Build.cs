@@ -33,30 +33,14 @@ using Nuke.Common.Utilities.Collections;
     using Nuke.Common.Utilities;
     using System.Collections.Generic;
 
-    [GitHubActions(
-        "pull-request",
-        GitHubActionsImage.MacOsLatest,
-        OnPullRequestBranches = new[] { DevelopBranch },
-        PublishArtifacts = true,
-        InvokedTargets = new[] { nameof(Tests) },
-        ImportSecrets = new[]
-        {
-            nameof(CodecovToken)
-        },
-        OnPullRequestExcludePaths = new[]
-        {
-            "docs/*",
-            "README.md",
-            "CHANGELOG.md",
-            "LICENSE"
-        }
-    )]
+   
     [GitHubActions(
         "integration",
-        GitHubActionsImage.MacOsLatest,
-        OnPushBranchesIgnore = new[] { MainBranchName },
+        GitHubActionsImage.UbuntuLatest,
+        OnPushBranchesIgnore = new[] { MainBranchName, ReleaseBranchPrefix + "/*" },
         PublishArtifacts = true,
         InvokedTargets = new[] { nameof(Tests), nameof(Pack) },
+        CacheKeyFiles = new[] { "global.json", "src/**/*.csproj", "test/**/*.csproj", },
         ImportSecrets = new[]
         {
             nameof(NugetApiKey),
@@ -72,10 +56,11 @@ using Nuke.Common.Utilities.Collections;
     )]
     [GitHubActions(
         "delivery",
-        GitHubActionsImage.MacOsLatest,
-        OnPushBranches = new[] { MainBranchName, ReleaseBranchPrefix + "/*" },
+        GitHubActionsImage.UbuntuLatest,
+        OnPushBranches = new[] { MainBranchName },
         InvokedTargets = new[] { nameof(Tests), nameof(Publish), nameof(AddGithubRelease) },
         ImportGitHubTokenAs = nameof(GitHubToken),
+        CacheKeyFiles = new[] { "global.json", "src/**/*.csproj", "test/**/*.csproj", },
         PublishArtifacts = true,
         ImportSecrets = new[]
         {
