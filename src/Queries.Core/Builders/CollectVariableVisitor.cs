@@ -168,7 +168,7 @@ namespace Queries.Core.Builders
                         break;
                 }
             }
-            if (instance.WhereCriteria != null)
+            if (instance.WhereCriteria is not null)
             {
                 Visit(instance.WhereCriteria);
             }
@@ -198,7 +198,7 @@ namespace Queries.Core.Builders
                             }
                             break;
 
-                        case StringColumn sc when sc.Value != null:
+                        case StringColumn sc when sc.Value is not null:
                             {
                                 Variable variable = _variables.SingleOrDefault(x => x.Type == VariableType.String && Equals(sc.Value, x.Value));
                                 if (variable is null)
@@ -210,7 +210,7 @@ namespace Queries.Core.Builders
                             }
                             break;
 
-                        case BooleanColumn bc when bc.Value != null:
+                        case BooleanColumn bc when bc.Value is not null:
                             {
                                 Variable variable = _variables.SingleOrDefault(x => x.Type == VariableType.Boolean && bc.Value == x.Value);
                                 if (variable is null)
@@ -222,7 +222,7 @@ namespace Queries.Core.Builders
                             }
                             break;
 
-                        case DateTimeColumn dc when dc.Value != null:
+                        case DateTimeColumn dc when dc.Value is not null:
                             {
                                 Variable variable = _variables.SingleOrDefault(x => x.Type == Date && dc.Value == x.Value);
                                 if (variable is null)
@@ -234,12 +234,24 @@ namespace Queries.Core.Builders
                             }
                             break;
 #if NET6_0_OR_GREATER
-                        case DateColumn dc when dc.Value != null:
+                        case DateColumn dc when dc.Value is not null:
                             {
                                 Variable variable = _variables.SingleOrDefault(x => x.Type == Date && dc.Value == x.Value);
                                 if (variable is null)
                                 {
                                     variable = new Variable($"p{_variables.Count}", Date, dc.Value);
+                                    _variables.Add(variable);
+                                }
+                                wc.Constraint = variable;
+                            }
+                            break;
+
+                        case TimeColumn tc when tc.Value is not null:
+                            {
+                                Variable variable = _variables.SingleOrDefault(x => x.Type == Time && tc.Value == x.Value);
+                                if (variable is null)
+                                {
+                                    variable = new Variable($"p{_variables.Count}", Time, tc.Value);
                                     _variables.Add(variable);
                                 }
                                 wc.Constraint = variable;
@@ -287,7 +299,7 @@ namespace Queries.Core.Builders
                 {
                     switch (item.Value)
                     {
-                        case StringColumn sc when sc.Value != null:
+                        case StringColumn sc when sc.Value is not null:
                             {
                                 Variable variable = new Variable($"p{_variables.Count}", VariableType.String, sc.Value);
                                 _variables.Add(variable);
@@ -295,7 +307,7 @@ namespace Queries.Core.Builders
                             }
                             break;
 
-                        case BooleanColumn bc when bc.Value != null:
+                        case BooleanColumn bc when bc.Value is not null:
                             {
                                 Variable variable = new Variable($"p{_variables.Count}", VariableType.Boolean, bc.Value);
                                 _variables.Add(variable);
@@ -303,7 +315,7 @@ namespace Queries.Core.Builders
                             }
                             break;
 
-                        case DateTimeColumn dc when dc.Value != null:
+                        case DateTimeColumn dc when dc.Value is not null:
                             {
                                 Variable variable = new Variable($"p{_variables.Count}", Date, dc.Value);
                                 _variables.Add(variable);
@@ -327,7 +339,7 @@ namespace Queries.Core.Builders
         ///<inheritdoc/>
         public void Visit(DeleteQuery instance)
         {
-            if (instance.Criteria != null)
+            if (instance.Criteria is not null)
             {
                 Visit(instance.Criteria);
             }

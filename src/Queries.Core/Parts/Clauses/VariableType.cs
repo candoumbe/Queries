@@ -8,9 +8,29 @@ namespace Queries.Core.Parts.Clauses
     [Flags]
     public enum VariableType : short
     {
+        /// <summary>
+        /// Variable that holds a string value
+        /// </summary>
         String= 0b_000,
+
+        /// <summary>
+        /// Variable that can hold a numeric value
+        /// </summary>
         Numeric = 0b_001,
+
+        /// <summary>
+        /// Variable that can hold a boolean value
+        /// </summary>
         Boolean= 0b_010,
-        Date = 0b_100
+
+        /// <summary>
+        /// Variable that can hold a date
+        /// </summary>
+        Date = 0b_100,
+
+        /// <summary>
+        /// Variable that can hold a time value
+        /// </summary>
+        Time = 0b_101
     }
 }

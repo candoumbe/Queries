@@ -11,6 +11,9 @@ using System.Linq;
 
 namespace Queries.Core.Builders
 {
+    /// <summary>
+    /// a 
+    /// </summary>
     [JsonObject(ItemReferenceLoopHandling = ReferenceLoopHandling.Ignore)]
     public class SelectQuery : SelectQueryBase, ISelectQuery<SelectQuery>, IFromQuery<SelectQuery>, IWhereQuery<SelectQuery>, IJoinQuery<SelectQuery>, IOrderQuery<SelectQuery>, IEquatable<SelectQuery>, IColumn
     {
@@ -19,6 +22,9 @@ namespace Queries.Core.Builders
         /// </summary>
         public int? PageIndex { get; private set; }
 
+        /// <summary>
+        /// Number of element a page can hold.
+        /// </summary>
         public int? PageSize { get; private set; }
 
         public IList<ITable> Tables { get; }
@@ -205,8 +211,10 @@ namespace Queries.Core.Builders
             return this;
         }
 
+        ///<inheritdoc/>
         public override bool Equals(object obj) => Equals(obj as SelectQuery);
 
+        ///<inheritdoc/>
         public bool Equals(SelectQuery other)
         {
             bool equals = false;
@@ -223,6 +231,7 @@ namespace Queries.Core.Builders
             return equals;
         }
 
+        ///<inheritdoc/>
 #if !NETSTANDARD2_1
         public override int GetHashCode() => (Alias, Columns, HavingCriteria, Joins, PageIndex, PageSize, Sorts, Tables, Unions, WhereCriteria).GetHashCode();
 #else
@@ -301,6 +310,7 @@ namespace Queries.Core.Builders
         ///<inheritdoc/>
         IColumn IColumn.Clone() => Clone();
 
+        ///<inheritdoc/>
         public override string ToString() => this.Jsonify();
     }
 }

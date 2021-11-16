@@ -29,13 +29,14 @@ namespace Queries.Core.Parts.Columns
                 DateTimeOffset dateTimeOffset => dateTimeOffset,
 #if NET6_0_OR_GREATER
                 DateOnly date => date,
+                TimeOnly time => time,
 #endif
                 null => null,
                 _ => throw new ArgumentException(nameof(value),
 #if NET6_0_OR_GREATER
                                                          "only bool/int/float/decimal/double/long/string/Datetime/DateTimeOffset/DateOnly are supported"), 
 #else
-                                                         "only bool/int/float/decimal/double/long/string/Datetime/DateTimeOffset are supported"), 
+                                                         "only bool/int/float/decimal/double/long/string/Datetime/DateTimeOffset/DateOnly/TimeOnly are supported"), 
 #endif
             };
         }

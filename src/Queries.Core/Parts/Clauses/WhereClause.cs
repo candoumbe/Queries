@@ -84,6 +84,17 @@ namespace Queries.Core.Parts.Clauses
         public WhereClause(IColumn column, ClauseOperator @operator, DateOnly? constraint) : this(column, @operator, constraint?.Literal())
         {
         }
+
+        /// <summary>
+        /// Builds a new <see cref="WhereClause"/> instance with a <see cref="TimeOnly"/> constraint.
+        /// </summary>
+        /// <param name="column"><see cref="IColumn"/> where to apply the clause onto</param>
+        /// <param name="operator"><see cref="ClauseOperator"/> to apply</param>
+        /// <param name="constraint">constraint to apply to <paramref name="column"/>.</param>
+        /// <exception cref="ArgumentNullException">if <paramref name="column"/> is <c>null</c>.</exception>
+        public WhereClause(IColumn column, ClauseOperator @operator, TimeOnly? constraint) : this(column, @operator, constraint?.Literal())
+        {
+        }
 #endif
 
         public WhereClause(IColumn column, ClauseOperator @operator, bool? constraint) : this(column, @operator, constraint?.Literal())

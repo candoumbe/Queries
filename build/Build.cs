@@ -29,11 +29,10 @@ namespace Queries.ContinuousIntegration
     using static Nuke.Common.Tools.GitVersion.GitVersionTasks;
     using static Nuke.Common.Tools.ReportGenerator.ReportGeneratorTasks;
     using static Nuke.Common.Tools.Codecov.CodecovTasks;
-using Nuke.Common.Utilities.Collections;
+    using Nuke.Common.Utilities.Collections;
     using Nuke.Common.Utilities;
     using System.Collections.Generic;
 
-   
     [GitHubActions(
         "integration",
         GitHubActionsImage.UbuntuLatest,
@@ -595,7 +594,7 @@ using Nuke.Common.Utilities.Collections;
             {
                 IEnumerable<Project> benchmarkProjects = Solution.GetProjects("*.PerformanceTests");
 
-                benchmarkProjects.ForEach(action :csproj =>
+                benchmarkProjects.ForEach(action: csproj =>
                 {
                     DotNetRun(s =>
                     {
