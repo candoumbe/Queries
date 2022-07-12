@@ -11,7 +11,7 @@
   <Choose>
     <When Condition="'$(TargetFramework)' == 'netstandard1.0' OR '$(TargetFramework)' == 'netstandard1.3'">
       <ItemGroup>
-        <PackageReference Include="FluentValidation" Version="7.4.0" />
+        <PackageReference Include="FluentValidation" Version="7.6.105" />
       </ItemGroup>
     </When>
     <Otherwise>
