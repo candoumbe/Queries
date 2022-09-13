@@ -11,7 +11,7 @@
     <When Condition="'$(TargetFramework)' == 'net6.0'">
       <ItemGroup>
         <PackageReference Include="System.Collections.Immutable" Version="6.0.0" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.8" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.9" />
       </ItemGroup>
     </When>
     <When Condition="'$(TargetFramework)' == 'net5.0'">
@@ -22,7 +22,7 @@
     </When>
     <Otherwise>
       <ItemGroup>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.28" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.29" />
       </ItemGroup>
     </Otherwise>
   </Choose>
