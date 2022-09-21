@@ -32,9 +32,11 @@ jobs:
     name: ubuntu-latest
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Cache .nuke/temp, ~/.nuget/packages
-        uses: actions/cache@v3
+        uses: actions/cache@v2
         with:
           path: |
             .nuke/temp
@@ -43,9 +45,9 @@ jobs:
       - name: Run './build.cmd Tests Publish AddGithubRelease'
         run: ./build.cmd Tests Publish AddGithubRelease
         env:
-          GitHubToken: ${{ secrets.GITHUB_TOKEN }}
           NugetApiKey: ${{ secrets.NUGET_API_KEY }}
           CodecovToken: ${{ secrets.CODECOV_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/upload-artifact@v3
         with:
           name: tests-results

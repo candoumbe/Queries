@@ -32,10 +32,12 @@ namespace Queries.ContinuousIntegration
     using Nuke.Common.Utilities.Collections;
     using Nuke.Common.Utilities;
     using System.Collections.Generic;
+    using static Serilog.Log;
 
     [GitHubActions(
         "integration",
         GitHubActionsImage.UbuntuLatest,
+        FetchDepth = 0,
         OnPushBranchesIgnore = new[] { MainBranchName, ReleaseBranchPrefix + "/*" },
         PublishArtifacts = true,
         InvokedTargets = new[] { nameof(Tests), nameof(Pack) },
@@ -56,9 +58,10 @@ namespace Queries.ContinuousIntegration
     [GitHubActions(
         "delivery",
         GitHubActionsImage.UbuntuLatest,
+        FetchDepth = 0,
         OnPushBranches = new[] { MainBranchName },
         InvokedTargets = new[] { nameof(Tests), nameof(Publish), nameof(AddGithubRelease) },
-        ImportGitHubTokenAs = nameof(GitHubToken),
+        EnableGitHubToken = true,
         CacheKeyFiles = new[] { "global.json", "src/**/*.csproj", "test/**/*.csproj", },
         PublishArtifacts = true,
         ImportSecrets = new[]
@@ -74,7 +77,7 @@ namespace Queries.ContinuousIntegration
             "LICENSE"
         }
     )]
-    [CheckBuildProjectConfigurations]
+
     [UnsetVisualStudioEnvironmentVariables]
     [DotNetVerbosityMapping]
     [HandleVisualStudioDebugging]
@@ -212,7 +215,7 @@ namespace Queries.ContinuousIntegration
                 IEnumerable<Project> projects = Solution.GetProjects("*.Tests");
                 IEnumerable<Project> testsProjects = TestPartition.GetCurrent(projects);
 
-                testsProjects.ForEach(action: project => Info(project));
+                testsProjects.ForEach(action: project => Verbose(project));
 
                 DotNetTest(s => s
                     .SetConfiguration(Configuration)
@@ -307,7 +310,7 @@ namespace Queries.ContinuousIntegration
             .Executes(() =>
             {
                 FinalizeChangelog(ChangeLogFile, GitVersion.MajorMinorPatch, GitRepository);
-                Info($"Please review CHANGELOG.md ({ChangeLogFile}) and press 'Y' to validate (any other key will cancel changes)...");
+                Information("Please review CHANGELOG.md ({ChangeLogFile}) and press 'Y' to validate (any other key will cancel changes)...", ChangeLogFile);
                 ConsoleKeyInfo keyInfo = Console.ReadKey();
 
                 if (keyInfo.Key == ConsoleKey.Y)
@@ -325,11 +328,11 @@ namespace Queries.ContinuousIntegration
             {
                 if (!GitRepository.IsOnFeatureBranch())
                 {
-                    Info("Enter the name of the feature. It will be used as the name of the feature/branch (leave empty to exit) :");
+                    Information("Enter the name of the feature. It will be used as the name of the feature/branch (leave empty to exit) :");
                     AskBranchNameAndSwitchToIt(FeatureBranchPrefix, DevelopBranch);
 #pragma warning restore S2583 // Conditionally executed code should be reachable
 
-                    Info($"{EnvironmentInfo.NewLine}Good bye !");
+                    Information("Good bye !");
                 }
                 else
                 {
@@ -356,28 +359,28 @@ namespace Queries.ContinuousIntegration
                     case string name when !string.IsNullOrWhiteSpace(name):
                         {
                             string branchName = $"{branchNamePrefix}/{featureName.Slugify()}";
-                            Info($"{Environment.NewLine}The branch '{branchName}' will be created.{Environment.NewLine}Confirm ? (Y/N) ");
+                            Information($"The branch '{{BranchName}}' will be created.{Environment.NewLine}Confirm ? (Y/N) ", branchName);
 
                             switch (Console.ReadKey().Key)
                             {
                                 case ConsoleKey.Y:
-                                    Info($"{Environment.NewLine}Checking out branch '{branchName}' from '{sourceBranch}'");
+                                    Information("Checking out branch '{BranchName}' from '{SourceBranch}'", branchName, sourceBranch);
 
                                     Checkout(branchName, start: sourceBranch);
 
-                                    Info($"{Environment.NewLine}'{branchName}' created successfully");
+                                    Information("'{BranchName}' created successfully", branchName);
                                     exitCreatingFeature = true;
                                     break;
 
                                 default:
-                                    Info($"{Environment.NewLine}Exiting {nameof(Feature)} task.");
+                                    Information($"{Environment.NewLine}Exiting {nameof(Feature)} task.");
                                     exitCreatingFeature = true;
                                     break;
                             }
                         }
                         break;
                     default:
-                        Info($"Exiting task.");
+                        Information($"Exiting task.");
                         exitCreatingFeature = true;
                         break;
                 }
@@ -433,10 +436,10 @@ namespace Queries.ContinuousIntegration
             {
                 if (!GitRepository.Branch.Like($"{ColdfixBranchPrefix}/*"))
                 {
-                    Info("Enter the name of the coldfix. It will be used as the name of the coldfix/branch (leave empty to exit) :");
+                    Information("Enter the name of the coldfix. It will be used as the name of the coldfix/branch (leave empty to exit) :");
                     AskBranchNameAndSwitchToIt(ColdfixBranchPrefix, DevelopBranch);
 #pragma warning restore S2583 // Conditionally executed code should be reachable
-                    Info($"{EnvironmentInfo.NewLine}Good bye !");
+                    Information($"{EnvironmentInfo.NewLine}Good bye !");
                 }
                 else
                 {
@@ -501,7 +504,7 @@ namespace Queries.ContinuousIntegration
         [Parameter(@"URI where packages should be published (default : ""https://api.nuget.org/v3/index.json""")]
         public string NugetPackageSource => "https://api.nuget.org/v3/index.json";
 
-        public string GitHubPackageSource => $"https://nuget.pkg.github.com/{GitHubActions.GitHubRepositoryOwner}/index.json";
+        public string GitHubPackageSource => $"https://nuget.pkg.github.com/{GitHubActions.RepositoryOwner}/index.json";
 
         public bool IsOnGithub => GitHubActions is not null;
 
@@ -520,14 +523,13 @@ namespace Queries.ContinuousIntegration
             {
                 void PushPackages(IReadOnlyCollection<AbsolutePath> nupkgs)
                 {
-                    Info($"Publishing {nupkgs.Count} package{(nupkgs.Count > 1 ? "s" : string.Empty)}");
-                    Info(string.Join(EnvironmentInfo.NewLine, nupkgs));
+                    Information($"Publishing {{PackageCount}} package{(nupkgs.Count > 1 ? "s" : string.Empty)}", nupkgs.Count);
+                    Information(string.Join(EnvironmentInfo.NewLine, nupkgs));
 
                     DotNetNuGetPush(s => s.SetApiKey(NugetApiKey)
                         .SetSource(NugetPackageSource)
                         .EnableSkipDuplicate()
                         .EnableNoSymbols()
-                        .SetProcessLogTimestamp(true)
                         .CombineWith(nupkgs, (_, nupkg) => _
                                     .SetTargetPath(nupkg)),
                         degreeOfParallelism: 4,
@@ -537,7 +539,6 @@ namespace Queries.ContinuousIntegration
                         .SetSource(GitHubPackageSource)
                         .EnableSkipDuplicate()
                         .EnableNoSymbols()
-                        .SetProcessLogTimestamp(true)
                         .CombineWith(nupkgs, (_, nupkg) => _
                                     .SetTargetPath(nupkg)),
                         degreeOfParallelism: 4,
@@ -555,14 +556,14 @@ namespace Queries.ContinuousIntegration
             .OnlyWhenStatic(() => IsServerBuild && GitRepository.IsOnMainBranch())
             .Executes(async () =>
             {
-                Info("Creating a new release");
+                Information("Creating a new release");
                 Octokit.GitHubClient gitHubClient = new(new Octokit.ProductHeaderValue(nameof(Queries)))
                 {
                     Credentials = new Octokit.Credentials(GitHubToken)
                 };
 
-                string repositoryName = GitHubActions.GitHubRepository.Replace(GitHubActions.GitHubRepositoryOwner + "/", string.Empty);
-                IReadOnlyList<Octokit.Release> releases = await gitHubClient.Repository.Release.GetAll(GitHubActions.GitHubRepositoryOwner, repositoryName)
+                string repositoryName = GitHubActions.Repository.Replace(GitHubActions.RepositoryOwner + "/", string.Empty);
+                IReadOnlyList<Octokit.Release> releases = await gitHubClient.Repository.Release.GetAll(GitHubActions.RepositoryOwner, repositoryName)
                                                                                                .ConfigureAwait(false);
 
                 if (!releases.AtLeastOnce(release => release.Name == MajorMinorPatchVersion))
@@ -574,14 +575,14 @@ namespace Queries.ContinuousIntegration
                         Name = MajorMinorPatchVersion,
                     };
 
-                    Octokit.Release release = await gitHubClient.Repository.Release.Create(GitHubActions.GitHubRepositoryOwner, repositoryName, newRelease)
+                    Octokit.Release release = await gitHubClient.Repository.Release.Create(GitHubActions.RepositoryOwner, repositoryName, newRelease)
                                                                                    .ConfigureAwait(false);
 
-                    Info($"Github release {release.TagName} created successfully");
+                    Information("Github release {TagName} created successfully", release.TagName);
                 }
                 else
                 {
-                    Info($"Release '{MajorMinorPatchVersion}' already exists - skipping ");
+                    Information("Release '{Version}' already exists - skipping ", MajorMinorPatchVersion);
                 }
             });
 
