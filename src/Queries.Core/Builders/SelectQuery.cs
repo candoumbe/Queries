@@ -1,4 +1,6 @@
+#if !SYSTEM_TEXT_JSON
 using Newtonsoft.Json;
+#endif
 using Queries.Core.Builders.Fluent;
 using Queries.Core.Parts;
 using Queries.Core.Parts.Clauses;
@@ -12,9 +14,11 @@ using System.Linq;
 namespace Queries.Core.Builders
 {
     /// <summary>
-    /// a 
+    /// Represents a SELECT query
     /// </summary>
+#if !SYSTEM_TEXT_JSON
     [JsonObject(ItemReferenceLoopHandling = ReferenceLoopHandling.Ignore)]
+#endif
     public class SelectQuery : SelectQueryBase, ISelectQuery<SelectQuery>, IFromQuery<SelectQuery>, IWhereQuery<SelectQuery>, IJoinQuery<SelectQuery>, IOrderQuery<SelectQuery>, IEquatable<SelectQuery>, IColumn
     {
         /// <summary>
@@ -27,8 +31,14 @@ namespace Queries.Core.Builders
         /// </summary>
         public int? PageSize { get; private set; }
 
+        /// <summary>
+        /// Collection of <see cref="ITable"/>s of the current instance.
+        /// </summary>
         public IList<ITable> Tables { get; }
 
+        /// <summary>
+        /// Collection of <see cref="IUnionQuery{SelectQuery}"/> of the current instance.
+        /// </summary>
         public IList<IUnionQuery<SelectQuery>> Unions { get; set; }
 
         /// <summary>

@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿#if !SYSTEM_TEXT_JSON
+using Newtonsoft.Json; 
+#endif
 
 using Queries.Core.Attributes;
 using Queries.Core.Parts.Columns;
@@ -11,7 +13,9 @@ namespace Queries.Core.Parts.Functions
     /// Base class for all aggregate function.
     /// </summary>
     [Function]
-    [JsonObject]
+#if !SYSTEM_TEXT_JSON
+    [JsonObject] 
+#endif
     public abstract class AggregateFunction : IAliasable<AggregateFunction>, IEquatable<AggregateFunction>, IColumn
     {
         /// <summary>
@@ -43,6 +47,7 @@ namespace Queries.Core.Parts.Functions
         /// </summary>
         public string Alias => _alias;
 
+        ///<inheritdoc/>
         public AggregateFunction As(string alias)
         {
             _alias = alias;
@@ -50,14 +55,19 @@ namespace Queries.Core.Parts.Functions
             return this;
         }
 
+        ///<inheritdoc/>
         public override bool Equals(object obj) => Equals(obj as AggregateFunction);
 
+        ///<inheritdoc/>
         public bool Equals(AggregateFunction other) => (Column, Alias).Equals((other?.Column, other?.Alias));
 
+        ///<inheritdoc/>
         public override int GetHashCode() => (Column, Alias).GetHashCode();
 
+        ///<inheritdoc/>
         public override string ToString() => this.Jsonify();
 
+        ///<inheritdoc/>
         public abstract IColumn Clone();
     }
 }

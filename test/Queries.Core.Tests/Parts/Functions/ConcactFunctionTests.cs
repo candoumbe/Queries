@@ -83,32 +83,6 @@ namespace Queries.Core.Tests.Parts.Functions
                 .Be(expectedResult, reason);
         }
 
-        public static IEnumerable<object[]> ToStringCases {
-            get
-            {
-                yield return new object[] {
-                    Concat("Firstname".Field(), "Lastname".Field()),
-                    new JObject
-                    {
-                        ["Type"] = nameof(ConcatFunction),
-                        [nameof(ConcatFunction.Columns)] = JToken.FromObject(new [] { "Firstname".Field(), "Lastname".Field() }),
-                        [nameof(ConcatFunction.Alias)] = null
-                    }.ToString()
-                };
-            }
-        }
-
-        [Theory]
-        [MemberData(nameof(ToStringCases))]
-        public void TestToString(ConcatFunction function, string expectedString)
-        {
-            // Act
-            string actualString = function.ToString();
-
-            // Assert 
-            actualString.Should().Be(expectedString);
-        }
-
         public static IEnumerable<object[]> AsTestCases
         {
             get

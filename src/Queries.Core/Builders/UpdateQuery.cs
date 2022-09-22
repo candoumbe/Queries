@@ -4,14 +4,18 @@ using Queries.Core.Parts.Clauses;
 using System;
 using Queries.Core.Attributes;
 using System.Linq;
-using Newtonsoft.Json;
+#if !SYSTEM_TEXT_JSON
+using Newtonsoft.Json; 
+#endif
 
 namespace Queries.Core.Builders
 {
     /// <summary>
     /// A query to update a table
     /// </summary>
-    [JsonObject]
+#if !SYSTEM_TEXT_JSON
+    [JsonObject] 
+#endif
     [DataManipulationLanguage]
     public class UpdateQuery : IQuery, IEquatable<UpdateQuery>
     {
@@ -22,9 +26,15 @@ namespace Queries.Core.Builders
         public IList<UpdateFieldValue> Values { get; private set; }
         public IWhereClause Criteria { get; set; }
 
+        /// <summary>
+        /// Builds a new <see cref="UpdateQuery"/> instance.
+        /// </summary>
+        /// <param name="tableName"></param>
+        /// <exception cref="ArgumentNullException"><paramref name="tableName"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="tableName"/> is empty or only contains whitespaces.</exception>
         public UpdateQuery(string tableName)
         {
-            if (tableName == null)
+            if (tableName is null)
             {
                 throw new ArgumentNullException(nameof(tableName), $"{nameof(tableName)} cannot be null");
             }
