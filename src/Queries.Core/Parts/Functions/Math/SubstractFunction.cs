@@ -1,4 +1,6 @@
-using Newtonsoft.Json;
+#if !SYSTEM_TEXT_JSON
+using Newtonsoft.Json; 
+#endif
 
 using Queries.Core.Attributes;
 using Queries.Core.Parts.Columns;
@@ -12,7 +14,9 @@ namespace Queries.Core.Parts.Functions.Math
     /// Substract two or more columns.
     /// </summary>
     [Function]
-    [JsonObject(ItemReferenceLoopHandling = ReferenceLoopHandling.Ignore)]
+#if !SYSTEM_TEXT_JSON
+[JsonObject(ItemReferenceLoopHandling = ReferenceLoopHandling.Ignore)]
+#endif
     public class SubstractFunction : IAliasable<SubstractFunction>, IColumn, IEquatable<SubstractFunction>
     {
         /// <summary>
@@ -56,13 +60,16 @@ namespace Queries.Core.Parts.Functions.Math
             return this;
         }
 
+        ///<inheritdoc/>
         public override bool Equals(object obj) => Equals(obj as SubstractFunction);
 
+        ///<inheritdoc/>
         public bool Equals(SubstractFunction other) => other != null
             && Alias == other.Alias
             && Left.Equals(other.Left)
             && Right.Equals(other.Right);
 
+        ///<inheritdoc/>
         public override int GetHashCode()
         {
             int hashCode = -1367283405;
@@ -72,6 +79,7 @@ namespace Queries.Core.Parts.Functions.Math
             return hashCode;
         }
 
+        ///<inheritdoc/>
         public override string ToString() => this.Jsonify();
 
         /// <summary>
@@ -79,6 +87,5 @@ namespace Queries.Core.Parts.Functions.Math
         /// </summary>
         /// <returns><see cref="SubstractFunction"/></returns>
         public IColumn Clone() => new SubstractFunction(Left.Clone(), Right.Clone());
-
     }
 }

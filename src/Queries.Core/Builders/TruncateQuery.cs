@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿#if !SYSTEM_TEXT_JSON
+using Newtonsoft.Json;
+#endif
 using Queries.Core.Attributes;
 using System;
 using System.Collections.Generic;
@@ -8,7 +10,9 @@ namespace Queries.Core.Builders
     /// <summary>
     /// A query to delete data from a table.
     /// </summary>
-    [JsonObject]
+#if !SYSTEM_TEXT_JSON
+    [JsonObject] 
+#endif
     [DataManipulationLanguage]
     public class TruncateQuery : IEquatable<TruncateQuery>, IQuery
     {
@@ -38,8 +42,13 @@ namespace Queries.Core.Builders
             Name = collection;
         }
 
+        ///<inheritdoc/>
         public override bool Equals(object obj) => Equals(obj as TruncateQuery);
+
+        ///<inheritdoc/>
         public bool Equals(TruncateQuery other) => other != null && Name == other.Name;
+
+        ///<inheritdoc/>
         public override int GetHashCode() => 539060726 + EqualityComparer<string>.Default.GetHashCode(Name);
     }
 }
