@@ -40,7 +40,7 @@ public class NumericColumnTests : IDisposable
         _outputHelper.WriteLine($"{nameof(value)} : {value}");
 
         // Act
-        NumericColumn column = new NumericColumn(value);
+        NumericColumn column = new(value);
 
         // Assert
         int? currentValue = column.Value.Should()
@@ -60,7 +60,7 @@ public class NumericColumnTests : IDisposable
         _outputHelper.WriteLine($"{nameof(value)} : {value}");
 
         // Act
-        NumericColumn column = new NumericColumn(value);
+        NumericColumn column = new(value);
 
         // Assert
         column.Value.Should()
@@ -77,7 +77,7 @@ public class NumericColumnTests : IDisposable
         _outputHelper.WriteLine($"{nameof(value)} : {value}");
 
         // Act
-        NumericColumn column = new NumericColumn(value);
+        NumericColumn column = new(value);
 
         // Assert
         column.Value.Should()
@@ -101,7 +101,7 @@ public class NumericColumnTests : IDisposable
         _outputHelper.WriteLine($"{nameof(value)} : {value}");
 
         // Act
-        NumericColumn column = new NumericColumn(value);
+        NumericColumn column = new(value);
 
         // Assert
         column.Value.Should()
@@ -121,7 +121,7 @@ public class NumericColumnTests : IDisposable
         _outputHelper.WriteLine($"{nameof(value)} : {value}");
 
         // Act
-        NumericColumn column = new NumericColumn(value);
+        NumericColumn column = new(value);
 
         // Assert
         column.Value.Should()
@@ -133,7 +133,7 @@ public class NumericColumnTests : IDisposable
     public void CtorWithFloatNullArgument()
     {
         // Act
-        NumericColumn column = new NumericColumn((float?)null);
+        NumericColumn column = new((float?)null);
 
         // Assert
         column.Value.Should()
@@ -144,7 +144,7 @@ public class NumericColumnTests : IDisposable
     public void CtorWithDoubleNullArgument()
     {
         // Act
-        NumericColumn column = new NumericColumn((double?)null);
+        NumericColumn column = new((double?)null);
 
         // Assert
         column.Value.Should()
@@ -155,7 +155,7 @@ public class NumericColumnTests : IDisposable
     public void CtorWithLongNullArgument()
     {
         // Act
-        NumericColumn column = new NumericColumn((long?)null);
+        NumericColumn column = new((long?)null);
 
         // Assert
         column.Value.Should()
@@ -176,7 +176,7 @@ public class NumericColumnTests : IDisposable
             };
 
             {
-                NumericColumn column = new NumericColumn(1);
+                NumericColumn column = new(1);
                 yield return new object[] { column, column, true, "Equals with same instance" };
             }
 

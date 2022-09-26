@@ -119,7 +119,7 @@ public class PostgresqlRenderer : QueryRendererBase
     ///<inheritdoc/>
     protected override string RenderNullColumn(NullFunction nullColumn, bool renderAlias)
     {
-        StringBuilder sbNullColumn = new StringBuilder();
+        StringBuilder sbNullColumn = new();
 
         sbNullColumn = sbNullColumn.Append("COALESCE(")
             .Append(RenderColumn(nullColumn.Column, false)).Append(", ").Append(RenderColumn(nullColumn.DefaultValue, false))

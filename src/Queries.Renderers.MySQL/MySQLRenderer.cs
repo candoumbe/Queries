@@ -36,7 +36,7 @@ public class MySQLRenderer : QueryRendererBase
             throw new ArgumentNullException(nameof(concatColumn));
         }
 
-        StringBuilder sbConcat = new StringBuilder();
+        StringBuilder sbConcat = new();
         sbConcat = concatColumn.Columns
             .Aggregate(sbConcat, (current, column) => current.Append($"{(current.Length > 0 ? ", " : string.Empty)}{RenderColumn(column, renderAlias: false)}"));
 

@@ -14,7 +14,7 @@ public class CompositeHavingClauseTests
     public void DefaultCtor()
     {
         // Act
-        CompositeHavingClause clause = new CompositeHavingClause();
+        CompositeHavingClause clause = new();
 
         // Assert
         clause.Clauses.Should().BeEmpty();

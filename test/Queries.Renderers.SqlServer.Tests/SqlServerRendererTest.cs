@@ -31,7 +31,7 @@ public class SqlServerRendererTest
     public void DefaultConstructor()
     {
         // Act
-        SqlServerRenderer renderer = new SqlServerRenderer();
+        SqlServerRenderer renderer = new();
 
         // Assert
         renderer.Settings.Should().NotBeNull();
@@ -608,7 +608,7 @@ public class SqlServerRendererTest
     public void Select_Compile(SelectQuery query, SqlServerRendererSettings settings, Expression<Func<CompiledQuery, bool>> expectation, string reason)
     {
         // Arrange
-        SqlServerRenderer renderer = new SqlServerRenderer(settings);
+        SqlServerRenderer renderer = new(settings);
 
         // Assert
         CompiledQuery compiledQuery = renderer.Compile(query);

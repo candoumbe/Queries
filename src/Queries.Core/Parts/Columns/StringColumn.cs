@@ -35,5 +35,5 @@ public class StringColumn : Literal, IEquatable<StringColumn>
     public override string ToString() => this.Jsonify();
 
     ///<inheritdoc/>
-    public static implicit operator StringColumn(string input) => new StringColumn(input);
+    public static implicit operator StringColumn(string input) => new(input);
 }

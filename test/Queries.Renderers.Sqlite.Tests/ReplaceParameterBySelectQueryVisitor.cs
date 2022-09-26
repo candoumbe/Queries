@@ -68,7 +68,7 @@ public class ReplaceParameterBySelectQueryVisitorTests
     public void RewriteQuery(IQuery initialQuery, Func<Variable, SelectQuery> rewriter, IQuery expected)
     {
         // Arrange
-        ReplaceParameterBySelectQueryVisitor visitor = new ReplaceParameterBySelectQueryVisitor(rewriter);
+        ReplaceParameterBySelectQueryVisitor visitor = new(rewriter);
 
         _outputHelper.WriteLine($"Query before rewriting : {initialQuery}");
 

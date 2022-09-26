@@ -53,7 +53,7 @@ public class VariableTests :IDisposable
             yield return new object[] { new Variable("firstname", VariableType.String, "Clark"), new Variable("firstname", VariableType.String, "Clark"), true, "comparing two instances with same name/type/value" };
             yield return new object[] { new Variable("firstname", VariableType.Date, "Clark"), new Variable("firstname", VariableType.String, "Clark"), false, "comparing two instances with same name/value but different types." };
             {
-                Variable variable = new Variable("firstname", VariableType.Date, "Clark");
+                Variable variable = new("firstname", VariableType.Date, "Clark");
                 yield return new object[] { variable, variable.Clone(), true, "comparing a variable to its clone." };
             }
         }

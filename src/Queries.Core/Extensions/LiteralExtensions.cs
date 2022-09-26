@@ -12,49 +12,49 @@ public static class LiteralExtensions
     /// </summary>
     /// <param name="value"></param>
     /// <returns></returns>
-    public static StringColumn Literal(this string value) => new StringColumn(value);
+    public static StringColumn Literal(this string value) => new(value);
 
     /// <summary>
     /// Converts a <see cref="string"/> to <see cref="StringColumn"/>.
     /// </summary>
     /// <param name="value"></param>
     /// <returns></returns>
-    public static BooleanColumn Literal(this bool value) => new BooleanColumn(value);
+    public static BooleanColumn Literal(this bool value) => new(value);
 
     /// <summary>
     /// Converts an <see cref="int"/> to <see cref="NumericColumn"/>
     /// </summary>
     /// <param name="value"></param>
     /// <returns></returns>
-    public static NumericColumn Literal(this int value) => new NumericColumn(value);
+    public static NumericColumn Literal(this int value) => new(value);
 
     /// <summary>
     /// Converts an <see cref="float"/> to <see cref="NumericColumn"/>
     /// </summary>
     /// <param name="value"></param>
     /// <returns></returns>
-    public static NumericColumn Literal(this float value) => new NumericColumn(value);
+    public static NumericColumn Literal(this float value) => new(value);
 
     /// <summary>
     /// Converts an <see cref="double"/> to <see cref="NumericColumn"/>
     /// </summary>
     /// <param name="value"></param>
     /// <returns></returns>
-    public static NumericColumn Literal(this double value) => new NumericColumn(value);
+    public static NumericColumn Literal(this double value) => new(value);
 
     /// <summary>
     /// Converts an <see cref="long"/> to <see cref="NumericColumn"/>
     /// </summary>
     /// <param name="value"></param>
     /// <returns></returns>
-    public static NumericColumn Literal(this long value) => new NumericColumn(value);
+    public static NumericColumn Literal(this long value) => new(value);
 
     /// <summary>
     /// Converts an <see cref="decimal"/> to <see cref="NumericColumn"/>
     /// </summary>
     /// <param name="value"></param>
     /// <returns></returns>
-    public static NumericColumn Literal(this decimal value) => new NumericColumn(value);
+    public static NumericColumn Literal(this decimal value) => new(value);
 
     /// <summary>
     /// Converts an <see cref="DateTime"/> to <see cref="DateTimeColumn"/>

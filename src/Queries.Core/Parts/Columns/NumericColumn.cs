@@ -62,7 +62,7 @@ public class NumericColumn : Literal, IEquatable<NumericColumn>
     }
 
     ///<inheritdoc />
-    public static implicit operator NumericColumn(int value) => new NumericColumn(value);
+    public static implicit operator NumericColumn(int value) => new(value);
 
     ///<inheritdoc/>
     public static bool operator ==(NumericColumn left, NumericColumn right) => EqualityComparer<NumericColumn>.Default.Equals(left, right);

@@ -18,7 +18,7 @@ public class BatchQueryTests
     public void CtorWithNoArgumentBuildsEmptyInstance()
     {
         // Act
-        BatchQuery batch = new BatchQuery();
+        BatchQuery batch = new();
 
         // Assert
         batch.Statements.Should()
@@ -41,7 +41,7 @@ public class BatchQueryTests
         };
 
         // Act
-        BatchQuery batchQuery = new BatchQuery(queries.ToArray());
+        BatchQuery batchQuery = new(queries.ToArray());
 
         // Assert
         batchQuery.Statements.Should()
@@ -61,7 +61,7 @@ public class BatchQueryTests
         };
 
         // Act
-        BatchQuery batchQuery = new BatchQuery(queries.ToArray());
+        BatchQuery batchQuery = new(queries.ToArray());
 
         // Assert 
         batchQuery.Statements.Should()

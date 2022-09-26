@@ -82,7 +82,7 @@ public class FieldColumnExtensionsTests : IDisposable
     public void IsNullExtension()
     {
         // Arrange
-        FieldColumn fc = new FieldColumn("firstname");
+        FieldColumn fc = new("firstname");
 
         // Act
         WhereClause clause = fc.IsNull();
@@ -112,7 +112,7 @@ public class FieldColumnExtensionsTests : IDisposable
     public void IsNotNullExtension()
     {
         // Arrange
-        FieldColumn fc = new FieldColumn("firstname");
+        FieldColumn fc = new("firstname");
 
         // Act
         WhereClause clause = fc.IsNotNull();
@@ -142,7 +142,7 @@ public class FieldColumnExtensionsTests : IDisposable
     public void LessThanExtension()
     {
         // Arrange
-        FieldColumn fc = new FieldColumn("age");
+        FieldColumn fc = new("age");
 
         // Act
         WhereClause clause = fc.LessThan(18);
@@ -175,7 +175,7 @@ public class FieldColumnExtensionsTests : IDisposable
     public void GreaterThanExtension()
     {
         // Arrange
-        FieldColumn fc = new FieldColumn("age");
+        FieldColumn fc = new("age");
 
         // Act
         WhereClause clause = fc.GreaterThan(18);
@@ -208,7 +208,7 @@ public class FieldColumnExtensionsTests : IDisposable
     public void GreaterThanOrEqualExtension()
     {
         // Arrange
-        FieldColumn fc = new FieldColumn("age");
+        FieldColumn fc = new("age");
 
         // Act
         WhereClause clause = fc.GreaterThanOrEqualTo(18);
@@ -241,7 +241,7 @@ public class FieldColumnExtensionsTests : IDisposable
     public void LessThanOrEqualExtension()
     {
         // Arrange
-        FieldColumn fc = new FieldColumn("age");
+        FieldColumn fc = new("age");
 
         // Act
         WhereClause clause = fc.LessThanOrEqualTo(18);

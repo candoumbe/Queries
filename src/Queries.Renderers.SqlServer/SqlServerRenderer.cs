@@ -39,7 +39,7 @@ public class SqlServerRenderer : QueryRendererBase
     public override string Render(IQuery query)
     {
         string result = string.Empty;
-        CollectVariableVisitor visitor = new CollectVariableVisitor();
+        CollectVariableVisitor visitor = new();
         switch (query)
         {
             case SelectQuery sq:
@@ -81,7 +81,7 @@ public class SqlServerRenderer : QueryRendererBase
             default:
                 throw new ArgumentOutOfRangeException(nameof(query), "Unknown type of query");
         }
-        StringBuilder sbParameters = new StringBuilder(visitor.Variables.Count() * 100);
+        StringBuilder sbParameters = new(visitor.Variables.Count() * 100);
 
 #if DEBUG
         if (visitor.Variables.Any())
@@ -131,7 +131,7 @@ public class SqlServerRenderer : QueryRendererBase
     public override CompiledQuery Compile(IQuery query)
     {
         string result = string.Empty;
-        CollectVariableVisitor visitor = new CollectVariableVisitor();
+        CollectVariableVisitor visitor = new();
         switch (query)
         {
             case SelectQueryBase selectQueryBase:
@@ -167,7 +167,7 @@ public class SqlServerRenderer : QueryRendererBase
             default:
                 throw new ArgumentOutOfRangeException("Unknown type of query");
         }
-        StringBuilder sbParameters = new StringBuilder(visitor.Variables.Count() * 100);
+        StringBuilder sbParameters = new(visitor.Variables.Count() * 100);
 
 #if DEBUG
         if (visitor.Variables.Any())
@@ -213,7 +213,7 @@ public class SqlServerRenderer : QueryRendererBase
     ///<inheritdoc/>
     protected override string EscapeString(string unescapedString)
     {
-        StringBuilder sbEscapedString = new StringBuilder(unescapedString);
+        StringBuilder sbEscapedString = new(unescapedString);
 
         sbEscapedString = sbEscapedString
             .Replace("'", "''")

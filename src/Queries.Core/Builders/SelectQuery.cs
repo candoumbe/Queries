@@ -247,7 +247,7 @@ public class SelectQuery : SelectQueryBase, ISelectQuery<SelectQuery>, IFromQuer
 #else
     public override int GetHashCode()
     {
-        HashCode hash = new HashCode();
+        HashCode hash = new();
         hash.Add(Alias);
         foreach (IColumn item in Columns)
         {

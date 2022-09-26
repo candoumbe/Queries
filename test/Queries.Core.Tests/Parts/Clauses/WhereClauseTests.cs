@@ -124,7 +124,7 @@ public class WhereClauseTests : IDisposable
         Expression<Func<WhereClause, bool>> expectation)
     {
         // Act
-        WhereClause clause = new WhereClause(column, @operator, constraint);
+        WhereClause clause = new(column, @operator, constraint);
 
         // Assert
         clause.Should().Match(expectation);
@@ -134,7 +134,7 @@ public class WhereClauseTests : IDisposable
     public void CtorShouldIgnoreConstraintWhenUsingIsNullOperator()
     {
         // Act
-        WhereClause clause = new WhereClause("firstname".Field(), IsNull, 1);
+        WhereClause clause = new("firstname".Field(), IsNull, 1);
 
         // Assert
         clause.Constraint.Should().BeNull();
@@ -144,7 +144,7 @@ public class WhereClauseTests : IDisposable
     public void CtorShouldIgnoreConstraintWhenUsingIsNotNullOperator()
     {
         // Act
-        WhereClause clause = new WhereClause("firstname".Field(), IsNotNull, 1);
+        WhereClause clause = new("firstname".Field(), IsNotNull, 1);
 
         // Assert
         clause.Constraint.Should().BeNull();

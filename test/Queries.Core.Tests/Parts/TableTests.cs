@@ -44,7 +44,7 @@ public class TableTests : IDisposable
             yield return new object[] { new Table("firstname"), new Table("firstname"), true, $"object is a {nameof(Table)} with exactly the same {nameof(Table.Name)} and {nameof(Table.Alias)}" };
             
             {
-                Table column = new Table("firstname");
+                Table column = new("firstname");
                 yield return new object[] { column, column, true, "Equals with same instance" };
             }
         }

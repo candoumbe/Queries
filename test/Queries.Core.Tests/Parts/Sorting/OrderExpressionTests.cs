@@ -66,7 +66,7 @@ public class OrderExpressionTests
             };
 
             {
-                OrderExpression expression = new OrderExpression("Name");
+                OrderExpression expression = new("Name");
                 yield return new object[]
                 {
                     expression,

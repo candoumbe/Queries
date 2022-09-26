@@ -39,10 +39,10 @@ public class JsonFieldColumnTests
     public void CtorFeedsProperty(string columnName, string path)
     {
         // Arrange
-        FieldColumn f = new FieldColumn(columnName);
+        FieldColumn f = new(columnName);
 
         // Act
-        JsonFieldColumn column = new JsonFieldColumn(f, path);
+        JsonFieldColumn column = new(f, path);
 
         // Assert
         column.Column.Should()
@@ -55,8 +55,8 @@ public class JsonFieldColumnTests
     public void Clone_Performs_A_Deep_Clone()
     {
         // Arrange
-        FieldColumn f = new FieldColumn("prop1");
-        JsonFieldColumn original = new JsonFieldColumn(f, "path");
+        FieldColumn f = new("prop1");
+        JsonFieldColumn original = new(f, "path");
 
         // Act
         IColumn clone = original.Clone();

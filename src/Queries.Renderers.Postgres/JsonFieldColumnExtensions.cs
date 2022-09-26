@@ -4,6 +4,9 @@ using Queries.Renderers.Postgres.Parts.Columns;
 
 namespace Queries.Renderers.Postgres;
 
+/// <summary>
+/// Extension method for <see cref="JsonFieldColumn"/> types.
+/// </summary>
 public static class JsonFieldColumnExtensions
 {
     /// <summary>

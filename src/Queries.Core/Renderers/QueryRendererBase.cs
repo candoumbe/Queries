@@ -48,7 +48,7 @@ public abstract class QueryRendererBase : IQueryRenderer
         if (rawName != null)
         {
             string[] rawNameParts = rawName.Split(new[] { '.' }, StringSplitOptions.None);
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
 
             foreach (string namePart in rawNameParts)
             {
@@ -100,8 +100,8 @@ public abstract class QueryRendererBase : IQueryRenderer
         }
         else if (query.InsertedValue is IEnumerable<InsertedValue> values)
         {
-            StringBuilder sbColumns = new StringBuilder();
-            StringBuilder sbValues = new StringBuilder();
+            StringBuilder sbColumns = new();
+            StringBuilder sbValues = new();
             foreach (InsertedValue insertedValue in values)
             {
                 sbValues.Append($"{(sbValues.Length > 0 ? ", " : string.Empty)}{RenderColumn(insertedValue.Value, renderAlias: false)}");
@@ -122,7 +122,7 @@ public abstract class QueryRendererBase : IQueryRenderer
 
         if (query != null)
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
 
             string fieldsString = "*";
             if ((query.Columns?.Count ?? 0) > 0)
@@ -183,7 +183,7 @@ public abstract class QueryRendererBase : IQueryRenderer
                 IEnumerable<FieldColumn> tableColumns = query.Columns.OfType<FieldColumn>();
                 if (aggregatedColumns.Any() && tableColumns.Any())
                 {
-                    StringBuilder sbGroupBy = new StringBuilder();
+                    StringBuilder sbGroupBy = new();
                     IEnumerable<FieldColumn> columnsToGroup = query.Columns
                         .OfType<FieldColumn>();
 
@@ -208,7 +208,7 @@ public abstract class QueryRendererBase : IQueryRenderer
 
             if (query.Orders.Any())
             {
-                StringBuilder sbOrderBy = new StringBuilder();
+                StringBuilder sbOrderBy = new();
 
                 foreach (IOrder sort in query.Orders)
                 {
@@ -289,7 +289,7 @@ public abstract class QueryRendererBase : IQueryRenderer
     {
         joins = joins as IJoin[] ?? joins.ToArray();
 
-        StringBuilder sbJoins = new StringBuilder();
+        StringBuilder sbJoins = new();
         if (joins.Any())
         {
             foreach (IJoin @join in joins)
@@ -316,7 +316,7 @@ public abstract class QueryRendererBase : IQueryRenderer
     protected virtual string RenderTables(IEnumerable<ITable> tables)
     {
         tables = tables as Table[] ?? tables.ToArray();
-        StringBuilder sbTables = new StringBuilder(tables.Count() * 25);
+        StringBuilder sbTables = new(tables.Count() * 25);
         foreach (ITable item in tables)
         {
             if (sbTables.Length != 0)
@@ -345,7 +345,7 @@ public abstract class QueryRendererBase : IQueryRenderer
     {
         columns = columns as IColumn[] ?? columns.ToArray();
 
-        StringBuilder sbFields = new StringBuilder(columns.Count() * 25);
+        StringBuilder sbFields = new(columns.Count() * 25);
 
         foreach (IColumn column in columns)
         {
@@ -406,7 +406,7 @@ public abstract class QueryRendererBase : IQueryRenderer
     ///<inheritdoc/>
     protected virtual string RenderWhere(IWhereClause clause)
     {
-        StringBuilder sbWhere = new StringBuilder();
+        StringBuilder sbWhere = new();
 
         switch (clause)
         {
@@ -450,7 +450,7 @@ public abstract class QueryRendererBase : IQueryRenderer
     ///<inheritdoc/>
     protected virtual string RenderHaving(IHavingClause clause)
     {
-        StringBuilder sbHaving = new StringBuilder();
+        StringBuilder sbHaving = new();
 
         switch (clause)
         {
@@ -537,7 +537,7 @@ public abstract class QueryRendererBase : IQueryRenderer
     ///<inheritdoc/>
     protected virtual string RenderCasesColumn(CasesColumn caseColumn, bool renderAlias)
     {
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new();
 
         foreach (WhenExpression when in caseColumn.Cases)
         {
@@ -630,7 +630,7 @@ public abstract class QueryRendererBase : IQueryRenderer
     ///<inheritdoc/>
     protected virtual string RenderConcatColumn(ConcatFunction concatColumn, bool renderAlias)
     {
-        StringBuilder sbConcat = new StringBuilder();
+        StringBuilder sbConcat = new();
         foreach (IColumn column in concatColumn.Columns)
         {
             if (sbConcat.Length > 0)
@@ -741,11 +741,11 @@ public abstract class QueryRendererBase : IQueryRenderer
     ///<inheritdoc/>
     protected virtual string Render(UpdateQuery updateQuery)
     {
-        StringBuilder queryStringBuilder = new StringBuilder();
+        StringBuilder queryStringBuilder = new();
 
         if (updateQuery != null)
         {
-            StringBuilder sbFieldsToUpdate = new StringBuilder();
+            StringBuilder sbFieldsToUpdate = new();
             foreach (UpdateFieldValue queryFieldValue in updateQuery.Values)
             {
                 if (sbFieldsToUpdate.Length > 0)
@@ -778,7 +778,7 @@ public abstract class QueryRendererBase : IQueryRenderer
     ///<inheritdoc/>
     protected virtual string Render(CreateViewQuery query)
     {
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new();
 
         sb = sb.AppendFormat("CREATE VIEW {0} ", RenderTables(new ITable[] { query.ViewName.Table() }))
 
@@ -805,7 +805,7 @@ public abstract class QueryRendererBase : IQueryRenderer
     ///<inheritdoc/>
     protected virtual string Render(DeleteQuery deleteQuery)
     {
-        StringBuilder sbQuery = new StringBuilder();
+        StringBuilder sbQuery = new();
 
         if (deleteQuery != null)
         {
@@ -828,7 +828,7 @@ public abstract class QueryRendererBase : IQueryRenderer
     /// <returns></returns>
     protected virtual string Render(BatchQuery query)
     {
-        StringBuilder sbResult = new StringBuilder();
+        StringBuilder sbResult = new();
 
         IEnumerable<IQuery> statements = query.Statements?.ToArray() ?? Enumerable.Empty<IQuery>();
         if (statements.Any())
@@ -850,7 +850,7 @@ public abstract class QueryRendererBase : IQueryRenderer
     /// <inheritdoc/>
     public virtual CompiledQuery Compile(IQuery query)
     {
-        CollectVariableVisitor visitor = new CollectVariableVisitor();
+        CollectVariableVisitor visitor = new();
         CompiledQuery compiledQuery;
         switch (query)
         {

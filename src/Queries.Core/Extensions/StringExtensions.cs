@@ -31,7 +31,7 @@ public static class StringExtensions
     /// <param name="tableName">Name of the table</param>
     /// <param name="alias">Alias of the table</param>
     /// <returns><see cref="Queries.Core.Parts.Table"/></returns>
-    public static Table Table(this string tableName, string alias) => new Table(tableName, alias);
+    public static Table Table(this string tableName, string alias) => new(tableName, alias);
 
     /// <summary>
     /// Turns the specified <paramref name="tableName"/> into a <see cref="Queries.Core.Parts.Table"/>
@@ -68,5 +68,5 @@ public static class StringExtensions
     /// </summary>
     /// <param name="nativeQuery">The raw string</param>
     /// <returns></returns>
-    public static NativeQuery AsNative(this string nativeQuery) => new NativeQuery(nativeQuery);
+    public static NativeQuery AsNative(this string nativeQuery) => new(nativeQuery);
 }

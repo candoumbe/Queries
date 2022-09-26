@@ -17,7 +17,7 @@ public class CompositeWhereClauseTests
     public void DefaultCtor()
     {
         // Act
-        CompositeWhereClause clause = new CompositeWhereClause();
+        CompositeWhereClause clause = new();
 
         // Assert
         clause.Clauses.Should().BeEmpty();
@@ -92,7 +92,7 @@ public class CompositeWhereClauseTests
                 $"comparing two {nameof(CompositeWhereClause)} instances that holds same data but not in same order"
             };
             {
-                CompositeWhereClause clause = new CompositeWhereClause
+                CompositeWhereClause clause = new()
                 {
                     Logic = And,
                     Clauses = new IWhereClause[]

@@ -66,7 +66,7 @@ public class FieldColumn : ColumnBase, INamable, IAliasable<FieldColumn>, IInser
     /// </summary>
     /// <returns></returns>
 #if NET5_0_OR_GREATER
-    public override FieldColumn Clone() => new FieldColumn(Name);
+    public override FieldColumn Clone() => new(Name);
 #else
     public override IColumn Clone() => new FieldColumn(Name);
 #endif

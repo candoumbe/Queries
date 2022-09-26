@@ -65,7 +65,7 @@ public class VariableTests
     public void CtorMakeParameterNameCamelCase(string parameterName, VariableType variableType, string expectedParameterName)
     {
         // Act
-        Variable v = new Variable(parameterName, variableType, "a value");
+        Variable v = new(parameterName, variableType, "a value");
 
         // Assert
         v.Name.Should().Be(expectedParameterName);

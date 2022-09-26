@@ -29,7 +29,7 @@ public class SqliteRendererTests
     public void DefaultConstructor()
     {
         // Act
-        SqliteRenderer renderer = new SqliteRenderer();
+        SqliteRenderer renderer = new();
 
         // Assert
         renderer.Settings.Should().NotBeNull();

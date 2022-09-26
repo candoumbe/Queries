@@ -303,7 +303,7 @@ public class CollectVariableVisitor : IVisitor<SelectQuery>, IVisitor<IWhereClau
                 {
                     case StringColumn sc when sc.Value is not null:
                         {
-                            Variable variable = new Variable($"p{_variables.Count}", VariableType.String, sc.Value);
+                            Variable variable = new($"p{_variables.Count}", VariableType.String, sc.Value);
                             _variables.Add(variable);
                             item.Value = variable;
                         }
@@ -311,7 +311,7 @@ public class CollectVariableVisitor : IVisitor<SelectQuery>, IVisitor<IWhereClau
 
                     case BooleanColumn bc when bc.Value is not null:
                         {
-                            Variable variable = new Variable($"p{_variables.Count}", VariableType.Boolean, bc.Value);
+                            Variable variable = new($"p{_variables.Count}", VariableType.Boolean, bc.Value);
                             _variables.Add(variable);
                             item.Value = variable;
                         }
@@ -319,7 +319,7 @@ public class CollectVariableVisitor : IVisitor<SelectQuery>, IVisitor<IWhereClau
 
                     case DateTimeColumn dc when dc.Value is not null:
                         {
-                            Variable variable = new Variable($"p{_variables.Count}", Date, dc.Value);
+                            Variable variable = new($"p{_variables.Count}", Date, dc.Value);
                             _variables.Add(variable);
                             item.Value = variable;
                         }
@@ -327,7 +327,7 @@ public class CollectVariableVisitor : IVisitor<SelectQuery>, IVisitor<IWhereClau
 #if NET6_0_OR_GREATER
                     case DateColumn dc when dc.Value is not null:
                         {
-                            Variable variable = new Variable($"p{_variables.Count}", Date, dc.Value);
+                            Variable variable = new($"p{_variables.Count}", Date, dc.Value);
                             _variables.Add(variable);
                             item.Value = variable;
                         }

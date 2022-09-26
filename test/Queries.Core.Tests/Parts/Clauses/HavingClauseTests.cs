@@ -58,7 +58,7 @@ public class HavingClauseTests : IDisposable
     public void ObjectShouldBeInCorrectStateAfterBeingBuilt(AggregateFunction column, ClauseOperator @operator, ColumnBase constraint)
     {
         // Act
-        HavingClause clause = new HavingClause(column, @operator, constraint);
+        HavingClause clause = new(column, @operator, constraint);
 
         // Assert
         clause.Column.Should().Be(column);

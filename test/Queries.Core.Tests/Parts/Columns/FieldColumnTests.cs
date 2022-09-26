@@ -86,7 +86,7 @@ public class FieldColumnTests : IDisposable
             yield return new object[] { new FieldColumn("firstname"), new FieldColumn("firstname"), true, $"object is a {nameof(FieldColumn)} with exactly the same {nameof(FieldColumn.Name)} and {nameof(FieldColumn.Alias)}" };
             
             {
-                FieldColumn column = new FieldColumn("firstname");
+                FieldColumn column = new("firstname");
                 yield return new object[] { column, column, true, "Equals with same instance" };
             }
         }

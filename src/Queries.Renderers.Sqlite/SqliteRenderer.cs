@@ -68,7 +68,7 @@ public class SqliteRenderer : QueryRendererBase
     public override string Render(IQuery query)
     {
         string result = string.Empty;
-        ReplaceParameterBySelectQueryVisitor visitor = new ReplaceParameterBySelectQueryVisitor(
+        ReplaceParameterBySelectQueryVisitor visitor = new(
             v => Select(Null("RealValue".Field(), "IntegerValue".Field(), "BlobValue".Field(), "TextValue".Field()))
                 .From(VariablesTempTablename)
                 .Where(ParameterFieldName.Field().EqualTo(v.Name))
@@ -108,7 +108,7 @@ public class SqliteRenderer : QueryRendererBase
                 result = base.Render(query);
                 break;
         }
-        StringBuilder sbParameters = new StringBuilder(visitor.Variables.Count() * 100);
+        StringBuilder sbParameters = new(visitor.Variables.Count() * 100);
         if (visitor.Variables.Any())
         {
 #if DEBUG
@@ -170,7 +170,7 @@ public class SqliteRenderer : QueryRendererBase
     ///<inheritdoc/>
     protected override string RenderNullColumn(NullFunction nullColumn, bool renderAlias)
     {
-        StringBuilder sbNullColumn = new StringBuilder();
+        StringBuilder sbNullColumn = new();
 
         sbNullColumn = sbNullColumn.Append($"COALESCE({RenderColumn(nullColumn.Column, false)}, {RenderColumn(nullColumn.DefaultValue, false)}");
         foreach (IColumn defaultValue in nullColumn.AdditionalDefaultValues)

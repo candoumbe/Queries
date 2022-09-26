@@ -65,7 +65,7 @@ public class NullFunctionTests : IDisposable
     public void CtorBuildAValidInstance(IColumn column, IColumn defaultValue)
     {
         // Act
-        NullFunction function = new NullFunction(column, defaultValue);
+        NullFunction function = new(column, defaultValue);
 
         // Assert
         function.Column.Should().Be(column);

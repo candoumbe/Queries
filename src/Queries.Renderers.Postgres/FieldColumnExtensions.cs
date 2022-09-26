@@ -13,5 +13,5 @@ public static class FieldColumnExtensions
     /// <param name="column">The column to wrap</param>
     /// <param name="path"></param>
     /// <returns>a <see cref="JsonFieldColumn"/></returns>
-    public static JsonFieldColumn Json(this FieldColumn column, string path = null) => new JsonFieldColumn(column, path);
+    public static JsonFieldColumn Json(this FieldColumn column, string path = null) => new(column, path);
 }

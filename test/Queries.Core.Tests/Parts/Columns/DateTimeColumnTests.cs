@@ -28,7 +28,7 @@ public class DateTimeColumnTests
     public void CtorWithFormatBuildsAValidInstance(DateTime columnValue, string format)
     {
         // Act
-        DateTimeColumn dc = new DateTimeColumn(columnValue, format);
+        DateTimeColumn dc = new(columnValue, format);
 
         // Assert
         dc.Alias.Should().BeNull();
@@ -50,7 +50,7 @@ public class DateTimeColumnTests
     public void CtorWithoutFormatBuildsAValidInstance(DateTime columnValue)
     {
         // Act
-        DateTimeColumn dc = new DateTimeColumn(columnValue);
+        DateTimeColumn dc = new(columnValue);
 
         // Assert
         dc.Alias.Should().BeNull();

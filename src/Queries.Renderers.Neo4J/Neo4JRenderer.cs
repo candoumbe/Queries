@@ -43,7 +43,7 @@ public class Neo4JRenderer : QueryRendererBase
             throw new NotSupportedException($"Only {nameof(SelectQuery)} queries are supported for Neo4J");
         }
         SelectQuery selectQuery = (SelectQuery) query;
-        StringBuilder sbQuery = new StringBuilder();
+        StringBuilder sbQuery = new();
         IEnumerable<IColumn> columns = query.Columns;
         IEnumerable<ITable> tables = selectQuery.Tables;
 
@@ -97,7 +97,7 @@ public class Neo4JRenderer : QueryRendererBase
     ///<inheritdoc/>
     protected override string RenderColumns(IEnumerable<IColumn> columns)
     {
-        StringBuilder sbColumns = new StringBuilder();
+        StringBuilder sbColumns = new();
 
         sbColumns = columns.Aggregate(sbColumns,
             (current, column) => current
@@ -116,12 +116,12 @@ public class Neo4JRenderer : QueryRendererBase
         }
         //TODO validate the query
 
-        StringBuilder sbQuery = new StringBuilder();
+        StringBuilder sbQuery = new();
         if (query.InsertedValue is IEnumerable<InsertedValue> values)
         {
             IDictionary<string, IColumn> map = values
                 .ToDictionary(val => val.Column.Name, val => val.Value);
-            StringBuilder sbCreate = new StringBuilder();
+            StringBuilder sbCreate = new();
             foreach (KeyValuePair<string, IColumn> kv in map)
             {
                 IColumn columnValue = kv.Value;
@@ -143,7 +143,7 @@ public class Neo4JRenderer : QueryRendererBase
             throw new ArgumentNullException(nameof(deleteQuery));
         }
 
-        StringBuilder sbQuery = new StringBuilder();
+        StringBuilder sbQuery = new();
         string tableAlias = deleteQuery.Table?.Substring(0, 1)?.ToLower();
         sbQuery.Append($"MATCH {RenderTablenameWithAlias(deleteQuery.Table, tableAlias)} {(Settings.PrettyPrint ? Environment.NewLine : string.Empty)}");
 

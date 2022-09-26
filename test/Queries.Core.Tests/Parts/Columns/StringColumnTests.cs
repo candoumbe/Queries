@@ -38,7 +38,7 @@ public class StringColumnTests : IDisposable
             yield return new object[] { new StringColumn("a"), new StringColumn("a"), true, $"object is a {nameof(StringColumn)} with exactly the same {nameof(StringColumn.Value)} and {nameof(StringColumn.Alias)}" };
 
             {
-                StringColumn column = new StringColumn("a");
+                StringColumn column = new("a");
                 yield return new object[] { column, column, true, "Equals with same instance" };
             }
         }
@@ -62,7 +62,7 @@ public class StringColumnTests : IDisposable
     public void CloneTest()
     {
         // Arrange
-        StringColumn original = new StringColumn("a");
+        StringColumn original = new("a");
         _outputHelper.WriteLine($"{nameof(original)} : {original}");
 
         // Act

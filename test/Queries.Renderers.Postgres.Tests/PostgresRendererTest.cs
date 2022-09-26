@@ -608,12 +608,12 @@ public class PostgresRendererTest
     public void CasingStrategy(SelectQuery query, FieldnameCasingStrategy casingStrategy, string expected)
     {
         // Arrange
-        PostgresRendererSettings settings = new PostgresRendererSettings
+        PostgresRendererSettings settings = new()
         {
             FieldnameCasingStrategy = casingStrategy
         };
 
-        PostgresqlRenderer renderer = new PostgresqlRenderer(settings);
+        PostgresqlRenderer renderer = new(settings);
 
         // Act
         string statement = renderer.Render(query);
@@ -629,7 +629,7 @@ public class PostgresRendererTest
     {
         // Arrange
         _outputHelper.WriteLine($"{nameof(query)} : '{query}'");
-        PostgresqlRenderer renderer = new PostgresqlRenderer(settings);
+        PostgresqlRenderer renderer = new(settings);
 
         // Assert
         CompiledQuery compiledQuery = renderer.Compile(query);
