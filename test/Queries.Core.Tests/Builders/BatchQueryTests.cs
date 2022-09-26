@@ -7,71 +7,70 @@ using Xunit;
 using Xunit.Categories;
 using static Queries.Core.Builders.Fluent.QueryBuilder;
 
-namespace Queries.Core.Tests.Builders
+namespace Queries.Core.Tests.Builders;
+
+[UnitTest]
+[Feature("Batch query")]
+[Feature("Builder")]
+public class BatchQueryTests
 {
-    [UnitTest]
-    [Feature("Batch query")]
-    [Feature("Builder")]
-    public class BatchQueryTests
+    [Fact]
+    public void CtorWithNoArgumentBuildsEmptyInstance()
     {
-        [Fact]
-        public void CtorWithNoArgumentBuildsEmptyInstance()
+        // Act
+        BatchQuery batch = new();
+
+        // Assert
+        batch.Statements.Should()
+            .BeEmpty();
+    }
+
+    [Fact]
+    public void CtorShouldExcludeNullStatements()
+    {
+        // Arrange
+        IEnumerable<IQuery> queries = new IQuery[]
         {
-            // Act
-            BatchQuery batch = new BatchQuery();
+            InsertInto("SuperHero")
+                .Values(Select("firstname", "lastname", "nickname").From("DC_SuperHero").Build()),
 
-            // Assert
-            batch.Statements.Should()
-                .BeEmpty();
-        }
+            null,
 
-        [Fact]
-        public void CtorShouldExcludeNullStatements()
+            Delete("DC_SuperHero")
+
+        };
+
+        // Act
+        BatchQuery batchQuery = new(queries.ToArray());
+
+        // Assert
+        batchQuery.Statements.Should()
+            .HaveCount(2).And
+            .NotContainNulls();
+    }
+
+    [Fact]
+    public void CtorPreserveStatementOrder()
+    {
+        // Arrange
+        IEnumerable<IQuery> queries = new IQuery[]
         {
-            // Arrange
-            IEnumerable<IQuery> queries = new IQuery[]
-            {
-                InsertInto("SuperHero")
-                    .Values(Select("firstname", "lastname", "nickname").From("DC_SuperHero").Build()),
+            Select(1.Literal()),
+            Select(2.Literal()),
+            Select(3.Literal())
+        };
 
-                null,
+        // Act
+        BatchQuery batchQuery = new(queries.ToArray());
 
-                Delete("DC_SuperHero")
-
-            };
-
-            // Act
-            BatchQuery batchQuery = new BatchQuery(queries.ToArray());
-
-            // Assert
-            batchQuery.Statements.Should()
-                .HaveCount(2).And
-                .NotContainNulls();
-        }
-
-        [Fact]
-        public void CtorPreserveStatementOrder()
-        {
-            // Arrange
-            IEnumerable<IQuery> queries = new IQuery[]
+        // Assert 
+        batchQuery.Statements.Should()
+            .Equal(new []
             {
                 Select(1.Literal()),
                 Select(2.Literal()),
                 Select(3.Literal())
-            };
 
-            // Act
-            BatchQuery batchQuery = new BatchQuery(queries.ToArray());
-
-            // Assert 
-            batchQuery.Statements.Should()
-                .Equal(new []
-                {
-                    Select(1.Literal()),
-                    Select(2.Literal()),
-                    Select(3.Literal())
-
-                });
-        }
+            });
     }
 }

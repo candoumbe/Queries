@@ -1,11 +1,17 @@
-﻿namespace Queries.Core.Parts.Columns
+﻿namespace Queries.Core.Parts.Columns;
+
+/// <summary>
+/// Numeric types that a <see cref="NumericColumn"/> can hold
+/// </summary>
+public enum NumericType
 {
     /// <summary>
-    /// Numeric types that a <see cref="NumericColumn"/> can hold
+    /// Integer numeric type
     /// </summary>
-    public enum NumericType
-    {
-        Integer,
-        Float
-    }
+    Integer,
+
+    /// <summary>
+    /// Decimal numeric type
+    /// </summary>
+    Float
 }

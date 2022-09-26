@@ -1,8 +1,17 @@
-﻿namespace Queries.Core.Parts.Sorting
+﻿namespace Queries.Core.Parts.Sorting;
+
+/// <summary>
+/// Direction for ordering
+/// </summary>
+public enum OrderDirection
 {
-    public enum OrderDirection
-    {
-        Ascending,
-        Descending
-    }
+    /// <summary>
+    /// Ascending order
+    /// </summary>
+    Ascending,
+
+    /// <summary>
+    /// Descending order
+    /// </summary>
+    Descending
 }

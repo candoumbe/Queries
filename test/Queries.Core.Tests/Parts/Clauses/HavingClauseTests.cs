@@ -9,88 +9,87 @@ using Xunit;
 using Xunit.Abstractions;
 using Xunit.Categories;
 using static Queries.Core.Parts.Clauses.ClauseOperator;
-namespace Queries.Core.Tests.Parts.Clauses
+namespace Queries.Core.Tests.Parts.Clauses;
+
+[UnitTest]
+[Feature("Having")]
+public class HavingClauseTests : IDisposable
 {
-    [UnitTest]
-    [Feature("Having")]
-    public class HavingClauseTests : IDisposable
+    private ITestOutputHelper _outputHelper;
+
+    public HavingClauseTests(ITestOutputHelper outputHelper) => _outputHelper = outputHelper;
+
+    public void Dispose() => _outputHelper = null;
+
+    [Fact]
+    public void CtorShouldThrowsArgumentNullExceptionWhenColumnIsNull()
     {
-        private ITestOutputHelper _outputHelper;
+        // Act
+        Action action = () => new HavingClause(null, default);
 
-        public HavingClauseTests(ITestOutputHelper outputHelper) => _outputHelper = outputHelper;
+        // Assert
+        action.Should().Throw<ArgumentNullException>().Which
+            .ParamName.Should()
+            .NotBeNullOrWhiteSpace();
+    }
 
-        public void Dispose() => _outputHelper = null;
-
-        [Fact]
-        public void CtorShouldThrowsArgumentNullExceptionWhenColumnIsNull()
+    public static IEnumerable<object[]> ObjectShouldBeInCorrectStateAfterBeingBuiltCases
+    {
+        get
         {
-            // Act
-            Action action = () => new HavingClause(null, default);
-
-            // Assert
-            action.Should().Throw<ArgumentNullException>().Which
-                .ParamName.Should()
-                .NotBeNullOrWhiteSpace();
-        }
-
-        public static IEnumerable<object[]> ObjectShouldBeInCorrectStateAfterBeingBuiltCases
-        {
-            get
+            ClauseOperator[] operators = new[]
             {
-                ClauseOperator[] operators = new[]
-                {
-                    EqualTo,
-                    NotEqualTo,
-                    GreaterThan,
-                    GreaterThanOrEqualTo,
-                    ClauseOperator.LessThan,
-                    LessThanOrEqualTo,
-                    NotEqualTo
-                };
+                EqualTo,
+                NotEqualTo,
+                GreaterThan,
+                GreaterThanOrEqualTo,
+                ClauseOperator.LessThan,
+                LessThanOrEqualTo,
+                NotEqualTo
+            };
 
-                return operators
-                    .Select(op => new object[] { new MaxFunction("age"), op, 18 });
-            }
+            return operators
+                .Select(op => new object[] { new MaxFunction("age"), op, 18 });
         }
+    }
 
-        [Theory]
-        [MemberData(nameof(ObjectShouldBeInCorrectStateAfterBeingBuiltCases))]
-        public void ObjectShouldBeInCorrectStateAfterBeingBuilt(AggregateFunction column, ClauseOperator @operator, ColumnBase constraint)
+    [Theory]
+    [MemberData(nameof(ObjectShouldBeInCorrectStateAfterBeingBuiltCases))]
+    public void ObjectShouldBeInCorrectStateAfterBeingBuilt(AggregateFunction column, ClauseOperator @operator, ColumnBase constraint)
+    {
+        // Act
+        HavingClause clause = new(column, @operator, constraint);
+
+        // Assert
+        clause.Column.Should().Be(column);
+        clause.Operator.Should().Be(@operator);
+        clause.Constraint.Should().Be(constraint);
+    }
+
+    public static IEnumerable<object[]> CloneCases
+    {
+        get
         {
-            // Act
-            HavingClause clause = new HavingClause(column, @operator, constraint);
-
-            // Assert
-            clause.Column.Should().Be(column);
-            clause.Operator.Should().Be(@operator);
-            clause.Constraint.Should().Be(constraint);
+            yield return new[] { new HavingClause(new CountFunction("Firstname".Field()), EqualTo, "Bruce") };
+            yield return new[] { new HavingClause(new MinFunction("Firstname".Field()), IsNull, "Bruce") };
+            yield return new[] { new HavingClause(new MaxFunction(1.Literal()), GreaterThanOrEqualTo, 2) };
+            yield return new[] { new HavingClause(new AvgFunction(1.Literal()), GreaterThanOrEqualTo, 2) };
         }
+    }
 
-        public static IEnumerable<object[]> CloneCases
-        {
-            get
-            {
-                yield return new[] { new HavingClause(new CountFunction("Firstname".Field()), EqualTo, "Bruce") };
-                yield return new[] { new HavingClause(new MinFunction("Firstname".Field()), IsNull, "Bruce") };
-                yield return new[] { new HavingClause(new MaxFunction(1.Literal()), GreaterThanOrEqualTo, 2) };
-                yield return new[] { new HavingClause(new AvgFunction(1.Literal()), GreaterThanOrEqualTo, 2) };
-            }
-        }
+    [Theory]
+    [MemberData(nameof(CloneCases))]
+    public void CloneTest(HavingClause original)
+    {
+        _outputHelper.WriteLine($"{nameof(original)} : {original}");
 
-        [Theory]
-        [MemberData(nameof(CloneCases))]
-        public void CloneTest(HavingClause original)
-        {
-            _outputHelper.WriteLine($"{nameof(original)} : {original}");
+        // Act
+        IHavingClause copy = original.Clone();
 
-            // Act
-            IHavingClause copy = original.Clone();
-
-            // Assert
-            copy.Should()
-                .BeOfType<HavingClause>().Which.Should()
-                .NotBeSameAs(original).And
-                .Be(original);
-        }
+        // Assert
+        copy.Should()
+            .BeOfType<HavingClause>().Which.Should()
+            .NotBeSameAs(original).And
+            .Be(original);
     }
 }

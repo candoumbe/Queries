@@ -1,13 +1,16 @@
-﻿namespace Queries.Core.Builders.Fluent
+﻿namespace Queries.Core.Builders.Fluent;
+
+/// <summary>
+/// Fluently adds paging support to <typeparamref name="TQuery"/>.
+/// </summary>
+/// <typeparam name="TQuery">Type of the query onto which the paging options will be applied</typeparam>
+public interface IPaginatedQuery<out TQuery>: IBuild<TQuery>
 {
-    public interface IPaginatedQuery<out T> : IBuild<T>
-    {
-        /// <summary>
-        /// Adds pagination parameters
-        /// </summary>
-        /// <param name="pageIndex"></param>
-        /// <param name="pageSize"></param>
-        /// <returns></returns>
-        T Paginate(int pageIndex, int pageSize);
-    }
+    /// <summary>
+    /// Adds pagination parameters
+    /// </summary>
+    /// <param name="pageIndex"></param>
+    /// <param name="pageSize"></param>
+    /// <returns><typeparamref name="TQuery"/> onto which paging options were applied.</returns>
+    TQuery Paginate(int pageIndex, int pageSize);
 }

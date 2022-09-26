@@ -5,48 +5,45 @@ using Queries.Core.Parts.Columns;
 
 using System;
 
-namespace Queries.Renderers.Postgres.Builders.Fluent
+namespace Queries.Renderers.Postgres.Builders.Fluent;
+
+/// <summary>
+/// Fluent builder for <see cref="ReturnQuery"/>
+/// </summary>
+public static class ReturnBuilder
 {
     /// <summary>
-    /// Fluent builder for <see cref="ReturnQuery"/>
+    /// Builds a <see cref="ReturnQuery"/> which returns <paramref name="returnValue"/>.
     /// </summary>
-    public static class ReturnBuilder
+    /// <param name="returnValue">The "value" to return</param>
+    /// 
+    /// <returns></returns>
+    public static ReturnQuery Return(ColumnBase returnValue)
     {
-        /// <summary>
-        /// Builds a <see cref="ReturnQuery"/> which returns <paramref name="returnValue"/> for <paramref name="query"/>.
-        /// </summary>
-        /// <param name="returnValue">The "value" to return</param>
-        /// 
-        /// <returns></returns>
-        public static ReturnQuery Return(ColumnBase returnValue)
+        if (returnValue == null)
         {
-            if (returnValue == null)
-            {
-                throw new ArgumentNullException(nameof(returnValue));
-            }
-            return new ReturnQuery(Option.Some<ColumnBase, SelectQuery>(returnValue));
+            throw new ArgumentNullException(nameof(returnValue));
         }
-
-        /// <summary>
-        /// Builds a <see cref="ReturnQuery"/> which returns <paramref name="returnValue"/> for <paramref name="query"/>.
-        /// </summary>
-        /// <param name="returnValue">The "value" to return</param>
-        /// 
-        /// <returns></returns>
-        public static ReturnQuery Return(SelectQuery returnValue)
-        {
-            if (returnValue == null)
-            {
-                throw new ArgumentNullException(nameof(returnValue));
-            }
-            return new ReturnQuery(Option.None<ColumnBase, SelectQuery>(returnValue));
-        }
-
-        /// <summary>
-        /// Builds a <see cref="ReturnQuery"/> which returns.
-        /// </summary>
-        /// <param name="returnValue">The "value" to return</param
-        /// <returns></returns>
-        public static ReturnQuery Return() => new ReturnQuery(Option.None<ColumnBase, SelectQuery>(default));
+        return new ReturnQuery(Option.Some<ColumnBase, SelectQuery>(returnValue));
     }
+
+    /// <summary>
+    /// Builds a <see cref="ReturnQuery"/> which returns <paramref name="returnValue"/> for <paramref name="returnValue"/>.
+    /// </summary>
+    /// <param name="returnValue">The "value" to return</param>
+    /// <returns>a <see cref="ReturnQuery"/></returns>
+    public static ReturnQuery Return(SelectQuery returnValue)
+    {
+        if (returnValue == null)
+        {
+            throw new ArgumentNullException(nameof(returnValue));
+        }
+        return new ReturnQuery(Option.None<ColumnBase, SelectQuery>(returnValue));
+    }
+
+    /// <summary>
+    /// Builds a <see cref="ReturnQuery"/> which returns.
+    /// </summary>
+    /// <returns>a <see cref="ReturnQuery"/></returns>
+    public static ReturnQuery Return() => new(Option.None<ColumnBase, SelectQuery>(default));
 }

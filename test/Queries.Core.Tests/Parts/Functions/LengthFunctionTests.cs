@@ -8,27 +8,26 @@ using System;
 using Xunit;
 using Xunit.Categories;
 
-namespace Queries.Core.Tests.Parts.Functions
+namespace Queries.Core.Tests.Parts.Functions;
+
+[UnitTest]
+[Feature(nameof(LengthFunction))]
+[Feature("Functions")]
+public class LengthFunctionTests
 {
-    [UnitTest]
-    [Feature(nameof(LengthFunction))]
-    [Feature("Functions")]
-    public class LengthFunctionTests
+    [Fact]
+    public void CtorThrowsArgumentNullExceptionIfAnyParameterIsNull()
     {
-        [Fact]
-        public void CtorThrowsArgumentNullExceptionIfAnyParameterIsNull()
-        {
-            // Act
-            Action action = () => new LengthFunction(null);
+        // Act
+        Action action = () => new LengthFunction(null);
 
-            // Assert
-            action.Should().Throw<ArgumentNullException>().Which
-                .ParamName.Should()
-                .NotBeNullOrWhiteSpace();
-        }
-
-        [Fact]
-        public void HaveFunctionAttribute() => typeof(LengthFunction).Should()
-                .BeDecoratedWithOrInherit<FunctionAttribute>($"{nameof(LengthFunction)} must be marked with {nameof(FunctionAttribute)}");
+        // Assert
+        action.Should().Throw<ArgumentNullException>().Which
+            .ParamName.Should()
+            .NotBeNullOrWhiteSpace();
     }
+
+    [Fact]
+    public void HaveFunctionAttribute() => typeof(LengthFunction).Should()
+            .BeDecoratedWithOrInherit<FunctionAttribute>($"{nameof(LengthFunction)} must be marked with {nameof(FunctionAttribute)}");
 }

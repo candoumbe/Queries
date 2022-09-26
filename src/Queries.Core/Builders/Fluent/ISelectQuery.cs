@@ -1,15 +1,25 @@
 ﻿using Queries.Core.Parts;
 
-namespace Queries.Core.Builders.Fluent
+namespace Queries.Core.Builders.Fluent;
+
+/// <summary>
+/// Defines the shape of a SELECT query
+/// </summary>
+/// <typeparam name="TQuery">Type of the query that is being built.</typeparam>
+public interface ISelectQuery<TQuery> : IPaginatedQuery<TQuery>
+    where TQuery: IQuery
 {
     /// <summary>
-    /// Defines the shape of a SELECT query
+    /// Applies the <c>FROM</c> instruction to the <typeparamref name="TQuery"/> under construction
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public interface ISelectQuery<T> : IPaginatedQuery<T>
-    {
-        IFromQuery<T> From(params ITable[] tables);
+    /// <param name="tables"></param>
+    /// <returns><see cref="IFromQuery{T}"/></returns>
+    IFromQuery<TQuery> From(params ITable[] tables);
 
-        IFromQuery<T> From(params string[] tables);
-    }
+    /// <summary>
+    /// Applies the <c>FROM</c> instruction to the <typeparamref name="TQuery"/> under construction
+    /// </summary>
+    /// <param name="tables"></param>
+    /// <returns><see cref="IFromQuery{T}"/></returns>
+    IFromQuery<TQuery> From(params string[] tables);
 }

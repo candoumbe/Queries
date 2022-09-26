@@ -4,25 +4,24 @@ using Xunit;
 using Xunit.Categories;
 using static Queries.Core.Parts.Clauses.ClauseLogic;
 
-namespace Queries.Core.Tests.Parts
+namespace Queries.Core.Tests.Parts;
+
+[UnitTest]
+[Feature("Having clause")]
+public class CompositeHavingClauseTests
 {
-    [UnitTest]
-    [Feature("Having clause")]
-    public class CompositeHavingClauseTests
+    [Fact]
+    public void DefaultCtor()
     {
-        [Fact]
-        public void DefaultCtor()
-        {
-            // Act
-            CompositeHavingClause clause = new CompositeHavingClause();
+        // Act
+        CompositeHavingClause clause = new();
 
-            // Assert
-            clause.Clauses.Should().BeEmpty();
-            clause.Logic.Should().Be(And);
-        }
-
-        [Fact]
-        public void IsAHavingClause()
-            => new CompositeHavingClause().Should().BeAssignableTo<IHavingClause>();
+        // Assert
+        clause.Clauses.Should().BeEmpty();
+        clause.Logic.Should().Be(And);
     }
+
+    [Fact]
+    public void IsAHavingClause()
+        => new CompositeHavingClause().Should().BeAssignableTo<IHavingClause>();
 }

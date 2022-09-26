@@ -1,9 +1,15 @@
-namespace Queries.Core.Parts.Joins
+namespace Queries.Core.Parts.Joins;
+
+/// <summary>
+/// Models a cartesian join
+/// </summary>
+public class CrossJoin : JoinBase
 {
-    public class CrossJoin : JoinBase
-    {
-        public CrossJoin(Table table)
-            : base(JoinType.CrossJoin, table, null)
-        { }
-    }
+    /// <summary>
+    /// Builds a new <see cref="CrossJoin"/> instance.
+    /// </summary>
+    /// <param name="table"></param>
+    public CrossJoin(Table table)
+        : base(JoinType.CrossJoin, table, null)
+    { }
 }

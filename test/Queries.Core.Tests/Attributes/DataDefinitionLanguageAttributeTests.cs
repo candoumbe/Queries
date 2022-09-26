@@ -5,30 +5,29 @@ using System.Reflection;
 using Xunit;
 using Xunit.Categories;
 
-namespace Queries.Core.Tests.Attributes
+namespace Queries.Core.Tests.Attributes;
+
+[UnitTest]
+[Feature(nameof(DataControlLanguageAttribute))]
+[Feature("Attributes")]
+public class DataDefinitionLanguageAttributeTests
 {
-    [UnitTest]
-    [Feature(nameof(DataControlLanguageAttribute))]
-    [Feature("Attributes")]
-    public class DataDefinitionLanguageAttributeTests
+    [Fact]
+    public void IsValid()
     {
-        [Fact]
-        public void IsValid()
-        {
-            // Arrange
-            TypeInfo typeInfo = typeof(DataDefinitionLanguageAttribute)
-                .GetTypeInfo();
+        // Arrange
+        TypeInfo typeInfo = typeof(DataDefinitionLanguageAttribute)
+            .GetTypeInfo();
 
-            // Act
-            AttributeUsageAttribute attr = typeInfo.GetCustomAttribute<AttributeUsageAttribute>();
+        // Act
+        AttributeUsageAttribute attr = typeInfo.GetCustomAttribute<AttributeUsageAttribute>();
 
-            // Assert
-            attr.AllowMultiple.Should()
-                .BeFalse("multiple usage of this attribute on the same element is not allowed");
-            attr.Inherited.Should()
-                .BeTrue("the attribute must propagate to inherited classes ");
+        // Assert
+        attr.AllowMultiple.Should()
+            .BeFalse("multiple usage of this attribute on the same element is not allowed");
+        attr.Inherited.Should()
+            .BeTrue("the attribute must propagate to inherited classes ");
 
-            attr.ValidOn.Should().Be(AttributeTargets.Class);
-        }
+        attr.ValidOn.Should().Be(AttributeTargets.Class);
     }
 }

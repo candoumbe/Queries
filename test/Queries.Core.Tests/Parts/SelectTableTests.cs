@@ -6,80 +6,79 @@ using Xunit;
 using Xunit.Categories;
 using static Queries.Core.Builders.Fluent.QueryBuilder;
 
-namespace Queries.Core.Tests.Parts
+namespace Queries.Core.Tests.Parts;
+
+[UnitTest]
+[Feature("Select table")]
+public class SelectTableTests
 {
-    [UnitTest]
-    [Feature("Select table")]
-    public class SelectTableTests
+    [Fact]
+    public void Ctor_Throws_ArgumentNullException_If_Argument_Is_Null()
     {
-        [Fact]
-        public void Ctor_Throws_ArgumentNullException_If_Argument_Is_Null()
-        {
-            // Arrange
-            Action action = () => new SelectTable(null);
+        // Arrange
+        Action action = () => new SelectTable(null);
 
-            // Assert
-            action.Should().Throw<ArgumentNullException>().Which
-                .ParamName.Should()
-                .NotBeNullOrWhiteSpace();
-        }
+        // Assert
+        action.Should().Throw<ArgumentNullException>().Which
+            .ParamName.Should()
+            .NotBeNullOrWhiteSpace();
+    }
 
-        [Feature("Alias")]
-        [Fact]
-        public void SettingAlias()
-        {
-            // Arrange
-            SelectQuery select = Select("firstname".Field(), "lastname".Field())
-                                .From("people")
-                                .Build();
+    [Feature("Alias")]
+    [Fact]
+    public void SettingAlias()
+    {
+        // Arrange
+        SelectQuery select = Select("firstname".Field(), "lastname".Field())
+                            .From("people")
+                            .Build();
 
-            // Act
-            SelectTable selectTable = new SelectTable(select)
-                .As("p");
+        // Act
+        SelectTable selectTable = new SelectTable(select)
+            .As("p");
 
-            // Assert
-            selectTable.Alias.Should().Be("p");
-        }
+        // Assert
+        selectTable.Alias.Should().Be("p");
+    }
 
-        [Fact]
-        public void SettingSelect()
-        {
-            // Arrange
-            SelectQuery select = Select("firstname".Field(), "lastname".Field())
-                                .From("people")
-                                .Build();
+    [Fact]
+    public void SettingSelect()
+    {
+        // Arrange
+        SelectQuery select = Select("firstname".Field(), "lastname".Field())
+                            .From("people")
+                            .Build();
 
-            // Act
-            SelectTable selectTable = new SelectTable(select)
-                .As("p");
+        // Act
+        SelectTable selectTable = new SelectTable(select)
+            .As("p");
 
-            // Assert
-            selectTable.Select.Should().BeSameAs(select);
-        }
+        // Assert
+        selectTable.Select.Should().BeSameAs(select);
+    }
 
-        [Fact]
-        public void CloneTest()
-        {
-            // Arrange
-            SelectQuery query = Select("firstname".Field(), "lastname".Field())
-                                .From("people")
-                                .Build();
-            SelectTable source = new SelectTable(query)
-                                .As("p");
+    [Fact]
+    public void CloneTest()
+    {
+        // Arrange
+        SelectQuery query = Select("firstname".Field(), "lastname".Field())
+                            .From("people")
+                            .Build();
+        SelectTable source = new SelectTable(query)
+                            .As("p");
 
-            // Act
-            ITable copy = source.Clone();
+        // Act
+        ITable copy = source.Clone();
 
-            // Assert
-            SelectTable clone = copy.Should()
-                .NotBeNull().And
-                .BeAssignableTo<SelectTable>().Which;
+        // Assert
+        SelectTable clone = copy.Should()
+            .NotBeNull().And
+            .BeAssignableTo<SelectTable>().Which;
 
-            clone.Should()
-                .BeEquivalentTo(source);
-            clone.Select.Should()
-                .NotBeSameAs(query, "select must be cloned as well").And
-                .BeEquivalentTo(query);
-        }
+        clone.Should()
+            .BeEquivalentTo(source);
+        clone.Select.Should()
+            .NotBeSameAs(query, "select must be cloned as well").And
+            .BeEquivalentTo(query);
     }
 }

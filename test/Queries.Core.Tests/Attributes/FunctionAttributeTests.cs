@@ -5,30 +5,29 @@ using System.Reflection;
 using Xunit;
 using Xunit.Categories;
 
-namespace Queries.Core.Tests.Attributes
+namespace Queries.Core.Tests.Attributes;
+
+[UnitTest]
+[Feature(nameof(FunctionAttribute))]
+[Feature("Attributes")]
+public class FunctionAttributeTests
 {
-    [UnitTest]
-    [Feature(nameof(FunctionAttribute))]
-    [Feature("Attributes")]
-    public class FunctionAttributeTests
+    [Fact]
+    public void IsValid()
     {
-        [Fact]
-        public void IsValid()
-        {
-            // Arrange
-            TypeInfo typeInfo = typeof(FunctionAttribute)
-                .GetTypeInfo();
+        // Arrange
+        TypeInfo typeInfo = typeof(FunctionAttribute)
+            .GetTypeInfo();
 
-            // Act
-            AttributeUsageAttribute attr = typeInfo.GetCustomAttribute<AttributeUsageAttribute>();
+        // Act
+        AttributeUsageAttribute attr = typeInfo.GetCustomAttribute<AttributeUsageAttribute>();
 
-            // Assert
-            attr.AllowMultiple.Should()
-                .BeFalse("multiple usage of this attribute on the same element is not allowed");
-            attr.Inherited.Should()
-                .BeTrue();
+        // Assert
+        attr.AllowMultiple.Should()
+            .BeFalse("multiple usage of this attribute on the same element is not allowed");
+        attr.Inherited.Should()
+            .BeTrue();
 
-            attr.ValidOn.Should().Be(AttributeTargets.Class);
-        }
+        attr.ValidOn.Should().Be(AttributeTargets.Class);
     }
 }
