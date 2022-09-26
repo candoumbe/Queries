@@ -5,61 +5,60 @@ using Xunit;
 using Xunit.Abstractions;
 using Xunit.Categories;
 
-namespace Queries.Core.Tests.Parts.Columns
+namespace Queries.Core.Tests.Parts.Columns;
+
+[UnitTest]
+public class StringValuesTests
 {
-    [UnitTest]
-    public class StringValuesTests
+    private readonly ITestOutputHelper _outputHelper;
+
+    public StringValuesTests(ITestOutputHelper outputHelper) => _outputHelper = outputHelper;
+
+    public static IEnumerable<object[]> EqualsCases
     {
-        private readonly ITestOutputHelper _outputHelper;
-
-        public StringValuesTests(ITestOutputHelper outputHelper) => _outputHelper = outputHelper;
-
-        public static IEnumerable<object[]> EqualsCases
+        get
         {
-            get
-            {
-                yield return new object[] { new StringValues("one", "two", "three"), null, false, "comparing with a null instance" };
-                yield return new object[] { new StringValues("one", "two", "three"), new StringValues("one", "two", "three"), true, "comparing two instances with same values of same type" };
-                yield return new object[] { new StringValues("one", "two", "three"), new StringValues("one", "three", "two"), false, "comparing two instances with of same values but in different order." };
-            }
+            yield return new object[] { new StringValues("one", "two", "three"), null, false, "comparing with a null instance" };
+            yield return new object[] { new StringValues("one", "two", "three"), new StringValues("one", "two", "three"), true, "comparing two instances with same values of same type" };
+            yield return new object[] { new StringValues("one", "two", "three"), new StringValues("one", "three", "two"), false, "comparing two instances with of same values but in different order." };
         }
+    }
 
-        [Theory]
-        [MemberData(nameof(EqualsCases))]
-        public void EqualTests(StringValues first, object second, bool expectedResult, string reason)
+    [Theory]
+    [MemberData(nameof(EqualsCases))]
+    public void EqualTests(StringValues first, object second, bool expectedResult, string reason)
+    {
+        _outputHelper.WriteLine($"{nameof(first)} : {first}");
+        _outputHelper.WriteLine($"{nameof(second)} : {second}");
+
+        // Act
+        bool actualResult = first.Equals(second);
+
+        // Assert
+        actualResult.Should().Be(expectedResult, reason);
+    }
+
+    public static IEnumerable<object[]> CloneCases
+    {
+        get
         {
-            _outputHelper.WriteLine($"{nameof(first)} : {first}");
-            _outputHelper.WriteLine($"{nameof(second)} : {second}");
-
-            // Act
-            bool actualResult = first.Equals(second);
-
-            // Assert
-            actualResult.Should().Be(expectedResult, reason);
+            yield return new[] { new StringValues("Alice", "Bob", "Charles") };
         }
+    }
 
-        public static IEnumerable<object[]> CloneCases
-        {
-            get
-            {
-                yield return new[] { new StringValues("Alice", "Bob", "Charles") };
-            }
-        }
+    [Theory]
+    [MemberData(nameof(CloneCases))]
+    public void CloneTest(StringValues original)
+    {
+        _outputHelper.WriteLine($"{nameof(original)} : {original}");
 
-        [Theory]
-        [MemberData(nameof(CloneCases))]
-        public void CloneTest(StringValues original)
-        {
-            _outputHelper.WriteLine($"{nameof(original)} : {original}");
+        // Act
+        IColumn copie = original.Clone();
 
-            // Act
-            IColumn copie = original.Clone();
-
-            // Assert
-            copie.Should()
-                .BeOfType<StringValues>().Which.Should()
-                .NotBeSameAs(original).And
-                .BeEquivalentTo(original);
-        }
+        // Assert
+        copie.Should()
+            .BeOfType<StringValues>().Which.Should()
+            .NotBeSameAs(original).And
+            .BeEquivalentTo(original);
     }
 }

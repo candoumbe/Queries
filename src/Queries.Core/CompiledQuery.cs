@@ -3,49 +3,58 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Queries.Core
+namespace Queries.Core;
+
+/// <summary>
+/// The result of calling <see cref="Renderers.QueryRendererBase.Compile(IQuery)"/>.
+/// </summary>
+public class CompiledQuery : IEquatable<CompiledQuery>
 {
     /// <summary>
-    /// The result of calling <see cref="Renderers.QueryRendererBase.Compile(IQuery)"/>.
+    /// Gets all <see cref="Variable"/>s of the current 
     /// </summary>
-    public class CompiledQuery : IEquatable<CompiledQuery>
+    public IEnumerable<Variable> Variables { get; }
+
+    /// <summary>
+    /// The statement where each variable in <see cref="Variables"/> has a corresponding placeholder.
+    /// </summary>
+    public string Statement { get; }
+
+    /// <summary>
+    /// Builds a new <see cref="CompiledQuery"/> instance
+    /// </summary>
+    /// <param name="statement"></param>
+    /// <param name="variables"></param>
+    public CompiledQuery(string statement, IEnumerable<Variable> variables)
     {
-        public IEnumerable<Variable> Variables { get; }
+        Statement = statement;
+        Variables = variables ?? Enumerable.Empty<Variable>();
+    }
 
-        public string Statement { get; }
+    ///<inheritdoc/>
+    public override bool Equals(object obj) => Equals(obj as CompiledQuery);
 
-        /// <summary>
-        /// Builds a new <see cref="CompiledQuery"/> instance
-        /// </summary>
-        /// <param name="statement"></param>
-        /// <param name="variables"></param>
-        public CompiledQuery(string statement, IEnumerable<Variable> variables)
-        {
-            Statement = statement;
-            Variables = variables ?? Enumerable.Empty<Variable>();
-        }
+    ///<inheritdoc/>
+    public bool Equals(CompiledQuery other)
+        => other != null && Variables.Intersect(other?.Variables).All(v => Variables.Contains(v)) && Statement == other.Statement;
 
-        public override bool Equals(object obj) => Equals(obj as CompiledQuery);
-
-        public bool Equals(CompiledQuery other)
-            => other != null && Variables.Intersect(other?.Variables).All(v => Variables.Contains(v)) && Statement == other.Statement;
-
+    ///<inheritdoc/>
 #if (NETSTANDARD1_0 || NETSTANDARD1_1 || NETSTANDARD1_3)
-        public override int GetHashCode() => (Statement, Variables).GetHashCode();
+    public override int GetHashCode() => (Statement, Variables).GetHashCode();
 #else
-        public override int GetHashCode() => HashCode.Combine(Statement, Variables);
+    public override int GetHashCode() => HashCode.Combine(Statement, Variables);
 #endif
 
-        public static bool operator ==(CompiledQuery left, CompiledQuery right)
-        {
-            return EqualityComparer<CompiledQuery>.Default.Equals(left, right);
-        }
-
-        public static bool operator !=(CompiledQuery left, CompiledQuery right)
-        {
-            return !(left == right);
-        }
-
-        public override string ToString() => this.Jsonify();
+    public static bool operator ==(CompiledQuery left, CompiledQuery right)
+    {
+        return EqualityComparer<CompiledQuery>.Default.Equals(left, right);
     }
+
+    public static bool operator !=(CompiledQuery left, CompiledQuery right)
+    {
+        return !(left == right);
+    }
+
+    ///<inheritdoc/>
+    public override string ToString() => this.Jsonify();
 }

@@ -1,12 +1,18 @@
-﻿namespace Queries.Core.Parts.Clauses
+﻿namespace Queries.Core.Parts.Clauses;
+
+/// <summary>
+/// Logical operator to use when combining several <see cref="IWhereClause"/>/ (resp. <see cref="IHavingClause"/>) 
+/// instances using <see cref="CompositeWhereClause"/> (resp. <see cref="CompositeHavingClause"/>).
+/// </summary>
+public enum ClauseLogic
 {
     /// <summary>
-    /// Logical operator to use when combining multiple <see cref="IWhereClause"/>/ (resp. <see cref="IHavingClause"/>) 
-    /// instances using <see cref="CompositeWhereClause"/> (resp. <see cref="CompositeHavingClause"/>).
+    /// And logic
     /// </summary>
-    public enum ClauseLogic
-    {
-        And = 0,
-        Or = 2
-    }
+    And = 0,
+
+    /// <summary>
+    /// Or logic
+    /// </summary>
+    Or = 2
 }

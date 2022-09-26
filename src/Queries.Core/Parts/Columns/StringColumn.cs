@@ -1,27 +1,39 @@
 using System;
 
-namespace Queries.Core.Parts.Columns
+namespace Queries.Core.Parts.Columns;
+
+/// <summary>
+/// A column that can hold a <see langword="string"/> value.
+/// </summary>
+public class StringColumn : Literal, IEquatable<StringColumn>
 {
-    public class StringColumn : Literal, IEquatable<StringColumn>
-    {
-        public StringColumn(string value = "")
-            : base(value)
-        {}
+    /// <summary>
+    /// Builds a new <see cref="StringColumn"/> instance.
+    /// </summary>
+    /// <param name="value"></param>
+    public StringColumn(string value = "")
+        : base(value)
+    {}
 
-        public override IColumn Clone() => new StringColumn((string)Value).As(Alias);
+    ///<inheritdoc/>
+    public override IColumn Clone() => new StringColumn((string)Value).As(Alias);
 
-        public bool Equals(StringColumn other) => (Value, Alias).Equals((other?.Value, other?.Alias));
+    ///<inheritdoc/>
+    public bool Equals(StringColumn other) => (Value, Alias).Equals((other?.Value, other?.Alias));
 
-        public override bool Equals(object obj) => Equals(obj as StringColumn);
+    ///<inheritdoc/>
+    public override bool Equals(object obj) => Equals(obj as StringColumn);
 
+    ///<inheritdoc/>
 #if !NETSTANDARD2_1
-        public override int GetHashCode() => (Value, Alias).GetHashCode();
+    public override int GetHashCode() => (Value, Alias).GetHashCode();
 #else
-        public override int GetHashCode() => HashCode.Combine(Value, Alias);
+    public override int GetHashCode() => HashCode.Combine(Value, Alias);
 #endif
 
-        public override string ToString() => this.Jsonify();
+    ///<inheritdoc/>
+    public override string ToString() => this.Jsonify();
 
-        public static implicit operator StringColumn(string input) => new StringColumn(input);
-    }
+    ///<inheritdoc/>
+    public static implicit operator StringColumn(string input) => new StringColumn(input);
 }

@@ -1,7 +1,6 @@
-﻿namespace Queries.Core.Tests.Parts.Functions
-{
-    public class FunctionExtensionsTests
-    {
+﻿namespace Queries.Core.Tests.Parts.Functions;
 
-    }
+public class FunctionExtensionsTests
+{
+
 }

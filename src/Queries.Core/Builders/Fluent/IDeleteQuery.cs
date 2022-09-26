@@ -1,7 +1,10 @@
-﻿namespace Queries.Core.Builders.Fluent
+﻿namespace Queries.Core.Builders.Fluent;
+
+/// <summary>
+/// Fluent interface to start building <see cref="DeleteQuery"/>
+/// </summary>
+/// <typeparam name="TQuery"></typeparam>
+public interface IDeleteQuery<TQuery> : IBuild<TQuery>
 {
-    public interface IDeleteQuery<T> : IBuild<T>
-    {
-        
-    }
+    
 }

@@ -8,17 +8,4 @@
   <ItemGroup>
     <PackageReference Include="System.Linq.Queryable" Version="4.3.0" />
   </ItemGroup>
-  
-  <Choose>
-    <When Condition="'$(TargetFramework)' == 'net5.0'">
-      <ItemGroup>
-        <PackageReference Include="System.Collections.Immutable" Version="5.0.0" Condition="'$(IsTestProject)' == 'false'"/>
-      </ItemGroup>
-    </When>
-    <Otherwise>
-      <!-- <ItemGroup>
-        <PackageReference Include="System.Collections.Immutable" Version="1.7.1" Condition="'$(IsTestProject)' == 'false'"/>
-      </ItemGroup> -->
-    </Otherwise>
-  </Choose>
 </Project>

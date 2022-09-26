@@ -1,11 +1,14 @@
-namespace Queries.Core.Parts.Columns
+namespace Queries.Core.Parts.Columns;
+
+/// <summary>
+/// Column that contains a <see cref="bool"/> value.
+/// </summary>
+public class BooleanColumn : Literal
 {
     /// <summary>
-    /// Column that contains a <see cref="bool"/> value.
+    /// Builds a new <see cref="BooleanColumn"/> instance.
     /// </summary>
-    public class BooleanColumn : Literal
-    {
-        public BooleanColumn(bool value) : base(value)
-        { }
-    }
+    /// <param name="value">The value hold by the column</param>
+    public BooleanColumn(bool value) : base(value)
+    { }
 }

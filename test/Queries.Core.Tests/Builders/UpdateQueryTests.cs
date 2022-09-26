@@ -11,95 +11,94 @@ using Xunit.Abstractions;
 using Xunit.Categories;
 using static Queries.Core.Builders.Fluent.QueryBuilder;
 
-namespace Queries.Core.Tests.Builders
+namespace Queries.Core.Tests.Builders;
+
+[UnitTest]
+[Feature("Update")]
+[Feature("Builder")]
+public class UpdateQueryTests : IDisposable
 {
-    [UnitTest]
-    [Feature("Update")]
-    [Feature("Builder")]
-    public class UpdateQueryTests : IDisposable
+    private ITestOutputHelper _outputHelper;
+
+    public UpdateQueryTests(ITestOutputHelper outputHelper) => _outputHelper = outputHelper;
+
+    public void Dispose() => _outputHelper = null;
+
+    [Fact]
+    public void CtorWithNullStringArgumentThrowsArgumentNullException()
     {
-        private ITestOutputHelper _outputHelper;
+        // Act
+        Action action = () => new UpdateQuery((string) null);
 
-        public UpdateQueryTests(ITestOutputHelper outputHelper) => _outputHelper = outputHelper;
+        // Assert
+        action.Should().Throw<ArgumentNullException>("name of the table to delete cannot be null").Which
+            .ParamName.Should()
+            .NotBeNullOrWhiteSpace();
+    }
 
-        public void Dispose() => _outputHelper = null;
+    [Fact]
+    public void CtorWithNullTableArgumentThrowsArgumentNullException()
+    {
+        // Act
+        Action action = () => new UpdateQuery((Table)null);
 
-        [Fact]
-        public void CtorWithNullStringArgumentThrowsArgumentNullException()
+        // Assert
+        action.Should().Throw<ArgumentNullException>("name of the table to delete cannot be null").Which
+            .ParamName.Should()
+            .NotBeNullOrWhiteSpace();
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("  ")]
+    public void CtorWithEmptyOrWhiteSpaceArgumentThrowsArgumentOutOfRangeException(string tableName)
+    {
+        // Act
+        Action action = () => new UpdateQuery(tableName);
+
+        // Assert
+        action.Should().Throw<ArgumentOutOfRangeException>("name of the table to delete cannot be null").Which
+            .ParamName.Should()
+            .NotBeNullOrWhiteSpace();
+    }
+
+    public static IEnumerable<object[]> EqualsCases
+    {
+        get
         {
-            // Act
-            Action action = () => new UpdateQuery((string) null);
-
-            // Assert
-            action.Should().Throw<ArgumentNullException>("name of the table to delete cannot be null").Which
-                .ParamName.Should()
-                .NotBeNullOrWhiteSpace();
+            yield return new object[] { Update("SuperHero").Set("firstname".Field().UpdateValueTo("Bruce")), null, false, "comparing with a null instance" };
+            yield return new object[] { Update("SuperHero").Set("firstname".Field().UpdateValueTo("Bruce")), Update("SuperHero").Set("firstname".Field().UpdateValueTo("Bruce")), true, "comparing two instances with same tableName" };
+            yield return new object[] { Update("SuperHero").Set("firstname".Field().UpdateValueTo("Bruce")), Update("SuperHero").Set("firstname".Field().UpdateValueTo("Bruce")), true, "comparing two instances with same tableName" };
+            yield return new object[] { Update("SuperHero"), Select(1.Literal()), false, "comparing two different types of query" };
         }
+    }
 
-        [Fact]
-        public void CtorWithNullTableArgumentThrowsArgumentNullException()
-        {
-            // Act
-            Action action = () => new UpdateQuery((Table)null);
+    [Theory]
+    [MemberData(nameof(EqualsCases))]
+    public void EqualTests(UpdateQuery first, object second, bool expectedResult, string reason)
+    {
+        _outputHelper.WriteLine($"{nameof(first)} : {first}");
+        _outputHelper.WriteLine($"{nameof(second)} : {second}");
 
-            // Assert
-            action.Should().Throw<ArgumentNullException>("name of the table to delete cannot be null").Which
-                .ParamName.Should()
-                .NotBeNullOrWhiteSpace();
-        }
+        // Act
+        bool actualResult = first.Equals(second);
 
-        [Theory]
-        [InlineData("")]
-        [InlineData("  ")]
-        public void CtorWithEmptyOrWhiteSpaceArgumentThrowsArgumentOutOfRangeException(string tableName)
-        {
-            // Act
-            Action action = () => new UpdateQuery(tableName);
+        // Assert
+        actualResult.Should().Be(expectedResult, reason);
+    }
 
-            // Assert
-            action.Should().Throw<ArgumentOutOfRangeException>("name of the table to delete cannot be null").Which
-                .ParamName.Should()
-                .NotBeNullOrWhiteSpace();
-        }
+    [Fact]
+    public void IsDataManipulationQuery()
+    {
+        // Arrange
+        TypeInfo typeInfo = typeof(UpdateQuery)
+            .GetTypeInfo();
 
-        public static IEnumerable<object[]> EqualsCases
-        {
-            get
-            {
-                yield return new object[] { Update("SuperHero").Set("firstname".Field().UpdateValueTo("Bruce")), null, false, "comparing with a null instance" };
-                yield return new object[] { Update("SuperHero").Set("firstname".Field().UpdateValueTo("Bruce")), Update("SuperHero").Set("firstname".Field().UpdateValueTo("Bruce")), true, "comparing two instances with same tableName" };
-                yield return new object[] { Update("SuperHero").Set("firstname".Field().UpdateValueTo("Bruce")), Update("SuperHero").Set("firstname".Field().UpdateValueTo("Bruce")), true, "comparing two instances with same tableName" };
-                yield return new object[] { Update("SuperHero"), Select(1.Literal()), false, "comparing two different types of query" };
-            }
-        }
+        // Act
+        Attribute attr = typeInfo.GetCustomAttribute<DataManipulationLanguageAttribute>();
 
-        [Theory]
-        [MemberData(nameof(EqualsCases))]
-        public void EqualTests(UpdateQuery first, object second, bool expectedResult, string reason)
-        {
-            _outputHelper.WriteLine($"{nameof(first)} : {first}");
-            _outputHelper.WriteLine($"{nameof(second)} : {second}");
-
-            // Act
-            bool actualResult = first.Equals(second);
-
-            // Assert
-            actualResult.Should().Be(expectedResult, reason);
-        }
-
-        [Fact]
-        public void IsDataManipulationQuery()
-        {
-            // Arrange
-            TypeInfo typeInfo = typeof(UpdateQuery)
-                .GetTypeInfo();
-
-            // Act
-            Attribute attr = typeInfo.GetCustomAttribute<DataManipulationLanguageAttribute>();
-
-            // Assert
-            attr.Should()
-                .NotBeNull($"{nameof(UpdateQuery)} class must be marked with {nameof(DataManipulationLanguageAttribute)}");
-        }
+        // Assert
+        attr.Should()
+            .NotBeNull($"{nameof(UpdateQuery)} class must be marked with {nameof(DataManipulationLanguageAttribute)}");
     }
 }

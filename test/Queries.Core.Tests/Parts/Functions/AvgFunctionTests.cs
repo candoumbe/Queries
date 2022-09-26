@@ -9,155 +9,154 @@ using static Queries.Core.Builders.Fluent.QueryBuilder;
 using Queries.Core.Attributes;
 using Xunit.Categories;
 
-namespace Queries.Core.Tests.Parts.Functions
+namespace Queries.Core.Tests.Parts.Functions;
+
+[UnitTest]
+[Feature(nameof(AvgFunction))]
+[Feature("Functions")]
+public class AvgFunctionTests : IDisposable
 {
-    [UnitTest]
-    [Feature(nameof(AvgFunction))]
-    [Feature("Functions")]
-    public class AvgFunctionTests : IDisposable
+    private ITestOutputHelper _outputHelper;
+
+    public AvgFunctionTests(ITestOutputHelper outputHelper) => _outputHelper = outputHelper;
+
+    public void Dispose() => _outputHelper = null;
+
+    [Fact]
+    public void CtorThrowsArgumentNullExceptionIfColumnParameterIsNull()
     {
-        private ITestOutputHelper _outputHelper;
+        // Act
+        Action action = () => new AvgFunction((IColumn) null);
 
-        public AvgFunctionTests(ITestOutputHelper outputHelper) => _outputHelper = outputHelper;
+        // Assert
+        action.Should().Throw<ArgumentNullException>().Which
+            .ParamName.Should()
+            .NotBeNullOrWhiteSpace();
+    }
 
-        public void Dispose() => _outputHelper = null;
+    [Fact]
+    public void HasFunctionAttribute() => typeof(AvgFunction).Should()
+        .BeDecoratedWithOrInherit<FunctionAttribute>($"{nameof(AvgFunction)} must be marked with {nameof(FunctionAttribute)}");
 
-        [Fact]
-        public void CtorThrowsArgumentNullExceptionIfColumnParameterIsNull()
+    public static IEnumerable<object[]> EqualsCases
+    {
+        get
         {
-            // Act
-            Action action = () => new AvgFunction((IColumn) null);
+            yield return new object[] { Avg("Age".Field()), null, false, $"comparing {nameof(AvgFunction)} with a null instance" };
+            yield return new object[] { Avg("Age".Field()), Avg("Age".Field()), true, $"comparing two {nameof(AvgFunction)} instances with same column names" };
 
-            // Assert
-            action.Should().Throw<ArgumentNullException>().Which
-                .ParamName.Should()
-                .NotBeNullOrWhiteSpace();
-        }
-
-        [Fact]
-        public void HasFunctionAttribute() => typeof(AvgFunction).Should()
-            .BeDecoratedWithOrInherit<FunctionAttribute>($"{nameof(AvgFunction)} must be marked with {nameof(FunctionAttribute)}");
-
-        public static IEnumerable<object[]> EqualsCases
-        {
-            get
             {
-                yield return new object[] { Avg("Age".Field()), null, false, $"comparing {nameof(AvgFunction)} with a null instance" };
-                yield return new object[] { Avg("Age".Field()), Avg("Age".Field()), true, $"comparing two {nameof(AvgFunction)} instances with same column names" };
-
-                {
-                    AvgFunction function = Avg("Age".Field());
-                    yield return new object[] { function, function, true, $"comparing {nameof(AvgFunction)} instance to itself" };
-                }
+                AvgFunction function = Avg("Age".Field());
+                yield return new object[] { function, function, true, $"comparing {nameof(AvgFunction)} instance to itself" };
             }
         }
+    }
 
-        [Theory]
-        [MemberData(nameof(EqualsCases))]
-        public void EqualTests(AvgFunction first, object second, bool expectedResult, string reason)
-        {
-            _outputHelper.WriteLine($"{nameof(first)} : {first}");
-            _outputHelper.WriteLine($"{nameof(second)} : {second}");
+    [Theory]
+    [MemberData(nameof(EqualsCases))]
+    public void EqualTests(AvgFunction first, object second, bool expectedResult, string reason)
+    {
+        _outputHelper.WriteLine($"{nameof(first)} : {first}");
+        _outputHelper.WriteLine($"{nameof(second)} : {second}");
 
-            // Act
-            bool actualResult = first.Equals(second);
+        // Act
+        bool actualResult = first.Equals(second);
 
-            // Assert
-            actualResult.Should().Be(expectedResult, reason);
-        }
+        // Assert
+        actualResult.Should().Be(expectedResult, reason);
+    }
 
-        [Fact]
-        public void ConstructorTestWithNullStringArgument()
-        {
-            Action action = () => new AvgFunction((string)null);
+    [Fact]
+    public void ConstructorTestWithNullStringArgument()
+    {
+        Action action = () => new AvgFunction((string)null);
 
-            action.Should()
-                .ThrowExactly<ArgumentNullException>().Which
-                .ParamName.Should()
-                    .NotBeNullOrWhiteSpace();
-        }
-
-        [Fact]
-        public void ConstructorTestWithEmptyStringArgument()
-        {
-            Action action = () => new AvgFunction(string.Empty);
-
-            action.Should()
-                .ThrowExactly<ArgumentOutOfRangeException>().Which
-                .ParamName.Should()
+        action.Should()
+            .ThrowExactly<ArgumentNullException>().Which
+            .ParamName.Should()
                 .NotBeNullOrWhiteSpace();
-        }
+    }
 
-        [Fact]
-        public void ConstructorTestWithWhitespaceStringArgument()
+    [Fact]
+    public void ConstructorTestWithEmptyStringArgument()
+    {
+        Action action = () => new AvgFunction(string.Empty);
+
+        action.Should()
+            .ThrowExactly<ArgumentOutOfRangeException>().Which
+            .ParamName.Should()
+            .NotBeNullOrWhiteSpace();
+    }
+
+    [Fact]
+    public void ConstructorTestWithWhitespaceStringArgument()
+    {
+        Action action = () => new AvgFunction("   ");
+
+        action.Should()
+            .ThrowExactly<ArgumentOutOfRangeException>().Which
+            .ParamName.Should()
+            .NotBeNullOrWhiteSpace();
+    }
+
+    [Fact]
+    public void ConstructorTestWithNullColumnArgument()
+    {
+        Action action = () => new AvgFunction((IColumn)null);
+
+        action.Should()
+            .ThrowExactly<ArgumentNullException>().Which
+            .ParamName.Should()
+            .NotBeNullOrWhiteSpace();
+    }
+
+    [Fact]
+    public void ConstructorTestColumnArgument() => new AvgFunction("age").Type
+        .Should().Be(AggregateType.Average);
+
+    public static IEnumerable<object[]> AsTestCases
+    {
+        get
         {
-            Action action = () => new AvgFunction("   ");
-
-            action.Should()
-                .ThrowExactly<ArgumentOutOfRangeException>().Which
-                .ParamName.Should()
-                .NotBeNullOrWhiteSpace();
-        }
-
-        [Fact]
-        public void ConstructorTestWithNullColumnArgument()
-        {
-            Action action = () => new AvgFunction((IColumn)null);
-
-            action.Should()
-                .ThrowExactly<ArgumentNullException>().Which
-                .ParamName.Should()
-                .NotBeNullOrWhiteSpace();
-        }
-
-        [Fact]
-        public void ConstructorTestColumnArgument() => new AvgFunction("age").Type
-            .Should().Be(AggregateType.Average);
-
-        public static IEnumerable<object[]> AsTestCases
-        {
-            get
+            yield return new object[]
             {
-                yield return new object[]
-                {
-                    new AvgFunction("age".Field()),
-                    null,
-                };
+                new AvgFunction("age".Field()),
+                null,
+            };
 
-                yield return new object[]
-                {
-                    new AvgFunction("age".Field()).As(string.Empty),
-                    string.Empty,
-                };
-            }
-        }
-
-        [Theory]
-        [MemberData(nameof(AsTestCases))]
-        public void SettingAliasTest(AvgFunction column, string expectedAlias)
-            => column.Alias.Should().Be(expectedAlias);
-
-        public static IEnumerable<object[]> CloneCases
-        {
-            get
+            yield return new object[]
             {
-                yield return new[] { new AvgFunction("Firstname") };
-                yield return new[] { new AvgFunction("Firstname".Field()) };
-            }
+                new AvgFunction("age".Field()).As(string.Empty),
+                string.Empty,
+            };
         }
+    }
 
-        [Theory]
-        [MemberData(nameof(CloneCases))]
-        public void CloneTest(AvgFunction original)
+    [Theory]
+    [MemberData(nameof(AsTestCases))]
+    public void SettingAliasTest(AvgFunction column, string expectedAlias)
+        => column.Alias.Should().Be(expectedAlias);
+
+    public static IEnumerable<object[]> CloneCases
+    {
+        get
         {
-            // Act
-            IColumn copie = original.Clone();
-
-            // Assert
-            copie.Should()
-                .BeOfType<AvgFunction>().Which.Should()
-                .NotBeSameAs(original).And
-                .Be(original);
+            yield return new[] { new AvgFunction("Firstname") };
+            yield return new[] { new AvgFunction("Firstname".Field()) };
         }
+    }
+
+    [Theory]
+    [MemberData(nameof(CloneCases))]
+    public void CloneTest(AvgFunction original)
+    {
+        // Act
+        IColumn copie = original.Clone();
+
+        // Assert
+        copie.Should()
+            .BeOfType<AvgFunction>().Which.Should()
+            .NotBeSameAs(original).And
+            .Be(original);
     }
 }

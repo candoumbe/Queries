@@ -1,18 +1,17 @@
 ﻿using Queries.Core.Builders;
 
-namespace Queries.Core.Validators
+namespace Queries.Core.Validators;
+
+/// <summary>
+/// Validates <see cref="SelectQuery"/> instance
+/// </summary>
+public class SelectQueryValidator : SelectQueryBaseValidator<SelectQuery>
 {
     /// <summary>
-    /// Validates <see cref="SelectQuery"/> instance
+    /// Builds a new <see cref="SelectQueryValidator"/> instance.
     /// </summary>
-    public class SelectQueryValidator : SelectQueryBaseValidator<SelectQuery>
+    public SelectQueryValidator()
     {
-        /// <summary>
-        /// Builds a new <see cref="SelectQueryValidator"/> instance.
-        /// </summary>
-        public SelectQueryValidator()
-        {
 
-        }
     }
 }

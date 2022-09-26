@@ -1,10 +1,27 @@
-﻿namespace Queries.Core.Parts.Joins
+﻿namespace Queries.Core.Parts.Joins;
+
+/// <summary>
+/// Type of joins
+/// </summary>
+public enum JoinType
 {
-    public enum JoinType
-    {
-        CrossJoin,
-        LeftOuterJoin,
-        RightOuterJoin,
-        InnerJoin
-    }
+    /// <summary>
+    /// Cartesian join
+    /// </summary>
+    CrossJoin,
+
+    /// <summary>
+    /// Left outer join
+    /// </summary>
+    LeftOuterJoin,
+
+    /// <summary>
+    /// Right outer join
+    /// </summary>
+    RightOuterJoin,
+
+    /// <summary>
+    /// Inner join
+    /// </summary>
+    InnerJoin
 }

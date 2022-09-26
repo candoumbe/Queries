@@ -7,123 +7,122 @@ using FluentAssertions;
 using Xunit.Abstractions;
 using Xunit.Categories;
 
-namespace Queries.Core.Tests.Parts.Columns
+namespace Queries.Core.Tests.Parts.Columns;
+
+[UnitTest]
+[Feature(nameof(FieldColumn))]
+public class FieldColumnTests : IDisposable
 {
-    [UnitTest]
-    [Feature(nameof(FieldColumn))]
-    public class FieldColumnTests : IDisposable
+    private ITestOutputHelper _outputHelper;
+
+    public FieldColumnTests(ITestOutputHelper outputHelper) => _outputHelper = outputHelper;
+
+    public void Dispose() => _outputHelper = null;
+
+    [Fact]
+    public void ConstructorTestWithNullArgument()
     {
-        private ITestOutputHelper _outputHelper;
+        // Act
+        Action action = () => new FieldColumn(null);
 
-        public FieldColumnTests(ITestOutputHelper outputHelper) => _outputHelper = outputHelper;
+        // Arrange
+        action.Should().Throw<ArgumentNullException>().Which
+            .ParamName.Should()
+            .NotBeNullOrWhiteSpace();
+    }
 
-        public void Dispose() => _outputHelper = null;
+    [Fact]
+    public void ConstructorTestWithEmptyArgument()
+    {
+        // Act
+        Action action = () => new FieldColumn(string.Empty);
 
-        [Fact]
-        public void ConstructorTestWithNullArgument()
+        // Arrange
+        action.Should().Throw<ArgumentOutOfRangeException>().Which
+            .ParamName.Should()
+            .NotBeNullOrWhiteSpace();
+    }
+
+    [Fact]
+    public void ConstructorTestWithWhitespaceStringArgument()
+    {
+        // Act
+        Action action = () => new FieldColumn("   ");
+
+        // Arrange
+        action.Should().Throw<ArgumentOutOfRangeException>().Which
+            .ParamName.Should()
+            .NotBeNullOrWhiteSpace();
+    }
+
+    public static IEnumerable<object[]> AsTestCases
+    {
+        get
         {
-            // Act
-            Action action = () => new FieldColumn(null);
-
-            // Arrange
-            action.Should().Throw<ArgumentNullException>().Which
-                .ParamName.Should()
-                .NotBeNullOrWhiteSpace();
-        }
-
-        [Fact]
-        public void ConstructorTestWithEmptyArgument()
-        {
-            // Act
-            Action action = () => new FieldColumn(string.Empty);
-
-            // Arrange
-            action.Should().Throw<ArgumentOutOfRangeException>().Which
-                .ParamName.Should()
-                .NotBeNullOrWhiteSpace();
-        }
-
-        [Fact]
-        public void ConstructorTestWithWhitespaceStringArgument()
-        {
-            // Act
-            Action action = () => new FieldColumn("   ");
-
-            // Arrange
-            action.Should().Throw<ArgumentOutOfRangeException>().Which
-                .ParamName.Should()
-                .NotBeNullOrWhiteSpace();
-        }
-
-        public static IEnumerable<object[]> AsTestCases
-        {
-            get
+            yield return new object[]
             {
-                yield return new object[]
-                {
-                    new CountFunction("firstname".Field()),
-                    null,
-                };
+                new CountFunction("firstname".Field()),
+                null,
+            };
 
-                yield return new object[]
-                {
-                    new CountFunction("firstname".Field()).As(string.Empty),
-                    string.Empty,
-                };
+            yield return new object[]
+            {
+                new CountFunction("firstname".Field()).As(string.Empty),
+                string.Empty,
+            };
+        }
+    }
+
+    [Theory]
+    [MemberData(nameof(AsTestCases))]
+    public void SettingAliasTest(CountFunction column, string expectedAlias)
+        => column.Alias.Should().Be(expectedAlias);
+
+    public static IEnumerable<object[]> EqualsCases
+    {
+        get
+        {
+            yield return new object[] { new FieldColumn("firstname"), null, false, "object is null" };
+            yield return new object[] { new FieldColumn("firstname"), new FieldColumn("firstname"), true, $"object is a {nameof(FieldColumn)} with exactly the same {nameof(FieldColumn.Name)} and {nameof(FieldColumn.Alias)}" };
+            
+            {
+                FieldColumn column = new FieldColumn("firstname");
+                yield return new object[] { column, column, true, "Equals with same instance" };
             }
         }
+    }
 
-        [Theory]
-        [MemberData(nameof(AsTestCases))]
-        public void SettingAliasTest(CountFunction column, string expectedAlias)
-            => column.Alias.Should().Be(expectedAlias);
+    [Theory]
+    [MemberData(nameof(EqualsCases))]
+    public void EqualTests(FieldColumn first, object second, bool expectedResult, string reason)
+    {
+        _outputHelper.WriteLine($"First : {first}");
+        _outputHelper.WriteLine($"Second : {second}");
 
-        public static IEnumerable<object[]> EqualsCases
+        // Act
+        bool actualResult = first.Equals(second);
+
+        // Assert
+        actualResult.Should().Be(expectedResult, reason);
+    }
+
+    public static IEnumerable<object[]> CloneCases
+    {
+        get
         {
-            get
-            {
-                yield return new object[] { new FieldColumn("firstname"), null, false, "object is null" };
-                yield return new object[] { new FieldColumn("firstname"), new FieldColumn("firstname"), true, $"object is a {nameof(FieldColumn)} with exactly the same {nameof(FieldColumn.Name)} and {nameof(FieldColumn.Alias)}" };
-                
-                {
-                    FieldColumn column = new FieldColumn("firstname");
-                    yield return new object[] { column, column, true, "Equals with same instance" };
-                }
-            }
+            yield return new[] { "Firstname".Field() };
         }
+    }
+    [Theory]
+    [MemberData(nameof(CloneCases))]
+    public void CloneTest(FieldColumn original)
+    {
+        // Act
+        FieldColumn copie = (FieldColumn) original.Clone();
 
-        [Theory]
-        [MemberData(nameof(EqualsCases))]
-        public void EqualTests(FieldColumn first, object second, bool expectedResult, string reason)
-        {
-            _outputHelper.WriteLine($"First : {first}");
-            _outputHelper.WriteLine($"Second : {second}");
-
-            // Act
-            bool actualResult = first.Equals(second);
-
-            // Assert
-            actualResult.Should().Be(expectedResult, reason);
-        }
-
-        public static IEnumerable<object[]> CloneCases
-        {
-            get
-            {
-                yield return new[] { "Firstname".Field() };
-            }
-        }
-        [Theory]
-        [MemberData(nameof(CloneCases))]
-        public void CloneTest(FieldColumn original)
-        {
-            // Act
-            FieldColumn copie = (FieldColumn) original.Clone();
-
-            // Assert
-            copie.Should()
-                .NotBeSameAs(original).And
-                .Be(original);
-        }
+        // Assert
+        copie.Should()
+            .NotBeSameAs(original).And
+            .Be(original);
     }
 }
