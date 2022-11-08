@@ -1,11 +1,16 @@
 using System.Collections.Generic;
+
 using Queries.Core.Parts;
 using Queries.Core.Parts.Clauses;
+
 using System;
+
 using Queries.Core.Attributes;
+
 using System.Linq;
+
 #if !SYSTEM_TEXT_JSON
-using Newtonsoft.Json; 
+using Newtonsoft.Json;
 #endif
 
 namespace Queries.Core.Builders;
@@ -14,7 +19,7 @@ namespace Queries.Core.Builders;
 /// A query to update a table
 /// </summary>
 #if !SYSTEM_TEXT_JSON
-[JsonObject] 
+[JsonObject]
 #endif
 [DataManipulationLanguage]
 public class UpdateQuery : IQuery, IEquatable<UpdateQuery>
@@ -28,7 +33,7 @@ public class UpdateQuery : IQuery, IEquatable<UpdateQuery>
     /// Collection of values
     /// </summary>
     public IList<UpdateFieldValue> Values { get; private set; }
-    
+
     /// <summary>
     /// Criteria associated with the current instance.
     /// </summary>
@@ -90,7 +95,7 @@ public class UpdateQuery : IQuery, IEquatable<UpdateQuery>
     public override bool Equals(object obj) => Equals(obj as UpdateQuery);
 
     ///<inheritdoc/>
-    public bool Equals(UpdateQuery other) => other is null
+    public bool Equals(UpdateQuery other) => other is not null
                                              && ((Table == null && other.Table == null) || Table.Equals(other.Table))
                                              && Values.SequenceEqual(other.Values)
                                              && ((Criteria == null && other.Criteria == null) || Criteria.Equals(other.Criteria));
