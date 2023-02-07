@@ -121,7 +121,7 @@ public class Build : NukeBuild,
     };
 
     ///<inheritdoc/>
-    IEnumerable<Project> IUnitTest.UnitTestsProjects => Partition.GetCurrent(this.Get<IHaveSolution>().Solution.GetProjects("*.UnitTests"));
+    IEnumerable<Project> IUnitTest.UnitTestsProjects => Partition.GetCurrent(this.Get<IHaveSolution>().Solution.GetProjects("*.Tests"));
 
     ///<inheritdoc/>
     IEnumerable<Project> IMutationTest.MutationTestsProjects => Partition.GetCurrent(this.Get<IUnitTest>().UnitTestsProjects);
