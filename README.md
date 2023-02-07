@@ -1,7 +1,10 @@
 # Queries <!-- omit in toc -->
 
-![Coverage](https://img.shields.io/azure-devops/coverage/candoumbe/Queries/32?style=for-the-badge) ![Tests](https://img.shields.io/azure-devops/tests/candoumbe/Queries/32?style=for-the-badge&compact_message) [![Nuget](https://img.shields.io/nuget/v/Queries?label=Nuget&style=for-the-badge)](https://www.nuget.org/packages/Queries)
-
+![GitHub Main branch Status](https://img.shields.io/github/actions/workflow/status/candoumbe/queries/delivery.yml?branch=main&label=main)
+![GitHub Develop branch Status](https://img.shields.io/github/actions/workflow/status/candoumbe/queries/integration.yml?branch=develop&label=develop)
+[![codecov](https://codecov.io/gh/candoumbe/DataFilters/branch/develop/graph/badge.svg?token=FHSC41A4X3)](https://codecov.io/gh/candoumbe/DataFilters)
+[![GitHub raw issues](https://img.shields.io/github/issues-raw/candoumbe/queries)](https://github.com/candoumbe/queries/issues)
+[![DataFilters ](https://img.shields.io/nuget/vpre/queries.core?label=Queries.Core)](https://nuget.org/packages/queries.core)
 This is a "basic" datastore agnostic query builder.
 
 **Table of contents**
@@ -396,7 +399,6 @@ string sql = query.ForXXX(settings) // where XXX stand for a database engine to 
 - `Parametrization` : a hint for renderers on how to handle all variables a [IQuery] my embbed. 
 This is useful when variables declaration has already been taken care of (see [CollectVariableDeclaration](#collect-variables)) 
 
-|
 
 ## How to install ?
 

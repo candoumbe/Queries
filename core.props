@@ -39,11 +39,9 @@
   <ItemGroup>
     <PackageReference Include="Optional" Version="4.0.0"/>
     <PackageReference Include="Candoumbe.MiscUtilities" Version="0.10.0"/>
-    <PackageReference Include="Roslynator.Analyzers" Version="3.*">
+    <PackageReference Include="Roslynator.Analyzers" Version="4.2.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-  </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework)' != 'netstandard1.3'">
   </ItemGroup>
 </Project>

@@ -1,10 +1,16 @@
 using Microsoft.EntityFrameworkCore.Migrations;
-#if NET5_0_OR_GREATER
+#if NET6_0_OR_GREATER
 using Microsoft.EntityFrameworkCore.Metadata;
+
 #endif
 using static Moq.MockBehavior;
+
 using Moq;
+
 using Queries.Renderers.SqlServer;
+#if NET7_0_OR_GREATER
+using Microsoft.EntityFrameworkCore.Update; 
+#endif
 
 namespace Queries.EntityFrameworkCore.Extensions.SqlServer.Tests;
 
@@ -12,10 +18,10 @@ public class CustomSqlServerMigrationGeneratorTests
 {
     private readonly CustomSqlServerMigrationGenerator _sut;
     private readonly Mock<MigrationsSqlGeneratorDependencies> _dependenciesMock;
-#if NET5_0_OR_GREATER
-    private readonly Mock<IRelationalAnnotationProvider> _annotationProviderMock;
+#if NET7_0_OR_GREATER
+    private readonly Mock<ICommandBatchPreparer> _annotationProviderMock;
 #else
-    private readonly Mock<IMigrationsAnnotationProvider> _annotationProviderMock;
+    private readonly Mock<IRelationalAnnotationProvider> _annotationProviderMock;
 #endif
     private readonly SqlServerRenderer _renderer;
 

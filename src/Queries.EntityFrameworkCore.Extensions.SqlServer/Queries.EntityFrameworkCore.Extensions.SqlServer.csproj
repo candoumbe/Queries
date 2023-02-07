@@ -3,7 +3,7 @@
 
   <Import Project="..\..\library.props" />
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.1;net5.0;net6.0</TargetFrameworks>
+    <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
   </PropertyGroup>
 
 
@@ -14,15 +14,10 @@
         <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.12" />
       </ItemGroup>
     </When>
-    <When Condition="'$(TargetFramework)' == 'net5.0'">
-      <ItemGroup>
-        <PackageReference Include="System.Collections.Immutable" Version="5.0.0" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.17" />
-      </ItemGroup>
-    </When>
     <Otherwise>
       <ItemGroup>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.32" />
+        <PackageReference Include="System.Collections.Immutable" Version="7.0.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.0" />
       </ItemGroup>
     </Otherwise>
   </Choose>
