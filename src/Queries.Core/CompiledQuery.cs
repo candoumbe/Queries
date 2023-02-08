@@ -1,4 +1,5 @@
 ﻿using Queries.Core.Parts.Clauses;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,11 +46,23 @@ public class CompiledQuery : IEquatable<CompiledQuery>
     public override int GetHashCode() => HashCode.Combine(Statement, Variables);
 #endif
 
+    /// <summary>
+    /// Checks if <paramref name="left"/> is equal to <paramref name="right"/>.
+    /// </summary>
+    /// <param name="left"></param>
+    /// <param name="right"></param>
+    /// <returns><see langword="true"/> if <paramref name="left"/> is equal to <paramref name="right"/> and <see langword="false"/> otherwise</returns>
     public static bool operator ==(CompiledQuery left, CompiledQuery right)
     {
         return EqualityComparer<CompiledQuery>.Default.Equals(left, right);
     }
 
+    /// <summary>
+    /// Checks if <paramref name="left"/> is not equal to <paramref name="right"/>.
+    /// </summary>
+    /// <param name="left"></param>
+    /// <param name="right"></param>
+    /// <returns><see langword="true"/> if <paramref name="left"/> is not equal to <paramref name="right"/> and <see langword="false"/> otherwise</returns>
     public static bool operator !=(CompiledQuery left, CompiledQuery right)
     {
         return !(left == right);

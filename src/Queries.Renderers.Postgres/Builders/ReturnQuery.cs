@@ -18,5 +18,8 @@ public class ReturnQuery : IQuery
     /// 
     public ReturnQuery(Option<ColumnBase, SelectQuery> @return) => Return = @return;
 
+    /// <summary>
+    /// Gets the "RETURN" property
+    /// </summary>
     public Option<ColumnBase, SelectQuery> Return { get; }
 }

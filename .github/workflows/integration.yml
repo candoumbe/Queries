@@ -20,7 +20,6 @@ on:
   push:
     branches-ignore:
       - main
-      - 'release/*'
   pull_request:
     paths:
       - '!docs/*'
@@ -33,34 +32,35 @@ jobs:
     name: ubuntu-latest
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - name: Cache .nuke/temp, ~/.nuget/packages
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             .nuke/temp
             ~/.nuget/packages
-          key: ${{ runner.os }}-${{ hashFiles('global.json', 'src/**/*.csproj', 'test/**/*.csproj') }}
-      - name: Run './build.cmd Tests Pack'
-        run: ./build.cmd Tests Pack
+          key: ${{ runner.os }}-${{ hashFiles('global.json', 'src/**/*.csproj') }}
+      - name: Run './build.cmd UnitTests Pack'
+        run: ./build.cmd UnitTests Pack
         env:
           NugetApiKey: ${{ secrets.NUGET_API_KEY }}
           CodecovToken: ${{ secrets.CODECOV_TOKEN }}
-      - uses: actions/upload-artifact@v1
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/upload-artifact@v3
         with:
-          name: tests-results
-          path: output/tests-results
-      - uses: actions/upload-artifact@v1
+          name: unit-tests
+          path: output/artifacts/tests-results/unit-tests
+      - uses: actions/upload-artifact@v3
         with:
           name: coverage-report
-          path: output/coverage-report
-      - uses: actions/upload-artifact@v1
+          path: output/artifacts/reports/coverage-report
+      - uses: actions/upload-artifact@v3
         with:
           name: coverage-history
-          path: output/coverage-history
-      - uses: actions/upload-artifact@v1
+          path: output/artifacts/reports/coverage-history
+      - uses: actions/upload-artifact@v3
         with:
-          name: artifacts
-          path: output/artifacts
+          name: packages
+          path: output/artifacts/packages

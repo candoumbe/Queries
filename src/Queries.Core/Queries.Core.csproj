@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Description>Contains the core classes to build queries.</Description>
     <AssemblyTitle>Queries.Core</AssemblyTitle>
-    <TargetFrameworks>netstandard1.0; netstandard1.1; netstandard1.3;netstandard2.1;net5.0;net6.0</TargetFrameworks>
+    <TargetFrameworks>netstandard1.0; netstandard1.1; netstandard1.3;netstandard2.1;net6.0;net7.0</TargetFrameworks>
     <PackageTags>Queries;Query;SQL;Builder</PackageTags>
     
   </PropertyGroup>

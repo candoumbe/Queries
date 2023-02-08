@@ -4,7 +4,7 @@
     <Description>
       Queries.Renderers.Postgres Class Library
     </Description>
-    <TargetFrameworks>netstandard1.0;netstandard2.1;net5.0;net6.0</TargetFrameworks>
+    <TargetFrameworks>netstandard1.0;netstandard2.1;net6.0;net7.0</TargetFrameworks>
     <PackageTags>Query;Builder;SQL;Postgres</PackageTags>
   </PropertyGroup>
 

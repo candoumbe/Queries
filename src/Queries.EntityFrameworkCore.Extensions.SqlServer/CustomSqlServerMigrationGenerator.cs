@@ -1,10 +1,15 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
+#if NET7_0_OR_GREATER
+using Microsoft.EntityFrameworkCore.Update; 
+#endif
+
+using Queries.Core;
 using Queries.EntityFrameworkCore.Extensions.Operations;
 using Queries.Renderers.SqlServer;
-using Queries.Core;
+
+using System.Diagnostics.CodeAnalysis;
 
 namespace Queries.EntityFrameworkCore.Extensions.SqlServer;
 
@@ -16,13 +21,13 @@ public class CustomSqlServerMigrationGenerator : SqlServerMigrationsSqlGenerator
     private readonly SqlServerRenderer _renderer;
 
     ///<inheritdoc/>
-#if NET5_0_OR_GREATER
-    public CustomSqlServerMigrationGenerator([NotNull] MigrationsSqlGeneratorDependencies dependencies, [NotNull] IRelationalAnnotationProvider relationalAnnotations) : base(dependencies, relationalAnnotations)
+#if NET7_0_OR_GREATER
+    public CustomSqlServerMigrationGenerator([NotNull] MigrationsSqlGeneratorDependencies dependencies, [NotNull] ICommandBatchPreparer commandBatchPreparer) : base(dependencies, commandBatchPreparer)
 #else
-    public CustomSqlServerMigrationGenerator([NotNull] MigrationsSqlGeneratorDependencies dependencies, [NotNull] IMigrationsAnnotationProvider migrationsAnnotations) : base(dependencies, migrationsAnnotations)
+    public CustomSqlServerMigrationGenerator([NotNull] MigrationsSqlGeneratorDependencies dependencies, [NotNull] IRelationalAnnotationProvider relationalAnnotations) : base(dependencies, relationalAnnotations)
 #endif
     {
-        _renderer = new ();
+        _renderer = new();
     }
 
     /// <inheritdoc />
