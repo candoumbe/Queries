@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "title": "Build Schema",
   "$ref": "#/definitions/build",
+  "title": "Build Schema",
   "definitions": {
     "build": {
       "type": "object",
@@ -14,6 +14,10 @@
           "type": "string",
           "description": "The API key used to push code coverage to CodeCov",
           "default": "Secrets must be entered via 'nuke :secrets [profile]'"
+        },
+        "ConfigName": {
+          "type": "string",
+          "description": "Defines the name of the configuration to use to publish packages"
         },
         "Configuration": {
           "type": "string",
@@ -94,7 +98,7 @@
         },
         "NugetApiKey": {
           "type": "string",
-          "description": "Token to interact with Nuget's API",
+          "description": "API key used to publish artifacts to Nuget.org",
           "default": "Secrets must be entered via 'nuke :secrets [profile]'"
         },
         "Partition": {
@@ -123,7 +127,6 @@
             "type": "string",
             "enum": [
               "AddGithubRelease",
-              "Benchmarks",
               "Changelog",
               "Clean",
               "Coldfix",
@@ -137,7 +140,6 @@
               "Release",
               "ReportCoverage",
               "Restore",
-              "Tests",
               "UnitTests"
             ]
           }
@@ -147,7 +149,8 @@
           "description": "Path to a solution file that is automatically loaded"
         },
         "StrykerDashboardApiKey": {
-          "type": "string"
+          "type": "string",
+          "description": "API KEY used to submit mutation report to a stryker dashboard"
         },
         "Target": {
           "type": "array",
@@ -156,7 +159,6 @@
             "type": "string",
             "enum": [
               "AddGithubRelease",
-              "Benchmarks",
               "Changelog",
               "Clean",
               "Coldfix",
@@ -170,7 +172,6 @@
               "Release",
               "ReportCoverage",
               "Restore",
-              "Tests",
               "UnitTests"
             ]
           }
