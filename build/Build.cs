@@ -147,7 +147,7 @@ public class Build : NukeBuild,
     IEnumerable<Project> IUnitTest.UnitTestsProjects => this.Get<IHaveSolution>().Solution.GetAllProjects("*Tests");
 
     ///<inheritdoc/>
-    IEnumerable<(Project SourceProject, IEnumerable<Project> TestProjects)> IMutationTest.MutationTestsProjects
+    IEnumerable<MutationProjectConfiguration> IMutationTest.MutationTestsProjects
     {
         get
         {
@@ -163,8 +163,9 @@ public class Build : NukeBuild,
             };
 
             return projects
-                .Select(projectName => (SourceProject: Solution.AllProjects.Single(csproj => string.Equals(csproj.Name, projectName, StringComparison.InvariantCultureIgnoreCase)),
-                                        TestProjects: Solution.AllProjects.Where(csproj => string.Equals(csproj.Name, $"{projectName}.Tests", StringComparison.InvariantCultureIgnoreCase))))
+                .Select(projectName => new MutationProjectConfiguration(sourceProject: Solution.AllProjects.Single(csproj => string.Equals(csproj.Name, projectName, StringComparison.InvariantCultureIgnoreCase)),
+                                                                        testProjects: Solution.AllProjects.Where(csproj => string.Equals(csproj.Name, $"{projectName}.Tests", StringComparison.InvariantCultureIgnoreCase)),
+                                                                        configurationFile: this.Get<IHaveTestDirectory>().TestDirectory / $"{projectName}.Tests" / "stryker-config.json"))
                 .Where(tuple => tuple.TestProjects.AtLeastOnce())
                 .ToArray();
         }
