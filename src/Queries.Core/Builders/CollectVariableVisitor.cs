@@ -1,11 +1,25 @@
+<<<<<<< HEAD
 ﻿namespace Queries.Core.Builders
+=======
+﻿using Queries.Core.Parts;
+using Queries.Core.Parts.Clauses;
+using Queries.Core.Parts.Columns;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using static Queries.Core.Parts.Clauses.VariableType;
+
+namespace Queries.Core.Builders
+>>>>>>> c2bba33 (feat(renderer) : improve pretty print)
 {
     /// <summary>
     /// Collects <see cref="Literal"/>s from queries and replaces each of them by a <see cref="Variable"/> counterpart. 
     /// </summary>
     public class CollectVariableVisitor : IVisitor<SelectQuery>, IVisitor<IWhereClause>, IVisitor<InsertIntoQuery>, IVisitor<DeleteQuery>
     {
-        public IEnumerable<Variable> Variables => _variables;
+        public IReadOnlyList<Variable> Variables => _variables.ToArray();
 
         private readonly IList<Variable> _variables;
 
@@ -30,7 +44,7 @@
                         case BooleanColumn bc:
                             {
                                 Variable variable = _variables.SingleOrDefault(x => x.Type == VariableType.Boolean && bc.Value == x.Value);
-                                if (variable == null)
+                                if (variable is null)
                                 {
                                     variable = new Variable($"p{_variables.Count}", VariableType.Boolean, bc.Value);
                                     _variables.Add(variable);
@@ -43,7 +57,7 @@
                             {
                                 Variable variable = _variables.SingleOrDefault(x => x.Type == Date && dc.Value == x.Value);
 
-                                if (variable == null)
+                                if (variable is null)
                                 {
                                     variable = new Variable($"p{_variables.Count}", Date, dc.Value);
                                     _variables.Add(variable);
@@ -71,7 +85,7 @@
                             {
                                 Variable variable = _variables.SingleOrDefault(x => x.Type == Numeric && nc.Value == x.Value);
 
-                                if (variable == null)
+                                if (variable is null)
                                 {
                                     variable = new Variable($"p{_variables.Count}", Numeric, nc.Value);
                                     _variables.Add(variable);
@@ -84,7 +98,7 @@
                             {
                                 Variable variable = _variables.SingleOrDefault(x => x.Type == VariableType.String && sc.Value == x.Value);
 
-                                if (variable == null)
+                                if (variable is null)
                                 {
                                     variable = new Variable($"p{_variables.Count}", VariableType.String, sc.Value);
                                     _variables.Add(variable);
@@ -177,7 +191,7 @@
                         case NumericColumn nc:
                             {
                                 Variable variable = _variables.SingleOrDefault(x => x.Type == Numeric && nc.Value == x.Value);
-                                if (variable == null)
+                                if (variable is null)
                                 {
                                     variable = new Variable($"p{_variables.Count}", Numeric, nc.Value);
                                     _variables.Add(variable);
@@ -247,20 +261,21 @@
                         break;
 #endif
                         case StringValues strings:
-                            IList<Variable> stringValueVariables = new List<Variable>();
+                            IList<Variable> stringValueVariables = new List<Variable>(strings.Count());
+
                             foreach (string value in strings)
                             {
                                 Variable variable = _variables.SingleOrDefault(x => x.Type == VariableType.String && Equals(value, x.Value));
                                 if (variable is null)
                                 {
-                                    variable = new Variable($"p{Variables.Count()}", VariableType.String, value);
+                                    variable = new Variable($"p{Variables.Count}", VariableType.String, value);
                                     stringValueVariables.Add(variable);
                                     _variables.Add(variable);
                                 }
                             }
-                            if (stringValueVariables.Any())
+                            if (stringValueVariables.Count > 0)
                             {
-                                wc.Constraint = new VariableValues(stringValueVariables.First(), stringValueVariables.Skip(1).ToArray());
+                                wc.Constraint = new VariableValues(stringValueVariables[0], stringValueVariables.Skip(1).ToArray());
                             }
                             break;
                     }

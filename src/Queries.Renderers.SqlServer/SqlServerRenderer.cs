@@ -32,6 +32,7 @@ public class SqlServerRenderer : QueryRendererBase
         CollectVariableVisitor visitor = new();
         switch (query)
         {
+<<<<<<< HEAD
             case SelectQuery sq:
                 if (Settings.Parametrization != ParametrizationSettings.None)
                 {
@@ -84,6 +85,12 @@ public class SqlServerRenderer : QueryRendererBase
         if (Settings.Parametrization == ParametrizationSettings.Default)
         {
             foreach (Variable variable in visitor.Variables)
+=======
+            string result = string.Empty;
+            CollectVariableVisitor visitor = new();
+
+            switch (query)
+>>>>>>> c2bba33 (feat(renderer) : improve pretty print)
             {
                 sbParameters.Append("DECLARE @").Append(variable.Name).Append(" AS");
                 switch (variable.Type)
@@ -129,6 +136,7 @@ public class SqlServerRenderer : QueryRendererBase
                 {
                     visitor.Visit(sq);
                     result = Render(sq);
+<<<<<<< HEAD
                 }
                 result = Render(selectQueryBase);
                 break;
@@ -164,6 +172,49 @@ public class SqlServerRenderer : QueryRendererBase
         {
             Debug.Assert(visitor.Variables.All(x => x.Value != null), $"{nameof(visitor)}.{nameof(visitor.Variables)} must not contains variables with null value");
         }
+=======
+                    break;
+                case SelectQueryBase selectQueryBase:
+                    result = Render(selectQueryBase);
+                    break;
+                case CreateViewQuery createViewQuery:
+                    if (Settings.Parametrization != ParametrizationSettings.None)
+                    {
+                        visitor.Visit(createViewQuery.SelectQuery);
+                    }
+                    result = Render(createViewQuery);
+                    break;
+                case DeleteQuery deleteQuery:
+                    if (Settings.Parametrization != ParametrizationSettings.None)
+                    {
+                        visitor.Visit(deleteQuery);
+                    }
+                    result = Render(deleteQuery);
+                    break;
+                case UpdateQuery updateQuery:
+                    result = Render(updateQuery);
+                    break;
+                case TruncateQuery truncateQuery:
+                    result = Render(truncateQuery);
+                    break;
+                case InsertIntoQuery insertIntoQuery:
+                    result = Render(insertIntoQuery);
+                    break;
+                case BatchQuery batchQuery:
+                    result = Render(batchQuery);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(query), "Unknown type of query");
+            }
+            StringBuilder sbParameters = new(visitor.Variables.Count * 100);
+
+#if DEBUG
+            if (visitor.Variables.Count > 0)
+            {
+                Debug.Assert(visitor.Variables.All(x => x.Value != null), $"{nameof(visitor)}.{nameof(visitor.Variables)} must not contains variables with null value");
+            }
+
+>>>>>>> c2bba33 (feat(renderer) : improve pretty print)
 #endif
 
         if (Settings.Parametrization == ParametrizationSettings.Default)
@@ -173,6 +224,7 @@ public class SqlServerRenderer : QueryRendererBase
                 sbParameters.Append("DECLARE @").Append(variable.Name).Append(" AS");
                 switch (variable.Type)
                 {
+<<<<<<< HEAD
                     case VariableType.Numeric:
                         sbParameters.Append(" NUMERIC = ").Append(variable.Value).Append(";");
                         break;
@@ -187,6 +239,23 @@ public class SqlServerRenderer : QueryRendererBase
                     default:
                         throw new ArgumentOutOfRangeException(nameof(variable), variable, $"Unsupported variable type");
                 }
+=======
+                    sbParameters.Append("DECLARE @").Append(variable.Name).Append(" AS");
+
+                    sbParameters = variable.Type switch
+                    {
+                        VariableType.Numeric => sbParameters.Append(" NUMERIC = ").Append(variable.Value).Append(BatchStatementSeparator),
+                        VariableType.String => sbParameters.Append(" VARCHAR(8000) = '").Append(EscapeString(variable.Value.ToString())).Append("'")
+                                .Append(BatchStatementSeparator),
+                        VariableType.Boolean =>
+                            sbParameters.Append(" BIT = ")
+                                .Append(true.Equals(variable.Value) ? "1" : "0")
+                                .Append(BatchStatementSeparator),
+                        VariableType.Date => sbParameters.Append(" DATETIME = '").Append(EscapeString((variable.Value as DateTime?)?.ToString(Settings.DateFormatString)))
+                                .Append(BatchStatementSeparator),
+                        _ => throw new ArgumentOutOfRangeException(nameof(variable), variable, $"Unexpected {variable.Type} variable type")
+                    };
+>>>>>>> c2bba33 (feat(renderer) : improve pretty print)
 
                 if (Settings.PrettyPrint && sbParameters.Length > 0)
                 {

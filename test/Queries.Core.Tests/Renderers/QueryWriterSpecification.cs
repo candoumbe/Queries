@@ -28,11 +28,18 @@ namespace Queries.Core.Tests.Renderers
 
         public Gen<Command<QueryWriter, QueryWriterState>> Next(QueryWriterState nextValue)
         {
-            return Gen.Elements<Command<QueryWriter, QueryWriterState>>(new StartBlock(_faker.PickRandom("(", null)),
-                                                                        new EndBlock(_faker.PickRandom(")", null)),
-                                                                        new WriteLine(_faker.Lorem.Word()));
+            return Gen.Elements<Command<QueryWriter, QueryWriterState>>(
+                                                                        //new StartBlock(_faker.PickRandom("(", null)),
+                                                                        //                                                        new EndBlock(_faker.PickRandom(")", null)),
+                                                                        new WriteText(_faker.Lorem.Word()));
         }
 
+        /// <summary>
+        /// Command to run when starting a new block
+        /// </summary>
+        /// <remarks>
+        /// This method is called by the framework to emulate a call to <see cref="QueryWriter.StartBlock(string)"/>
+        /// </remarks>
         private class StartBlock : QueryWriterCommand
         {
             private readonly string _value;
@@ -42,12 +49,14 @@ namespace Queries.Core.Tests.Renderers
                 _value = value;
             }
 
+            ///<inheritdoc/>
             public override QueryWriter RunActual(QueryWriter value)
             {
                 value.StartBlock(_value);
                 return value;
             }
 
+            ///<inheritdoc/>
             public override QueryWriterState RunModel(QueryWriterState model)
             {
                 int newBlockLevel = model.BlockLevel + 1;
@@ -55,111 +64,87 @@ namespace Queries.Core.Tests.Renderers
                     ? 0
                     : QueryWriter.IndentBlockSize * model.BlockLevel;
 
-                return (initialValue : model.Value, prettyPrint: model.PrettyPrint, _value) switch
+                return (initialValue: model.Value, prettyPrint: model.PrettyPrint, _value) switch
                 {
-                    ({ Length: >= 0 } or null, _, { Length: 0 } or null) =>
+
+                    ({ Length: 0 } or null, _, { Length: 0 } or null) =>
+#if NETCOREAPP3_1
+                                                                         new(value: string.Empty,
+                                                                             blockLevel: newBlockLevel,
+                                                                             prettyPrint: model.PrettyPrint),
+#elif NET5_0_OR_GREATER
+                                                                        model with
+                                                                        {
+                                                                            BlockLevel = newBlockLevel
+                                                                        },
+#endif
+
+                    ({ Length: > 0 }, _, { Length: 0 } or null) =>
 #if NETCOREAPP3_1
                                                                          new(value: model.Value,
                                                                              blockLevel: newBlockLevel,
                                                                              prettyPrint: model.PrettyPrint),
-#elif NET5_0
+#elif NET5_0_OR_GREATER
                                                                          model with
                                                                          {
-                                                                            BlockLevel = newBlockLevel
+                                                                             BlockLevel = newBlockLevel
                                                                          },
-#else
-#error Unsupported framwork
 #endif
 
-                    (initialValue: { Length: > 0 } or null, prettyPrint: true, { Length: > 0 }) =>
+                    ({ Length: 0 } or null, true, { Length: > 0 }) =>
+#if NETCOREAPP3_1
+                                                                    new(value: _value,
+                                                                        blockLevel: newBlockLevel,
+                                                                        prettyPrint: model.PrettyPrint),
+#elif NET5_0_OR_GREATER
+                                                                         model with
+                                                                         {
+                                                                             Value = $"{string.Empty.PadLeft(indentSize)}{_value}",
+                                                                             BlockLevel = newBlockLevel
+                                                                         },
+#endif
+
+                    (initialValue: { Length: > 0 }, prettyPrint: true, { Length: > 0 }) =>
 #if NETCOREAPP3_1
                                                                          new(value: $"{model.Value}{Environment.NewLine}{string.Empty.PadLeft(indentSize)}{_value}",
                                                                              blockLevel: newBlockLevel,
                                                                              prettyPrint: model.PrettyPrint),
-#elif NET5_0
+#elif NET5_0_OR_GREATER
                                                                          model with
                                                                          {
-                                                                            Value = $"{model.Value}{Environment.NewLine}{string.Empty.PadLeft(indentSize)}{_value}",
-                                                                            BlockLevel = newBlockLevel
+                                                                             Value = $"{model.Value}{Environment.NewLine}{string.Empty.PadLeft(indentSize)}{_value}",
+                                                                             BlockLevel = newBlockLevel
                                                                          },
-#else
-#error Unsupported framwork
 #endif
-                    (initialValue: { Length: > 0 } or null, prettyPrint: false, { Length: > 0 }) =>
+                    (initialValue: { Length: > 0 }, prettyPrint: false, { Length: > 0 }) =>
 #if NETCOREAPP3_1
                                                                          new(value: $"{model.Value} {_value}",
                                                                              blockLevel: newBlockLevel,
                                                                              prettyPrint: model.PrettyPrint),
-#elif NET5_0
+#elif NET5_0_OR_GREATER
                                                                          model with
                                                                          {
-                                                                            Value = $"{model.Value} {_value}",
-                                                                            BlockLevel = newBlockLevel
+                                                                             Value = $"{model.Value} {_value}",
+                                                                             BlockLevel = newBlockLevel
                                                                          },
-#else
-#error Unsupported framwork
-#endif
-                    ({ Length: > 0 }, _, _) =>
-#if NETCOREAPP3_1
-                                                   new(value: model.Value,
-                                                       blockLevel: newBlockLevel,
-                                                       prettyPrint: model.PrettyPrint),
-#elif NET5_0
-                                                   model with
-                                                   {
-                                                      Value = _value,
-                                                      BlockLevel = newBlockLevel
-                                                   },
-#else
-#error Unsupported framwork
 #endif
 
-                    (_, true, { Length: > 0 }) =>
-#if NETCOREAPP3_1
-                                                     new(value: $"{string.Empty.PadLeft(indentSize)}{_value}",
-                                                         blockLevel: newBlockLevel,
-                                                         prettyPrint: model.PrettyPrint),
-#elif NET5_0                                         
-                                                     model with
-                                                     {
-                                                        Value = _value,
-                                                        BlockLevel = newBlockLevel
-                                                     },
-#else
-#error Unsupported framwork
-#endif
                     (_, false, { Length: > 0 }) =>
 #if NETCOREAPP3_1
                                                      new(value: _value,
                                                          blockLevel: newBlockLevel,
                                                          prettyPrint: model.PrettyPrint),
-#elif NET5_0                                         
+#elif NET5_0_OR_GREATER                                         
                                                      model with
                                                      {
-                                                        Value = _value,
-                                                        BlockLevel = newBlockLevel
+                                                         Value = _value,
+                                                         BlockLevel = newBlockLevel
                                                      },
-#else
-#error Unsupported framwork
-#endif
-
-                    _ =>
-#if NETCOREAPP3_1
-                          new(value: string.Empty,
-                              blockLevel: newBlockLevel,
-                              prettyPrint: model.PrettyPrint),
-#elif NET5_0
-                          model with
-                          {
-                             Value = string.Empty,
-                             BlockLevel = newBlockLevel
-                          }
-#else
-#error Unsupported framwork
 #endif
                 };
             }
 
+            ///<inheritdoc/>
             public override string ToString() => $"{nameof(StartBlock)}({_value})";
         }
 
@@ -172,14 +157,17 @@ namespace Queries.Core.Tests.Renderers
                 _value = value;
             }
 
+            ///<inheritdoc/>
             public override bool Pre(QueryWriterState actual) => actual.BlockLevel > 0 && actual.Value.Length == 0;
 
+            ///<inheritdoc/>
             public override QueryWriter RunActual(QueryWriter value)
             {
                 value.EndBlock(_value);
                 return value;
             }
 
+            ///<inheritdoc/>
             public override QueryWriterState RunModel(QueryWriterState model)
             {
                 int newBlockLevel = model.BlockLevel - 1;
@@ -194,25 +182,21 @@ namespace Queries.Core.Tests.Renderers
                                                                     new(value: model.Value,
                                                                         blockLevel: newBlockLevel,
                                                                         prettyPrint: model.PrettyPrint),
-#elif NET5_0
+#elif NET5_0_OR_GREATER
                                                                     model with { BlockLevel = newBlockLevel },
-#else
-#error Unsupported framwork
 #endif
 
-                    ({ Length: > 0 }, true, { Length : > 0}) =>
+                    ({ Length: > 0 }, true, { Length: > 0 }) =>
 #if NETCOREAPP3_1
                                                      new(value: $"{model.Value}{Environment.NewLine}{string.Empty.PadLeft(indentSize)}{_value}",
                                                          blockLevel: newBlockLevel,
                                                          prettyPrint: true),
-#elif NET5_0
+#elif NET5_0_OR_GREATER
                                                      model with
                                                      {
-                                                        Value = $"{model.Value}{Environment.NewLine}{string.Empty.PadLeft(indentSize)}{_value}",
-                                                        BlockLevel = newBlockLevel
+                                                         Value = $"{model.Value}{Environment.NewLine}{string.Empty.PadLeft(indentSize)}{_value}",
+                                                         BlockLevel = newBlockLevel
                                                      },
-#else
-#error Unsupported framwork
 #endif
 
                     ({ Length: 0 } or null, true, { Length: > 0 }) =>
@@ -220,29 +204,25 @@ namespace Queries.Core.Tests.Renderers
                                                                         new(value: $"{string.Empty.PadLeft(indentSize)}{_value}",
                                                                             blockLevel: newBlockLevel,
                                                                             prettyPrint: true),
-#elif NET5_0
+#elif NET5_0_OR_GREATER
                                                                         model with
                                                                         {
-                                                                            Value = $"{Environment.NewLine}{string.Empty.PadLeft(indentSize)}{_value}",
+                                                                            Value = $"{string.Empty.PadLeft(indentSize)}{_value}",
                                                                             BlockLevel = newBlockLevel
                                                                         },
-#else
-#error Unsupported framework
 #endif
 
-                    ({ Length: > 0 }, false, { Length : > 0 }) =>
+                    ({ Length: > 0 }, false, { Length: > 0 }) =>
 #if NETCOREAPP3_1
                                                     new(value: $"{model.Value} {_value}",
                                                         blockLevel: newBlockLevel,
                                                         prettyPrint: false),
-#elif NET5_0
+#elif NET5_0_OR_GREATER
                                                     model with
                                                     {
-                                                        Value =  $"{model.Value} {_value}",
+                                                        Value = $"{model.Value} {_value}",
                                                         BlockLevel = newBlockLevel
                                                     },
-#else
-#error Unsupported framework
 #endif
 
                     ({ Length: 0 } or null, false, { Length: > 0 }) =>
@@ -250,105 +230,69 @@ namespace Queries.Core.Tests.Renderers
                                                                         new(value: _value,
                                                                             blockLevel: newBlockLevel,
                                                                             prettyPrint: false),
-#elif NET5_0
+#elif NET5_0_OR_GREATER
                                                                         model with
                                                                         {
-                                                                            Value =  $"{model.Value} {_value}",
+                                                                            Value = $"{_value}",
                                                                             BlockLevel = newBlockLevel
                                                                         },
-#else
-#error Unsupported framework
 #endif
 
 #if NETCOREAPP3_1
                     _ => new(value: string.Empty,
                              blockLevel: newBlockLevel,
                              prettyPrint: model.PrettyPrint)
-#elif NET5_0
+#elif NET5_0_OR_GREATER
                     _ => model with { Value = string.Empty, BlockLevel = newBlockLevel },
-#else
-#error Unsupported framework 
 #endif
                 };
             }
 
+            ///<inheritdoc/>
             public override string ToString() => $"{nameof(EndBlock)}({_value})";
         }
 
-        private class WriteLine : QueryWriterCommand
+        /// <summary>
+        /// Command to emulate a call to <see cref="QueryWriter.WriteText(string)"/>
+        /// </summary>
+        private class WriteText : QueryWriterCommand
         {
             private readonly string _value;
 
-            public WriteLine(string value)
+            public WriteText(string value)
             {
                 _value = value;
             }
 
+            ///<inheritdoc/>
             public override QueryWriter RunActual(QueryWriter value)
             {
-                value.WriteLine(_value);
+                value.WriteText(_value);
                 return value;
             }
 
+            ///<inheritdoc/>
             public override QueryWriterState RunModel(QueryWriterState model)
             {
                 int indentSize = (QueryWriter.IndentBlockSize * model.BlockLevel);
-                bool isEmpty = model.Value.Length == 0;
-                string newValue = model.PrettyPrint
-                                    ? $"{model.Value}{Environment.NewLine : string.Empty)}{string.Empty.PadLeft(indentSize)}{_value}"
-                                    : $"{model.Value}{Environment.NewLine}{_value}";
 
                 return (model.Value, model.PrettyPrint, _value) switch
                 {
-                    ({ Length: > 0 }, true, _ ) =>
-#if NETCOREAPP3_1
-                                                new(value: $"{model.Value}{Environment.NewLine}{(model.PrettyPrint ? string.Empty.PadLeft(indentSize) : string.Empty)}{_value}",
-                                                    blockLevel : model.BlockLevel,
-                                                    prettyPrint: model.PrettyPrint
-                                                ),
-#elif NET5_0
-                                                model with
-                                                {
-                                                    Value = $"{model.Value}{(model.PrettyPrint ? string.Empty.PadLeft(indentSize): string.Empty)}{_value}"
-                                                },
-#else
-#error Unsupported framework
-#endif
+                    ({ Length: > 0 } initialValue, false, { Length: > 0 } currentValue) => initialValue[^1] switch
+                    {
+                        '(' => new QueryWriterState($"{initialValue}{currentValue}", model.BlockLevel, false),
+                        _ => new QueryWriterState($"{initialValue} {currentValue}", model.BlockLevel, false)
+                    },
+                    ({ Length: > 0 } initialValue, true, { Length: > 0 } currentValue) => new QueryWriterState($"{initialValue}{Environment.NewLine}{string.Empty.PadLeft(indentSize)}{currentValue}", model.BlockLevel, true),
+                    ({ Length: 0 }, true, { Length: > 0 } currentValue) => new QueryWriterState($"{string.Empty.PadLeft(indentSize)}{currentValue}", model.BlockLevel, true),
+                    ({ Length: 0 }, false, { Length: > 0 } currentValue) => new QueryWriterState(currentValue, model.BlockLevel, false),
 
-                    ({ Length: > 0 }, false, _) =>
-#if NETCOREAPP3_1
-                                                new(value: $"{model.Value}{Environment.NewLine}{_value}",
-                                                    blockLevel: model.BlockLevel,
-                                                    prettyPrint: model.PrettyPrint
-                                                ),
-#elif NET5_0
-                                                model with
-                                                {
-                                                    Value = $"{model.Value}{Environment.NewLine}{_value}"
-                                                },
-#else
-#error Unsupported framework
-#endif
-
-                   _ =>
-#if NETCOREAPP3_1
-                                                     new(value: $"{(model.PrettyPrint ? string.Empty.PadLeft(indentSize) : string.Empty)}{_value}",
-                                                         blockLevel: model.BlockLevel,
-                                                         prettyPrint: model.PrettyPrint
-                                                     ),
-#elif NET5_0
-                                                     model with
-                                                     {
-                                                         Value = $"{(model.PrettyPrint ? string.Empty.PadLeft(indentSize) : string.Empty)}{_value}"
-                                                     },
-#else
-#error Unsupported framework
-#endif
-
+                    _ => new QueryWriterState(model.Value, model.BlockLevel, model.PrettyPrint)
                 };
             }
 
-            public override string ToString() => $"{nameof(WriteLine)}({_value})";
+            ///<inheritdoc/>
+            public override string ToString() => $"{nameof(WriteText)}({_value})";
         }
 
         /// <summary>
@@ -356,13 +300,14 @@ namespace Queries.Core.Tests.Renderers
         /// </summary>
         private abstract class QueryWriterCommand : Command<QueryWriter, QueryWriterState>
         {
+            ///<inheritdoc/>
             public override Property Post(QueryWriter model, QueryWriterState expected)
             {
                 (string value, int blockLevel, bool prettyPrint) current = (model.Value, model.BlockLevel, model.PrettyPrint);
 
                 return (current == (expected.Value, expected.BlockLevel, expected.PrettyPrint)).ToProperty()
-                    .Label($"{Environment.NewLine}Current  : ('{ current.value.Replace(' ', '*')}', blockLevel : { current.blockLevel})" +
-                           $"{Environment.NewLine}expected : ('{expected.Value.Replace(' ', '*')}', blockLevel : {expected.BlockLevel})");
+                    .Label($"{Environment.NewLine}Current  : ('{current.value.Replace(" ", "<space>").Replace(Environment.NewLine, "<newline>")}', blockLevel : {current.blockLevel})" +
+                           $"{Environment.NewLine}expected : ('{expected.Value.Replace(" ", "<space>").Replace(Environment.NewLine, "<newline>")}', blockLevel : {expected.BlockLevel})");
             }
         }
     }

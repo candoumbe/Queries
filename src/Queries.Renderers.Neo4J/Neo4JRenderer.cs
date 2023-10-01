@@ -1,11 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Queries.Core.Builders;
+﻿using Queries.Core.Builders;
 using Queries.Core.Parts;
 using Queries.Core.Parts.Columns;
 using Queries.Core.Renderers;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 namespace Queries.Renderers.Neo4J
 {
@@ -31,59 +32,61 @@ namespace Queries.Renderers.Neo4J
                 throw new ArgumentNullException(nameof(query));
             }
 
-            if (!(query is SelectQuery))
+            if (query is not SelectQuery)
             {
                 throw new NotSupportedException($"Only {nameof(SelectQuery)} queries are supported for Neo4J");
             }
-            SelectQuery selectQuery = (SelectQuery) query;
-            StringBuilder sbQuery = new();
+            SelectQuery selectQuery = (SelectQuery)query;
+            QueryWriter writer = new(prettyPrint: Settings.PrettyPrint);
             IEnumerable<IColumn> columns = query.Columns;
             IEnumerable<ITable> tables = selectQuery.Tables;
 
             NormalizeColumnAndTable(columns, selectQuery, tables);
 
-            sbQuery.Append("MATCH ").Append(RenderTables(tables)).Append(" ").Append(Settings.PrettyPrint ? Environment.NewLine : string.Empty)
-                .Append(query.WhereCriteria != null ? $"WHERE {RenderWhere(query.WhereCriteria)} {(Settings.PrettyPrint ? Environment.NewLine : string.Empty)}" : string.Empty)
-                .Append("RETURN ").Append(RenderColumns(columns)).Append(BatchStatementSeparator);
-
-            return sbQuery.ToString();
-        
-            static void NormalizeColumnAndTable(IEnumerable<IColumn> columns, SelectQuery selectQuery, IEnumerable<ITable> tables)
-        {
-            IEnumerable<IColumn> cols = columns as IColumn[] ?? columns.ToArray();
-            if (cols.Count() == 1)
+            writer.WriteText($"MATCH {RenderTables(tables.ToArray())}");
+            if (query.WhereCriteria is not null)
             {
-                IColumn column = cols.Single();
-                if (column is FieldColumn || column is Literal)
+                writer.WriteText($"WHERE {RenderWhere(query.WhereCriteria)}");
+            }
+            writer.WriteText($"RETURN {RenderColumns(columns)}{BatchStatementSeparator}");
+
+            return writer.Value;
+
+            static void NormalizeColumnAndTable(IEnumerable<IColumn> columns, SelectQuery selectQuery, IEnumerable<ITable> tables)
+            {
+                IEnumerable<IColumn> cols = columns as IColumn[] ?? columns.ToArray();
+                if (cols.Count() == 1)
                 {
-                    IEnumerable<ITable> tabs = tables as ITable[] ?? tables.ToArray();
-                    if (selectQuery.Tables.Count == 1 && tabs.Single() is Table table)
+                    IColumn column = cols.Single();
+                    if (column is FieldColumn || column is Literal)
                     {
-                        if (column is FieldColumn fc)
+                        IEnumerable<ITable> tabs = tables as ITable[] ?? tables.ToArray();
+                        if (selectQuery.Tables.Count == 1 && tabs.Single() is Table table)
                         {
-                            if ("*".Equals(fc.Name))
+                            if (column is FieldColumn fc)
                             {
-                                if (string.IsNullOrWhiteSpace(table.Alias))
+                                if ("*".Equals(fc.Name))
+                                {
+                                    if (string.IsNullOrWhiteSpace(table.Alias))
+                                    {
+                                        table.As(table.Name.Substring(0, 1).ToLower());
+                                    }
+                                    fc.Name = table.Alias;
+                                }
+                            }
+                            else
+                            {
+                                Literal lc = (Literal)column;
+                                if ("*".Equals(lc.Value?.ToString()) && string.IsNullOrWhiteSpace(table.Alias))
                                 {
                                     table.As(table.Name.Substring(0, 1).ToLower());
                                 }
-                                fc.Name = table.Alias;
-                            }
-                        }
-                        else
-                        {
-                            Literal lc = (Literal) column;
-                            if ("*".Equals(lc.Value?.ToString()) && string.IsNullOrWhiteSpace(table.Alias))
-                            {
-                                table.As(table.Name.Substring(0, 1).ToLower());
                             }
                         }
                     }
                 }
             }
         }
-        }
-
 
         ///<inheritdoc/>
         protected override string RenderTablename(Table table, bool renderAlias)

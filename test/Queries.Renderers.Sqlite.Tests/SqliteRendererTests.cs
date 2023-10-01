@@ -1,14 +1,18 @@
 ﻿using FluentAssertions;
 using FluentAssertions.Extensions;
+
 using Queries.Core;
 using Queries.Core.Builders;
 using Queries.Core.Parts.Columns;
 using Queries.Core.Renderers;
+
 using System;
 using System.Collections.Generic;
+
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Categories;
+
 using static Queries.Core.Builders.Fluent.QueryBuilder;
 using static Queries.Core.Parts.Clauses.ClauseOperator;
 
@@ -74,11 +78,21 @@ public class SqliteRendererTests
                 "SELECT 1 UNION SELECT 2"
             };
 
+<<<<<<< HEAD
             yield return new object[]
             {
                 Select(1.Literal()).Union(Select(2.Literal())), new SqliteRendererSettings { PrettyPrint = true },
                 $"SELECT 1 {Environment.NewLine}UNION {Environment.NewLine}SELECT 2"
             };
+=======
+                yield return new object[]
+                {
+                    Select(1.Literal()).Union(Select(2.Literal())), new SqliteRendererSettings { PrettyPrint = true },
+                    $"SELECT 1{Environment.NewLine}" +
+                    $"UNION{Environment.NewLine}" +
+                     "SELECT 2"
+                };
+>>>>>>> c2bba33 (feat(renderer) : improve pretty print)
 
             yield return new object[]
             {
