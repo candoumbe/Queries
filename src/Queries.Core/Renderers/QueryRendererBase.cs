@@ -34,7 +34,7 @@ namespace Queries.Core.Renderers
         {
             string escapedColumnName = string.Empty;
 
-            if (rawName != null)
+            if (rawName is not null)
             {
                 string[] rawNameParts = rawName.Split(new[] { '.' }, StringSplitOptions.None);
                 StringBuilder sb = new();
@@ -108,13 +108,11 @@ namespace Queries.Core.Renderers
         {
             QueryWriter writer = new(blockLevel, prettyPrint: Settings.PrettyPrint);
 
-            if (query != null)
+            if (query is not null)
             {
-                string fieldsString = "*";
-                if ((query.Columns?.Count ?? 0) > 0)
-                {
-                    fieldsString = RenderColumns(query.Columns);
-                }
+                string fieldsString = (query.Columns?.Count ?? 0) > 0
+                    ? RenderColumns(query.Columns, writer.BlockLevel)
+                    : "*";
 
                 switch (query)
                 {
@@ -126,53 +124,47 @@ namespace Queries.Core.Renderers
 
                             if ((pageIndex ?? 1) == 1 && pageSize >= 1 && (Settings.PaginationKind & Top) == Top)
                             {
-                                writer.WriteLine($"SELECT TOP {pageSize.Value}");
+                                writer.WriteText($"SELECT TOP {pageSize.Value}");
                             }
                             else
                             {
-                                writer.WriteLine("SELECT");
+                                writer.WriteText("SELECT");
                             }
 
                             writer.StartBlock();
-                            writer.WriteLine(fieldsString);
+                            writer.WriteText(fieldsString);
                             writer.EndBlock();
 
-                            writer.WriteLine("FROM");
+                            writer.WriteText("FROM");
 
-                            string tableString = RenderTables(selectQuery.Tables, writer.BlockLevel);
-                            if (selectQuery.Tables.Exactly(table => table is Table, 1))
-                            {
-                                writer.StartBlock();
-                                writer.WriteLine(tableString);
-                                writer.EndBlock();
-                            }
-                            else
-                            {
-                                writer.WriteLine(tableString);
-                            }
+                            string tableString = RenderTables(selectQuery.Tables.ToArray());
+                            writer.StartBlock();
+                            writer.WriteText(tableString);
+                            writer.EndBlock();
                         }
                         else
                         {
-                            writer.WriteLine($"SELECT {fieldsString}");
+                            writer.WriteText($"SELECT {fieldsString}");
                         }
 
                         break;
 
                     case SelectIntoQuery selectInto:
 
-                        writer.WriteLine("SELECT");
-                        writer.StartBlock();
-                        writer.WriteLine(fieldsString);
-                        writer.EndBlock();
-
-                        writer.WriteLine("INTO");
+                        writer.WriteText("SELECT");
 
                         writer.StartBlock();
-                        writer.WriteLine(RenderTablename(selectInto.Destination, false));
+                        writer.WriteText(fieldsString);
                         writer.EndBlock();
 
-                        writer.WriteLine("FROM");
-                        writer.WriteLine(RenderTables(new[] { selectInto.Source }, writer.BlockLevel));
+                        writer.WriteText("INTO");
+
+                        writer.StartBlock();
+                        writer.WriteText(RenderTablename(selectInto.Destination, false));
+                        writer.EndBlock();
+
+                        writer.WriteText("FROM");
+                        writer.WriteText(RenderTables(new[] { selectInto.Source }, writer.BlockLevel));
 
                         break;
                 }
@@ -180,15 +172,15 @@ namespace Queries.Core.Renderers
                 if (query.Joins.AtLeastOnce())
                 {
                     string joinString = RenderJoins(query.Joins);
-                    writer.WriteLine(joinString);
+                    writer.WriteText(joinString);
                 }
 
-                if (query.WhereCriteria != null)
+                if (query.WhereCriteria is not null)
                 {
-                    writer.WriteLine($"WHERE {RenderWhere(query.WhereCriteria)}");
+                    writer.WriteText($"WHERE {RenderWhere(query.WhereCriteria)}");
                 }
 
-                if (query.Columns != null)
+                if (query.Columns is not null)
                 {
                     IEnumerable<AggregateFunction> aggregatedColumns = query.Columns.OfType<AggregateFunction>();
                     IEnumerable<FieldColumn> tableColumns = query.Columns.OfType<FieldColumn>();
@@ -206,13 +198,13 @@ namespace Queries.Core.Renderers
                         }
 
                         // Automgically adds a GROUP BY when needed
-                        writer.WriteLine($"GROUP BY {sbGroupBy}");
+                        writer.WriteText($"GROUP BY {sbGroupBy}");
                     }
                 }
 
-                if (query.HavingCriteria != null)
+                if (query.HavingCriteria is not null)
                 {
-                    writer.WriteLine($"HAVING {RenderHaving(query.HavingCriteria)}");
+                    writer.WriteText($"HAVING {RenderHaving(query.HavingCriteria)}");
                 }
 
                 if (query.Sorts.AtLeastOnce())
@@ -231,10 +223,10 @@ namespace Queries.Core.Renderers
                             : sbOrderBy.Append(RenderColumn(sort.Column, false));
                     }
 
-                    writer.WriteLine("ORDER BY");
+                    writer.WriteText("ORDER BY");
 
                     writer.StartBlock();
-                    writer.WriteLine(sbOrderBy.ToString());
+                    writer.WriteText(sbOrderBy.ToString());
                     writer.EndBlock();
                 }
 
@@ -242,16 +234,14 @@ namespace Queries.Core.Renderers
                 {
                     SelectQuery selectQuery = sq;
 
-                    if (selectQuery.Unions != null)
+                    if (selectQuery.Unions is not null)
                     {
                         foreach (IUnionQuery<SelectQuery> unionQuery in selectQuery.Unions)
                         {
                             SelectQuery union = unionQuery.Build();
 
-                            writer.WriteLine("UNION");
-                            writer.StartBlock();
-                            writer.WriteLine(Render(union.Build()));
-                            writer.EndBlock();
+                            writer.WriteText("UNION");
+                            writer.WriteText(Render(union.Build(), blockLevel));
                         }
                     }
 
@@ -261,13 +251,13 @@ namespace Queries.Core.Renderers
                     if (pageIndex >= 2 && pageSize > 0)
                     {
                         writer.StartBlock();
-                        writer.WriteLine(RenderPagination(pageIndex.Value, pageSize.Value));
+                        writer.WriteText(RenderPagination(pageIndex.Value, pageSize.Value));
                         writer.EndBlock();
                     }
 
                     if ((Settings.PaginationKind & Limit) == Limit && sq.PageSize.HasValue && (sq.PageIndex ?? 1) == 1)
                     {
-                        writer.WriteLine($" LIMIT {sq.PageSize}");
+                        writer.WriteText($"LIMIT {sq.PageSize}");
                     }
                 }
             }
@@ -319,42 +309,43 @@ namespace Queries.Core.Renderers
             return sbJoins.ToString();
         }
 
-        protected virtual string RenderTables(IEnumerable<ITable> tables, int blockLevel = 0)
+        protected virtual string RenderTables(IReadOnlyList<ITable> tables, int blockLevel = 0)
         {
             QueryWriter sbTables = new(blockLevel, Settings.PrettyPrint);
-
-            foreach (ITable item in tables)
+            for (int i = 0; i < tables.Count; i++)
             {
+                ITable item = tables[i];
                 if (sbTables.Length != 0)
                 {
-                    sbTables.WriteLine(", ");
+                    sbTables.WriteText(", ");
                 }
 
                 if (item is Table table)
                 {
                     if (string.IsNullOrWhiteSpace(table.Alias))
                     {
-                        sbTables.WriteLine(EscapeName(table.Name));
+                        sbTables.WriteText(EscapeName(table.Name));
                     }
                     else
                     {
-                        sbTables.WriteLine(RenderTablenameWithAlias(EscapeName(table.Name), EscapeName(table.Alias)));
+                        sbTables.WriteText(RenderTablenameWithAlias(EscapeName(table.Name), EscapeName(table.Alias)));
                     }
                 }
                 else if (item is SelectQuery selectTable)
                 {
-                    sbTables.StartBlock(LeftParenthesis);
                     if (string.IsNullOrWhiteSpace(selectTable.Alias))
                     {
-                        sbTables.WriteLine($"{Render(selectTable, sbTables.BlockLevel)}");
+                        sbTables.StartBlock(LeftParenthesis);
+                        sbTables.WriteText($"{Render(selectTable, 0)}");
+                        sbTables.EndBlock(RightParenthesis);
                     }
                     else
                     {
-                        sbTables.WriteLine($"({Render(selectTable, sbTables.BlockLevel)}) {EscapeName(selectTable.Alias)}");
+                        sbTables.WriteText($"({Render(selectTable, sbTables.BlockLevel)}) {EscapeName(selectTable.Alias)}");
                     }
-                    sbTables.EndBlock(RightParenthesis);
                 }
             }
+
             return sbTables.Value;
         }
 
@@ -386,11 +377,12 @@ namespace Queries.Core.Renderers
             }
             QueryWriter writer = new(blockLevel, Settings.PrettyPrint);
 
-            writer.WriteLine(sbFields.ToString());
+            writer.WriteText(sbFields.ToString());
 
             return writer.Value;
         }
 
+        ///<inheritdoc/>
         protected virtual string RenderClause<T>(IClause<T> clause) where T : IColumn
             => clause.Operator switch
             {
@@ -421,14 +413,15 @@ namespace Queries.Core.Renderers
                 _ => throw new NotSupportedException($"Unsupported '{clause.Operator}' clause operator"),
             };
 
-        protected virtual string RenderWhere(IWhereClause clause)
+        ///<inheritdoc/>
+        protected virtual string RenderWhere(IWhereClause clause, int blockLevel = 0)
         {
-            StringBuilder sbWhere = new();
+            QueryWriter sbWhere = new QueryWriter(blockLevel, Settings.PrettyPrint);
 
             switch (clause)
             {
                 case WhereClause whereClause:
-                    sbWhere.Append(RenderClause(whereClause));
+                    sbWhere.WriteText(RenderClause(whereClause));
                     break;
                 case CompositeWhereClause compositeClause:
                     switch (compositeClause.Logic)
@@ -438,9 +431,9 @@ namespace Queries.Core.Renderers
                             {
                                 if (sbWhere.Length > 0)
                                 {
-                                    sbWhere = sbWhere.Append(" AND ");
+                                    sbWhere.WriteText("AND");
                                 }
-                                sbWhere = sbWhere.AppendFormat("{0}", RenderWhere(innerClause));
+                                sbWhere.WriteText(RenderWhere(innerClause, sbWhere.BlockLevel));
                             }
 
                             break;
@@ -449,9 +442,10 @@ namespace Queries.Core.Renderers
                             {
                                 if (sbWhere.Length > 0)
                                 {
-                                    sbWhere = sbWhere.Append(" OR ");
+                                    sbWhere.WriteText("OR");
                                 }
-                                sbWhere = sbWhere.Append(RenderWhere(innerClause));
+
+                                sbWhere.WriteText(RenderWhere(innerClause, sbWhere.BlockLevel));
                             }
                             break;
                         default:
@@ -461,7 +455,7 @@ namespace Queries.Core.Renderers
                     break;
             }
 
-            return sbWhere.Insert(0, '(').Insert(sbWhere.Length, ')').ToString();
+            return $"({sbWhere.Value})";
         }
 
         protected virtual string RenderHaving(IHavingClause clause)
@@ -528,13 +522,9 @@ namespace Queries.Core.Renderers
                     columnString = "NULL";
                     break;
                 default:
-                    if (column.GetType().GetTypeInfo().GetCustomAttribute<FunctionAttribute>() != null)
-                    {
-                        columnString = RenderFunction(column, renderAlias);
-                    }
-                    else
-                    {
-                        columnString = column switch
+                    columnString = column.GetType().GetTypeInfo().GetCustomAttribute<FunctionAttribute>() is not null
+                        ? RenderFunction(column, renderAlias)
+                        : column switch
                         {
                             FieldColumn fieldColumn => !renderAlias || string.IsNullOrWhiteSpace(fieldColumn.Alias)
                                 ? EscapeName(Settings.FieldnameCasingStrategy.Handle(fieldColumn.Name))
@@ -547,7 +537,6 @@ namespace Queries.Core.Renderers
                             CasesColumn casesColumn => RenderCasesColumn(casesColumn, renderAlias),
                             _ => throw new ArgumentOutOfRangeException(nameof(column), column, $"Unexpected {column?.GetType()} rendering as column")
                         };
-                    }
 
                     break;
             }
@@ -761,7 +750,7 @@ namespace Queries.Core.Renderers
         {
             StringBuilder queryStringBuilder = new();
 
-            if (updateQuery != null)
+            if (updateQuery is not null)
             {
                 StringBuilder sbFieldsToUpdate = new();
                 foreach (UpdateFieldValue queryFieldValue in updateQuery.Values)
@@ -781,7 +770,7 @@ namespace Queries.Core.Renderers
                     .Append(Settings.PrettyPrint ? Environment.NewLine : string.Empty)
                     .AppendFormat("SET {0}", sbFieldsToUpdate);
 
-                if (updateQuery.Criteria != null)
+                if (updateQuery.Criteria is not null)
                 {
                     queryStringBuilder = queryStringBuilder
                         .Append(' ')
@@ -811,7 +800,7 @@ namespace Queries.Core.Renderers
         protected virtual string Render(TruncateQuery query)
         {
             string sbQuery = string.Empty;
-            if (query != null)
+            if (query is not null)
             {
                 sbQuery = $"TRUNCATE TABLE {BeginEscapeWordString}{query.Name}{EndEscapeWordString}";
             }
@@ -823,11 +812,11 @@ namespace Queries.Core.Renderers
         {
             StringBuilder sbQuery = new();
 
-            if (deleteQuery != null)
+            if (deleteQuery is not null)
             {
                 sbQuery = sbQuery.Append($"DELETE FROM {EscapeName(deleteQuery.Table)}");
 
-                if (deleteQuery.Criteria != null)
+                if (deleteQuery.Criteria is not null)
                 {
                     sbQuery = sbQuery
                         .Append($" {(Settings.PrettyPrint ? Environment.NewLine : string.Empty)}WHERE {RenderWhere(deleteQuery.Criteria)}");
@@ -860,7 +849,11 @@ namespace Queries.Core.Renderers
             return sbResult.ToString();
         }
 
+<<<<<<< HEAD
         ///<inheritdoc/>
+=======
+        /// <inheritdoc/>
+>>>>>>> c2bba33 (feat(renderer) : improve pretty print)
         public virtual string BatchStatementSeparator => ";";
 
         /// <inheritdoc/>

@@ -3,7 +3,11 @@
   <Import Project="..\..\test.props" />
   <PropertyGroup>
     <Description>Queries.Core.Tests Class Library</Description>
+<<<<<<< HEAD
     <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+=======
+    <TargetFrameworks>netcoreapp3.1;net6.0;net7.0</TargetFrameworks>
+>>>>>>> c2bba33 (feat(renderer) : improve pretty print)
   </PropertyGroup>
 
 

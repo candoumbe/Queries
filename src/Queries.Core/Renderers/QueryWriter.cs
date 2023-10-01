@@ -40,6 +40,7 @@ namespace Queries.Core.Renderers
         /// Indentation size to delimit a block
         /// </summary>
         public const int IndentBlockSize = 4;
+        private const char SpaceChar = ' ';
 
         public int Length => _stringBuilder.Length;
 
@@ -57,6 +58,9 @@ namespace Queries.Core.Renderers
             }
         }
 
+        /// <summary>
+        /// Indicates how to render the underlying value
+        /// </summary>
         public bool PrettyPrint { get; }
 
         /// <summary>
@@ -80,9 +84,8 @@ namespace Queries.Core.Renderers
         /// </summary>
         /// <param name="value">The value to write BEFORE starting a new indentation</param>
         /// <remarks>
-        ///    When <see cref="PrettyPrint"/>,
-        ///    Any subsequent <see cref="WriteLine(string)"/> operation will be inndented according to the current value of <see cref="BlockLevel"/>
-        ///    unless explicitly calling <see cref="EndBlock"/>.
+        ///    When <see cref="PrettyPrint"/> is <see langword="true"/>, any subsequentx <see cref="WriteText(string)"/> operation will be indented according to the current value of <see cref="BlockLevel"/>
+        ///    until explicitly calling <see cref="EndBlock"/>.
         /// </remarks>
         public void StartBlock(string value = null)
         {
@@ -95,12 +98,7 @@ namespace Queries.Core.Renderers
                 }
                 else if (_stringBuilder.Length > 0)
                 {
-                    _stringBuilder.Append(' ');
-                }
-
-                if (PrettyPrint)
-                {
-                    _stringBuilder.Append(string.Empty.PadLeft(IndentBlockSize * BlockLevel));
+                    _stringBuilder.Append(SpaceChar);
                 }
 
                 _stringBuilder.Append(value);
@@ -133,10 +131,7 @@ namespace Queries.Core.Renderers
                 {
                     _stringBuilder.Append(string.Empty.PadLeft(IndentBlockSize * BlockLevel));
                 }
-                else if (_stringBuilder.Length > 0 && !_stringBuilder.ToString().EndsWith(Environment.NewLine))
-                {
-                    _stringBuilder.Append(' ');
-                }
+
 
                 _stringBuilder.Append(value);
                 MustPrintNewLine = PrettyPrint;
@@ -152,28 +147,47 @@ namespace Queries.Core.Renderers
         }
 
         /// <summary>
-        /// Writes a new line followed by the specified value<see cref="value"/>.
+        /// Writes <see cref="value"/>.
         /// </summary>
-        /// <param name="value">The value to write</param>
+        /// <param name="text">The text to write</param>
         /// <remarks>
         /// </remarks>
-        public void WriteLine(string value)
+        public void WriteText(string text)
         {
-            if (_stringBuilder.Length > 0)
+            if (text is not null)
             {
-                _stringBuilder.AppendLine();
-            }
+                if (_stringBuilder.Length > 0)
+                {
+                    if (PrettyPrint)
+                    {
+                        _stringBuilder.AppendLine();
+                    }
+                    else
+                    {
+                        _ = (_stringBuilder[_stringBuilder.Length - 1], text) switch
+                        {
+                            ('(', _) => _stringBuilder,
+                            (')', { Length: > 0 }) _ => text[0] switch
+                            {
+                                ')' => _stringBuilder,
+                                _ => _stringBuilder.Append(SpaceChar)
+                            },
+                            _ => _stringBuilder.Append(SpaceChar)
+                        };
+                    }
+                }
 
-            if (PrettyPrint)
-            {
-                int indentationSize = BlockLevel * IndentBlockSize;
-                value = value.Replace(Environment.NewLine, $"{Environment.NewLine}{string.Empty.PadLeft(indentationSize)}");
-                _stringBuilder.Append(string.Empty.PadLeft(indentationSize));
-            }
+                if (PrettyPrint && BlockLevel > 0)
+                {
+                    int indentationSize = BlockLevel * IndentBlockSize;
+                    _stringBuilder.Append(string.Empty.PadLeft(indentationSize));
+                }
 
-            _stringBuilder.Append(value);
+                _stringBuilder.Append(text);
+            }
         }
 
+        ///<inheritdoc/>
         public override string ToString() => _stringBuilder.ToString();
     }
 }

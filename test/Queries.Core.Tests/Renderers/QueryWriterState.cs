@@ -51,9 +51,7 @@ namespace Queries.Core.Tests.Renderers
 
         public override string ToString() => this.Jsonify();
     }
-#elif NET5_0
+#elif NET5_0_OR_GREATER
     public record QueryWriterState(string Value, int BlockLevel, bool PrettyPrint);
-#else
-#error Unsupported framework
 #endif
 }

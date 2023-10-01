@@ -2,6 +2,10 @@
   <Import Project="..\..\test.props" />
   <PropertyGroup>
     <Description>Queries.Renderers.SqlServer.Tests Class Library</Description>
+<<<<<<< HEAD
+=======
+    <TargetFrameworks>netcoreapp3.1;net6.0;net7.0</TargetFrameworks>
+>>>>>>> c2bba33 (feat(renderer) : improve pretty print)
     <AssemblyName>Queries.Renderers.SqlServer.Tests</AssemblyName>
     <PackageId>Queries.Renderers.SqlServer.Tests</PackageId>
     <TargetFrameworks>net6.0;net7.0</TargetFrameworks>

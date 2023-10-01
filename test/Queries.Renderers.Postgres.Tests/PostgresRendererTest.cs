@@ -1,17 +1,20 @@
 ﻿using FluentAssertions;
+using FluentAssertions.Extensions;
+
 using Queries.Core;
 using Queries.Core.Builders;
 using Queries.Core.Parts.Clauses;
 using Queries.Core.Parts.Columns;
 using Queries.Core.Parts.Sorting;
 using Queries.Core.Renderers;
+
 using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
-using FluentAssertions.Extensions;
+
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Categories;
+
 using static Queries.Core.Builders.Fluent.QueryBuilder;
 using static Queries.Core.Parts.Clauses.ClauseOperator;
 using static Queries.Core.Parts.Columns.SelectColumn;
@@ -37,9 +40,589 @@ public class PostgresRendererTest
                 new PostgresRendererSettings { PrettyPrint = false },
                 "SELECT uuid_generate_v4()" };
 
+<<<<<<< HEAD
             yield return new object[] { Select(1.Literal()),
                 new PostgresRendererSettings { PrettyPrint = false },
                 "SELECT 1"
+=======
+                yield return new object[] { Select(1.Literal()),
+                    new PostgresRendererSettings { PrettyPrint = false },
+                    "SELECT 1"
+                };
+
+                yield return new object[] {
+                    Select(1.Literal()).Union(Select(2.Literal())),
+                    new PostgresRendererSettings{ PrettyPrint = false },
+                    "SELECT 1 UNION SELECT 2" };
+
+                yield return new object[]
+                {
+                    Select("*").From(Select(1.Literal()).Union(Select(2.Literal()))),
+                    new PostgresRendererSettings{ PrettyPrint = false },
+                    "SELECT * FROM (SELECT 1 UNION SELECT 2)"
+                };
+
+                yield return new object[] {
+                    Select("*")
+                    .From(
+                        Select("identifier")
+                        .From("identities")
+                        .Union(
+                            Select("username")
+                            .From("members")
+                            ).As("logins")
+                        ),
+                    new PostgresRendererSettings{ PrettyPrint = false },
+                    @"SELECT * FROM (SELECT ""identifier"" FROM ""identities"" UNION SELECT ""username"" FROM ""members"") ""logins""" };
+
+                yield return new object[]
+                {
+                    Select("*").From("Table"),
+                    new PostgresRendererSettings{ PrettyPrint = false },
+                    @"SELECT * FROM ""Table"""
+                };
+
+                yield return new object[] {
+                    Select("*".Field()).From("Table"),
+                    new PostgresRendererSettings{ PrettyPrint = false },
+                    @"SELECT * FROM ""Table""" };
+
+                yield return new object[] {
+                    Select("Employees.*").From("Table"),
+                    new PostgresRendererSettings{ PrettyPrint = false },
+                    @"SELECT ""Employees"".* FROM ""Table""" };
+
+                yield return new object[]
+                {
+                    Select(Concat("firstname".Field(), " ".Literal(), "lastname".Field())).From("members"),
+                    new PostgresRendererSettings{ PrettyPrint = false },
+                    @"SELECT ""firstname"" || ' ' || ""lastname"" FROM ""members"""
+                };
+
+                yield return new object[]
+                {
+                    Select(Concat("firstname".Field(), " ".Literal(), "lastname".Field())).From("members"),
+                    new PostgresRendererSettings{ PrettyPrint = false },
+                    @"SELECT ""firstname"" || ' ' || ""lastname"" FROM ""members"""
+                };
+
+                yield return new object[]
+                {
+                    Select(Concat("firstname".Field(), " ".Literal(), "lastname".Field()))
+                    .From("members")
+                    ,
+                    new PostgresRendererSettings{ PrettyPrint = false },
+                    @"SELECT ""firstname"" || ' ' || ""lastname"" FROM ""members"""
+                };
+
+                yield return new object[]
+                {
+                    Select(Concat("firstname".Field(), " ".Literal(), "lastname".Field()))
+                    .From("members")
+                    .OrderBy(new OrderExpression("firstname")),
+                    new PostgresRendererSettings{ PrettyPrint = false },
+                    @"SELECT ""firstname"" || ' ' || ""lastname"" FROM ""members"" ORDER BY ""firstname"""
+                };
+
+                yield return new object[]
+                {
+                    Select(Concat("firstname".Field(), " ".Literal(), "lastname".Field()))
+                    .From("members")
+                    .OrderBy(new OrderExpression("firstname", OrderDirection.Descending))
+                    ,
+                    new PostgresRendererSettings{ PrettyPrint = false },
+                    @"SELECT ""firstname"" || ' ' || ""lastname"" FROM ""members"" ORDER BY ""firstname"" DESC"
+                };
+
+                yield return new object[]
+                {
+                    Select(Concat("firstname".Field(), " ".Literal(), "lastname".Field()))
+                    .From("members")
+                    .OrderBy("firstname".Desc())
+                    ,
+                    new PostgresRendererSettings{ PrettyPrint = false },
+                    @"SELECT ""firstname"" || ' ' || ""lastname"" FROM ""members"" ORDER BY ""firstname"" DESC"
+                };
+
+                yield return new object[]
+                {
+                    Select(Length(Concat("firstname".Field(), " ".Literal(), "lastname".Field())))
+                    .From("members")
+                    .OrderBy("firstname".Desc())
+                    , new PostgresRendererSettings{ PrettyPrint = false },
+                    @"SELECT LENGTH(""firstname"" || ' ' || ""lastname"") FROM ""members"" ORDER BY ""firstname"" DESC"
+                };
+
+                yield return new object[]
+                {
+                    Select(Concat("firstname".Field(), " ".Literal(), "lastname".Field()).As("fullname")).From("members"),
+                    new PostgresRendererSettings{ PrettyPrint = false },
+                    @"SELECT ""firstname"" || ' ' || ""lastname"" ""fullname"" FROM ""members"""
+                };
+
+                yield return new object[]
+                {
+                    Select(Null("firstname".Field(), "").As("firstname")).From("members"),
+                    new PostgresRendererSettings{ PrettyPrint = false },
+                    @"SELECT COALESCE(""firstname"", '') ""firstname"" FROM ""members"""
+                };
+
+                yield return new object[]
+                {
+                    Select(Max("age".Field()).As("age maxi")).From("members"),
+                    new PostgresRendererSettings{ PrettyPrint = false },
+                    @"SELECT MAX(""age"") ""age maxi"" FROM ""members"""
+                };
+
+                yield return new object[]
+                {
+                    Select(Max(Null("age".Field(), 0)).As("age maxi")).From("members"),
+                    new PostgresRendererSettings{ PrettyPrint = false },
+                    @"SELECT MAX(COALESCE(""age"", 0)) ""age maxi"" FROM ""members"""
+                };
+
+                yield return new object[]
+                {
+                    Select(Min("age".Field()).As("age mini")).From("members"),
+                    new PostgresRendererSettings{ PrettyPrint = false },
+                    @"SELECT MIN(""age"") ""age mini"" FROM ""members"""
+                };
+
+                yield return new object[]
+                {
+                    Select(Min(Null("age".Field(), 0)).As("age mini")).From("members"),
+                    new PostgresRendererSettings{ PrettyPrint = false },
+                    @"SELECT MIN(COALESCE(""age"", 0)) ""age mini"" FROM ""members"""
+                };
+
+                yield return new object[]
+                {
+                    Select("firstname".Field(), Max("age".Field()).As("age maximum")).From("members"),
+                    new PostgresRendererSettings{ PrettyPrint = false },
+                    @"SELECT ""firstname"", MAX(""age"") ""age maximum"" FROM ""members"" GROUP BY ""firstname"""
+                };
+
+                yield return new object[]
+                {
+                    Select(Concat(Substring("firstname".Field(), 0, 1), Substring("lastname".Field(), 0, 1)).As("initials"))
+                    .From("members"),
+                    new PostgresRendererSettings{ PrettyPrint = false },
+                    @"SELECT SUBSTRING(""firstname"" FROM 0 FOR 1) || SUBSTRING(""lastname"" FROM 0 FOR 1) ""initials"" FROM ""members"""
+                };
+
+                yield return new object[]
+                {
+                    Select(Concat(Substring("firstname".Field(), 0, 1), Substring("lastname".Field(), 0)).As("initials"))
+                    .From("members"),
+                    new PostgresRendererSettings{ PrettyPrint = false },
+                    @"SELECT SUBSTRING(""firstname"" FROM 0 FOR 1) || SUBSTRING(""lastname"" FROM 0) ""initials"" FROM ""members"""
+                };
+
+                yield return new object[]
+                {
+                    Select(Concat(Substring("firstname".Field(), 0, 1), Substring("lastname".Field(), 0)).As("initials"))
+                    .From("members"),
+                    new PostgresRendererSettings{ PrettyPrint = false },
+                    @"SELECT SUBSTRING(""firstname"" FROM 0 FOR 1) || SUBSTRING(""lastname"" FROM 0) ""initials"" FROM ""members"""
+                };
+
+                yield return new object[]
+                {
+                    Select("settings".Field().Json("theme"))
+                        .From("members"),
+                    new PostgresRendererSettings{ PrettyPrint = false},
+                    @"SELECT ""settings"" -> 'theme' FROM ""members"""
+                };
+
+                yield return new object[]
+                {
+                    Select("settings".Field().Json("theme").As("preferences"))
+                        .From("members"),
+                    new PostgresRendererSettings{ PrettyPrint = false},
+                    @"SELECT ""settings"" -> 'theme' AS ""preferences"" FROM ""members"""
+                };
+
+                yield return new object[]
+                {
+                    Select("*")
+                        .From("members")
+                        .Where("settings".Field().Json("theme"), EqualTo, "dark"),
+                    new PostgresRendererSettings{ PrettyPrint = false},
+                    @"SELECT * FROM ""members"" WHERE (""settings"" ->> 'theme' = 'dark')"
+                };
+
+                yield return new object[]
+                {
+                    Select("*")
+                        .From("members")
+                        .Where("dark".Literal(), EqualTo, "settings".Field().Json("theme")),
+                    new PostgresRendererSettings{ PrettyPrint = false},
+                    @"SELECT * FROM ""members"" WHERE ('dark' = ""settings"" ->> 'theme')"
+                };
+
+                yield return new object[]
+                {
+                    Select("*")
+                        .From("members")
+                        .Where("settings".Field().Json("theme"), EqualTo, "dark"),
+                    new PostgresRendererSettings{ PrettyPrint = false},
+                    @"SELECT * FROM ""members"" WHERE (""settings"" ->> 'theme' = 'dark')"
+                };
+
+                yield return new object[]
+                {
+                    Select("*")
+                        .From("members")
+                        .Where("settings".Field().Json("theme").EqualTo("settings".Field().Json("theme"))),
+                    new PostgresRendererSettings{ PrettyPrint = false},
+                    @"SELECT * FROM ""members"" WHERE (""settings"" -> 'theme' = ""settings"" -> 'theme')"
+                };
+
+                yield return new object[]
+                {
+                    Select("*")
+                        .From("members")
+                        .Where(new CompositeWhereClause{
+                            Logic = ClauseLogic.And,
+                            Clauses = new IWhereClause[]
+                            {
+                                "settings".Field().Json("theme").EqualTo("dark"),
+                                "name".Field().EqualTo("super-user")
+                            }
+                        }),
+                    new PostgresRendererSettings{ PrettyPrint = false},
+                    @"SELECT * FROM ""members"" WHERE ((""settings"" ->> 'theme' = 'dark') AND (""name"" = 'super-user'))"
+                };
+            }
+        }
+
+        public static IEnumerable<object[]> SelectIntoTestCases
+        {
+            get
+            {
+                yield return new object[]
+                {
+                    SelectInto("destination").From("source".Table()),
+                    new PostgresRendererSettings{ PrettyPrint = false },
+                    @"SELECT * INTO ""destination"" FROM ""source"""
+                };
+
+                yield return new object[]
+                {
+                    SelectInto("names")
+                        .From(
+                            Select(Concat("firstname".Field(), " ".Literal(), "lastname".Field()).As("fullname"))
+                            .From("members")
+                    ),
+                    new PostgresRendererSettings{ PrettyPrint = false },
+                    @"SELECT * INTO ""names"" FROM (SELECT ""firstname"" || ' ' || ""lastname"" ""fullname"" FROM ""members"")"
+                };
+
+                yield return new object[]
+                {
+                    SelectInto("names")
+                        .From(
+                            Select(Concat("firstname".Field(), " ".Literal(), "lastname".Field()).As("fullname"))
+                                .From("members")
+                                .Where("firstname".Field().IsNotNull())),
+                    new PostgresRendererSettings{ PrettyPrint = false },
+                    @"SELECT * INTO ""names"" FROM (SELECT ""firstname"" || ' ' || ""lastname"" ""fullname"" FROM ""members"" WHERE (""firstname"" IS NOT NULL))"
+                };
+            }
+        }
+
+        public static IEnumerable<object[]> UpdateTestCases
+        {
+            get
+            {
+                yield return new object[]
+                {
+                    Update("members").Set("firstname".Field().UpdateValueTo("")).Where("firstname".Field().IsNull()),
+                    new PostgresRendererSettings{ PrettyPrint = false },
+                    @"UPDATE ""members"" SET ""firstname"" = '' WHERE (""firstname"" IS NULL)"
+                };
+                yield return new object[]
+                {
+                     Update("members").Set("firstname".Field().UpdateValueTo(null)).Where(new WhereClause("firstname".Field(), EqualTo, "")),
+                    new PostgresRendererSettings{ PrettyPrint = false },
+                    @"UPDATE ""members"" SET ""firstname"" = NULL WHERE (""firstname"" = '')"
+                };
+            }
+        }
+
+        public static IEnumerable<object[]> DeleteTestCases
+        {
+            get
+            {
+                yield return new object[]
+                {
+                    Delete("members"),
+                    new PostgresRendererSettings{ PrettyPrint = false },
+                    @"DELETE FROM ""members"""
+                };
+
+                yield return new object[]
+                {
+                    Delete("members").Where(new WhereClause("firstname".Field(), IsNull)),
+                    new PostgresRendererSettings{ PrettyPrint = false },
+                    @"DELETE FROM ""members"" WHERE (""firstname"" IS NULL)"
+                };
+            }
+        }
+
+        public static IEnumerable<object[]> TruncateTestCases
+        {
+            get
+            {
+                yield return new object[]
+                {
+                    Truncate("table"),
+                    new PostgresRendererSettings{ PrettyPrint = false },
+                    @"TRUNCATE TABLE ""table"""
+                };
+            }
+        }
+
+        public static IEnumerable<object[]> InsertIntoTestCases
+        {
+            get
+            {
+                yield return new object[]
+                {
+                    InsertInto("members").Values(Select("Bruce".Literal(), "Wayne".Literal(), "Batman".Literal())),
+                    new PostgresRendererSettings{ PrettyPrint = false },
+                    @"INSERT INTO ""members"" SELECT 'Bruce', 'Wayne', 'Batman'"
+                };
+
+                yield return new object[]
+                {
+                    InsertInto("members").Values(Select("Bruce".Literal(), "Wayne".Literal(), "Batman".Literal())),
+                    new PostgresRendererSettings{ PrettyPrint = true },
+                    $@"INSERT INTO ""members"" {Environment.NewLine}SELECT 'Bruce', 'Wayne', 'Batman'"
+                };
+
+                yield return new object[]
+                {
+                    InsertInto("members").Values("firstname".InsertValue("Bruce".Literal()), "lastname".InsertValue("Wayne".Literal()), "nickname".InsertValue("Batman".Literal())),
+                    new PostgresRendererSettings{ PrettyPrint = false },
+                    @"INSERT INTO ""members"" (""firstname"", ""lastname"", ""nickname"") VALUES ('Bruce', 'Wayne', 'Batman')"
+                };
+
+                yield return new object[]
+                {
+                    InsertInto("members").Values("firstname".InsertValue("Bruce".Literal()), "lastname".InsertValue("Wayne".Literal()), "nickname".InsertValue("Batman".Literal())),
+                    new PostgresRendererSettings{ PrettyPrint = true },
+                    $@"INSERT INTO ""members"" (""firstname"", ""lastname"", ""nickname"") {Environment.NewLine}VALUES ('Bruce', 'Wayne', 'Batman')"
+                };
+            }
+        }
+
+        public static IEnumerable<object[]> BatchTestCases
+        {
+            get
+            {
+                yield return new object[]
+                {
+                    new BatchQuery(
+                        Delete("members").Where("firstname".Field().IsNull()),
+                        Select("*").From("members")
+                    ),
+                    new PostgresRendererSettings{ PrettyPrint = false },
+                    $@"DELETE FROM ""members"" WHERE (""firstname"" IS NULL);SELECT * FROM ""members"";"
+                };
+
+                yield return new object[]
+                {
+                    new BatchQuery(
+                        InsertInto("members").Values(
+                            "Firstname".InsertValue("Bruce".Literal()),
+                            "Lastname".InsertValue("Wayne".Literal())
+                        ),
+                        Return()
+                    ),
+                    new PostgresRendererSettings{ PrettyPrint = false },
+                    @"INSERT INTO ""members"" (""Firstname"", ""Lastname"") VALUES ('Bruce', 'Wayne');RETURN ;"
+                };
+
+                yield return new object[]
+                {
+                    new BatchQuery(
+                        InsertInto("members").Values(
+                            "Firstname".InsertValue("Bruce".Literal()),
+                            "Lastname".InsertValue("Wayne".Literal())
+                        ),
+                        Return(0.Literal())
+                    ),
+                    new PostgresRendererSettings{ PrettyPrint = false },
+                    @"INSERT INTO ""members"" (""Firstname"", ""Lastname"") VALUES ('Bruce', 'Wayne');RETURN 0;"
+                };
+
+                yield return new object[]
+                {
+                    new BatchQuery(
+                        InsertInto("members").Values(
+                            "Firstname".InsertValue("Bruce".Literal()),
+                            "Lastname".InsertValue("Wayne".Literal())
+                        ),
+                        Return("Id".Field())
+                    ),
+                    new PostgresRendererSettings{ PrettyPrint = false },
+                    @"INSERT INTO ""members"" (""Firstname"", ""Lastname"") VALUES ('Bruce', 'Wayne');RETURN ""Id"";"
+                };
+
+                yield return new object[]
+                {
+                    new BatchQuery(
+                        InsertInto("members").Values(
+                            "Firstname".InsertValue("Bruce".Literal()),
+                            "Lastname".InsertValue("Wayne".Literal())
+                        ),
+                        Return(Select(Max("Age".Field())).From("members").Build())
+                    ),
+                    new PostgresRendererSettings{ PrettyPrint = false },
+                    @"INSERT INTO ""members"" (""Firstname"", ""Lastname"") VALUES ('Bruce', 'Wayne');RETURN SELECT MAX(""Age"") FROM ""members"";"
+                };
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(SelectTestCases))]
+        public void SelectTest(SelectQuery query, PostgresRendererSettings settings, string expectedString)
+            => IsQueryOk(query, settings, expectedString);
+
+        public static IEnumerable<object[]> CompileCases
+        {
+            get
+            {
+                yield return new object[]
+                {
+                    Select("*")
+                        .From("members")
+                        .Where("Firstname".Field(), In, new StringValues("Bruce", "Bane")),
+                    new PostgresRendererSettings{ Parametrization = ParametrizationSettings.SkipVariableDeclaration },
+                    new CompiledQuery(@"SELECT * FROM ""members"" WHERE (""Firstname"" IN (@p0, @p1))",
+                                      new[]
+                                      {
+                                          new Variable("p0", VariableType.String, "Bruce"),
+                                          new Variable("p1", VariableType.String, "Bane")
+                                      })
+                };
+
+                yield return new object[]
+                {
+                    Select("*")
+                    .From(
+                        Select("Fullname").From("People").Where("Firstname".Field(), Like, "B%")
+                        .Union(
+                        Select("Fullname").From("SuperHero").Where("Nickname".Field(), Like, "B%"))
+                    ),
+                    new PostgresRendererSettings{ PrettyPrint = false, Parametrization = ParametrizationSettings.SkipVariableDeclaration },
+                    new CompiledQuery("SELECT * " +
+                                       "FROM " +
+                                        "(" +
+                                            @"SELECT ""Fullname"" FROM ""People"" WHERE (""Firstname"" LIKE @p0) " +
+                                            "UNION " +
+                                            @"SELECT ""Fullname"" FROM ""SuperHero"" WHERE (""Nickname"" LIKE @p0)" +
+                                        ")",
+                                        new[]
+                                        {
+                                              new Variable("p0", VariableType.String, "B%")
+                                        })
+                };
+
+                yield return new object[]
+                {
+                    Select("id".Field(), "file_id".Field(), new Literal("COUNT(*) OVER()").As("fullcount"))
+                        .From("documents")
+                        .Where(new CompositeWhereClause()
+                        {
+                            Logic = ClauseLogic.And,
+                            Clauses = new []
+                            {
+                                "userAccount".Field().Like("vp%"),
+                                "created_on".Field().EqualTo(10.April(2010))
+                            }
+                        })
+                        .OrderBy("timestamp".Field().Desc())
+                        .Paginate(pageIndex: 2, pageSize: 3),
+                    new PostgresRendererSettings
+                    {
+                        PrettyPrint = false,
+                        Parametrization = ParametrizationSettings.SkipVariableDeclaration,
+                        FieldnameCasingStrategy = FieldnameCasingStrategy.SnakeCase
+                    },
+                    new CompiledQuery(@"SELECT ""id"", ""file_id"", COUNT(*) OVER() AS ""fullcount"" FROM ""documents"" " +
+                                      @"WHERE ((""user_account"" LIKE @p0) AND (""created_on"" = @p1)) " +
+                                      @"ORDER BY ""timestamp"" DESC " +
+                                      "LIMIT 3 OFFSET 3",
+                                      new[]
+                                      {
+                                          new Variable("p0", VariableType.String, "vp%"),
+                                          new Variable("p1", VariableType.Date, 10.April(2010))
+                                      }),
+                };
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(CompileCases))]
+        public void Compile(SelectQuery query, PostgresRendererSettings settings, CompiledQuery expected)
+        {
+            // Arrange
+            _outputHelper.WriteLine($"{nameof(query)} : '{query}'");
+            PostgresqlRenderer renderer = new(settings);
+
+            // Assert
+            CompiledQuery compiledQuery = renderer.Compile(query);
+
+            _outputHelper.WriteLine($"{nameof(compiledQuery)} : '{compiledQuery}'");
+
+            // Assert
+            compiledQuery.Statement.Should()
+                                   .Be(expected.Statement);
+            compiledQuery.Variables.Should()
+                                   .BeEquivalentTo(expected.Variables);
+        }
+
+        public static IEnumerable<object[]> FieldnameCasingStrategyCases
+        {
+            get
+            {
+                yield return new object[]
+                {
+                    Select("FirstName".Field(), "LastName".Field())
+                        .From("members"),
+                    FieldnameCasingStrategy.Default,
+                    @"SELECT ""FirstName"", ""LastName"" FROM ""members"""
+                };
+
+                yield return new object[]
+                {
+                    Select("FirstName".Field(), "LastName".Field())
+                        .From("members"),
+                    FieldnameCasingStrategy.CamelCase,
+                    @"SELECT ""firstName"", ""lastName"" FROM ""members"""
+                };
+
+                yield return new object[]
+                {
+                    Select("FirstName".Field(), "LastName".Field())
+                        .From("members"),
+                    FieldnameCasingStrategy.SnakeCase,
+                    @"SELECT ""first_name"", ""last_name"" FROM ""members"""
+                };
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(FieldnameCasingStrategyCases))]
+        public void CasingStrategy(SelectQuery query, FieldnameCasingStrategy casingStrategy, string expected)
+        {
+            // Arrange
+            PostgresRendererSettings settings = new()
+            {
+                FieldnameCasingStrategy = casingStrategy
+>>>>>>> c2bba33 (feat(renderer) : improve pretty print)
             };
 
             yield return new object[] {
@@ -54,7 +637,48 @@ public class PostgresRendererTest
                 $"UNION " +
                 $"{Environment.NewLine}SELECT 2" };
 
+<<<<<<< HEAD
             yield return new object[]
+=======
+            // Assert
+            statement.Should()
+                .Be(expected);
+        }
+
+        [Theory]
+        [MemberData(nameof(UpdateTestCases))]
+        public void UpdateTest(UpdateQuery query, PostgresRendererSettings settings, string expectedString)
+            => IsQueryOk(query, settings, expectedString);
+
+        [Theory]
+        [MemberData(nameof(DeleteTestCases))]
+        public void DeleteTest(DeleteQuery query, PostgresRendererSettings settings, string expectedString)
+            => IsQueryOk(query, settings, expectedString);
+
+        [Theory]
+        [MemberData(nameof(SelectIntoTestCases))]
+        public void SelectIntoTest(SelectIntoQuery query, PostgresRendererSettings settings, string expectedString)
+            => IsQueryOk(query, settings, expectedString);
+
+        [Theory]
+        [MemberData(nameof(TruncateTestCases))]
+        public void TruncateTest(TruncateQuery query, PostgresRendererSettings settings, string expectedString)
+            => IsQueryOk(query, settings, expectedString);
+
+        [Theory]
+        [MemberData(nameof(InsertIntoTestCases))]
+        public void InsertIntoTest(InsertIntoQuery query, PostgresRendererSettings settings, string expectedString)
+            => IsQueryOk(query, settings, expectedString);
+
+        [Theory]
+        [MemberData(nameof(BatchTestCases))]
+        public void BatchQueryTest(BatchQuery query, PostgresRendererSettings settings, string expectedString)
+            => IsQueryOk(query, settings, expectedString);
+
+        public static IEnumerable<object[]> PaginateCases
+        {
+            get
+>>>>>>> c2bba33 (feat(renderer) : improve pretty print)
             {
                 Select("*").From(Select(1.Literal()).Union(Select(2.Literal()))),
                 new PostgresRendererSettings{ PrettyPrint = false },
@@ -695,6 +1319,7 @@ public class PostgresRendererTest
                 };
             }
             {
+<<<<<<< HEAD
                 (int pageIndex, int pageSize) = (3, 10);
                 yield return new object[]
                 {
@@ -703,6 +1328,13 @@ public class PostgresRendererTest
                         .Paginate(pageIndex: pageIndex, pageSize: pageSize),
                     new PostgresRendererSettings(),
                     $@"SELECT ""col1"" FROM ""table"" LIMIT {pageSize} OFFSET {pageSize} * {(pageIndex - 1)}"
+=======
+                yield return new object[] {
+                    Select(1.Literal()).Union(Select(2.Literal())),
+                    $"SELECT 1{Environment.NewLine}" +
+                    $"UNION{Environment.NewLine}" +
+                     "SELECT 2"
+>>>>>>> c2bba33 (feat(renderer) : improve pretty print)
                 };
             }
         }

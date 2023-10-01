@@ -7,8 +7,11 @@ using Queries.Core.Renderers;
 
 using System;
 
+using Xunit.Categories;
+
 namespace Queries.Core.Tests.Renderers
 {
+    [UnitTest]
     public class QueryWriterTests
     {
         [Property]
