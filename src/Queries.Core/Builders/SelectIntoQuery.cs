@@ -25,9 +25,7 @@ public class SelectIntoQuery : SelectQueryBase, IBuild<SelectIntoQuery>
     /// </summary>
     /// <param name="table"></param>
     public SelectIntoQuery(string table) : this(table.Table())
-    {
-
-    }
+    { }
 
     /// <summary>
     /// Builds a new <see cref="SelectIntoQuery"/> instance.
@@ -36,17 +34,17 @@ public class SelectIntoQuery : SelectQueryBase, IBuild<SelectIntoQuery>
     /// <exception cref="ArgumentNullException"><paramref name="table"/> is <see langword="null"/></exception>
     public SelectIntoQuery(Table table)
     {
-        Destination = table ?? throw new ArgumentNullException(nameof(table), "table cannot be null");
+        Destination = table ?? throw new ArgumentNullException(nameof(table));
     }
 
     /// <summary>
     /// Defines <see cref="Source"/>
     /// </summary>
-    /// <param name="select"></param>
+    /// <param name="source"></param>
     /// <returns><see cref="IBuild{SelectIntoQuery}"/> for further processing.</returns>
-    public IBuild<SelectIntoQuery> From(ITable select)
+    public IBuild<SelectIntoQuery> From(ITable source)
     {
-        Source = select;
+        Source = source ?? throw new ArgumentNullException(nameof(source));
         return this;
     }
 
