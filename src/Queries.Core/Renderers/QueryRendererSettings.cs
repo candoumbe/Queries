@@ -1,4 +1,6 @@
-﻿namespace Queries.Core.Renderers;
+﻿using System;
+
+namespace Queries.Core.Renderers;
 
 /// <summary>
 /// Settings to use when computing string representation of a <see cref="IQuery"/> instance.

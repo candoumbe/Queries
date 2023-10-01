@@ -59,7 +59,7 @@ public class SqlServerRendererTest
                 "SELECT TOP 10 [col1] FROM [table]"
             };
             {
-                var pagination = (pageIndex: 2, pageSize: 10);
+                (int pageIndex, int pageSize) pagination = (pageIndex: 2, pageSize: 10);
                 yield return new object[]
                 {
                     Select("col1")
@@ -69,28 +69,12 @@ public class SqlServerRendererTest
                     $"SELECT [col1] FROM [table] OFFSET {pagination.pageSize} ROWS " +
                     $"FETCH NEXT {pagination.pageSize} ROWS ONLY"
                 };
-<<<<<<< HEAD
             }
-=======
-                {
-                    (int pageIndex, int pageSize) pagination = (pageIndex: 2, pageSize: 10);
-                    yield return new object[]
-                    {
-                        Select("col1")
-                            .From("table")
-                            .Paginate(pageIndex: pagination.pageIndex, pageSize: pagination.pageSize),
-                        new SqlServerRendererSettings(),
-                        $"SELECT [col1] FROM [table] OFFSET {pagination.pageSize} ROWS " +
-                        $"FETCH NEXT {pagination.pageSize} ROWS ONLY"
-                    };
-                }
->>>>>>> c2bba33 (feat(renderer) : improve pretty print)
 
             {
-                var pagination = (pageIndex: 3, pageSize: 10);
+                (int pageIndex, int pageSize) pagination = (pageIndex: 3, pageSize: 10);
                 yield return new object[]
                 {
-<<<<<<< HEAD
                     Select("col1")
                         .From("table")
                         .Paginate(pageIndex: pagination.pageIndex, pageSize: pagination.pageSize),
@@ -98,40 +82,18 @@ public class SqlServerRendererTest
                     $"SELECT [col1] FROM [table] OFFSET {pagination.pageSize} * ({pagination.pageIndex} - 1) ROWS " +
                     $"FETCH NEXT {pagination.pageSize} ROWS ONLY"
                 };
-=======
-                    (int pageIndex, int pageSize) pagination = (pageIndex: 3, pageSize: 10);
-                    yield return new object[]
-                    {
-                        Select("col1")
-                            .From("table")
-                            .Paginate(pageIndex: pagination.pageIndex, pageSize: pagination.pageSize),
-                        new SqlServerRendererSettings(),
-                        $"SELECT [col1] FROM [table] OFFSET {pagination.pageSize} * ({pagination.pageIndex} - 1) ROWS " +
-                        $"FETCH NEXT {pagination.pageSize} ROWS ONLY"
-                    };
-                }
->>>>>>> c2bba33 (feat(renderer) : improve pretty print)
             }
         }
     }
 
-<<<<<<< HEAD
     [Theory]
     [MemberData(nameof(PaginateCases))]
     public void PaginateTest(SelectQuery query, SqlServerRendererSettings settings, string expectedString)
         => IsQueryOk(query, settings, expectedString);
-    
+
     public static IEnumerable<object[]> SelectTestCases
     {
         get
-=======
-        [Theory]
-        [MemberData(nameof(PaginateCases))]
-        public void PaginateTest(SelectQuery query, SqlServerRendererSettings settings, string expectedString)
-            => IsQueryOk(query, settings, expectedString);
-
-        public static IEnumerable<object[]> SelectTestCases
->>>>>>> c2bba33 (feat(renderer) : improve pretty print)
         {
             yield return new object[] { Select(UUID()), new SqlServerRendererSettings { PrettyPrint = false }, "SELECT NEWID()" };
 
@@ -143,7 +105,7 @@ public class SqlServerRendererTest
 
             yield return new object[] { Select(1.Literal()).Union(Select(2.Literal())), new SqlServerRendererSettings { PrettyPrint = false }, "SELECT 1 UNION SELECT 2" };
 
-            yield return new object[] { Select(1.Literal()).Union(Select(2.Literal())), new SqlServerRendererSettings { PrettyPrint = true }, $"SELECT 1 {Environment.NewLine}UNION {Environment.NewLine}SELECT 2" };
+            yield return new object[] { Select(1.Literal()).Union(Select(2.Literal())), new SqlServerRendererSettings { PrettyPrint = true }, $"SELECT 1{Environment.NewLine}UNION{Environment.NewLine}SELECT 2" };
 
             yield return new object[]
             {
@@ -405,8 +367,10 @@ public class SqlServerRendererTest
                 .Where("Nickname".Field(), EqualTo, "Batman"),
                 new SqlServerRendererSettings{ PrettyPrint = true },
                 $"DECLARE @p0 AS VARCHAR(8000) = 'Batman';{Environment.NewLine}" +
-                $"SELECT [Firstname], [Lastname] {Environment.NewLine}" +
-                $"FROM [SuperHeroes] {Environment.NewLine}" +
+                $"SELECT{Environment.NewLine}" +
+                $"    [Firstname], [Lastname]{Environment.NewLine}" +
+                $"FROM{Environment.NewLine}" +
+                $"    [SuperHeroes]{Environment.NewLine}" +
                 "WHERE ([Nickname] = @p0)"
             };
 
@@ -431,7 +395,7 @@ public class SqlServerRendererTest
             yield return new object[]
             {
                 Select("*").From("members").Where("Firstname".Field(), In, new StringValues("Bruce", "Bane")),
-                new SqlServerRendererSettings(),
+                new SqlServerRendererSettings {PrettyPrint = false },
                 "DECLARE @p0 AS VARCHAR(8000) = 'Bruce';" +
                 "DECLARE @p1 AS VARCHAR(8000) = 'Bane';" +
                 "SELECT * FROM [members] WHERE ([Firstname] IN (@p0, @p1))"
@@ -593,14 +557,11 @@ public class SqlServerRendererTest
         // Arrange
         SqlServerRendererSettings settings = new()
         {
-            FieldnameCasingStrategy = casingStrategy
+            FieldnameCasingStrategy = casingStrategy,
+            PrettyPrint = false
         };
 
-<<<<<<< HEAD
         SqlServerRenderer renderer = new(settings);
-=======
-
->>>>>>> c2bba33 (feat(renderer) : improve pretty print)
 
         // Act
         string statement = renderer.Render(query);
@@ -647,403 +608,6 @@ public class SqlServerRendererTest
                 ),
                 "The select statement as two variables with SAME value"
             };
-<<<<<<< HEAD
-=======
-
-            SqlServerRenderer renderer = new(settings);
-
-            // Act
-            string statement = renderer.Render(query);
-
-            // Assert
-            statement.Should()
-                .Be(expected);
-        }
-
-        public static IEnumerable<object[]> CompileCases
-        {
-            get
-            {
-                yield return new object[]
-                {
-                    Select("*").From("members").Where("Firstname".Field(), In, new StringValues("Bruce", "Bane")),
-                    new SqlServerRendererSettings{ Parametrization = ParametrizationSettings.SkipVariableDeclaration },
-                    "SELECT * FROM [members] WHERE ([Firstname] IN (@p0, @p1))",
-                    (Expression<Func<IEnumerable<Variable>, bool>>)(
-                        variables => variables.Exactly(2)
-                            && variables.Once(v => v.Name == "p0" && "Bruce".Equals(v.Value) && v.Type == VariableType.String)
-                            && variables.Once(v => v.Name == "p1" && "Bane".Equals(v.Value) && v.Type == VariableType.String)
-                    ),
-                    "the statement contains 2 variables with 2 values"
-                };
-
-                yield return new object[]
-                {
-                    Select("*")
-                    .From(
-                        Select("Fullname").From("People").Where("Firstname".Field(), Like, "B%")
-                        .Union(
-                        Select("Fullname").From("SuperHero").Where("Nickname".Field(), Like, "B%"))
-                    ),
-                    new SqlServerRendererSettings{ PrettyPrint = false, Parametrization = ParametrizationSettings.SkipVariableDeclaration },
-                    "SELECT * FROM (" +
-                            "SELECT [Fullname] FROM [People] WHERE ([Firstname] LIKE @p0) " +
-                            "UNION " +
-                            "SELECT [Fullname] FROM [SuperHero] WHERE ([Nickname] LIKE @p0)" +
-                        ")",
-
-                    (Expression<Func<IEnumerable<Variable>, bool>>)(
-                        variables => variables.Once()
-                                     && variables.Once(v => v.Name == "p0" && "B%".Equals(v.Value) && v.Type == VariableType.String)
-                    ),
-                    "The select statement as two variables with SAME value"
-                };
-            }
-        }
-
-        [Theory]
-        [MemberData(nameof(CompileCases))]
-        public void Select_Compile(SelectQuery query,
-                                   SqlServerRendererSettings settings,
-                                   string expectedStatement,
-                                   Expression<Func<IEnumerable<Variable>, bool>> variablesExpectation,
-                                   string reason)
-        {
-            // Arrange
-            SqlServerRenderer renderer = new(settings);
-
-            // Assert
-            CompiledQuery compiledQuery = renderer.Compile(query);
-
-            _outputHelper.WriteLine($"{nameof(compiledQuery)} : '{compiledQuery}'");
-            _outputHelper.WriteLine($"{nameof(CompiledQuery)}.{nameof(CompiledQuery.Statement)} : '{compiledQuery.Statement}'");
-
-            // Assert
-            compiledQuery.Statement.Should().Be(expectedStatement, reason);
-            compiledQuery.Variables.Should().Match(variablesExpectation, reason);
-        }
-
-        public static IEnumerable<object[]> UpdateTestCases
-        {
-            get
-            {
-                yield return new object[]
-                {
-                    Update("members").Set("UUID".Field().UpdateValueTo(UUID())),
-                    new SqlServerRendererSettings{ PrettyPrint = false },
-                    "UPDATE [members] SET [UUID] = NEWID()"
-                };
-                yield return new object[]
-                {
-                    Update("members").Set("firstname".Field().UpdateValueTo("")).Where("firstname".Field().IsNull()),
-                    new SqlServerRendererSettings{ PrettyPrint = false },
-                    "UPDATE [members] SET [firstname] = '' WHERE ([firstname] IS NULL)"
-                };
-                yield return new object[]
-                {
-                    Update("members").Set("firstname".Field().UpdateValueTo(null)).Where(new WhereClause("firstname".Field(), EqualTo, "")),
-                    new SqlServerRendererSettings{ PrettyPrint = false },
-                    "UPDATE [members] SET [firstname] = NULL WHERE ([firstname] = '')"
-                };
-            }
-        }
-
-        [Theory]
-        [MemberData(nameof(UpdateTestCases))]
-        public void UpdateTest(UpdateQuery query, SqlServerRendererSettings settings, string expectedString)
-            => IsQueryOk(query, settings, expectedString);
-
-        public static IEnumerable<object[]> BatchQueryCases
-        {
-            get
-            {
-                yield return new object[]
-                {
-                    new BatchQuery(
-                        Delete("members").Where(new WhereClause("firstname".Field(), IsNull)),
-                        Select("*").From("members")
-                    ),
-                    new SqlServerRendererSettings{ PrettyPrint = false },
-                    "DELETE FROM [members] WHERE ([firstname] IS NULL);" +
-                    "SELECT * FROM [members];"
-                };
-            }
-        }
-
-        [Theory]
-        [MemberData(nameof(BatchQueryCases))]
-        public void BatchQueryTest(BatchQuery query, SqlServerRendererSettings settings, string expectedString)
-            => IsQueryOk(query, settings, expectedString);
-
-        public static IEnumerable<object[]> TruncateQueryCases
-        {
-            get
-            {
-                yield return new object[]
-                {
-                    Truncate("SuperHero"),
-                    new SqlServerRendererSettings{ PrettyPrint = false },
-                    "TRUNCATE TABLE [SuperHero]"
-                };
-                yield return new object[]
-                {
-                    Truncate("SuperHero"),
-                    new SqlServerRendererSettings{ PrettyPrint = true },
-                    "TRUNCATE TABLE [SuperHero]"
-                };
-            }
-        }
-
-        [Theory]
-        [MemberData(nameof(TruncateQueryCases))]
-        public void TruncateQueryTest(TruncateQuery query, SqlServerRendererSettings settings, string expectedString)
-            => IsQueryOk(query, settings, expectedString);
-
-        public static IEnumerable<object[]> DeleteQueryCases
-        {
-            get
-            {
-                yield return new object[]
-                {
-                    Delete("members")
-                    .Where("Activity".Field(), NotLike, "%Super hero%"),
-                    new SqlServerRendererSettings(),
-                    "DECLARE @p0 AS VARCHAR(8000) = '%Super hero%';" +
-                    "DELETE FROM [members] WHERE ([Activity] NOT LIKE @p0)"
-                };
-            }
-        }
-
-        [Theory]
-        [MemberData(nameof(DeleteQueryCases))]
-        public void DeleteQueryTests(DeleteQuery query, SqlServerRendererSettings settings, string expectedString)
-            => IsQueryOk(query, settings, expectedString);
-
-        public static IEnumerable<object[]> SelectIntoQueryCases
-        {
-            get
-            {
-                yield return new object[]
-                {
-                    SelectInto("SuperHero_BackUp").From(Select("Firstname", "Lastname").From("DCComics")),
-                    new SqlServerRendererSettings{ PrettyPrint = false },
-                    "SELECT * INTO [SuperHero_BackUp] FROM (SELECT [Firstname], [Lastname] FROM [DCComics])"
-                };
-            }
-        }
-
-        [Theory]
-        [MemberData(nameof(SelectIntoQueryCases))]
-        public void SelectIntoQueryTest(SelectIntoQuery query, SqlServerRendererSettings settings, string expectedString)
-            => IsQueryOk(query, settings, expectedString);
-
-        public static IEnumerable<object[]> SqlInjectionAttackCases
-        {
-            get
-            {
-                yield return new object[]
-                {
-                    Select("id".Field())
-                        .From("members")
-                        .Where("username".Field(), EqualTo, "Dupont';--"),
-                    new SqlServerRendererSettings(),
-
-                    "DECLARE @p0 AS VARCHAR(8000) = 'Dupont'';--';" +
-                    "SELECT [id] FROM [members] WHERE ([username] = @p0)"
-                };
-
-                yield return new object[]
-                {
-                    Select("id".Field())
-                        .From("members")
-                        .Where("username".Field(), Like, "Du[pont';--"),
-                    new SqlServerRendererSettings(),
-
-                    @"DECLARE @p0 AS VARCHAR(8000) = 'Du\[pont'';--';" +
-                    "SELECT [id] FROM [members] WHERE ([username] LIKE @p0)"
-                };
-
-#if !NETCOREAPP1_0
-                {
-                    foreach (string naughtyString in TheNaughtyStrings.SQLInjection)
-                    {
-                        string escapedString = naughtyString
-                            .Replace("\'", "''")
-                            .Replace("[", "[");
-                        yield return new object[]
-                        {
-                            Select("*").From("superheroes")
-                                .Where("name".Field(), EqualTo, naughtyString),
-                            new SqlServerRendererSettings (),
-                            $"DECLARE @p0 AS VARCHAR(8000) = '{escapedString}';" +
-                            "SELECT * FROM [superheroes] WHERE ([name] = @p0)"
-                        };
-                    }
-                }
-#endif
-            }
-        }
-
-        [Theory]
-        [MemberData(nameof(SqlInjectionAttackCases))]
-        public void PreventSqlInjectionAttack(IQuery query, SqlServerRendererSettings settings, string expectedString) => IsQueryOk(query, settings, expectedString);
-
-        public static IEnumerable<object[]> CreateViewCases
-        {
-            get
-            {
-                yield return new object[]
-                {
-                    CreateView("active_users")
-                    .As(Select(Concat("Firstname".Field(), " ".Literal(), "Lastname".Field() ))
-                        .From("members")
-                        .Where("IsActive".Field().EqualTo(true))
-                        .Build()),
-                    new SqlServerRendererSettings (),
-                    "DECLARE @p0 AS BIT = 1;" +
-                    "CREATE VIEW [active_users] " +
-                    "AS SELECT [Firstname] + ' ' + [Lastname] FROM [members] WHERE ([IsActive] = @p0)"
-                };
-
-                yield return new object[]
-                {
-                    CreateView("active_users")
-                    .As(Select(Concat("Firstname".Field(), " ".Literal(), "Lastname".Field() ))
-                        .From("members")
-                        .Where("IsActive".Field().In("val1", "val2"))
-                        .Build()),
-                    new SqlServerRendererSettings (),
-                    "DECLARE @p0 AS VARCHAR(8000) = 'val1';" +
-                    "DECLARE @p1 AS VARCHAR(8000) = 'val2';" +
-                    "CREATE VIEW [active_users] " +
-                    "AS SELECT [Firstname] + ' ' + [Lastname] FROM [members] WHERE ([IsActive] IN (@p0, @p1))"
-                };
-
-                yield return new object[]
-                {
-                    CreateView("viewName")
-                    .As(Select("col1", "col2")
-                        .From("table1").InnerJoin("table2".Table(), "table1.Id".Field().EqualTo("table2.Id".Field()))
-                        .Where("IsActive".Field().In("val1", "val2"))
-                        .Build()),
-                    new SqlServerRendererSettings (),
-                    "DECLARE @p0 AS VARCHAR(8000) = 'val1';" +
-                    "DECLARE @p1 AS VARCHAR(8000) = 'val2';" +
-                    "CREATE VIEW [viewName] " +
-                    "AS SELECT [col1], [col2] " +
-                    "FROM [table1] INNER JOIN [table2] ON ([table1].[Id] = [table2].[Id]) " +
-                    "WHERE ([IsActive] IN (@p0, @p1))"
-                };
-            }
-        }
-
-        [Theory]
-        [MemberData(nameof(CreateViewCases))]
-        public void CreateViewTest(CreateViewQuery query, SqlServerRendererSettings settings, string expectedString)
-            => IsQueryOk(query, settings, expectedString);
-
-        public static IEnumerable<object[]> InsertIntoQueryCases
-        {
-            get
-            {
-                yield return new object[]
-                {
-                    InsertInto("members")
-                    .Values(
-                        "Firstname".Field().InsertValue("Bruce".Literal()),
-                        "Lastname".Field().InsertValue("Wayne".Literal())
-                    ),
-                    new SqlServerRendererSettings(),
-                    "INSERT INTO [members] ([Firstname], [Lastname]) VALUES ('Bruce', 'Wayne')"
-                };
-            }
-        }
-
-        [Theory]
-        [MemberData(nameof(InsertIntoQueryCases))]
-        public void InsertIntoQueryTest(InsertIntoQuery query, SqlServerRendererSettings settings, string expectedString)
-            => IsQueryOk(query, settings, expectedString);
-
-        public static IEnumerable<object[]> PrettyPrintCases
-        {
-            get
-            {
-                yield return new object[]
-                {
-                    Select("col".Field()),
-                    "SELECT [col]"
-                };
-
-                yield return new object[]
-                {
-                    Select("col".Field())
-                    .From("table".Table()),
-                    $"SELECT{Environment.NewLine}" +
-                    $"    [col]{Environment.NewLine}" +
-                    $"FROM{Environment.NewLine}" +
-                    "    [table]"
-                };
-
-                yield return new object[]
-                {
-                    Select("col".Field(), "col2".Field())
-                    .From("table".Table()),
-                    $"SELECT{Environment.NewLine}" +
-                    $"    [col], [col2]{Environment.NewLine}" +
-                    $"FROM{Environment.NewLine}" +
-                    "    [table]"
-                };
-
-                yield return new object[]
-                {
-                    Select("Firstname".Field(), "Lastname".Field())
-                    .From("SuperHeroes")
-                    .Where("Nickname".Field(), EqualTo, "Batman"),
-                    $"DECLARE @p0 AS VARCHAR(8000) = 'Batman';{Environment.NewLine}" +
-                    $"SELECT{Environment.NewLine}" +
-                    $"    [Firstname], [Lastname]{Environment.NewLine}" +
-                    $"FROM{Environment.NewLine}" +
-                    $"    [SuperHeroes]{Environment.NewLine}" +
-                    "WHERE ([Nickname] = @p0)"
-                };
-
-                yield return new object[]
-                {
-                    Select("*").From(Select("Firstname", "Lastname").From("DCComics")),
-                    $"SELECT{Environment.NewLine}" +
-                    $"    *{Environment.NewLine}" +
-                    $"FROM{Environment.NewLine}" +
-                    $"({Environment.NewLine}" +
-                    $"    SELECT{Environment.NewLine}" +
-                    $"        [Firstname], [Lastname]{Environment.NewLine}" +
-                    $"    FROM{Environment.NewLine}" +
-                    $"        [DCComics]{Environment.NewLine}" +
-                     ")"
-                };
-            }
-        }
-
-        /// <summary>
-        /// Tests pretty print outputs
-        /// </summary>
-        /// <param name="query"></param>
-        /// <param name="expectedString"></param>
-        [Theory]
-        [MemberData(nameof(PrettyPrintCases))]
-        public void PrettyPrintTests(IQuery query, string expectedString) => IsQueryOk(query, new() { PrettyPrint = true }, expectedString);
-
-        private void IsQueryOk(IQuery query, SqlServerRendererSettings settings, string expectedString)
-        {
-            _outputHelper.WriteLine($"{nameof(query)} : {query}");
-            _outputHelper.WriteLine($"{nameof(settings)} : {settings}");
-            // Act
-            string actual = query.ForSqlServer(settings);
-
-            // Assert
-            _outputHelper.WriteLine($"Actual   : {actual}");
-            _outputHelper.WriteLine($"Expected : {expectedString}");
-            actual.Should().Be(expectedString);
->>>>>>> c2bba33 (feat(renderer) : improve pretty print)
         }
     }
 
@@ -1175,10 +739,17 @@ public class SqlServerRendererTest
             {
                 SelectInto("SuperHero_BackUp").From(Select("Firstname", "Lastname").From("DCComics")),
                 new SqlServerRendererSettings{ PrettyPrint = true },
-                $"SELECT * {Environment.NewLine}" +
-                $"INTO [SuperHero_BackUp] {Environment.NewLine}" +
-                $"FROM (SELECT [Firstname], [Lastname] {Environment.NewLine}" +
-                $"FROM [DCComics])"
+                $"SELECT{Environment.NewLine}" +
+                $"    *{Environment.NewLine}" +
+                $"INTO{Environment.NewLine}" +
+                $"    [SuperHero_BackUp]{Environment.NewLine}" +
+                $"FROM{Environment.NewLine}" +
+                $"({Environment.NewLine}" +
+                $"    SELECT{Environment.NewLine}" +
+                $"        [Firstname], [Lastname]{Environment.NewLine}" +
+                $"    FROM{Environment.NewLine}" +
+                $"        [DCComics]{Environment.NewLine}" +
+                 ")"
             };
         }
     }

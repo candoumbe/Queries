@@ -1,4 +1,8 @@
-﻿namespace Queries.Renderers.Postgres;
+﻿using Queries.Core.Parts.Clauses;
+using Queries.Core.Parts.Columns;
+using Queries.Renderers.Postgres.Parts.Columns;
+
+namespace Queries.Renderers.Postgres;
 
 /// <summary>
 /// Extension method for <see cref="JsonFieldColumn"/> types.

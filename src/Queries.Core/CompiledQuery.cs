@@ -1,4 +1,10 @@
-﻿namespace Queries.Core;
+﻿using Queries.Core.Parts.Clauses;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace Queries.Core;
 
 /// <summary>
 /// The result of calling <see cref="Renderers.QueryRendererBase.Compile(IQuery)"/>.
@@ -6,7 +12,7 @@
 public class CompiledQuery : IEquatable<CompiledQuery>
 {
     /// <summary>
-    /// Gets all <see cref="Variable"/>s of the current 
+    /// Gets all <see cref="Variable"/>s of the current
     /// </summary>
     public IEnumerable<Variable> Variables { get; }
 
@@ -62,7 +68,6 @@ public class CompiledQuery : IEquatable<CompiledQuery>
         return !(left == right);
     }
 
-
     /// <inheritdoc/>
     public override string ToString() => this.Jsonify();
 
@@ -72,5 +77,4 @@ public class CompiledQuery : IEquatable<CompiledQuery>
         variables = Variables;
         statement = Statement;
     }
-}
 }

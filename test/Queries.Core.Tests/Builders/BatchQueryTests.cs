@@ -1,4 +1,17 @@
-﻿namespace Queries.Core.Tests.Builders;
+﻿using FluentAssertions;
+
+using Queries.Core.Builders;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+using Xunit;
+using Xunit.Categories;
+
+using static Queries.Core.Builders.Fluent.QueryBuilder;
+
+namespace Queries.Core.Tests.Builders;
 
 [UnitTest]
 [Feature("Batch query")]

@@ -43,12 +43,23 @@ namespace Queries.Renderers.Neo4J
 
             NormalizeColumnAndTable(columns, selectQuery, tables);
 
-            writer.WriteText($"MATCH {RenderTables(tables.ToArray())}");
+            writer.WriteText("MATCH");
+            writer.StartBlock();
+            writer.WriteText(RenderTables(tables.ToArray()));
+            writer.EndBlock();
+
             if (query.WhereCriteria is not null)
             {
-                writer.WriteText($"WHERE {RenderWhere(query.WhereCriteria)}");
+                writer.WriteText("WHERE");
+                writer.StartBlock();
+                writer.WriteText(RenderWhere(query.WhereCriteria));
+                writer.EndBlock();
             }
-            writer.WriteText($"RETURN {RenderColumns(columns)}{BatchStatementSeparator}");
+
+            writer.WriteText("RETURN");
+            writer.StartBlock();
+            writer.WriteText($"{RenderColumns(columns)}{BatchStatementSeparator}");
+            writer.EndBlock();
 
             return writer.Value;
 
@@ -112,13 +123,11 @@ namespace Queries.Renderers.Neo4J
             {
                 throw new ArgumentNullException(nameof(query));
             }
-            //TODO validate the query
 
             StringBuilder sbQuery = new();
             if (query.InsertedValue is IEnumerable<InsertedValue> values)
             {
-                IDictionary<string, IColumn> map = values
-                    .ToDictionary(val => val.Column.Name, val => val.Value);
+                IDictionary<string, IColumn> map = values.ToDictionary(val => val.Column.Name, val => val.Value);
                 StringBuilder sbCreate = new();
                 foreach (KeyValuePair<string, IColumn> kv in map)
                 {

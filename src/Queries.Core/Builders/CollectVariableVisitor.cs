@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-﻿namespace Queries.Core.Builders
-=======
-﻿using Queries.Core.Parts;
+using Queries.Core.Parts;
 using Queries.Core.Parts.Clauses;
 using Queries.Core.Parts.Columns;
 
@@ -12,7 +9,6 @@ using System.Linq;
 using static Queries.Core.Parts.Clauses.VariableType;
 
 namespace Queries.Core.Builders
->>>>>>> c2bba33 (feat(renderer) : improve pretty print)
 {
     /// <summary>
     /// Collects <see cref="Literal"/>s from queries and replaces each of them by a <see cref="Variable"/> counterpart. 
@@ -67,19 +63,19 @@ namespace Queries.Core.Builders
                             }
                             break;
 #if NET6_0_OR_GREATER
-                    case DateColumn dc:
-                        {
-                            Variable variable = _variables.SingleOrDefault(x => x.Type == Date && dc.Value == x.Value);
-
-                            if (variable == null)
+                        case DateColumn dc:
                             {
-                                variable = new Variable($"p{_variables.Count}", Date, dc.Value);
-                                _variables.Add(variable);
-                            }
+                                Variable variable = _variables.SingleOrDefault(x => x.Type == Date && dc.Value == x.Value);
 
-                            when.ThenValue = variable;
-                        }
-                        break;
+                                if (variable == null)
+                                {
+                                    variable = new Variable($"p{_variables.Count}", Date, dc.Value);
+                                    _variables.Add(variable);
+                                }
+
+                                when.ThenValue = variable;
+                            }
+                            break;
 #endif
                         case NumericColumn nc:
                             {
@@ -236,29 +232,29 @@ namespace Queries.Core.Builders
                             }
                             break;
 #if NET6_0_OR_GREATER
-                    case DateColumn dc when dc.Value is not null:
-                        {
-                            Variable variable = _variables.SingleOrDefault(x => x.Type == Date && dc.Value == x.Value);
-                            if (variable is null)
+                        case DateColumn dc when dc.Value is not null:
                             {
-                                variable = new Variable($"p{_variables.Count}", Date, dc.Value);
-                                _variables.Add(variable);
+                                Variable variable = _variables.SingleOrDefault(x => x.Type == Date && dc.Value == x.Value);
+                                if (variable is null)
+                                {
+                                    variable = new Variable($"p{_variables.Count}", Date, dc.Value);
+                                    _variables.Add(variable);
+                                }
+                                wc.Constraint = variable;
                             }
-                            wc.Constraint = variable;
-                        }
-                        break;
+                            break;
 
-                    case TimeColumn tc when tc.Value is not null:
-                        {
-                            Variable variable = _variables.SingleOrDefault(x => x.Type == Time && tc.Value == x.Value);
-                            if (variable is null)
+                        case TimeColumn tc when tc.Value is not null:
                             {
-                                variable = new Variable($"p{_variables.Count}", Time, tc.Value);
-                                _variables.Add(variable);
+                                Variable variable = _variables.SingleOrDefault(x => x.Type == Time && tc.Value == x.Value);
+                                if (variable is null)
+                                {
+                                    variable = new Variable($"p{_variables.Count}", Time, tc.Value);
+                                    _variables.Add(variable);
+                                }
+                                wc.Constraint = variable;
                             }
-                            wc.Constraint = variable;
-                        }
-                        break;
+                            break;
 #endif
                         case StringValues strings:
                             IList<Variable> stringValueVariables = new List<Variable>(strings.Count());
@@ -326,13 +322,13 @@ namespace Queries.Core.Builders
                             }
                             break;
 #if NET6_0_OR_GREATER
-                    case DateColumn dc when dc.Value is not null:
-                        {
-                            Variable variable = new($"p{_variables.Count}", Date, dc.Value);
-                            _variables.Add(variable);
-                            item.Value = variable;
-                        }
-                        break;
+                        case DateColumn dc when dc.Value is not null:
+                            {
+                                Variable variable = new($"p{_variables.Count}", Date, dc.Value);
+                                _variables.Add(variable);
+                                item.Value = variable;
+                            }
+                            break;
 #endif
                     }
                 }
@@ -348,3 +344,4 @@ namespace Queries.Core.Builders
             }
         }
     }
+}

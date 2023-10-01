@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-﻿namespace Queries.Renderers.Postgres;
-=======
-﻿using Queries.Core;
+using Queries.Core;
 using Queries.Core.Exceptions;
 using Queries.Core.Parts.Clauses;
 using Queries.Core.Parts.Columns;
@@ -14,7 +11,8 @@ using System.Linq;
 using System.Text;
 
 using static Queries.Core.Builders.Fluent.QueryBuilder;
->>>>>>> c2bba33 (feat(renderer) : improve pretty print)
+
+namespace Queries.Renderers.Postgres;
 
 public class PostgresqlRenderer : QueryRendererBase
 {
@@ -43,7 +41,6 @@ public class PostgresqlRenderer : QueryRendererBase
         string result;
         if (columnParts.Length == 1)
         {
-<<<<<<< HEAD
             result = $"{RenderColumn(json.Column, renderAlias: false)} {(json.RenderAsString ? "->>" : "->")} '{columnParts.Single()}'";
         }
         else
@@ -62,28 +59,6 @@ public class PostgresqlRenderer : QueryRendererBase
                 columnBase =>
                 {
                     return columnBase switch
-=======
-            string[] columnParts = json.Path.Split('.');
-            string result;
-            if (columnParts.Length == 1)
-            {
-                result = $"{RenderColumn(json.Column, renderAlias: false)} {(json.RenderAsString ? "->>" : "->")} '{columnParts.Single()}'";
-            }
-            else
-            {
-                string path = $"{string.Join(" -> ", columnParts.Take(columnParts.Length - 1).Select(EscapeName))} {(json.RenderAsString ? "->>" : "->")} '{columnParts.Last()}'";
-                result = $"{RenderColumn(json.Column, renderAlias: false)} -> {path}";
-            }
-
-            return $"{result}{(renderAlias && !string.IsNullOrWhiteSpace(json.Alias) ? $" AS {EscapeName(json.Alias)}" : string.Empty)}";
-        }
-
-        ///<inheritdoc/>
-        public override string Render(IQuery query)
-            => query is ReturnQuery returnQuery
-                ? returnQuery.Return.Match(
-                    columnBase =>
->>>>>>> c2bba33 (feat(renderer) : improve pretty print)
                     {
                         FieldColumn field => $"RETURN {RenderColumn(field, renderAlias: false)}",
                         Literal literal => $"RETURN {Render(Select(literal)).Substring("SELECT ".Length)}",
@@ -95,9 +70,8 @@ public class PostgresqlRenderer : QueryRendererBase
             )
             : base.Render(query);
 
-<<<<<<< HEAD
     ///<inheritdoc/>
-    protected override string RenderWhere(IWhereClause clause)
+    protected override string RenderWhere(IWhereClause clause, int blockLevel = 0)
     {
         string result = string.Empty;
 
@@ -127,33 +101,6 @@ public class PostgresqlRenderer : QueryRendererBase
                 result = base.RenderWhere(clause);
 
                 break;
-=======
-        ///<inheritdoc/>
-        protected override string RenderWhere(IWhereClause clause, int blockLevel = 0)
-        {
-            string result;
-
-            switch (clause)
-            {
-                case WhereClause where when where.Column is JsonFieldColumn json:
-                    result = where.Operator switch
-                    {
-                        ClauseOperator.EqualTo => $"({RenderJsonColumn(new JsonFieldColumn(json.Column, json.Path, renderAsString: where.Constraint is StringColumn), renderAlias: false)} = {RenderColumn(where.Constraint, renderAlias: false)})"
-                    };
-                    break;
-                case WhereClause where when where.Constraint is JsonFieldColumn jsonConstraint:
-                    result = where.Operator switch
-                    {
-                        ClauseOperator.EqualTo => $"({RenderColumn(where.Column, renderAlias: false)} = {RenderJsonColumn(new JsonFieldColumn(jsonConstraint.Column, jsonConstraint.Path, renderAsString: where.Column is StringColumn), renderAlias: false)})"
-                    };
-                    break;
-                default:
-                    result = base.RenderWhere(clause, blockLevel);
-                    break;
-            }
-
-            return result;
->>>>>>> c2bba33 (feat(renderer) : improve pretty print)
         }
 
         return result;

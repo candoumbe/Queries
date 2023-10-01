@@ -1,4 +1,19 @@
-﻿namespace Queries.Renderers.Sqlite;
+﻿using Queries.Core;
+using Queries.Core.Builders;
+using Queries.Core.Parts.Clauses;
+using Queries.Core.Parts.Columns;
+using Queries.Core.Parts.Functions;
+using Queries.Core.Renderers;
+
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Text;
+
+using static Queries.Core.Builders.Fluent.QueryBuilder;
+
+namespace Queries.Renderers.Sqlite;
 
 /// <summary>
 /// A renderer that can convert <see cref="IQuery"/> to a SQLite compatible <see langword="string"/>.

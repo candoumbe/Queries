@@ -1,4 +1,5 @@
 using Queries.Core.Builders;
+
 using System;
 
 namespace Queries.Core.Parts.Columns;

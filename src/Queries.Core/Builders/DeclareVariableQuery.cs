@@ -1,4 +1,7 @@
-﻿namespace Queries.Core.Builders;
+﻿using Queries.Core.Builders.Fluent;
+using Queries.Core.Parts.Clauses;
+
+namespace Queries.Core.Builders;
 
 /// <summary>
 /// Helps to build <see cref="Variable"/> instances.

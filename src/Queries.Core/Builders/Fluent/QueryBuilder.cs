@@ -1,3 +1,10 @@
+using Queries.Core.Parts.Clauses;
+using Queries.Core.Parts.Columns;
+using Queries.Core.Parts.Functions;
+
+using System;
+using System.Linq;
+
 namespace Queries.Core.Builders.Fluent;
 
 /// <summary>
@@ -7,12 +14,6 @@ public static class QueryBuilder
 {
     #region Columns conversions shortcuts
 
-    /// <summary>
-    /// Applies <see cref="LengthFunction"/> to <paramref name="column"/>.
-    /// </summary>
-    /// <param name="column">column onto which the function will be applied.</param>
-    /// <returns><see cref="LengthFunction"/></returns>
-    public static LengthFunction Length(IColumn column) => new(column);
     /// <summary>
     /// Applies <see cref="LengthFunction"/> to <paramref name="column"/>.
     /// </summary>
@@ -180,12 +181,9 @@ public static class QueryBuilder
             throw new ArgumentNullException(nameof(first));
         }
 
-        if (others is null)
-        {
-            throw new ArgumentNullException(nameof(others));
-        }
-
-        return new CasesColumn(new[] { first }.Union(others.Where(x => x != null)));
+        return others is null
+            ? throw new ArgumentNullException(nameof(others))
+            : new CasesColumn(new[] { first }.Union(others.Where(x => x != null)));
     }
 
     /// <summary>
