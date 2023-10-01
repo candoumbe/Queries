@@ -1,7 +1,12 @@
-﻿namespace Queries.Core.Builders;
+﻿using Queries.Core.Builders.Fluent;
+using Queries.Core.Parts.Columns;
+
+using System;
+
+namespace Queries.Core.Builders;
 
 /// <summary>
-/// A query to insert data 
+/// A query to insert data
 /// </summary>
 public class InsertIntoQuery : IInsertIntoQuery<InsertIntoQuery>, IBuild<InsertIntoQuery>, IEquatable<InsertIntoQuery>
 {

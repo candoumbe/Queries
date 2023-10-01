@@ -1,5 +1,7 @@
 ﻿using Queries.Core.Renderers;
+
 using static Queries.Core.Renderers.PaginationKind;
+
 
 namespace Queries.Renderers.Sqlite;
 

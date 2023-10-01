@@ -1,4 +1,7 @@
-﻿namespace Queries.Core.Parts.Columns;
+﻿using Queries.Core.Parts.Functions.Math;
+using Queries.Core.Parts.Sorting;
+
+namespace Queries.Core.Parts.Columns;
 
 /// <summary>
 /// Extensions methods for <see cref="ColumnBase"/> type

@@ -2,11 +2,7 @@
 
   <Import Project="..\..\test.props" />
   <PropertyGroup>
-<<<<<<< HEAD
     <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
-=======
-    <TargetFrameworks>netcoreapp3.1;net6.0;net7.0</TargetFrameworks>
->>>>>>> c2bba33 (feat(renderer) : improve pretty print)
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Queries.EntityFrameworkCore.Extensions\Queries.EntityFrameworkCore.Extensions.csproj" />

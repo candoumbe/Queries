@@ -2,7 +2,6 @@
 
   <Import Project="..\..\test.props" />
   <PropertyGroup>
-<<<<<<< HEAD
     <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
   </PropertyGroup>
 
@@ -18,30 +17,6 @@
       </ItemGroup>
     </Otherwise>
   </Choose>
-  
-=======
-    <TargetFrameworks>netcoreapp3.1;net6.0;net7.0</TargetFrameworks>
-  </PropertyGroup>
-
-  <Choose>
-      <When Condition="'$(TargetFramework)' == 'net6.0'">
-        <ItemGroup>
-            <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="6.0.1" />
-        </ItemGroup>
-      </When>
-      <When Condition="'$(TargetFramework)' == 'net7.0'">
-        <ItemGroup>
-            <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="6.0.1" />
-        </ItemGroup>
-      </When>
-      
-  </Choose>
-  
-  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.10" />
-  </ItemGroup>
-
->>>>>>> c2bba33 (feat(renderer) : improve pretty print)
   <ItemGroup>
     <ProjectReference Include="..\..\src\Queries.Core\Queries.Core.csproj" />
   </ItemGroup>

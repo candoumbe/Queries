@@ -1,3 +1,8 @@
+using Queries.Core.Builders.Fluent;
+using Queries.Core.Parts;
+
+using System;
+
 namespace Queries.Core.Builders;
 
 /// <summary>

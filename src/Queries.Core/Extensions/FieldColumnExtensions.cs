@@ -1,4 +1,10 @@
-﻿namespace Queries.Core.Parts.Columns;
+﻿using Queries.Core.Builders;
+using Queries.Core.Parts.Clauses;
+
+using System;
+
+
+namespace Queries.Core.Parts.Columns;
 
 /// <summary>
 /// Extension methods for <see cref="FieldColumn"/> type
@@ -14,12 +20,7 @@ public static class FieldColumnExtensions
     /// <exception cref="ArgumentNullException"><paramref name="destination"/> is <see langword="null"/></exception>
     public static UpdateFieldValue UpdateValueTo(this FieldColumn destination, ColumnBase source)
     {
-        if (destination == null)
-        {
-            throw new ArgumentNullException(nameof(destination));
-        }
-
-        return new UpdateFieldValue(destination, source);
+        return destination == null ? throw new ArgumentNullException(nameof(destination)) : new UpdateFieldValue(destination, source);
     }
 
     /// <summary>

@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace Queries.Core.Renderers
@@ -100,9 +101,7 @@ namespace Queries.Core.Renderers
                 {
                     _stringBuilder.Append(SpaceChar);
                 }
-
                 _stringBuilder.Append(value);
-
                 MustPrintNewLine = PrettyPrint;
             }
 
@@ -167,9 +166,9 @@ namespace Queries.Core.Renderers
                         _ = (_stringBuilder[_stringBuilder.Length - 1], text) switch
                         {
                             ('(', _) => _stringBuilder,
-                            (')', { Length: > 0 }) _ => text[0] switch
+                            (')', { Length: 1 }) _ => text[0] switch
                             {
-                                ')' => _stringBuilder,
+                                ')' or ',' => _stringBuilder,
                                 _ => _stringBuilder.Append(SpaceChar)
                             },
                             _ => _stringBuilder.Append(SpaceChar)
@@ -180,10 +179,23 @@ namespace Queries.Core.Renderers
                 if (PrettyPrint && BlockLevel > 0)
                 {
                     int indentationSize = BlockLevel * IndentBlockSize;
-                    _stringBuilder.Append(string.Empty.PadLeft(indentationSize));
+                    string padding = string.Empty.PadLeft(indentationSize);
+#if NET6_0_OR_GREATER
+                    text = string.Join(Environment.NewLine, text.Split(Environment.NewLine)
+                                           .Select(part => $"{padding}{part}"));
+#else
+                    text = string.Join("\n", text.Split('\n')
+                                           .Select(part => $"{padding}{part}"));
+
+#endif
+                    _stringBuilder.Append(text);
+                }
+                else
+                {
+                    _stringBuilder.Append(text);
+
                 }
 
-                _stringBuilder.Append(text);
             }
         }
 

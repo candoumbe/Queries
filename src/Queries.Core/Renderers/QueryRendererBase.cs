@@ -1,3 +1,22 @@
+using Queries.Core.Attributes;
+using Queries.Core.Builders;
+using Queries.Core.Builders.Fluent;
+using Queries.Core.Parts;
+using Queries.Core.Parts.Clauses;
+using Queries.Core.Parts.Columns;
+using Queries.Core.Parts.Functions;
+using Queries.Core.Parts.Functions.Math;
+using Queries.Core.Parts.Joins;
+using Queries.Core.Parts.Sorting;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+
+using static Queries.Core.Renderers.PaginationKind;
+
 namespace Queries.Core.Renderers
 {
     /// <summary>
@@ -137,7 +156,7 @@ namespace Queries.Core.Renderers
 
                             writer.WriteText("FROM");
 
-                            string tableString = RenderTables(selectQuery.Tables.ToArray());
+                            string tableString = RenderTables(selectQuery.Tables.ToArray(), 0);
                             writer.StartBlock();
                             writer.WriteText(tableString);
                             writer.EndBlock();
@@ -164,7 +183,7 @@ namespace Queries.Core.Renderers
                         writer.EndBlock();
 
                         writer.WriteText("FROM");
-                        writer.WriteText(RenderTables(new[] { selectInto.Source }, writer.BlockLevel));
+                        writer.WriteText(RenderTables(new ITable[] { selectInto.Source }, writer.BlockLevel));
 
                         break;
                 }
@@ -207,7 +226,7 @@ namespace Queries.Core.Renderers
                     writer.WriteText($"HAVING {RenderHaving(query.HavingCriteria)}");
                 }
 
-                if (query.Sorts.AtLeastOnce())
+                if (query.Orders.AtLeastOnce())
                 {
                     StringBuilder sbOrderBy = new();
 
@@ -309,6 +328,7 @@ namespace Queries.Core.Renderers
             return sbJoins.ToString();
         }
 
+        ///<inheritdoc/>
         protected virtual string RenderTables(IReadOnlyList<ITable> tables, int blockLevel = 0)
         {
             QueryWriter sbTables = new(blockLevel, Settings.PrettyPrint);
@@ -317,7 +337,7 @@ namespace Queries.Core.Renderers
                 ITable item = tables[i];
                 if (sbTables.Length != 0)
                 {
-                    sbTables.WriteText(", ");
+                    sbTables.WriteText(",");
                 }
 
                 if (item is Table table)
@@ -336,7 +356,7 @@ namespace Queries.Core.Renderers
                     if (string.IsNullOrWhiteSpace(selectTable.Alias))
                     {
                         sbTables.StartBlock(LeftParenthesis);
-                        sbTables.WriteText($"{Render(selectTable, 0)}");
+                        sbTables.WriteText($"{Render(selectTable)}");
                         sbTables.EndBlock(RightParenthesis);
                     }
                     else
@@ -849,11 +869,7 @@ namespace Queries.Core.Renderers
             return sbResult.ToString();
         }
 
-<<<<<<< HEAD
-        ///<inheritdoc/>
-=======
         /// <inheritdoc/>
->>>>>>> c2bba33 (feat(renderer) : improve pretty print)
         public virtual string BatchStatementSeparator => ";";
 
         /// <inheritdoc/>
@@ -876,3 +892,4 @@ namespace Queries.Core.Renderers
             return compiledQuery;
         }
     }
+}

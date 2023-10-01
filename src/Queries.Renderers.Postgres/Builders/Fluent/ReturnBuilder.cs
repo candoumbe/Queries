@@ -1,4 +1,11 @@
-﻿namespace Queries.Renderers.Postgres.Builders.Fluent;
+﻿using Optional;
+
+using Queries.Core.Builders;
+using Queries.Core.Parts.Columns;
+
+using System;
+
+namespace Queries.Renderers.Postgres.Builders.Fluent;
 
 /// <summary>
 /// Fluent builder for <see cref="ReturnQuery"/>
@@ -13,11 +20,9 @@ public static class ReturnBuilder
     /// <returns></returns>
     public static ReturnQuery Return(ColumnBase returnValue)
     {
-        if (returnValue == null)
-        {
-            throw new ArgumentNullException(nameof(returnValue));
-        }
-        return new ReturnQuery(Option.Some<ColumnBase, SelectQuery>(returnValue));
+        return returnValue == null
+            ? throw new ArgumentNullException(nameof(returnValue))
+            : new ReturnQuery(Option.Some<ColumnBase, SelectQuery>(returnValue));
     }
 
     /// <summary>
@@ -27,11 +32,9 @@ public static class ReturnBuilder
     /// <returns>a <see cref="ReturnQuery"/></returns>
     public static ReturnQuery Return(SelectQuery returnValue)
     {
-        if (returnValue == null)
-        {
-            throw new ArgumentNullException(nameof(returnValue));
-        }
-        return new ReturnQuery(Option.None<ColumnBase, SelectQuery>(returnValue));
+        return returnValue == null
+            ? throw new ArgumentNullException(nameof(returnValue))
+            : new ReturnQuery(Option.None<ColumnBase, SelectQuery>(returnValue));
     }
 
     /// <summary>
