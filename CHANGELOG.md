@@ -7,8 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### ✨ Improvements
+- Improved `PrettyPrint` support
+
 ### 🧹 Housekeeping
-- Updated `Candoumbe.Pipelines` to 0.6.0
+- Updated `Candoumbe.Pipelines` to 0.7.0
+- Added unit tests for `SelectIntoQuery` class
+
 
 ## [0.4.0] / 2021-11-16
 ### 🚀 New features
@@ -22,8 +27,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### 🛠️ Fixes
 - Fixes incorrect rendering of [`CasesColumn`].
-- Fixes `�rgumentOutOfRangeException` thrown when using `ClauseOperator.In` with `SelectQuery`
-- Fixes `�rgumentOutOfRangeException` thrown when using `ClauseOperator.NotIn` with `SelectQuery`
+- Fixes `ArgumentOutOfRangeException` thrown when using `ClauseOperator.In` with `SelectQuery`
+- Fixes `ArgumentOutOfRangeException` thrown when using `ClauseOperator.NotIn` with `SelectQuery`
 
 ## [0.2.0] / 2021-01-30
 ### 🚀 New features
