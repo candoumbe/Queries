@@ -1,0 +1,8 @@
+{
+  "stryker-config": {
+    "project-info": {
+      "module": "Queries.Renderers.Sqlite"
+    },
+    "concurrency": 4
+  }
+}

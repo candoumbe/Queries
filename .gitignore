@@ -23,6 +23,9 @@ bld/
 [Ll]og/
 /output/
 
+# Ignore directories that Stryker creates when running mutation tests
+StrykerOutput/
+
 # Visual Studio 2015 cache/options directory
 .vs/
 # Visual Studio Code cache/options directory

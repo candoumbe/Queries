@@ -1,0 +1,8 @@
+{
+  "stryker-config": {
+    "project-info": {
+      "module": "Queries.Renderers.Neo4J"
+    },
+    "concurrency": 4
+  }
+}

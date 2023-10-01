@@ -1,0 +1,8 @@
+{
+  "stryker-config": {
+    "project-info": {
+      "module": "Queries.EntityFrameworkCore.Extensions"
+    },
+    "concurrency": 4
+  }
+}
