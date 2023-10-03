@@ -7,11 +7,36 @@ using System.Text;
 namespace Queries.Core.Renderers
 {
     /// <summary>
-    /// A custom umplementation of <see cref="StringWriter"/>.
+    /// A custom implementation of `StringWriter` that provides functionality for writing and 
+    /// formatting text with indentation and block levels. It supports pretty printing and allows for starting and ending blocks of text.
     /// </summary>
+    /// <example>
+    /// <code>
+    /// QueryWriter writer = new QueryWriter();
+    /// writer.StartBlock("if (condition)");
+    /// writer.WriteText("Console.WriteLine(\"Condition is true!\");");
+    /// writer.EndBlock();
+    /// writer.WriteText("Console.WriteLine(\"End of program.\");");
+    /// string result = writer.ToString();
+    /// Console.WriteLine(result);
+    /// </code>
+    /// Output:
+    /// <code>
+    /// if (condition)
+    /// {
+    ///     Console.WriteLine("Condition is true!");
+    /// }
+    /// Console.WriteLine("End of program.");
+    /// </code>
+    /// </example>
     /// <remarks>
-    /// This implementation had <see cref="StartBlock"/> and <see cref="EndBlock"/> to handle indentation when printing out strings.
+    /// Main functionalities:
+    /// - Provides indentation and block level handling for writing text.
+    /// - Supports pretty printing with customizable indentation size.
+    /// - Allows for starting and ending blocks of text.
+    /// - Handles newline and spacing formatting based on the current block level.
     /// </remarks>
+    /// <seealso cref="StringWriter"/>
     public class QueryWriter
     {
         /// <summary>
@@ -68,6 +93,7 @@ namespace Queries.Core.Renderers
         /// Creates a new instance of <see cref="QueryWriter"/>
         /// </summary>
         /// <param name="blockLevel"></param>
+        /// <param name="prettyPrint"></param>
         public QueryWriter(int blockLevel = 0, bool prettyPrint = true)
         {
             if (blockLevel < 0)
@@ -125,12 +151,10 @@ namespace Queries.Core.Renderers
                 {
                     _stringBuilder.AppendLine();
                 }
-
                 if (PrettyPrint)
                 {
-                    _stringBuilder.Append(string.Empty.PadLeft(IndentBlockSize * BlockLevel));
+                    _stringBuilder.Append(new string(' ', IndentBlockSize * BlockLevel));
                 }
-
 
                 _stringBuilder.Append(value);
                 MustPrintNewLine = PrettyPrint;
@@ -146,11 +170,9 @@ namespace Queries.Core.Renderers
         }
 
         /// <summary>
-        /// Writes <see cref="value"/>.
+        /// Writes the specified text to the StringBuilder object, applying indentation and spacing based on the current block level and pretty print settings.
         /// </summary>
-        /// <param name="text">The text to write</param>
-        /// <remarks>
-        /// </remarks>
+        /// <param name="text">The text to be written.</param>
         public void WriteText(string text)
         {
             if (text is not null)
@@ -193,9 +215,7 @@ namespace Queries.Core.Renderers
                 else
                 {
                     _stringBuilder.Append(text);
-
                 }
-
             }
         }
 

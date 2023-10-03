@@ -8,12 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### ✨ Improvements
+
 - Improved `PrettyPrint` support
 
 ### 🧹 Housekeeping
+
 - Updated `Candoumbe.Pipelines` to 0.7.0
 - Added unit tests for `SelectIntoQuery` class
-
+- Added documentation for `QueryWriter` class
 
 ## [0.4.0] / 2021-11-16
 ### 🚀 New features
