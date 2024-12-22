@@ -15,9 +15,12 @@ namespace Queries.Core.Builders
     /// </summary>
     public class CollectVariableVisitor : IVisitor<SelectQuery>, IVisitor<IWhereClause>, IVisitor<InsertIntoQuery>, IVisitor<DeleteQuery>
     {
-        public IReadOnlyList<Variable> Variables => _variables.ToArray();
+        /// <summary>
+        /// Variables collected by the current instance after "visiting" queries
+        /// </summary>
+        public IReadOnlyList<Variable> Variables => _variables;
 
-        private readonly IList<Variable> _variables;
+        private readonly List<Variable> _variables;
 
         /// <summary>
         /// Builds a new <see cref="CollectVariableVisitor"/> instance.
