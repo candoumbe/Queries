@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added unit tests for `SelectIntoQuery` class
 - Added documentation for `QueryWriter` class
 - Removed direct dependency to `xunit` NuGet package in favor of transitive dependency brought by `FsCheck.Xunit`
+- Replaced `Codecov.Tool` with `CodecovUploader` NuGet package
 
 ### 🖹 Documentation
 - Added more C# documentation.
