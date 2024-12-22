@@ -484,7 +484,13 @@ namespace Queries.Core.Renderers
 
             return $"({sbWhere.Value})";
         }
-
+        
+        /// <summary>
+        /// Renders the specified <paramref name="clause"/>.
+        /// </summary>
+        /// <param name="clause"></param>
+        /// <returns>printable string</returns>
+        /// <exception cref="ArgumentOutOfRangeException">the <paramref name="clause"/> is not supported by the renderer.</exception>
         protected virtual string RenderHaving(IHavingClause clause)
         {
             StringBuilder sbHaving = new();
@@ -535,11 +541,12 @@ namespace Queries.Core.Renderers
                 : $"{EscapeName(table.Name)} {EscapeName(table.Alias)}";
 
         /// <summary>
-        /// Renders the column.
+        /// Renders the specified <paramref name="column"/>.
         /// </summary>
         /// <param name="column">The column to render.</param>
-        /// <param name="renderAlias"><see langword="true"/> to render the alias associated with the column</param>
+        /// <param name="renderAlias">hint which, if set to <see langword="true"/>, instructs to render the alias associated with the column alongside the column.</param>
         /// <returns></returns>
+        /// <exception cref="ArgumentOutOfRangeException">The <paramref name="column"/>'s type is not supported</exception>
         protected virtual string RenderColumn(IColumn column, bool renderAlias)
         {
             string columnString;

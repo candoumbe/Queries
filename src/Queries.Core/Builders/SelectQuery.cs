@@ -18,6 +18,9 @@ using System.Linq;
 
 namespace Queries.Core.Builders
 {
+    /// <summary>
+    /// Models a query that can read data
+    /// </summary>
     public class SelectQuery : SelectQueryBase, ISelectQuery<SelectQuery>, IFromQuery<SelectQuery>, IWhereQuery<SelectQuery>, IJoinQuery<SelectQuery>, IOrderQuery<SelectQuery>, IEquatable<SelectQuery>, IColumn
     {
         /// <summary>
@@ -31,7 +34,7 @@ namespace Queries.Core.Builders
         public int? PageSize { get; private set; }
 
         /// <summary>
-        /// <see cref="ITable"/>s that 
+        /// <see cref="ITable"/>s that will be used 
         /// </summary>
         public IList<ITable> Tables { get; }
 
@@ -98,7 +101,7 @@ namespace Queries.Core.Builders
             return this;
         }
 
-        ///<inheritdoc/>
+        ///<inheritdoc cref="IWhereClause"/>
         public IWhereQuery<SelectQuery> Where(IWhereClause clause)
         {
             WhereCriteria = clause ?? throw new ArgumentNullException(nameof(clause), $"{nameof(clause)} cannot be null");

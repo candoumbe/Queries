@@ -10,6 +10,9 @@ using System.Text;
 
 namespace Queries.Renderers.Neo4J
 {
+    /// <summary>
+    /// A <see cref="IQueryRenderer"/> implementation that can output <see href="https://Neo4J.org">Neo4J</see> queries
+    /// </summary>
     public class Neo4JRenderer : QueryRendererBase
     {
         public Neo4JRenderer(Neo4JRendererSettings settings) : base(settings)
