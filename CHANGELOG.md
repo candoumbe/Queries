@@ -7,8 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### ✨ Improvements
+### Breaking changes
 
+### ✨ Improvements
 - Improved `PrettyPrint` support
 
 ### 🧹 Housekeeping
@@ -16,6 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated `Candoumbe.Pipelines` to 0.7.0
 - Added unit tests for `SelectIntoQuery` class
 - Added documentation for `QueryWriter` class
+- Removed direct dependency to `xunit` NuGet package in favor of transitive dependency brought by `FsCheck.Xunit`
+
+### 🖹 Documentation
+- Added more C# documentation.
 
 ## [0.4.0] / 2021-11-16
 ### 🚀 New features

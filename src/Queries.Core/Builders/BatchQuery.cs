@@ -13,7 +13,7 @@ public class BatchQuery : IQuery
     /// <summary>
     /// Statements that the current instance holds.
     /// </summary>
-    public IEnumerable<IQuery> Statements
+    public IReadOnlyList<IQuery> Statements
 #if NETSTANDARD
         => _statements.ToArray();
 #else

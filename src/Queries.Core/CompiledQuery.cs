@@ -14,7 +14,7 @@ public class CompiledQuery : IEquatable<CompiledQuery>
     /// <summary>
     /// Gets all <see cref="Variable"/>s of the current <see cref="CompiledQuery"/>.
     /// </summary>
-    public IEnumerable<Variable> Variables { get; }
+    public IReadOnlyList<Variable> Variables { get; }
 
     /// <summary>
     /// The statement where each variable in <see cref="Variables"/> has a corresponding placeholder.
@@ -26,7 +26,7 @@ public class CompiledQuery : IEquatable<CompiledQuery>
     /// </summary>
     /// <param name="statement">The statement of the compiled query.</param>
     /// <param name="variables">The variables of the compiled query.</param>
-    public CompiledQuery(string statement, IEnumerable<Variable> variables)
+    public CompiledQuery(string statement, IReadOnlyList<Variable> variables)
     {
         Statement = statement;
         Variables = variables ?? [];
@@ -37,7 +37,7 @@ public class CompiledQuery : IEquatable<CompiledQuery>
 
     /// <inheritdoc />
     public bool Equals(CompiledQuery other)
-        => other != null && Variables.Intersect(other?.Variables).All(v => Variables.Contains(v)) && Statement == other.Statement;
+        => other is not null && Variables.Intersect(other.Variables).All(v => Variables.Contains(v)) && Statement == other.Statement;
 
     /// <inheritdoc />
 #if (NETSTANDARD)
@@ -52,10 +52,7 @@ public class CompiledQuery : IEquatable<CompiledQuery>
     /// <param name="left">The first <see cref="CompiledQuery"/> to compare.</param>
     /// <param name="right">The second <see cref="CompiledQuery"/> to compare.</param>
     /// <returns>true if <paramref name="left"/> is equal to <paramref name="right"/>; otherwise, false.</returns>
-    public static bool operator ==(CompiledQuery left, CompiledQuery right)
-    {
-        return EqualityComparer<CompiledQuery>.Default.Equals(left, right);
-    }
+    public static bool operator ==(CompiledQuery left, CompiledQuery right) => EqualityComparer<CompiledQuery>.Default.Equals(left, right);
 
     /// <summary>
     /// Determines whether two specified <see cref="CompiledQuery"/> objects are not equal.
@@ -63,10 +60,7 @@ public class CompiledQuery : IEquatable<CompiledQuery>
     /// <param name="left">The first <see cref="CompiledQuery"/> to compare.</param>
     /// <param name="right">The second <see cref="CompiledQuery"/> to compare.</param>
     /// <returns>true if <paramref name="left"/> is not equal to <paramref name="right"/>; otherwise, false.</returns>
-    public static bool operator !=(CompiledQuery left, CompiledQuery right)
-    {
-        return !(left == right);
-    }
+    public static bool operator !=(CompiledQuery left, CompiledQuery right) => !(left == right);
 
     /// <summary>
     /// Returns a string that represents the current <see cref="CompiledQuery"/>.
@@ -79,7 +73,7 @@ public class CompiledQuery : IEquatable<CompiledQuery>
     /// </summary>
     /// <param name="variables">When this method returns, contains the variables of the current <see cref="CompiledQuery"/>.</param>
     /// <param name="statement">When this method returns, contains the statement of the current <see cref="CompiledQuery"/>.</param>
-    public void Deconstruct(out IEnumerable<Variable> variables, out string statement)
+    public void Deconstruct(out IReadOnlyList<Variable> variables, out string statement)
     {
         variables = Variables;
         statement = Statement;

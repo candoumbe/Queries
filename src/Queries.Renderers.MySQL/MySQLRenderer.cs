@@ -6,18 +6,36 @@ using Queries.Core.Parts.Functions;
 
 namespace Queries.Renderers.MySQL
 {
-    // This project can output the Class library as a NuGet Package.
-    // To enable this option, right-click on the project and select the Properties menu item. In the Build tab select "Produce outputs on build".
+    /// <summary>
+    /// Represents a renderer for MySQL queries, extending the base functionality
+    /// to provide MySQL-specific SQL syntax rendering.
+    /// </summary>
+    /// <remarks>
+    /// This class handles the rendering of SQL queries with MySQL-specific syntax,
+    /// including the use of double quotes for escaping identifiers and the "||" 
+    /// operator for string concatenation. It overrides methods to customize 
+    /// the rendering of concatenated columns using the CONCAT function.
+    /// </remarks>
     public class MySQLRenderer : QueryRendererBase
     {
+        /// <summary>
+        /// Builds a new <see cref="MySQLRenderer"/> instance.
+        /// </summary>
+        /// <param name="settings">Settings used to customize the behaviour of the renderer</param>
         public MySQLRenderer(QueryRendererSettings settings) : base(settings)
         {
         }
 
+        /// <inheritdoc />
         protected override string BeginEscapeWordString => @"""";
+
+        /// <inheritdoc />
         protected override string EndEscapeWordString => @"""";
+
+        /// <inheritdoc />
         protected override string ConcatOperator => "||";
 
+        /// <inheritdoc />
         protected override string RenderConcatColumn(ConcatFunction concatColumn, bool renderAlias)
         {
             if (concatColumn == null)
@@ -32,7 +50,7 @@ namespace Queries.Renderers.MySQL
             sbConcat.Insert(0, "CONCAT(").Append(")");
 
             return renderAlias && !string.IsNullOrWhiteSpace(concatColumn.Alias)
-                ? RenderColumnnameWithAlias(sbConcat.ToString(), EscapeName(concatColumn.Alias))
+                ? RenderColumnNameWithAlias(sbConcat.ToString(), EscapeName(concatColumn.Alias))
                 : sbConcat.ToString();
         }
     }
