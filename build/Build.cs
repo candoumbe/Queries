@@ -108,20 +108,14 @@ using System.Linq;
     PublishArtifacts = true
 )]
 
-public class Build : NukeBuild,
-    IHaveArtifacts,
-    IHaveChangeLog,
-    IHaveSolution,
+public class Build : EnhancedNukeBuild,
     IHaveSourceDirectory,
     IHaveTestDirectory,
     IGitFlowWithPullRequest,
     IClean,
     IRestore,
-    ICompile,
-    IUnitTest,
     IMutationTest,
     IReportCoverage,
-    IPack,
     IPushNugetPackages,
     ICreateGithubRelease
 {

@@ -18,9 +18,6 @@ using System.Linq;
 
 namespace Queries.Core.Builders
 {
-#if !(NETSTANDARD2_1_OR_GREATER || NET6_0_OR_GREATER)
-    [JsonObject(ItemReferenceLoopHandling = ReferenceLoopHandling.Ignore)]
-#endif
     public class SelectQuery : SelectQueryBase, ISelectQuery<SelectQuery>, IFromQuery<SelectQuery>, IWhereQuery<SelectQuery>, IJoinQuery<SelectQuery>, IOrderQuery<SelectQuery>, IEquatable<SelectQuery>, IColumn
     {
         /// <summary>
@@ -28,11 +25,17 @@ namespace Queries.Core.Builders
         /// </summary>
         public int? PageIndex { get; private set; }
 
+        /// <summary>
+        /// Gets / Sets the number of records to retrieve
+        /// </summary>
         public int? PageSize { get; private set; }
 
+        /// <summary>
+        /// <see cref="ITable"/>s that 
+        /// </summary>
         public IList<ITable> Tables { get; }
 
-        public IList<IUnionQuery<SelectQuery>> Unions { get; set; }
+        public IList<IUnionQuery<SelectQuery>> Unions { get; }
 
         /// <summary>
         /// Builds a new <see cref="SelectQuery"/> instance.
@@ -44,7 +47,7 @@ namespace Queries.Core.Builders
         /// <exception cref="ArgumentOutOfRangeException">the constructor is called with no argument</exception>
         public SelectQuery(params IColumn[] columns)
         {
-            if (columns.All(x => x == null))
+            if (columns.All(x => x  is null))
             {
                 throw new ArgumentOutOfRangeException(nameof(columns), columns, "at least one column must be provided");
             }
@@ -59,12 +62,12 @@ namespace Queries.Core.Builders
         }
 
         /// <summary>
-        /// Specified that the query should return <see cref="pageSize"/> elements at most
+        /// Specified that the query should return <paramref name="pageSize"/> elements at most
         /// </summary>
         /// <param name="pageIndex">1-based index of the page</param>
         /// <param name="pageSize">Maximum number of elements a page should contains</param>
         /// <returns></returns>
-        /// <exception cref="ArgumentOutOfRangeException">if either <paramref name="pageIndex"/> is &lt; 1 or <paramref name="pageSize"/> is negative </exception>.
+        /// <exception cref="ArgumentOutOfRangeException">if either <paramref name="pageIndex"/> is &lt; 1 or <paramref name="pageSize"/> is <c>&lt; 0</c></exception>.
         public SelectQuery Paginate(int pageIndex, int pageSize)
         {
             PageIndex = pageIndex;
@@ -87,9 +90,9 @@ namespace Queries.Core.Builders
         ///<inheritdoc/>
         public IFromQuery<SelectQuery> From(params string[] tables)
         {
-            foreach (string tablename in tables)
+            foreach (string tableName in tables)
             {
-                Tables.Add(tablename.Table());
+                Tables.Add(tableName.Table());
             }
 
             return this;
@@ -98,7 +101,7 @@ namespace Queries.Core.Builders
         ///<inheritdoc/>
         public IWhereQuery<SelectQuery> Where(IWhereClause clause)
         {
-            WhereCriteria = clause ?? throw new ArgumentNullException(nameof(clause), $"{clause} cannot be null");
+            WhereCriteria = clause ?? throw new ArgumentNullException(nameof(clause), $"{nameof(clause)} cannot be null");
 
             return this;
         }
@@ -114,12 +117,12 @@ namespace Queries.Core.Builders
         ///<inheritdoc/>
         public IJoinQuery<SelectQuery> InnerJoin(Table table, IWhereClause clause)
         {
-            if (table == null)
+            if (table  is null)
             {
                 throw new ArgumentNullException(nameof(table), $"{nameof(table)} cannot be null");
             }
 
-            if (clause == null)
+            if (clause  is null)
             {
                 throw new ArgumentNullException(nameof(clause), $"{nameof(clause)} cannot be null");
             }
@@ -132,12 +135,12 @@ namespace Queries.Core.Builders
         ///<inheritdoc/>
         public IJoinQuery<SelectQuery> LeftOuterJoin(Table table, IWhereClause clause)
         {
-            if (table == null)
+            if (table  is null)
             {
                 throw new ArgumentNullException(nameof(table), $"{nameof(table)} cannot be null");
             }
 
-            if (clause == null)
+            if (clause  is null)
             {
                 throw new ArgumentNullException(nameof(clause), $"{nameof(clause)} cannot be null");
             }
@@ -150,12 +153,12 @@ namespace Queries.Core.Builders
         ///<inheritdoc/>
         public IJoinQuery<SelectQuery> RightOuterJoin(Table table, IWhereClause clause)
         {
-            if (table == null)
+            if (table  is null)
             {
                 throw new ArgumentNullException(nameof(table), $"{nameof(table)} cannot be null");
             }
 
-            if (clause == null)
+            if (clause  is null)
             {
                 throw new ArgumentNullException(nameof(clause), $"{nameof(clause)} cannot be null");
             }
@@ -173,7 +176,7 @@ namespace Queries.Core.Builders
         {
             Orders.Add(sort);
 
-            foreach (IOrder items in sorts.Where(s => Equals(s, default)))
+            foreach (IOrder items in sorts.Where(s => Equals(s, null)))
             {
                 Orders.Add(sort);
             }
@@ -214,8 +217,10 @@ namespace Queries.Core.Builders
             return this;
         }
 
+        /// <inheritdoc />
         public override bool Equals(object obj) => Equals(obj as SelectQuery);
 
+        /// <inheritdoc />
         public bool Equals(SelectQuery other)
         {
             bool equals = false;
@@ -223,7 +228,7 @@ namespace Queries.Core.Builders
             if (other != null && other.PageSize == PageSize && other.PageIndex == PageIndex && other.Alias == Alias)
             {
                 equals = Columns.SequenceEqual(other.Columns)
-                    && ((WhereCriteria == null && other.WhereCriteria == null) || WhereCriteria.Equals(other.WhereCriteria))
+                    && ((WhereCriteria  is null && other.WhereCriteria  is null) || Equals(WhereCriteria , other.WhereCriteria))
                     && Tables.SequenceEqual(other.Tables)
                     && Unions.SequenceEqual(other.Unions)
                     && Orders.SequenceEqual(other?.Orders);

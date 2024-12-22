@@ -29,25 +29,18 @@ public class CompiledQuery : IEquatable<CompiledQuery>
     public CompiledQuery(string statement, IEnumerable<Variable> variables)
     {
         Statement = statement;
-        Variables = variables ?? Enumerable.Empty<Variable>();
+        Variables = variables ?? [];
     }
 
     ///<inheritdoc/>
     public override bool Equals(object obj) => Equals(obj as CompiledQuery);
 
-    /// <summary>
-    /// Determines whether the specified <see cref="CompiledQuery"/> is equal to the current <see cref="CompiledQuery"/>.
-    /// </summary>
-    /// <param name="other">The <see cref="CompiledQuery"/> to compare with the current <see cref="CompiledQuery"/>.</param>
-    /// <returns>true if the specified <see cref="CompiledQuery"/> is equal to the current <see cref="CompiledQuery"/>; otherwise, false.</returns>
+    /// <inheritdoc />
     public bool Equals(CompiledQuery other)
         => other != null && Variables.Intersect(other?.Variables).All(v => Variables.Contains(v)) && Statement == other.Statement;
 
-    /// <summary>
-    /// Returns the hash code for the current <see cref="CompiledQuery"/>.
-    /// </summary>
-    /// <returns>A hash code for the current <see cref="CompiledQuery"/>.</returns>
-#if (NETSTANDARD1_0 || NETSTANDARD1_1 || NETSTANDARD1_3)
+    /// <inheritdoc />
+#if (NETSTANDARD)
     public override int GetHashCode() => (Statement, Variables).GetHashCode();
 #else
     public override int GetHashCode() => HashCode.Combine(Statement, Variables);
