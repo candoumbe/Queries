@@ -40,17 +40,15 @@ public abstract class AggregateFunction : IAliasable<AggregateFunction>, IEquata
         Column = column ?? throw new ArgumentNullException(nameof(column));
     }
 
-    private string _alias;
-
     /// <summary>
     /// The alias associated with the column
     /// </summary>
-    public string Alias => _alias;
+    public string Alias { get; private set; }
 
     ///<inheritdoc/>
     public AggregateFunction As(string alias)
     {
-        _alias = alias;
+        Alias = alias;
 
         return this;
     }

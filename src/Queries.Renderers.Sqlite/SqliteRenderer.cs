@@ -182,7 +182,7 @@ public class SqliteRenderer : QueryRendererBase
         sbNullColumn.Append(")");
 
         return renderAlias && !string.IsNullOrWhiteSpace(nullColumn.Alias)
-            ? RenderColumnnameWithAlias(sbNullColumn.ToString(), EscapeName(nullColumn.Alias))
+            ? RenderColumnNameWithAlias(sbNullColumn.ToString(), EscapeName(nullColumn.Alias))
             : sbNullColumn.ToString();
     }
 }

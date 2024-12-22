@@ -36,9 +36,16 @@ namespace Queries.Core.Builders
         /// <summary>
         /// <see cref="ITable"/>s that will be used 
         /// </summary>
-        public IList<ITable> Tables { get; }
+        public IReadOnlyList<ITable> Tables => _tables;
 
-        public IList<IUnionQuery<SelectQuery>> Unions { get; }
+        private readonly List<ITable> _tables;
+
+        /// <summary>
+        /// List of <see cref="IUnionQuery{T}"/> that the current query will use.
+        /// </summary>
+        public IReadOnlyList<IUnionQuery<SelectQuery>> Unions => _unions;
+        
+        private readonly List<IUnionQuery<SelectQuery>> _unions;
 
         /// <summary>
         /// Builds a new <see cref="SelectQuery"/> instance.
@@ -56,8 +63,8 @@ namespace Queries.Core.Builders
             }
 
             Columns = columns;
-            Tables = new List<ITable>();
-            Unions = new List<IUnionQuery<SelectQuery>>();
+            _tables = new List<ITable>();
+            _unions = new List<IUnionQuery<SelectQuery>>();
         }
 
         internal SelectQuery(params string[] columnNames) : this(columnNames.Select(colName => colName.Field()).Cast<IColumn>().ToArray())
@@ -82,10 +89,7 @@ namespace Queries.Core.Builders
         ///<inheritdoc/>
         public IFromQuery<SelectQuery> From(params ITable[] tables)
         {
-            foreach (ITable tableTerm in tables)
-            {
-                Tables.Add(tableTerm);
-            }
+            _tables.AddRange(tables);
 
             return this;
         }
@@ -95,7 +99,7 @@ namespace Queries.Core.Builders
         {
             foreach (string tableName in tables)
             {
-                Tables.Add(tableName.Table());
+                _tables.Add(tableName.Table());
             }
 
             return this;
@@ -189,7 +193,7 @@ namespace Queries.Core.Builders
         ///<inheritdoc/>
         public IUnionQuery<SelectQuery> Union(IUnionQuery<SelectQuery> select)
         {
-            Unions.Add(select);
+            _unions.Add(select);
             return this;
         }
 

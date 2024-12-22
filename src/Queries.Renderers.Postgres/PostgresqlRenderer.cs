@@ -14,6 +14,10 @@ using static Queries.Core.Builders.Fluent.QueryBuilder;
 
 namespace Queries.Renderers.Postgres;
 
+/// <summary>
+/// Renderer implementation that can output <see cref="IQuery"/> in a suitable format
+/// usable with Postgresql database engine
+/// </summary>
 public class PostgresqlRenderer : QueryRendererBase
 {
     /// <summary>
@@ -113,7 +117,7 @@ public class PostgresqlRenderer : QueryRendererBase
     protected override string ConcatOperator => "||";
 
     ///<inheritdoc/>
-    protected override string RenderColumnnameWithAlias(string columnName, string alias) => $"{columnName} {alias}";
+    protected override string RenderColumnNameWithAlias(string columnName, string alias) => $"{columnName} {alias}";
 
     ///<inheritdoc/>
     protected override string RenderUUIDValue() => "uuid_generate_v4()";
@@ -128,7 +132,7 @@ public class PostgresqlRenderer : QueryRendererBase
             .Append(")");
 
         return renderAlias && !string.IsNullOrWhiteSpace(nullColumn.Alias)
-            ? RenderColumnnameWithAlias(sbNullColumn.ToString(), EscapeName(nullColumn.Alias))
+            ? RenderColumnNameWithAlias(sbNullColumn.ToString(), EscapeName(nullColumn.Alias))
             : sbNullColumn.ToString();
     }
 

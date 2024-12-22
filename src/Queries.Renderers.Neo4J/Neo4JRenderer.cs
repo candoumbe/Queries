@@ -11,10 +11,18 @@ using System.Text;
 namespace Queries.Renderers.Neo4J
 {
     /// <summary>
-    /// A <see cref="IQueryRenderer"/> implementation that can output <see href="https://Neo4J.org">Neo4J</see> queries
+    /// Neo4JRenderer is responsible for rendering queries into Neo4J-compatible Cypher query strings.
     /// </summary>
+    /// <remarks>
+    /// This class extends QueryRendererBase and provides implementations for rendering SELECT, INSERT, and DELETE queries.
+    /// It ensures that only SelectQuery types are supported for Neo4J and handles the normalization of columns and tables.
+    /// </remarks>
     public class Neo4JRenderer : QueryRendererBase
     {
+        /// <summary>
+        /// Builds a new <see cref="Neo4JRenderer"/> instance.
+        /// </summary>
+        /// <param name="settings"></param>
         public Neo4JRenderer(Neo4JRendererSettings settings) : base(settings)
         { }
 
@@ -27,7 +35,14 @@ namespace Queries.Renderers.Neo4J
         ///<inheritdoc/>
         protected override string ConcatOperator => "+";
 
-        ///<inheritdoc/>
+        /// <summary>
+        /// Renders a <see cref="SelectQuery"/> into a Neo4J-compatible query string.
+        /// </summary>
+        /// <param name="query">The <see cref="SelectQueryBase"/> to render.</param>
+        /// <param name="blockLevel">The indentation level for pretty printing.</param>
+        /// <returns>A string representing the Neo4J query.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="query"/> is <see langword="null"/>.</exception>
+        /// <exception cref="NotSupportedException"><paramref name="query"/> is not a <see cref="SelectQuery"/>.</exception>
         protected override string Render(SelectQueryBase query, int blockLevel = 0)
         {
             if (query is null)
@@ -35,13 +50,13 @@ namespace Queries.Renderers.Neo4J
                 throw new ArgumentNullException(nameof(query));
             }
 
-            if (query is not SelectQuery)
+            if (query is not SelectQuery selectQuery)
             {
                 throw new NotSupportedException($"Only {nameof(SelectQuery)} queries are supported for Neo4J");
             }
-            SelectQuery selectQuery = (SelectQuery)query;
+
             QueryWriter writer = new(prettyPrint: Settings.PrettyPrint);
-            IEnumerable<IColumn> columns = query.Columns;
+            IEnumerable<IColumn> columns = selectQuery.Columns;
             IEnumerable<ITable> tables = selectQuery.Tables;
 
             NormalizeColumnAndTable(columns, selectQuery, tables);
@@ -51,11 +66,11 @@ namespace Queries.Renderers.Neo4J
             writer.WriteText(RenderTables(tables.ToArray()));
             writer.EndBlock();
 
-            if (query.WhereCriteria is not null)
+            if (selectQuery.WhereCriteria is not null)
             {
                 writer.WriteText("WHERE");
                 writer.StartBlock();
-                writer.WriteText(RenderWhere(query.WhereCriteria));
+                writer.WriteText(RenderWhere(selectQuery.WhereCriteria));
                 writer.EndBlock();
             }
 
@@ -155,7 +170,7 @@ namespace Queries.Renderers.Neo4J
 
             StringBuilder sbQuery = new();
             string tableAlias = deleteQuery.Table?.Substring(0, 1)?.ToLower();
-            sbQuery.Append($"MATCH {RenderTablenameWithAlias(deleteQuery.Table, tableAlias)} {(Settings.PrettyPrint ? Environment.NewLine : string.Empty)}");
+            sbQuery.Append($"MATCH {RenderTableNameWithAlias(deleteQuery.Table, tableAlias)} {(Settings.PrettyPrint ? Environment.NewLine : string.Empty)}");
 
             if (deleteQuery.Criteria != null)
             {
@@ -167,11 +182,11 @@ namespace Queries.Renderers.Neo4J
         }
 
         ///<inheritdoc/>
-        protected override string RenderTablenameWithAlias(string tableName, string alias)
+        protected override string RenderTableNameWithAlias(string tableName, string alias)
             => $"({alias}:{tableName})";
 
         ///<inheritdoc/>
-        protected override string RenderColumnnameWithAlias(string columnName, string alias)
+        protected override string RenderColumnNameWithAlias(string columnName, string alias)
             => $"{columnName}{(!string.IsNullOrWhiteSpace(alias) ? $" AS {alias}" : string.Empty)}";
     }
 }
