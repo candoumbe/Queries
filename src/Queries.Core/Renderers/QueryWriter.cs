@@ -68,6 +68,9 @@ namespace Queries.Core.Renderers
         public const int IndentBlockSize = 4;
         private const char SpaceChar = ' ';
 
+        /// <summary>
+        /// Number of characters that the current instance will print.
+        /// </summary>
         public int Length => _stringBuilder.Length;
 
         private bool MustPrintIndentation { get; set; }
@@ -92,8 +95,9 @@ namespace Queries.Core.Renderers
         /// <summary>
         /// Creates a new instance of <see cref="QueryWriter"/>
         /// </summary>
-        /// <param name="blockLevel"></param>
-        /// <param name="prettyPrint"></param>
+        /// <param name="blockLevel">a zero based value used for indentation purpose when printing values.</param>
+        /// <param name="prettyPrint">a hint on how the current instance should print values (<see langword="true"/> by default).</param>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="blockLevel"/> is &lt; 0</exception>
         public QueryWriter(int blockLevel = 0, bool prettyPrint = true)
         {
             if (blockLevel < 0)
@@ -160,6 +164,8 @@ namespace Queries.Core.Renderers
                 MustPrintNewLine = PrettyPrint;
             }
 
+            return;
+
             void DecreaseBlockLevel()
             {
                 if (BlockLevel > 0)
@@ -175,47 +181,49 @@ namespace Queries.Core.Renderers
         /// <param name="text">The text to be written.</param>
         public void WriteText(string text)
         {
-            if (text is not null)
+            if (text is null)
             {
-                if (_stringBuilder.Length > 0)
-                {
-                    if (PrettyPrint)
-                    {
-                        _stringBuilder.AppendLine();
-                    }
-                    else
-                    {
-                        _ = (_stringBuilder[_stringBuilder.Length - 1], text) switch
-                        {
-                            ('(', _) => _stringBuilder,
-                            (')', { Length: 1 }) _ => text[0] switch
-                            {
-                                ')' or ',' => _stringBuilder,
-                                _ => _stringBuilder.Append(SpaceChar)
-                            },
-                            _ => _stringBuilder.Append(SpaceChar)
-                        };
-                    }
-                }
+                return;
+            }
 
-                if (PrettyPrint && BlockLevel > 0)
+            if (_stringBuilder.Length > 0)
+            {
+                if (PrettyPrint)
                 {
-                    int indentationSize = BlockLevel * IndentBlockSize;
-                    string padding = string.Empty.PadLeft(indentationSize);
+                    _stringBuilder.AppendLine();
+                }
+                else
+                {
+                    _ = (_stringBuilder[_stringBuilder.Length - 1], text) switch
+                    {
+                        ('(', _) => _stringBuilder,
+                        (')', { Length: 1 }) _ => text[0] switch
+                        {
+                            ')' or ',' => _stringBuilder,
+                            _ => _stringBuilder.Append(SpaceChar)
+                        },
+                        _ => _stringBuilder.Append(SpaceChar)
+                    };
+                }
+            }
+
+            if (PrettyPrint && BlockLevel > 0)
+            {
+                int indentationSize = BlockLevel * IndentBlockSize;
+                string padding = string.Empty.PadLeft(indentationSize);
 #if NET6_0_OR_GREATER
                     text = string.Join(Environment.NewLine, text.Split(Environment.NewLine)
                                            .Select(part => $"{padding}{part}"));
 #else
-                    text = string.Join("\n", text.Split('\n')
-                                           .Select(part => $"{padding}{part}"));
+                text = string.Join("\n", text.Split('\n')
+                    .Select(part => $"{padding}{part}"));
 
 #endif
-                    _stringBuilder.Append(text);
-                }
-                else
-                {
-                    _stringBuilder.Append(text);
-                }
+                _stringBuilder.Append(text);
+            }
+            else
+            {
+                _stringBuilder.Append(text);
             }
         }
 

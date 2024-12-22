@@ -4,8 +4,8 @@
   <PropertyGroup>
     <Description>Queries.Renderers.Neo4J is a Query builder for Neo4J.
 It's allow to build Neo4J queries</Description>
-    <TargetFramework>netstandard1.0</TargetFramework>
-    <PackageTags>Query;Builder;SQL;Neo4J</PackageTags>
+      <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
+      <PackageTags>Query;Builder;SQL;Neo4J</PackageTags>
   </PropertyGroup>
 
 

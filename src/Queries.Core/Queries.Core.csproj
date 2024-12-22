@@ -4,24 +4,12 @@
   <PropertyGroup>
     <Description>Contains the core classes to build queries.</Description>
     <AssemblyTitle>Queries.Core</AssemblyTitle>
-    <TargetFrameworks>netstandard1.0; netstandard1.1; netstandard1.3;netstandard2.1;net6.0;net7.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;netstandard2.1;net8.0</TargetFrameworks>
     <PackageTags>Queries;Query;SQL;Builder</PackageTags>
-    
   </PropertyGroup>
-  <Choose>
-    <When Condition="'$(TargetFramework)' == 'netstandard1.0' OR '$(TargetFramework)' == 'netstandard1.3'">
-      <ItemGroup>
-        <PackageReference Include="FluentValidation" Version="11.9.2" />
-      </ItemGroup>
-    </When>
-    <Otherwise>
-      <ItemGroup>
-        <PackageReference Include="FluentValidation" Version="11.9.2" />
-      </ItemGroup>
-    </Otherwise>
-  </Choose>
-
+ 
   <ItemGroup>
-        <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
+    <PackageReference Include="FluentValidation" Version="11.9.2" />
+    <PackageReference Include="System.Text.Json" Version="8.0.5"/>
   </ItemGroup>
 </Project>

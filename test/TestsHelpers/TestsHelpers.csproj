@@ -2,21 +2,12 @@
 
   <Import Project="..\..\test.props" />
   <PropertyGroup>
-    <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+    <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
 
-  <Choose>
-    <When Condition="'$(TargetFramework)' == 'net6.0'">
-      <ItemGroup>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="6.0.0" />
-      </ItemGroup>
-    </When>
-    <Otherwise>
-      <ItemGroup>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="7.0.0" />
-      </ItemGroup>
-    </Otherwise>
-  </Choose>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.11" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Queries.Core\Queries.Core.csproj" />
   </ItemGroup>

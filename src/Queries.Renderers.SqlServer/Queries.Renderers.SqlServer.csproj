@@ -3,7 +3,7 @@
 
   <PropertyGroup>
     <Description>Queries.Renderers.SqlServer Class Library</Description>
-    <TargetFrameworks>netstandard1.0;netstandard2.1</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
     <AssemblyName>Queries.Renderers.SqlServer</AssemblyName>
     <PackageId>Queries.Renderers.SqlServer</PackageId>
     <PackageTags>Queries;Query;SQL;Builder;SQL Server</PackageTags>

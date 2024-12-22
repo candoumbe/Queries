@@ -76,6 +76,7 @@ namespace Queries.Core.Renderers
             return escapedColumnName;
         }
 
+        /// <inheritdoc />
         public virtual string Render(IQuery query)
             => query switch
             {
@@ -93,7 +94,7 @@ namespace Queries.Core.Renderers
         ///<inheritdoc/>
         protected virtual string Render(InsertIntoQuery query)
         {
-            if (query == null)
+            if (query is null)
             {
                 throw new ArgumentNullException(nameof(query), $"{nameof(query)} cannot be null");
             }
@@ -369,6 +370,12 @@ namespace Queries.Core.Renderers
             return sbTables.Value;
         }
 
+        /// <summary>
+        /// Renders <paramref name="columns"/> as <see langword="string"/>.
+        /// </summary>
+        /// <param name="columns"></param>
+        /// <param name="blockLevel"></param>
+        /// <returns></returns>
         protected virtual string RenderColumns(IEnumerable<IColumn> columns, int blockLevel = 0)
         {
             columns = columns as IColumn[] ?? columns.ToArray();
@@ -530,8 +537,8 @@ namespace Queries.Core.Renderers
         /// <summary>
         /// Renders the column.
         /// </summary>
-        /// <param name="column">The column.</param>
-        /// <param name="renderAlias"><code>true</code> to render the alias associated with the column</param>
+        /// <param name="column">The column to render.</param>
+        /// <param name="renderAlias"><see langword="true"/> to render the alias associated with the column</param>
         /// <returns></returns>
         protected virtual string RenderColumn(IColumn column, bool renderAlias)
         {
@@ -795,7 +802,7 @@ namespace Queries.Core.Renderers
                     queryStringBuilder = queryStringBuilder
                         .Append(' ')
                         .Append(Settings.PrettyPrint ? Environment.NewLine : string.Empty)
-                        .AppendFormat("WHERE {0}", RenderWhere(updateQuery.Criteria));
+                        .Append($"WHERE {RenderWhere(updateQuery.Criteria)}");
                 }
             }
 

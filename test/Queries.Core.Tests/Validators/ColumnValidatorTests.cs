@@ -7,7 +7,6 @@ using Queries.Core.Parts.Columns;
 using Queries.Core.Validators;
 
 using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
@@ -24,25 +23,18 @@ public class ColumnValidatorTests : IDisposable
 
     public ColumnValidatorTests() => _validator = new ColumnValidator();
 
-    public void Dispose()
-    {
-        _validator = null;
-    }
+    public void Dispose() => _validator = null;
 
-    public static IEnumerable<object[]> ValidateColumnsCases
-    {
-        get
+    public static TheoryData<IColumn, Expression<Func<ValidationResult, bool>>, string> ValidateColumnsCases
+        => new()
         {
-            yield return new object[]
             {
                 new FieldColumn("1"),
-                (Expression<Func<ValidationResult, bool>>)(
-                    vr => vr.IsValid
-                ),
+                vr => vr.IsValid,
                 $"new {nameof(FieldColumn)}(1) is a valid usage"
-            };
-        }
-    }
+            }
+        };
+
 
     /// <summary>
     /// Tests various <see cref="IColumn"/>s configurations
@@ -55,8 +47,7 @@ public class ColumnValidatorTests : IDisposable
     [MemberData(nameof(ValidateColumnsCases))]
     public async Task Validate(IColumn column, Expression<Func<ValidationResult, bool>> expectation, string because) {
         // Act
-        ValidationResult vr = await _validator.ValidateAsync(column)
-            .ConfigureAwait(false);
+        ValidationResult vr = await _validator.ValidateAsync(column);
 
         // Assert
         vr.Should()

@@ -5,12 +5,10 @@ namespace Queries.Core.Builders;
 /// <summary>
 /// A query that will be rendered "as is".
 /// </summary>
-#if NET5_0_OR_GREATER
+#if NET
 public record NativeQuery : IQuery
-#elif NETSTANDARD1_0 || NETSTANDARD1_1 || NETSTANDARD1_3 || NETSTANDARD2_1
-public class NativeQuery : IQuery, IEquatable<NativeQuery>
 #else
-#error "Unsupported target framework"
+public class NativeQuery : IQuery, IEquatable<NativeQuery>
 #endif
 {
     /// <summary>
@@ -27,7 +25,7 @@ public class NativeQuery : IQuery, IEquatable<NativeQuery>
     {
         Statement = statement ?? throw new ArgumentNullException(nameof(statement));
     }
-#if NETSTANDARD1_0 || NETSTANDARD1_1 || NETSTANDARD1_3 || NETSTANDARD2_1
+#if NETSTANDARD
     ///<inheritdoc/>
     public bool Equals(NativeQuery other) => Statement.Equals(other?.Statement);
 
