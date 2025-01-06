@@ -144,7 +144,7 @@ public class Neo4JRendererTest
             yield return new object[]
             {
                 Select("h1", "h2")
-                    .From("Heroe".Table("h1"), "Heroe".Table("h2"))
+                    .From("Hero".Table("h1"), "Hero".Table("h2"))
                     .Where(new CompositeWhereClause {
                         Logic = ClauseLogic.And,
                         Clauses = new [] {
@@ -153,7 +153,7 @@ public class Neo4JRendererTest
                         }
                     }),
                 new Neo4JRendererSettings{ PrettyPrint = false },
-                "MATCH (h1:Heroe), (h2:Heroe) " +
+                "MATCH (h1:Hero), (h2:Hero) " +
                 "WHERE ((h1.Lastname = 'Wayne') AND (h2.Lastname = 'Kent')) " +
                 "RETURN h1, h2;"
             };

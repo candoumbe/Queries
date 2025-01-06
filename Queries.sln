@@ -74,6 +74,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 		.github\workflows\integration.yml = .github\workflows\integration.yml
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Queries.Renderers.Postgres.IntegrationTests", "test\Queries.Renderers.Postgres.IntegrationTests\Queries.Renderers.Postgres.IntegrationTests.csproj", "{B3BC1A2A-45E6-4860-B1A0-6320CB8311C8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -150,6 +152,10 @@ Global
 		{1F1FE22E-2D41-4EB2-A12F-A0C691BD9907}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1F1FE22E-2D41-4EB2-A12F-A0C691BD9907}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1F1FE22E-2D41-4EB2-A12F-A0C691BD9907}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B3BC1A2A-45E6-4860-B1A0-6320CB8311C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3BC1A2A-45E6-4860-B1A0-6320CB8311C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3BC1A2A-45E6-4860-B1A0-6320CB8311C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3BC1A2A-45E6-4860-B1A0-6320CB8311C8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -175,6 +181,7 @@ Global
 		{EB2D61E9-8E42-4946-A84A-6A374936284A} = {852F1208-CA32-45FA-8E26-D8D4A2DCFC26}
 		{7B227969-B5F1-4F05-A6D7-4EBA556CE38F} = {852F1208-CA32-45FA-8E26-D8D4A2DCFC26}
 		{3FB4C979-F283-4BD0-BC68-CFF37B149E2B} = {EB2D61E9-8E42-4946-A84A-6A374936284A}
+		{B3BC1A2A-45E6-4860-B1A0-6320CB8311C8} = {357A11A7-39EE-4782-85BB-0B5B9E6DBD9A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {A80F3874-CE69-426F-BEEB-F241B73D3A1D}
