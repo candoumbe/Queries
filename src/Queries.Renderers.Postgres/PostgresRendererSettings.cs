@@ -10,6 +10,15 @@ namespace Queries.Renderers.Postgres;
 public class PostgresRendererSettings : QueryRendererSettings
 {
     /// <summary>
+    /// Default size for VARCHAR columns.
+    /// </summary>
+#if NET
+    public int DefaultVarcharLength { get; init; } = 1_000;
+#else
+    public int DefaultVarcharLength { get; set; } = 1_000;
+#endif
+
+    /// <summary>
     /// Builds a new <see cref="PostgresRendererSettings"/> instance.
     /// </summary>
     public PostgresRendererSettings() : base(Limit)
