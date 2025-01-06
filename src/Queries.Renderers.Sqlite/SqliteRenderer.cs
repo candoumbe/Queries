@@ -81,7 +81,6 @@ public class SqliteRenderer : QueryRendererBase
                 if (selectQueryBase is SelectQuery sq)
                 {
                     visitor.Visit(sq);
-                    result = Render(sq);
                 }
                 result = Render(selectQueryBase);
                 break;
@@ -145,6 +144,7 @@ public class SqliteRenderer : QueryRendererBase
                                 .Where(ParameterFieldName.Field().EqualTo(variable.Name))
                         );
                         break;
+                    case VariableType.Time:
                     default:
                         throw new ArgumentOutOfRangeException($"Unsupported {variable.Type} as variable type");
                 }
