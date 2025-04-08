@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.14" Condition="'$(TargetFramework)' == 'net8.0'"/>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.15" Condition="'$(TargetFramework)' == 'net8.0'"/>
   </ItemGroup>
 
   <ItemGroup>
