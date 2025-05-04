@@ -959,7 +959,7 @@ namespace Queries.Core.Renderers
         {
             StringBuilder sbResult = new();
 
-            IReadOnlyList<IQuery> statements = query.Statements?.ToArray() ?? [];
+            IReadOnlyList<IQuery> statements = query.Statements ?? [];
 
             foreach (IQuery statement in statements)
             {

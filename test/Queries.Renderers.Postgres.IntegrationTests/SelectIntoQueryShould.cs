@@ -1,11 +1,15 @@
 using System;
+using System.Collections.Generic;
 using System.Data.Common;
+using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using Xunit.Categories;
 using Xunit.Extensions.AssemblyFixture;
 using Npgsql;
 using Queries.Core.Builders;
+using Queries.Core.Parts.Columns;
 using Xunit.Abstractions;
 using static Queries.Core.Builders.Fluent.QueryBuilder;
 
@@ -16,84 +20,97 @@ public class SelectIntoQueryShould(PostgresDatabaseFixture fixture, ITestOutputH
     : IAssemblyFixture<PostgresDatabaseFixture>, IAsyncLifetime
 {
     private NpgsqlConnection _connection;
+    private readonly string _tableName = $"heroes_{Guid.NewGuid():N}";
+    private readonly List<string> tableNames = [];
 
     /// <inheritdoc />
     async Task IAsyncLifetime.InitializeAsync()
     {
         string connectionString = fixture.DatabaseContainer.GetConnectionString();
 
-        _connection = new (connectionString);
+        _connection = new NpgsqlConnection(connectionString);
         await _connection.OpenAsync();
-        // Créer une table
-        const string createTableQuery = @"
-            CREATE TABLE IF NOT EXISTS heroes (
-                id SERIAL PRIMARY KEY,
-                first_name VARCHAR(50) NOT NULL,
-                last_name VARCHAR(50) NOT NULL,
-                nickname VARCHAR(50) NOT NULL
-            );";
-        DbCommand command = new NpgsqlCommand(createTableQuery, _connection);
+        // Drop the table if it already exists
+        string dropTableQuery = $"DROP TABLE IF EXISTS {_tableName};";
+        DbCommand command = new NpgsqlCommand(dropTableQuery, _connection);
         await command.ExecuteNonQueryAsync();
     }
 
     /// <inheritdoc />
     async Task IAsyncLifetime.DisposeAsync()
     {
-        string dropTableQuery = "DROP TABLE IF EXISTS heroes;";
-        DbCommand command = new NpgsqlCommand(dropTableQuery, _connection);
+        BatchQuery batch = new ([.. tableNames.Select(tableName => new NativeQuery($"DROP TABLE IF EXISTS {tableName};")) ]);
+        DbCommand command = new NpgsqlCommand(batch.ForPostgres(), _connection);
         await command.ExecuteNonQueryAsync();
         await _connection.CloseAsync();
+
+        tableNames.Clear();
     }
 
     [Fact]
     public async Task CreateCorrespondingRowsFromSelectQueryAsync()
     {
         // Arrange
-        InsertIntoQuery query = InsertInto("heroes")
-            .Values(
-                Select(1.Literal(), "Bruce".Literal(), "Wayne".Literal(), "Batman".Literal())
-            )
-            .Build();
-        PostgresRendererSettings settings = new();
-        string cmdText = query.ForPostgres(settings);
+        BatchQuery batch = new BatchQuery([
+            new NativeQuery($"CREATE TABLE {_tableName} (id uuid PRIMARY KEY, firstname VARCHAR(50) NOT NULL, lastname VARCHAR(50) NOT NULL, alias VARCHAR(50) NOT NULL)"),
+            InsertInto(_tableName).Values(
+                "id".InsertValue(SelectColumn.UUID()),
+                "firstname".InsertValue("Bruce".Literal()),
+                "lastname".InsertValue("Wayne".Literal()),
+                "alias".InsertValue("The dark knight".Literal())
+                ),
+            InsertInto(_tableName).Values(
+                "id".InsertValue(SelectColumn.UUID()),
+                "firstname".InsertValue("Barry".Literal()),
+                "lastname".InsertValue("Allen".Literal()),
+                "alias".InsertValue("The red scarlet".Literal())
+            ),
+            InsertInto(_tableName).Values(
+                "id".InsertValue(SelectColumn.UUID()),
+                "firstname".InsertValue("Clark".Literal()),
+                "lastname".InsertValue("Kent".Literal()),
+                "alias".InsertValue("The man of steel".Literal())
+            ),
+        ]);
+        string batchAsString = batch.ForPostgres();
+        NpgsqlCommand initDataCommand = new(batchAsString, _connection);
+        outputHelper.WriteLine($"SQL query: '{batchAsString}'");
+        await initDataCommand.ExecuteNonQueryAsync();
 
-        outputHelper.WriteLine($"SQL query: '{cmdText}'");
-        NpgsqlCommand command = new(cmdText, _connection);
+        string backupTableName = $"heroes_bck_{Guid.NewGuid():N}";
+        SelectIntoQuery selectIntoQuery = SelectInto(backupTableName).From(_tableName.Table()).Build();
+        tableNames.Add(backupTableName);
+        string selectIntoQueryString = selectIntoQuery.ForPostgres();
+
+        NpgsqlCommand selectIntoCommand = new(selectIntoQueryString, _connection);
+        outputHelper.WriteLine($"SQL query: '{selectIntoQueryString}'");
 
         // Act
-        int rowsAffected = 0;
-        Func<Task> runningQuery = async () => rowsAffected = await command.ExecuteNonQueryAsync();
+        Func<Task> runningQuery = async () => await selectIntoCommand.ExecuteNonQueryAsync();
 
         // Assert
         await runningQuery.Should().NotThrowAsync();
-        rowsAffected.Should().Be(1);
 
-        
-    }
+        SelectQuery select = Select("*").From(backupTableName).Build();
+        DbCommand selectCommand = new NpgsqlCommand(select.ForPostgres(), _connection);
+        await using DbDataReader reader = await selectCommand.ExecuteReaderAsync();
+        using var _ = new AssertionScope();
+        reader.HasRows.Should().BeTrue();
+        (await reader.ReadAsync()).Should().BeTrue();
+        reader["firstname"].Should().Be("Bruce");
+        reader["lastname"].Should().Be("Wayne");
+        reader["alias"].Should().Be("The dark knight");
 
-    [Fact]
-    public async Task CreateCorrespondingRowsFromInsertValuesAsync()
-    {
-        // Arrange
-        InsertIntoQuery query = InsertInto("heroes")
-            .Values(
-                "id".InsertValue(1.Literal()),
-                "first_name".InsertValue("Bruce".Literal()),
-                "last_name".InsertValue("Wayne".Literal()),
-                "nickname".InsertValue("Batman".Literal()))
-            .Build();
-        PostgresRendererSettings settings = new();
-        string cmdText = query.ForPostgres(settings);
+        (await reader.ReadAsync()).Should().BeTrue();
+        reader["firstname"].Should().Be("Barry");
+        reader["lastname"].Should().Be("Allen");
+        reader["alias"].Should().Be("The red scarlet");
 
-        outputHelper.WriteLine($"SQL query: '{cmdText}'");
-        NpgsqlCommand command = new(cmdText, _connection);
+        (await reader.ReadAsync()).Should().BeTrue();
+        reader["firstname"].Should().Be("Clark");
+        reader["lastname"].Should().Be("Kent");
+        reader["alias"].Should().Be("The man of steel");
 
-        // Act
-        int rowsAffected = 0;
-        Func<Task> runningQuery = async () => rowsAffected = await command.ExecuteNonQueryAsync();
-
-        // Assert
-        await runningQuery.Should().NotThrowAsync();
-        rowsAffected.Should().Be(1);
+        (await reader.ReadAsync()).Should().BeFalse();
     }
 }

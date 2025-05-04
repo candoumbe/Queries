@@ -7,10 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Breaking changes
+### 💥 Breaking changes
+- Changed the output of `UniqueIdentifierValue` column when rendering Postgres queries from `uuid_generate_v4()` to `gen_random_uuid()`
 
 ### ✨ Improvements
 - Improved `PrettyPrint` support
+- Enhance column type conversion and implicit casting documentation and support
 
 ### 🧹 Housekeeping
 
@@ -22,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### 🖹 Documentation
 - Added more C# documentation.
+- Added specific documentation for parameterized queries usage with `CollectVariableVisitor`.
 
 ## [0.4.0] / 2021-11-16
 ### 🚀 New features
@@ -55,4 +58,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [0.3.0]: https://github.com/candoumbe/Queries/compare/0.2.0...0.3.0
 [0.2.0]: https://github.com/candoumbe/Queries/compare/0.1.0...0.2.0
 [0.1.0]: https://github.com/candoumbe/Queries/tree/0.1.0
-

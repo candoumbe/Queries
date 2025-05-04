@@ -35,7 +35,7 @@ public class PostgresRendererTest(ITestOutputHelper outputHelper)
             {
                 Select(UUID()),
                 new PostgresRendererSettings { PrettyPrint = false },
-                "SELECT uuid_generate_v4()"
+                "SELECT gen_random_uuid()"
             },
             {
                 Select(1.Literal()),

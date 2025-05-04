@@ -120,7 +120,7 @@ public class PostgresqlRenderer : QueryRendererBase
     protected override string RenderColumnNameWithAlias(string columnName, string alias) => $"{columnName} {alias}";
 
     ///<inheritdoc/>
-    protected override string RenderUUIDValue() => "uuid_generate_v4()";
+    protected override string RenderUUIDValue() => "gen_random_uuid()";
 
     ///<inheritdoc/>
     protected override string RenderNullColumn(NullFunction nullColumn, bool renderAlias)
