@@ -76,6 +76,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Queries.Renderers.Postgres.IntegrationTests", "test\Queries.Renderers.Postgres.IntegrationTests\Queries.Renderers.Postgres.IntegrationTests.csproj", "{B3BC1A2A-45E6-4860-B1A0-6320CB8311C8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Queries.Renderers.SqlServer.IntegrationTests", "test\Queries.Renderers.SqlServer.IntegrationTests\Queries.Renderers.SqlServer.IntegrationTests.csproj", "{6564003B-07BB-4B2D-8D6A-6058B833EAE8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -156,6 +158,10 @@ Global
 		{B3BC1A2A-45E6-4860-B1A0-6320CB8311C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B3BC1A2A-45E6-4860-B1A0-6320CB8311C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B3BC1A2A-45E6-4860-B1A0-6320CB8311C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6564003B-07BB-4B2D-8D6A-6058B833EAE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6564003B-07BB-4B2D-8D6A-6058B833EAE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6564003B-07BB-4B2D-8D6A-6058B833EAE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6564003B-07BB-4B2D-8D6A-6058B833EAE8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

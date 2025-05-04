@@ -13,12 +13,12 @@ public class SelectIntoQuery : SelectQueryBase, IBuild<SelectIntoQuery>
     /// <summary>
     /// Where to insert data.
     /// </summary>
-    public Table Destination { get; set; }
+    public Table Destination { get; }
 
     /// <summary>
     /// where to gather data from
     /// </summary>
-    public ITable Source { get; set; }
+    public ITable Source { get; private set; }
 
     /// <summary>
     /// Builds a new <see cref="SelectIntoQuery"/> instance.
