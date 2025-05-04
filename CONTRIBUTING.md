@@ -83,12 +83,12 @@ provide as much detail and context as possible.
 
 ## Pull requests
 
-Good pull requests, patches, improvements and new features are a fantastic
+Good pull requests, patches, improvements, and new features are a fantastic
 help. They should remain focused in scope and avoid containing unrelated
 commits.
 
 **Please ask first** before embarking on any significant pull request (e.g.
-implementing features, refactoring code, porting to a different language),
+implementing features, refactoring code, porting to a different language);
 otherwise you risk spending a lot of time working on something that the
 project's developers might not want to merge into the project.
 
@@ -201,4 +201,3 @@ public void myMethod()
 ```
 
 A code with one exit point is easier to read as we are assured to not miss it.
-
