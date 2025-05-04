@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <Import Project="../../test.props" />
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <IsPackable>false</IsPackable>
+        <IsTestProject>true</IsTestProject>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Testcontainers.MsSql" Version="4.1.0" />
+        <PackageReference Include="Xunit.Extensions.AssemblyFixture" Version="2.6.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\Queries.Renderers.SqlServer\Queries.Renderers.SqlServer.csproj" />
+    </ItemGroup>
+
+</Project>
