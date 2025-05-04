@@ -5,10 +5,11 @@
 [![codecov](https://codecov.io/gh/candoumbe/DataFilters/branch/develop/graph/badge.svg?token=FHSC41A4X3)](https://codecov.io/gh/candoumbe/DataFilters)
 [![GitHub raw issues](https://img.shields.io/github/issues-raw/candoumbe/queries)](https://github.com/candoumbe/queries/issues)
 [![DataFilters ](https://img.shields.io/nuget/vpre/queries.core?label=Queries.Core)](https://nuget.org/packages/queries.core)
+
 This is a "basic" datastore agnostic query builder.
 
 **Table of contents**
-- [<a href="#" id="lnk-why">Why?</a>](#why)
+- [<a href="#" id="lnk-why">Why?</a>](#lnk-why)
 - [<a href="#" id="lnk-coupling">No more tightly coupled SQL string</a>](#no-more-tightly-coupled-sql-string)
 - [<a href="#" id="lnk-secured">SQL queries secured by default</a>](#sql-queries-secured-by-default)
 - [Building statements](#building-statements)
@@ -45,13 +46,13 @@ I wanted something more dynamic allowing to code SQL once in the migrations and 
 Writing tightly coupled SQL means that you're writing SQL statements that are specific to a database engine. <br />
 
 The following SQL string
-```SQL
+```sql
 SELECT [Firstname] + ' ' + [Lastname] AS [fullname] FROM [members]
 ```
-is tightly coupled to SQL Server engine and won't work if dealing with Postgres whereas
+is tightly coupled to the SQL Server engine and won't work if dealing with Postgres whereas
 ```csharp
     // import the library
-    import static Queries.Core.Builders.Fluent.QueryBuilder // C# 7 syntax
+    import static Queries.Core.Builders.Fluent.QueryBuilder // C# 7+ syntax
     import _ = Queries.Core.Builders.Fluent.QueryBuilder    // Pre C# 6 syntax
 
     //compute a "static" query
@@ -68,11 +69,11 @@ is tightly coupled to SQL Server engine and won't work if dealing with Postgres 
     string postgresSqlString = query.ForPostgres(); 
     Console.Writeline(postgresSqlString);// SELECT "Firstname" + ' ' + "Lastname" "fullname" FROM "members"
 ```
-# <a href="#" id="lnk-secured">SQL queries secured by default</a>
+# <a href= "#" id="lnk-secured">SQL queries secured by default</a>
 
 Most developers know about [SQL injection](https://en.wikipedia.org/wiki/SQL_injection) and how to protect from it.
-But when using SQL string throughout one's codebase, it can quickly become a tedious task to secure each and every SQL query.<br />
-Sure there's the ADO.NET library which provide various classes to create parameterized queries but this add more and more boilerplate code :
+But when using SQL string throughout one's codebase, it can quickly become a tedious task to secure every SQL query.<br />
+Sure there's the ADO.NET library that provides various classes to create parameterized queries but this adds more and more boilerplate code :
 
 ```csharp
 using (var conn = GetConnectionSomehow() )
@@ -126,20 +127,22 @@ using (var conn = GetConnectionSomehow() )
 }
 ```
 
-The code is shorter, clearer as the boilerplate code is no longer a distraction
+The code is shorter, clearer as the boilerplate code is no longer a distraction.
+For more advanced use case, check [parameterized queries](./docs/parameterized-queries.md)
 
 # Building statements
 
-## <a href="#" id='section-columns'>Columns</a>
+To build statements, [Queries] provides two building blocks to get you started: builders and renderers
 
-[IColumn][class-columns-icolumn] is the base interface that all column like types implement.
+## <a href="#" id='section-columns'>Builders</a>
 
-- <a href="#" id='columns-field'> [FieldColumn][class-columns-field]</a> contains a column name.
+[IColumn][class-columns-icolumn] is the base interface that all column like types implement. [Queries] provided
 
-- <a href="#" id='columns-literal'>LiteralColumn</a>
+- <a href="#" id='columns-field'>[FieldColumn][class-columns-field]</a> contains a column name.
+- <a href= "#" id='columns-literal'>[LiteralColumn][class-columns-literal]</a>
 Uses the following classes whenever you want to write a "raw" data in a query
 
-- <a href="#" id='columns-boolean'>[BooleanColumn][class-columns-boolean]</a> : a column that can contains a boolean value.<br />
+- <a href="#" id='columns-boolean'>[BooleanColumn][class-columns-boolean]</a>: a column that can contain a boolean value.<br />
  
 Use this class to output a boolean value in the query
 
@@ -230,7 +233,7 @@ IQuery query = Update("members")
 
 #### <a href="#" id="delete-query">[Delete][class-delete-query]</a>
 
-Create a [`DeleteQuery`][class-delete-query] instance either by using the builder or the fluent syntax to build (drum rolling ...) an [DELETE](https://www.w3schools.com/sql/sql_delete.asp) statement
+Create a [`DeleteQuery`][class-delete-query] instance either by using the builder or the fluent syntax to build (drum rolling ...) a [DELETE](https://www.w3schools.com/sql/sql_delete.asp) statement
 
 ```csharp
 // Using builders ...
@@ -263,11 +266,11 @@ IQuery query = InsertInto("members")
 
 ```
 
-
 or even combine them using a [BatchQuery][class-builders-batch-query]
 
-
 #### [BatchQuery][class-batch-query] 
+
+A wrapper for multiple queries
 
 ```csharp
 BatchQuery batch = new BatchQuery(
@@ -278,22 +281,23 @@ BatchQuery batch = new BatchQuery(
 
 **Warning**
 
-All `xxxxQuery` classes are all mutable (unless specified otherwise) meaning that any instance can be modified 
+All `xxxxQuery` classes are mutable (unless specified otherwise) meaning that any instance can be modified 
 **AFTER** being created.
-Use the <code>.Clone()</code> method to duplicate any instance.
+
+💡 Use the `.Clone()` method to create a deep copy of any instance.
 
 
-### <a href="#" id='#criterias'>Criterias</a> 
-<code>Queries.Core.Parts.Clauses</code> namespace contains classes to add filters to <code>IQuery</code> instances.
+### <a href="#" id="#criterias">Criteria</a> 
+`Queries.Core.Parts.Clauses` namespace contains classes to add filters to <code>IQuery</code> instances.
 #### <a href="#" id='where'>Where</a>
 
-- [WhereClause][class-where-clause] : a criterion that will be applied to only one field of a [IQuery][class-iquery]
+- [WhereClause][class-where-clause] : a criterion that will be applied to only one field of an [IQuery][class-iquery]
 - [CompositeWhereClause][class-complex-where-clause] : combine several [IWhereClause][class-iwhere-clause] instances together.
 
 #### <a href="#" id='where'>Having</a>
 
-- [HavingClause][class-having-clause] : a criterion that will be applied to only one field of a [IQuery][class-iquery]
-- [CompositeHavingClause][class-complex-having-clause] : allow to combine several [IHavingClause][class-ihaving-clause] instances together.
+- [HavingClause][class-having-clause] : a criterion that will be applied to only one field of an [IQuery][class-iquery]
+- [CompositeHavingClause][class-complex-having-clause] : allows you to combine several [IHavingClause][class-ihaving-clause] instances.
 
 
 ### <a href='#'>Functions</a>
@@ -301,10 +305,10 @@ Use the <code>.Clone()</code> method to duplicate any instance.
 Several functions are supported out of the box. See [IFunction][class-functions] implementations and associated unit tests to see how to use them when building statemeents.
 
 
-💡 You can always use [NativeQuery](src/Queries.Core/Builders/NativeQuery.cs) whenever you need to write a statement that is not yet supported by the libray.
+💡 You can always use [NativeQuery](src/Queries.Core/Builders/NativeQuery.cs) whenever you need to write a statement that is not yet supported by the library.
 
 ## <a href="#" id='rendering-statements'>Rendering statements</a>
-Renderers are special classes that can produce a SQL string given a [IQuery][class-iquery] instance.
+Renderers are special classes that can produce a SQL string given an [IQuery][class-iquery] instance.
 
 ```csharp
 IQuery query = GetQuery();
@@ -379,13 +383,12 @@ END
 */
 ```
 
-
 💡 There are several renderers already available on [nuget.org](https://www.nuget.org/packages?q=Queries.Renderers).
 
 
 ### QueryRendererSettings
 The "shape" of the string returned by a [renderer](#rendering-statements) (date format, parameterized query, ...) can 
-be customized by providing an implementation of [QueryRendererSettings][class-query-renderer-settings] instance.
+be customized by providing an implementation of [the QueryRendererSettings][class-query-renderer-settings] instance.
 to the <code>ForXXXX()</code> method.
 ```csharp
 IQuery query = ...
@@ -396,11 +399,11 @@ string sql = query.ForXXX(settings) // where XXX stand for a database engine to 
 - `DateFormatString` : defines how DateTimes should be printed (`YYYY-MM-DD` by default)
 - `FieldnameCasingStrategy` : Defines the column name casing strategy (`Default` meaning no transformation)
 - `PrettyPrint`
-- `Parametrization` : a hint for renderers on how to handle all variables a [IQuery] my embbed. 
-This is useful when variables declaration has already been taken care of (see [CollectVariableDeclaration](#collect-variables)) 
+- `Parametrization` : a hint for renderers on how to handle all variables a [IQuery] might embed. 
+This is useful when variables' declaration has already been taken care of (see [CollectVariableDeclaration](#collect-variables)) 
 
 
-## How to install ?
+## How to install?
 
 1.  Run `dotnet add package Queries.Core`  command to get the latest version of the [Queries.Core](https://www.nuget.org/packages/Queries.Core/) 
     package and references it in your project.<br />
@@ -430,8 +433,10 @@ Check out the [changelog](CHANGELOG.md) to see what's new
 [class-query-renderer-settings]: ./src/Queries.Core/Renderers/QueryRendererSettings.cs
 [class-builders-batch-query]: ./src/Queries.Core/Builders/BatchQuery.cs
 [class-columns-icolumn]: ./src/Queries.Core/Parts/Columns/IColumn.cs
+[class-columns-literal]: ./src/Queries.Core/Parts/Columns/Literal.cs
 [class-columns-datetime]: ./src/Queries.Core/Parts/Columns/DateTimeColumn.cs
 [class-columns-boolean]: ./src/Queries.Core/Parts/Columns/BooleanColumn.cs
 [class-columns-string]: ./src/Queries.Core/Parts/Columns/StringColumn.cs
 [class-columns-datetime]: ./src/Queries.Core/Parts/Columns/DateTimeColumn.cs
 [class-columns-field]: ./src/Queries.Core/Parts/Columns/FieldColumn.cs
+[class-functions]: ./src/Queries.Core/Parts/Functions/
