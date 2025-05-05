@@ -976,7 +976,7 @@ namespace Queries.Core.Renderers
         /// </summary>
         public virtual string BatchStatementSeparator => ";";
 
-        /// <inheritdoc/>
+
         public virtual CompiledQuery Compile(IQuery query)
         {
             CollectVariableVisitor visitor = new();
@@ -985,7 +985,6 @@ namespace Queries.Core.Renderers
             {
                 case SelectQuery selectQuery:
                     visitor.Visit(selectQuery);
-
                     compiledQuery = new CompiledQuery(Render(selectQuery), visitor.Variables);
                     break;
                 default:

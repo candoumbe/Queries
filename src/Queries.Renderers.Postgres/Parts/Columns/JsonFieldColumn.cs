@@ -58,9 +58,20 @@ public class JsonFieldColumn : ColumnBase, IAliasable<JsonFieldColumn>
     ///<inheritdoc/>
     public override int GetHashCode() => (Alias, Path, Column).GetHashCode();
 
+    /// <summary>
+    /// Determines whether two <see cref="JsonFieldColumn"/> instances are equal.
+    /// </summary>
+    /// <param name="left">The first <see cref="JsonFieldColumn"/> to compare.</param>
+    /// <param name="right">The second <see cref="JsonFieldColumn"/> to compare.</param>
+    /// <returns><see langword="true"/> if the two <see cref="JsonFieldColumn"/> instances are equal; otherwise, <see langword="false"/>.</returns>
     public static bool operator ==(JsonFieldColumn left, JsonFieldColumn right) => left?.Equals(right) ?? false;
 
-    ///<inheritdoc/>
+    /// <summary>
+    /// Determines whether two <see cref="JsonFieldColumn"/> instances are not equal.
+    /// </summary>
+    /// <param name="left">The first <see cref="JsonFieldColumn"/> to compare.</param>
+    /// <param name="right">The second <see cref="JsonFieldColumn"/> to compare.</param>
+    /// <returns><see langword="true"/> if the two <see cref="JsonFieldColumn"/> instances are not equal; otherwise, <see langword="false"/>.</returns>
     public static bool operator !=(JsonFieldColumn left, JsonFieldColumn right) => !(left == right);
 
     ///<inheritdoc/>

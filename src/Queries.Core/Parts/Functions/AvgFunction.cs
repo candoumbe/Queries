@@ -25,4 +25,14 @@ public class AvgFunction : AggregateFunction
 
     ///<inheritdoc/>
     public override IColumn Clone() => new AvgFunction(Column.Clone());
+
+#if NET8_0_OR_GREATER
+    /// <inheritdoc />
+    public override AvgFunction As(string alias)
+    {
+        base.As(alias);
+
+        return this;
+    }
+#endif
 }

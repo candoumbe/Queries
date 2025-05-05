@@ -17,7 +17,7 @@ public class MaxFunctionTests
     [Fact]
     public void ConstructorTestWithNullStringArgument()
     {
-        Action action = () => new MaxFunction((string)null);
+        Action action = () => _ = new MaxFunction((string)null);
 
         action.Should().ThrowExactly<ArgumentNullException>().Which
             .ParamName.Should()
@@ -27,7 +27,7 @@ public class MaxFunctionTests
     [Fact]
     public void ConstructorTestWithEmptyStringArgument()
     {
-        Action action = () => new MaxFunction(string.Empty);
+        Action action = () => _ = new MaxFunction(string.Empty);
 
         action.Should().ThrowExactly<ArgumentOutOfRangeException>().Which
             .ParamName.Should()
@@ -37,7 +37,7 @@ public class MaxFunctionTests
     [Fact]
     public void ConstructorTestWithWhitespaceStringArgument()
     {
-        Action action = () => new MaxFunction("   ");
+        Action action = () => _ = new MaxFunction("   ");
 
         action.Should().ThrowExactly<ArgumentOutOfRangeException>().Which
             .ParamName.Should()
@@ -47,7 +47,7 @@ public class MaxFunctionTests
     [Fact]
     public void ConstructorTestWithNullColumnArgument()
     {
-        Action action = () => new MaxFunction((IColumn)null);
+        Action action = () => _ = new MaxFunction((IColumn)null);
 
         action.Should().ThrowExactly<ArgumentNullException>().Which
             .ParamName.Should()
@@ -57,23 +57,18 @@ public class MaxFunctionTests
     [Fact]
     public void ConstructorTestColumnArgument() => new MaxFunction("age").Type.Should().Be(AggregateType.Max);
 
-    public static IEnumerable<object[]> AsTestCases
-    {
-        get
+    public static TheoryData<MaxFunction, string> AsTestCases
+        => new()
         {
-            yield return new object[]
             {
                 new MaxFunction("age".Field()),
-                null,
-            };
-
-            yield return new object[]
+                null
+            },
             {
                 new MaxFunction("age".Field()).As(string.Empty),
-                string.Empty,
-            };
-        }
-    }
+                string.Empty
+            }
+        };
 
     [Theory]
     [MemberData(nameof(AsTestCases))]

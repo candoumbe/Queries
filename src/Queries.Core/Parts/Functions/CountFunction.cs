@@ -10,12 +10,21 @@ public class CountFunction : AggregateFunction
     /// <summary>
     /// Builds a new <see cref="CountFunction"/> instance
     /// </summary>
-    /// <param name="column">column onto which the function will bne applied</param>
+    /// <param name="column">column onto which the function will be applied</param>
     /// <exception cref="System.ArgumentNullException">if <paramref name="column"/> is <see langword="null" /></exception>
     public CountFunction(FieldColumn column)
         : base(AggregateType.Count, column)
     { }
 
+#if NET8_0_OR_GREATER
+    /// <inheritdoc />
+    public override CountFunction As(string alias)
+    {
+        base.As(alias);
+
+        return this;
+    }
+#endif
 
     /// <summary>
     /// Performs a deep copy of the current instance.

@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### 🚀 New features
+- Added `CompileForPostgres`, `CompileForSqlServer`, `CompileForMySql` extension methods on [IQuery](./src/Queries.Core/IQuery.cs) type.
 
 ### 💥 Breaking changes
 - Changed the output of `UniqueIdentifierValue` column when rendering Postgres queries from `uuid_generate_v4()` to `gen_random_uuid()`
@@ -32,7 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `TimeOnly` support ([#41](https://github.com/candoumbe/queries/issues/42))
 
 ## [0.3.0] / 2021-01-31
-### ⚠️ Breaking changes
+### 💥 Breaking changes
 
 - Changed `SkipVariableDeclaration` from `bool` to a [`ParametrizationSettings`](src/Queries.Core/Renderers/ParametrizationSettings.cs) enum `[BREAKING]`
 

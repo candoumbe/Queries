@@ -7,12 +7,8 @@ using Xunit.Abstractions;
 
 namespace Queries.Core.Tests;
 
-public class CompiledQueryTests
+public class CompiledQueryTests(ITestOutputHelper outputHelper)
 {
-    private readonly ITestOutputHelper _outputHelper;
-
-    public CompiledQueryTests(ITestOutputHelper outputHelper) => _outputHelper = outputHelper;
-
     public static IEnumerable<object[]> EqualsCases
     {
         get
@@ -67,8 +63,8 @@ public class CompiledQueryTests
     [MemberData(nameof(EqualsCases))]
     public void TestEquals(CompiledQuery query, object other, bool expected, string reason)
     {
-        _outputHelper.WriteLine($"{nameof(query)} : {query}");
-        _outputHelper.WriteLine($"{nameof(other)} : {other}");
+        outputHelper.WriteLine($"{nameof(query)} : {query}");
+        outputHelper.WriteLine($"{nameof(other)} : {other}");
 
         // Act
         bool actual = query.Equals(other);

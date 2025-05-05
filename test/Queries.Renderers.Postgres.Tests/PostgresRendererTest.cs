@@ -606,7 +606,7 @@ public class PostgresRendererTest(ITestOutputHelper outputHelper)
         PostgresqlRenderer renderer = new(settings);
 
         // Assert
-        CompiledQuery compiledQuery = renderer.Compile(query);
+        CompiledQuery compiledQuery = query.CompileForPostgres();
 
         outputHelper.WriteLine($"{nameof(compiledQuery)} : '{compiledQuery}'");
 

@@ -4,7 +4,7 @@ using static Queries.Core.Renderers.PaginationKind;
 namespace Queries.Renderers.MySQL;
 
 /// <summary>
-/// Can be used to customize the behavior of <see cref="MySQLRenderer"/> instances.
+/// Can be used to customize the behavior of <see cref="MySqlRenderer"/> instances.
 /// </summary>
 public class MySqlRendererSettings : QueryRendererSettings
 {
