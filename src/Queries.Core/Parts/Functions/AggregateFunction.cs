@@ -43,7 +43,7 @@ public abstract class AggregateFunction : IAliasable<AggregateFunction>, IEquata
     /// <summary>
     /// The alias associated with the column
     /// </summary>
-    public string Alias { get; protected set; }
+    public string Alias { get; private set; }
 
     ///<inheritdoc/>
     public virtual AggregateFunction As(string alias)

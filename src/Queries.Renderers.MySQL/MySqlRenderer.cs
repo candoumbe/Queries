@@ -16,13 +16,13 @@ namespace Queries.Renderers.MySQL
     /// operator for string concatenation. It overrides methods to customize 
     /// the rendering of concatenated columns using the CONCAT function.
     /// </remarks>
-    public class MySQLRenderer : QueryRendererBase
+    public class MySqlRenderer : QueryRendererBase
     {
         /// <summary>
-        /// Builds a new <see cref="MySQLRenderer"/> instance.
+        /// Builds a new <see cref="MySqlRenderer"/> instance.
         /// </summary>
         /// <param name="settings">Settings used to customize the behaviour of the renderer</param>
-        public MySQLRenderer(QueryRendererSettings settings) : base(settings)
+        public MySqlRenderer(QueryRendererSettings settings) : base(settings)
         {
         }
 

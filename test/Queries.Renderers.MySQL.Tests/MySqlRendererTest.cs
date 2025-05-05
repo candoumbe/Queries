@@ -34,5 +34,5 @@ public class MySqlRendererTest
         => IsQueryOk(query, settings, expectedString);
 
     private static void IsQueryOk(IQuery query, QueryRendererSettings settings, string expectedString) =>
-        query.ForMySQL(settings).Should().Be(expectedString);
+        query.ForMySql(settings).Should().Be(expectedString);
 }

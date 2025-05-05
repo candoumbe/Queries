@@ -16,19 +16,13 @@ namespace Queries.Core.Tests.Parts;
 /// </summary>
 [UnitTest]
 [Feature(nameof(Table))]
-public class TableTests : IDisposable
+public class TableTests(ITestOutputHelper outputHelper)
 {
-    private ITestOutputHelper _outputHelper;
-
-    public TableTests(ITestOutputHelper outputHelper) => _outputHelper = outputHelper;
-
-    public void Dispose() => _outputHelper = null;
-
     [Fact]
     public void CtorThrowsArgumentNullExceptionWhenParameterIsNull()
     {
         // Act
-        Action action = () => new Table(null);
+        Action action = () => _ = new Table(null);
 
         // Assert
         action.Should().Throw<ArgumentNullException>().Which
@@ -54,8 +48,8 @@ public class TableTests : IDisposable
     [MemberData(nameof(EqualsCases))]
     public void EqualTests(Table first, object second, bool expectedResult, string reason)
     {
-        _outputHelper.WriteLine($"First : {first}");
-        _outputHelper.WriteLine($"Second : {second}");
+        outputHelper.WriteLine($"First : {first}");
+        outputHelper.WriteLine($"Second : {second}");
 
         // Act
         bool actualResult = first.Equals(second);

@@ -40,14 +40,9 @@ namespace Queries.Core.Tests.Renderers
         /// <remarks>
         /// This method is called by the framework to emulate a call to <see cref="QueryWriter.StartBlock(string)"/>
         /// </remarks>
-        private class StartBlock : QueryWriterCommand
+        private class StartBlock(string value) : QueryWriterCommand
         {
-            private readonly string _value;
-
-            public StartBlock(string value)
-            {
-                _value = value;
-            }
+            private readonly string _value = value;
 
             ///<inheritdoc/>
             public override QueryWriter RunActual(QueryWriter value)

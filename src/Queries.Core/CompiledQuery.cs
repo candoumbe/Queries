@@ -7,7 +7,7 @@ using System.Linq;
 namespace Queries.Core;
 
 /// <summary>
-/// Represents a query that was compiled alognside its variables
+/// Represents a query compiled alongside its variables
 /// </summary>
 public class CompiledQuery : IEquatable<CompiledQuery>
 {

@@ -9,6 +9,7 @@ using Queries.Core.Parts.Columns;
 
 using System;
 using System.Collections.Generic;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Queries.Core.Builders.Fluent;
 using Xunit;
@@ -151,7 +152,7 @@ public class Neo4JRendererTest(ITestOutputHelper output)
     private void IsQueryOk(IQuery query, Neo4JRendererSettings settings, string expectedString)
     {
         output.WriteLine(
-            $"Building : {query.Jsonify(new() { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull, WriteIndented = true })}){Environment.NewLine}" +
+            $"Building : {query.Jsonify(new JsonSerializerOptions { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull, WriteIndented = true })}){Environment.NewLine}" +
             $"{nameof(settings)} : {SerializeObject(settings)}");
         query.ForNeo4J(settings).Should().Be(expectedString);
     }

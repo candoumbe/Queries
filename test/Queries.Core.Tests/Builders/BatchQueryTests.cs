@@ -33,16 +33,13 @@ public class BatchQueryTests
     public void CtorShouldExcludeNullStatements()
     {
         // Arrange
-        IEnumerable<IQuery> queries = new IQuery[]
-        {
+        IEnumerable<IQuery> queries =
+        [
             InsertInto("SuperHero")
                 .Values(Select("firstname", "lastname", "nickname").From("DC_SuperHero").Build()),
-
             null,
-
             Delete("DC_SuperHero")
-
-        };
+        ];
 
         // Act
         BatchQuery batchQuery = new(queries.ToArray());

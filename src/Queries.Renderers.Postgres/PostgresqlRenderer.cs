@@ -1,3 +1,4 @@
+using System;
 using Queries.Core;
 using Queries.Core.Exceptions;
 using Queries.Core.Parts.Clauses;
@@ -38,7 +39,12 @@ public class PostgresqlRenderer : QueryRendererBase
                        ? RenderJsonColumn(json, renderAlias)
                        : base.RenderColumn(column, renderAlias);
 
-    ///<inheritdoc/>
+    /// <summary>
+    /// Renders a JSON column for a PostgreSQL query.
+    /// </summary>
+    /// <param name="json">The JSON field column to render.</param>
+    /// <param name="renderAlias">Indicates whether to include the alias in the rendered output.</param>
+    /// <returns>A string representing the rendered JSON column.</returns>
     protected virtual string RenderJsonColumn(JsonFieldColumn json, bool renderAlias)
     {
         string[] columnParts = json.Path.Split('.');
@@ -81,17 +87,17 @@ public class PostgresqlRenderer : QueryRendererBase
 
         switch (clause)
         {
-            case WhereClause where when where.Column is JsonFieldColumn json:
+            case WhereClause { Column: JsonFieldColumn json } where:
                 switch (where.Operator)
                 {
                     case ClauseOperator.EqualTo:
                         result = $"({RenderJsonColumn(new JsonFieldColumn(json.Column, json.Path, renderAsString: where.Constraint is StringColumn), renderAlias: false)} = {RenderColumn(where.Constraint, renderAlias: false)})";
                         break;
                     default:
-                        break;
+                        throw new NotSupportedException($"Unsupported '{where.Operator}' when rendering WHERE for '{nameof(JsonFieldColumn)}'");
                 }
                 break;
-            case WhereClause where when where.Constraint is JsonFieldColumn jsonConstraint:
+            case WhereClause { Constraint: JsonFieldColumn jsonConstraint } where:
                 switch (where.Operator)
                 {
                     case ClauseOperator.EqualTo:
@@ -129,7 +135,7 @@ public class PostgresqlRenderer : QueryRendererBase
 
         sbNullColumn = sbNullColumn.Append("COALESCE(")
             .Append(RenderColumn(nullColumn.Column, false)).Append(", ").Append(RenderColumn(nullColumn.DefaultValue, false))
-            .Append(")");
+            .Append(')');
 
         return renderAlias && !string.IsNullOrWhiteSpace(nullColumn.Alias)
             ? RenderColumnNameWithAlias(sbNullColumn.ToString(), EscapeName(nullColumn.Alias))
