@@ -274,127 +274,9 @@ public class PostgresRendererTest(ITestOutputHelper outputHelper)
             }
        };
 
-    public static TheoryData<SelectIntoQuery, PostgresRendererSettings, string> SelectIntoTestCases
+    public static TheoryData<BatchQuery, PostgresRendererSettings, string> BatchTestCases
         => new()
         {
-            {
-                SelectInto("destination").From("source".Table()).Build(),
-                new PostgresRendererSettings { PrettyPrint = false },
-                @"SELECT * INTO ""destination"" FROM ""source"""
-            },
-            {
-                SelectInto("names")
-                    .From(
-                        Select(Concat("firstname".Field(), " ".Literal(), "lastname".Field()).As("fullname"))
-                            .From("members")
-                    )
-                    .Build(),
-                new PostgresRendererSettings { PrettyPrint = false },
-                @"SELECT * INTO ""names"" FROM (SELECT ""firstname"" || ' ' || ""lastname"" ""fullname"" FROM ""members"")"
-            },
-            {
-                SelectInto("names")
-                    .From(
-                        Select(Concat("firstname".Field(), " ".Literal(), "lastname".Field()).As("fullname"))
-                            .From("members")
-                            .Where("firstname".Field().IsNotNull()))
-                    .Build(),
-                new PostgresRendererSettings { PrettyPrint = false },
-                @"SELECT * INTO ""names"" FROM (SELECT ""firstname"" || ' ' || ""lastname"" ""fullname"" FROM ""members"" WHERE (""firstname"" IS NOT NULL))"
-            }
-        };
-
-    public static IEnumerable<object[]> UpdateTestCases
-    {
-        get
-        {
-            yield return new object[]
-            {
-                Update("members").Set("firstname".Field().UpdateValueTo("")).Where("firstname".Field().IsNull()),
-                new PostgresRendererSettings{ PrettyPrint = false },
-                @"UPDATE ""members"" SET ""firstname"" = '' WHERE (""firstname"" IS NULL)"
-            };
-            yield return new object[]
-            {
-                 Update("members").Set("firstname".Field().UpdateValueTo(null)).Where(new WhereClause("firstname".Field(), EqualTo, "")),
-                new PostgresRendererSettings{ PrettyPrint = false },
-                @"UPDATE ""members"" SET ""firstname"" = NULL WHERE (""firstname"" = '')"
-            };
-        }
-    }
-
-    public static IEnumerable<object[]> DeleteTestCases
-    {
-        get
-        {
-            yield return new object[]
-            {
-                Delete("members"),
-                new PostgresRendererSettings{ PrettyPrint = false },
-                @"DELETE FROM ""members"""
-            };
-
-            yield return new object[]
-            {
-                Delete("members").Where(new WhereClause("firstname".Field(), IsNull)),
-                new PostgresRendererSettings{ PrettyPrint = false },
-                @"DELETE FROM ""members"" WHERE (""firstname"" IS NULL)"
-            };
-        }
-    }
-
-    public static IEnumerable<object[]> TruncateTestCases
-    {
-        get
-        {
-            yield return new object[]
-            {
-                Truncate("table"),
-                new PostgresRendererSettings{ PrettyPrint = false },
-                @"TRUNCATE TABLE ""table"""
-            };
-        }
-    }
-
-    public static IEnumerable<object[]> InsertIntoTestCases
-    {
-        get
-        {
-            yield return new object[]
-            {
-                InsertInto("members").Values(Select("Bruce".Literal(), "Wayne".Literal(), "Batman".Literal())),
-                new PostgresRendererSettings{ PrettyPrint = false },
-                @"INSERT INTO ""members"" SELECT 'Bruce', 'Wayne', 'Batman'"
-            };
-
-            yield return new object[]
-            {
-                InsertInto("members").Values(Select("Bruce".Literal(), "Wayne".Literal(), "Batman".Literal())),
-                new PostgresRendererSettings{ PrettyPrint = true },
-                $@"INSERT INTO ""members"" {Environment.NewLine}SELECT 'Bruce', 'Wayne', 'Batman'"
-            };
-
-            yield return new object[]
-            {
-                InsertInto("members").Values("firstname".InsertValue("Bruce".Literal()), "lastname".InsertValue("Wayne".Literal()), "nickname".InsertValue("Batman".Literal())),
-                new PostgresRendererSettings{ PrettyPrint = false },
-                @"INSERT INTO ""members"" (""firstname"", ""lastname"", ""nickname"") VALUES ('Bruce', 'Wayne', 'Batman')"
-            };
-
-            yield return new object[]
-            {
-                InsertInto("members").Values("firstname".InsertValue("Bruce".Literal()), "lastname".InsertValue("Wayne".Literal()), "nickname".InsertValue("Batman".Literal())),
-                new PostgresRendererSettings{ PrettyPrint = true },
-                $@"INSERT INTO ""members"" (""firstname"", ""lastname"", ""nickname"") {Environment.NewLine}VALUES ('Bruce', 'Wayne', 'Batman')"
-            };
-        }
-    }
-
-    public static IEnumerable<object[]> BatchTestCases
-    {
-        get
-        {
-            yield return new object[]
             {
                 new BatchQuery(
                     Delete("members").Where("firstname".Field().IsNull()),
@@ -402,9 +284,7 @@ public class PostgresRendererTest(ITestOutputHelper outputHelper)
                 ),
                 new PostgresRendererSettings{ PrettyPrint = false },
                 $@"DELETE FROM ""members"" WHERE (""firstname"" IS NULL);SELECT * FROM ""members"";"
-            };
-
-            yield return new object[]
+            },
             {
                 new BatchQuery(
                     InsertInto("members").Values(
@@ -415,9 +295,7 @@ public class PostgresRendererTest(ITestOutputHelper outputHelper)
                 ),
                 new PostgresRendererSettings{ PrettyPrint = false },
                 @"INSERT INTO ""members"" (""Firstname"", ""Lastname"") VALUES ('Bruce', 'Wayne');RETURN ;"
-            };
-
-            yield return new object[]
+            },
             {
                 new BatchQuery(
                     InsertInto("members").Values(
@@ -428,9 +306,7 @@ public class PostgresRendererTest(ITestOutputHelper outputHelper)
                 ),
                 new PostgresRendererSettings{ PrettyPrint = false },
                 @"INSERT INTO ""members"" (""Firstname"", ""Lastname"") VALUES ('Bruce', 'Wayne');RETURN 0;"
-            };
-
-            yield return new object[]
+            },
             {
                 new BatchQuery(
                     InsertInto("members").Values(
@@ -441,9 +317,7 @@ public class PostgresRendererTest(ITestOutputHelper outputHelper)
                 ),
                 new PostgresRendererSettings{ PrettyPrint = false },
                 @"INSERT INTO ""members"" (""Firstname"", ""Lastname"") VALUES ('Bruce', 'Wayne');RETURN ""Id"";"
-            };
-
-            yield return new object[]
+            },
             {
                 new BatchQuery(
                     InsertInto("members").Values(
@@ -454,35 +328,29 @@ public class PostgresRendererTest(ITestOutputHelper outputHelper)
                 ),
                 new PostgresRendererSettings{ PrettyPrint = false },
                 @"INSERT INTO ""members"" (""Firstname"", ""Lastname"") VALUES ('Bruce', 'Wayne');RETURN SELECT MAX(""Age"") FROM ""members"";"
-            };
-        }
-    }
+            }
+        };
 
     [Theory]
     [MemberData(nameof(SelectTestCases))]
     public void SelectTest(SelectQuery query, PostgresRendererSettings settings, string expectedString)
         => IsQueryOk(query, settings, expectedString);
 
-    public static IEnumerable<object[]> CompileCases
-    {
-        get
+    public static TheoryData<IBuild<SelectQuery>, PostgresRendererSettings, CompiledQuery, string> CompileCases
+        => new()
         {
-            yield return new object[]
             {
                 Select("*")
                     .From("members")
                     .Where("Firstname".Field(), In, new StringValues("Bruce", "Bane")),
                 new PostgresRendererSettings{ Parametrization = ParametrizationSettings.SkipVariableDeclaration },
-                (Expression<Func<CompiledQuery, bool>>)(
-                    query => query.Statement == @"SELECT * FROM ""members"" WHERE (""Firstname"" IN (@p0, @p1))"
-                        && query.Variables.Exactly(2)
-                        && query.Variables.Once(v => v.Name == "p0" && "Bruce".Equals(v.Value))
-                        && query.Variables.Once(v => v.Name == "p1" && "Bane".Equals(v.Value))
+                new CompiledQuery(@"SELECT * FROM ""members"" WHERE (""Firstname"" IN (@p0, @p1))",
+                    [ new Variable("p0", VariableType.String, "Bruce"),
+                        new Variable("p1", VariableType.String, "Bane")
+                    ]
                 ),
                 "the statement contains 2 variables with 2 values"
-            };
-
-            yield return new object[]
+            },
             {
                 Select("*")
                 .From(
@@ -491,60 +359,67 @@ public class PostgresRendererTest(ITestOutputHelper outputHelper)
                     Select("Fullname").From("SuperHero").Where("Nickname".Field(), Like, "B%"))
                 ),
                 new PostgresRendererSettings{ PrettyPrint = false, Parametrization = ParametrizationSettings.SkipVariableDeclaration },
-                (Expression<Func<CompiledQuery, bool>>)(
-                    query => query.Statement == "SELECT * FROM (" +
+                new( "SELECT * FROM (" +
                         @"SELECT ""Fullname"" FROM ""People"" WHERE (""Firstname"" LIKE @p0) " +
                         "UNION " +
                         @"SELECT ""Fullname"" FROM ""SuperHero"" WHERE (""Nickname"" LIKE @p0)" +
-                    ")"
-                        && query.Variables.Once()
-                        && query.Variables.Once(v => v.Name == "p0" && "B%".Equals(v.Value))
+                    ")",
+                    [new Variable("p0", VariableType.String, "B%")]
                 ),
                 "The select statement as two variables with SAME value"
-            };
-
-            yield return new object[]
+            },
             {
                 Select("id", "file_id")
                     .From("documents")
                     .Where(new WhereClause("userAccount".Field(), Like, "vp%")),
                 new PostgresRendererSettings{ PrettyPrint = false, Parametrization = ParametrizationSettings.SkipVariableDeclaration },
-                (Expression<Func<CompiledQuery, bool>>)(
-                    query => query.Statement == @"SELECT ""id"", ""file_id"" FROM ""documents"" WHERE (""userAccount"" LIKE @p0)"
-                        && query.Variables.Exactly(1)
-                        && query.Variables.Once(v => v.Name == "p0" && "vp%".Equals(v.Value) && v.Type == VariableType.String)
-                ),
+                new(@"SELECT ""id"", ""file_id"" FROM ""documents"" WHERE (""userAccount"" LIKE @p0)",
+                    [new Variable("p0", VariableType.String, "vp%") ]),
                 "The select statement as two variables with SAME value"
-            };
-
-            yield return new object[]
+            },
             {
                 Select("id".Field(), "file_id".Field(), new Literal("COUNT(*) OVER()").As("fullcount"))
                     .From("documents")
                     .Where(new CompositeWhereClause()
                     {
                         Logic = ClauseLogic.And,
-                        Clauses = new []
-                        {
+                        Clauses =
+                        [
                             "userAccount".Field().Like("vp%"),
                             "created_on".Field().EqualTo(10.April(2010))
-                        }
+                        ]
                     })
                     .OrderBy("timestamp".Field().Desc())
                     .Paginate(pageIndex: 2, pageSize: 3),
                 new PostgresRendererSettings{ PrettyPrint = false, Parametrization = ParametrizationSettings.SkipVariableDeclaration, FieldnameCasingStrategy = FieldnameCasingStrategy.SnakeCase },
-                (Expression<Func<CompiledQuery, bool>>)(
-                    query => query.Statement == @"SELECT ""id"", ""file_id"", COUNT(*) OVER() AS ""fullcount"" FROM ""documents"" " +
+                new CompiledQuery(
+                    @"SELECT ""id"", ""file_id"", COUNT(*) OVER() AS ""fullcount"" FROM ""documents"" " +
                              @"WHERE ((""user_account"" LIKE @p0) AND (""created_on"" = @p1)) " +
                              @"ORDER BY ""timestamp"" DESC " +
-                             "LIMIT 3 OFFSET 3"
-                             && query.Variables.Exactly(2)
-                             && query.Variables.Once(v => v.Name == "p0" && "vp%".Equals(v.Value) && v.Type == VariableType.String)
-                             && query.Variables.Once(v => v.Name == "p1" && 10.April(2010).Equals(v.Value) && v.Type == VariableType.Date)
+                             "LIMIT 3 OFFSET 3",
+                    [
+                        new Variable("p0", VariableType.String, "vp%"),
+                        new Variable("p1", VariableType.Date, 10.April(2010))
+                    ]
                 ),
                 "The select statement as two variables with SAME value"
-            };
-        }
+            }
+        };
+
+    [Theory]
+    [MemberData(nameof(CompileCases))]
+    public void Compile(SelectQuery query, PostgresRendererSettings settings, CompiledQuery expected, string reason)
+    {
+        // Arrange
+        outputHelper.WriteLine($"{nameof(query)} : '{query}'");
+
+        // Assert
+        CompiledQuery actual = query.CompileForPostgres(settings);
+
+        outputHelper.WriteLine($"{nameof(actual)} : '{actual}'");
+
+        // Assert
+        actual.Should().Be(expected, reason);
     }
 
     public static TheoryData<IBuild<SelectQuery>, FieldnameCasingStrategy, string> FieldnameCasingStrategyCases
@@ -590,43 +465,120 @@ public class PostgresRendererTest(ITestOutputHelper outputHelper)
             .Be(expected);
     }
 
-    [Theory]
-    [MemberData(nameof(CompileCases))]
-    public void Compile(SelectQuery query, PostgresRendererSettings settings, Expression<Func<CompiledQuery, bool>> expectation, string reason)
-    {
-        // Arrange
-        outputHelper.WriteLine($"{nameof(query)} : '{query}'");
-        PostgresqlRenderer renderer = new(settings);
-
-        // Assert
-        CompiledQuery compiledQuery = query.CompileForPostgres();
-
-        outputHelper.WriteLine($"{nameof(compiledQuery)} : '{compiledQuery}'");
-
-        // Assert
-        compiledQuery.Should()
-            .Match(expectation, reason);
-    }
+    public static TheoryData<UpdateQuery, PostgresRendererSettings, string> UpdateTestCases
+        => new()
+        {
+            {
+                Update("members").Set("firstname".Field().UpdateValueTo("")).Where("firstname".Field().IsNull()),
+                new PostgresRendererSettings{ PrettyPrint = false },
+                @"UPDATE ""members"" SET ""firstname"" = '' WHERE (""firstname"" IS NULL)"
+            },
+            {
+                Update("members").Set("firstname".Field().UpdateValueTo(null)).Where(new WhereClause("firstname".Field(), EqualTo, "")),
+                new PostgresRendererSettings{ PrettyPrint = false },
+                @"UPDATE ""members"" SET ""firstname"" = NULL WHERE (""firstname"" = '')"
+            }
+        };
 
     [Theory]
     [MemberData(nameof(UpdateTestCases))]
     public void UpdateTest(UpdateQuery query, PostgresRendererSettings settings, string expectedString)
         => IsQueryOk(query, settings, expectedString);
 
+    public static TheoryData<IBuild<DeleteQuery>, PostgresRendererSettings, string> DeleteTestCases
+        => new ()
+        {
+            {
+                Delete("members"),
+                new PostgresRendererSettings{ PrettyPrint = false },
+                @"DELETE FROM ""members"""
+            },
+            {
+                Delete("members").Where(new WhereClause("firstname".Field(), IsNull)),
+                new PostgresRendererSettings{ PrettyPrint = false },
+                @"DELETE FROM ""members"" WHERE (""firstname"" IS NULL)"
+            }
+        };
+
     [Theory]
     [MemberData(nameof(DeleteTestCases))]
     public void DeleteTest(DeleteQuery query, PostgresRendererSettings settings, string expectedString)
         => IsQueryOk(query, settings, expectedString);
+
+    public static TheoryData<SelectIntoQuery, PostgresRendererSettings, string> SelectIntoTestCases
+        => new()
+        {
+            {
+                SelectInto("destination").From("source".Table()).Build(),
+                new PostgresRendererSettings { PrettyPrint = false },
+                @"SELECT * INTO ""destination"" FROM ""source"""
+            },
+            {
+                SelectInto("names")
+                    .From(
+                        Select(Concat("firstname".Field(), " ".Literal(), "lastname".Field()).As("fullname"))
+                            .From("members")
+                    )
+                    .Build(),
+                new PostgresRendererSettings { PrettyPrint = false },
+                @"SELECT * INTO ""names"" FROM (SELECT ""firstname"" || ' ' || ""lastname"" ""fullname"" FROM ""members"")"
+            },
+            {
+                SelectInto("names")
+                    .From(
+                        Select(Concat("firstname".Field(), " ".Literal(), "lastname".Field()).As("fullname"))
+                            .From("members")
+                            .Where("firstname".Field().IsNotNull()))
+                    .Build(),
+                new PostgresRendererSettings { PrettyPrint = false },
+                @"SELECT * INTO ""names"" FROM (SELECT ""firstname"" || ' ' || ""lastname"" ""fullname"" FROM ""members"" WHERE (""firstname"" IS NOT NULL))"
+            }
+        };
 
     [Theory]
     [MemberData(nameof(SelectIntoTestCases))]
     public void SelectIntoTest(SelectIntoQuery query, PostgresRendererSettings settings, string expectedString)
         => IsQueryOk(query, settings, expectedString);
 
+    public static TheoryData<TruncateQuery, PostgresRendererSettings, string> TruncateTestCases
+        => new()
+        {
+            {
+                Truncate("table"),
+                new PostgresRendererSettings{ PrettyPrint = false },
+                @"TRUNCATE TABLE ""table"""
+            }
+        };
+
     [Theory]
     [MemberData(nameof(TruncateTestCases))]
     public void TruncateTest(TruncateQuery query, PostgresRendererSettings settings, string expectedString)
         => IsQueryOk(query, settings, expectedString);
+
+    public static TheoryData<IBuild<InsertIntoQuery>, PostgresRendererSettings, string> InsertIntoTestCases
+        => new()
+        {
+            {
+                InsertInto("members").Values(Select("Bruce".Literal(), "Wayne".Literal(), "Batman".Literal())),
+                new PostgresRendererSettings{ PrettyPrint = false },
+                @"INSERT INTO ""members"" SELECT 'Bruce', 'Wayne', 'Batman'"
+            },
+            {
+                InsertInto("members").Values(Select("Bruce".Literal(), "Wayne".Literal(), "Batman".Literal())),
+                new PostgresRendererSettings{ PrettyPrint = true },
+                $@"INSERT INTO ""members"" {Environment.NewLine}SELECT 'Bruce', 'Wayne', 'Batman'"
+            },
+            {
+                InsertInto("members").Values("firstname".InsertValue("Bruce".Literal()), "lastname".InsertValue("Wayne".Literal()), "nickname".InsertValue("Batman".Literal())),
+                new PostgresRendererSettings{ PrettyPrint = false },
+                @"INSERT INTO ""members"" (""firstname"", ""lastname"", ""nickname"") VALUES ('Bruce', 'Wayne', 'Batman')"
+            },
+            {
+                InsertInto("members").Values("firstname".InsertValue("Bruce".Literal()), "lastname".InsertValue("Wayne".Literal()), "nickname".InsertValue("Batman".Literal())),
+                new PostgresRendererSettings{ PrettyPrint = true },
+                $@"INSERT INTO ""members"" (""firstname"", ""lastname"", ""nickname"") {Environment.NewLine}VALUES ('Bruce', 'Wayne', 'Batman')"
+            }
+        };
 
     [Theory]
     [MemberData(nameof(InsertIntoTestCases))]
@@ -638,40 +590,40 @@ public class PostgresRendererTest(ITestOutputHelper outputHelper)
     public void BatchQueryTest(BatchQuery query, PostgresRendererSettings settings, string expectedString)
         => IsQueryOk(query, settings, expectedString);
 
-    public static IEnumerable<object[]> PaginateCases
+    public static TheoryData<IPaginatedQuery<SelectQuery>, PostgresRendererSettings, string> PaginateCases
     {
         get
         {
-            yield return new object[]
+            TheoryData<IPaginatedQuery<SelectQuery>, PostgresRendererSettings, string> data = new()
             {
-                Select("col1")
-                    .From("table")
-                    .Paginate(pageIndex: 1, pageSize:10),
-                new PostgresRendererSettings(),
-                @"SELECT ""col1"" FROM ""table"" LIMIT 10"
-            };
+                {
+                    Select("col1")
+                        .From("table")
+                        .Paginate(pageIndex: 1, pageSize: 10), new PostgresRendererSettings(),
+                    @"SELECT ""col1"" FROM ""table"" LIMIT 10" } };
+
             {
                 (int pageIndex, int pageSize) = (2, 10);
-                yield return new object[]
-                {
+                data.Add(
                     Select("col1")
                         .From("table")
                         .Paginate(pageIndex: pageIndex, pageSize: pageSize),
                     new PostgresRendererSettings(),
                     $@"SELECT ""col1"" FROM ""table"" LIMIT {pageSize} OFFSET {pageSize}"
-                };
+                );
             }
             {
                 (int pageIndex, int pageSize) = (3, 10);
-                yield return new object[]
-                {
+                data.Add(
                     Select("col1")
                         .From("table")
                         .Paginate(pageIndex: pageIndex, pageSize: pageSize),
                     new PostgresRendererSettings(),
                     $@"SELECT ""col1"" FROM ""table"" LIMIT {pageSize} OFFSET {pageSize} * {(pageIndex - 1)}"
-                };
+                );
             }
+
+            return data;
         }
     }
 
