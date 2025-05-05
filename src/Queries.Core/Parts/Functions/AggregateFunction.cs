@@ -10,7 +10,7 @@ using System;
 namespace Queries.Core.Parts.Functions;
 
 /// <summary>
-/// Base class for all aggregate function.
+/// Base class for all aggregate functions.
 /// </summary>
 [Function]
 #if !SYSTEM_TEXT_JSON

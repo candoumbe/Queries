@@ -21,7 +21,6 @@ public class CountFunction : AggregateFunction
     public override CountFunction As(string alias)
     {
         base.As(alias);
-
         return this;
     }
 #endif
