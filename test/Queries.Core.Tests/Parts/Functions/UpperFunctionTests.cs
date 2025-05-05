@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
-using Queries.Core.Parts.Columns;
-using Xunit;
-using Queries.Core.Parts.Functions;
 using FluentAssertions;
 using Queries.Core.Attributes;
+using Queries.Core.Parts.Columns;
+using Queries.Core.Parts.Functions;
+using Xunit;
 using Xunit.Categories;
 
-namespace Queries.Core.Tests.Parts.Columns;
+namespace Queries.Core.Tests.Parts.Functions;
 
 [UnitTest]
 [Feature(nameof(UpperFunction))]
@@ -17,7 +17,7 @@ public class UpperFunctionTests
     [Fact]
     public void ConstructorTestWithNullStringArgument()
     {
-        Action action = () => new UpperFunction((string)null);
+        Action action = () => _ = new UpperFunction((string)null);
 
         action.Should().ThrowExactly<ArgumentNullException>().Which
             .ParamName.Should()
@@ -27,7 +27,7 @@ public class UpperFunctionTests
     [Fact]
     public void ConstructorTestWithNullColumnArgument()
     {
-        Action action = () => new UpperFunction((IColumn) null);
+        Action action = () => _ = new UpperFunction((IColumn) null);
 
         action.Should().ThrowExactly<ArgumentNullException>().Which
             .ParamName.Should()
@@ -39,23 +39,12 @@ public class UpperFunctionTests
     public void SettingAliasTest(UpperFunction column, string expectedAlias)
         => column.Alias.Should().Be(expectedAlias);
 
-    public static IEnumerable<object[]> AsTestCases
-    {
-        get
+    public static TheoryData<UpperFunction, string> AsTestCases
+        => new()
         {
-            yield return new object[]
-            {
-                new UpperFunction("firstname".Field()),
-                null,
-            };
-
-            yield return new object[]
-            {
-                new UpperFunction("firstname".Field()).As(string.Empty),
-                string.Empty,
-            };
-        }
-    }
+            { new UpperFunction("firstname".Field()), null },
+            { new UpperFunction("firstname".Field()).As(string.Empty), string.Empty }
+        };
 
     [Fact]
     public void HasFunctionAttribute()

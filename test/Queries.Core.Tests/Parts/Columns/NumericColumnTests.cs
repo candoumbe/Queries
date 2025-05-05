@@ -11,14 +11,8 @@ namespace Queries.Core.Tests.Parts.Columns;
 [UnitTest]
 [Feature(nameof(NumericColumn))]
 [Feature("Column")]
-public class NumericColumnTests : IDisposable
+public class NumericColumnTests(ITestOutputHelper outputHelper)
 {
-    private ITestOutputHelper _outputHelper;
-
-    public NumericColumnTests(ITestOutputHelper outputHelper) => _outputHelper = outputHelper;
-
-    public void Dispose() => _outputHelper = null;
-
     [Fact]
     public void CtorShouldSetValueAsPassedIn()
     {
@@ -37,7 +31,7 @@ public class NumericColumnTests : IDisposable
     [InlineData(int.MinValue)]
     public void CtorWithIntArgument(int value)
     {
-        _outputHelper.WriteLine($"{nameof(value)} : {value}");
+        outputHelper.WriteLine($"{nameof(value)} : {value}");
 
         // Act
         NumericColumn column = new(value);
@@ -57,7 +51,7 @@ public class NumericColumnTests : IDisposable
     [InlineData(long.MinValue)]
     public void CtorWithLongArgument(long value)
     {
-        _outputHelper.WriteLine($"{nameof(value)} : {value}");
+        outputHelper.WriteLine($"{nameof(value)} : {value}");
 
         // Act
         NumericColumn column = new(value);
@@ -74,7 +68,7 @@ public class NumericColumnTests : IDisposable
     [InlineData(double.MinValue)]
     public void CtorWithDoubleArgument(double value)
     {
-        _outputHelper.WriteLine($"{nameof(value)} : {value}");
+        outputHelper.WriteLine($"{nameof(value)} : {value}");
 
         // Act
         NumericColumn column = new(value);
@@ -85,20 +79,18 @@ public class NumericColumnTests : IDisposable
             .Should().BeApproximately(value, double.Epsilon, $"{nameof(NumericColumn)}.{nameof(NumericColumn.Value)} should be equal to the ctor input");
     }
 
-    public static IEnumerable<object[]> CtorWithDecimalArgumentCases
-    {
-        get
+    public static TheoryData<decimal> CtorWithDecimalArgumentCases
+        => new()
         {
-            yield return new object[] { 0m };
-            yield return new object[] { 6.4m };
-        }
-    }
+            0m,
+            6.4m
+        };
 
     [Theory]
     [MemberData(nameof(CtorWithDecimalArgumentCases))]
     public void CtorWithDecimalArgument(decimal value)
     {
-        _outputHelper.WriteLine($"{nameof(value)} : {value}");
+        outputHelper.WriteLine($"{nameof(value)} : {value}");
 
         // Act
         NumericColumn column = new(value);
@@ -118,7 +110,7 @@ public class NumericColumnTests : IDisposable
     [InlineData(float.Epsilon)]
     public void CtorWithFloatArgument(float value)
     {
-        _outputHelper.WriteLine($"{nameof(value)} : {value}");
+        outputHelper.WriteLine($"{nameof(value)} : {value}");
 
         // Act
         NumericColumn column = new(value);
@@ -162,56 +154,43 @@ public class NumericColumnTests : IDisposable
             .BeNull($"{nameof(NumericColumn)}.{nameof(NumericColumn.Value)} should be equal to the ctor input");
     }
 
-    public static IEnumerable<object[]> EqualsCases
-    {
-        get
+    public static TheoryData<NumericColumn, object, bool, string> EqualsCases
+        => new()
         {
-            yield return new object[] { new NumericColumn(1), null, false, "object is null" };
-            yield return new object[]
-            {
+            { new NumericColumn(1), null, false, "object is null" },
+            { 
                 new NumericColumn(1),
                 new NumericColumn(1),
                 true,
                 $"object is a {nameof(NumericColumn)} with exactly the same {nameof(NumericColumn.Value)} and {nameof(NumericColumn.Alias)}"
-            };
-
-            {
-                NumericColumn column = new(1);
-                yield return new object[] { column, column, true, "Equals with same instance" };
-            }
-
-            yield return new object[]
+            },
+            { new NumericColumn(1), new NumericColumn(1), true, "Equals with same instance" },
             {
                 new NumericColumn(10L),
                 new NumericColumn(10L),
                 true,
                 "both instances contain same value (long)"
-            };
-
-            yield return new object[]
+            },
             {
                 new NumericColumn(10L),
                 new NumericColumn(10),
                 true,
                 "the first instance holds 10L which equals 10"
-            };
-
-            yield return new object[]
+            },
             {
                 new NumericColumn(10f),
                 new NumericColumn(10),
                 true,
                 "the first instance holds 10f which is roughly equals to 10"
-            };
-        }
-    }
+            }
+        };
 
     [Theory]
     [MemberData(nameof(EqualsCases))]
     public void EqualTests(NumericColumn first, object second, bool expectedResult, string reason)
     {
-        _outputHelper.WriteLine($"{nameof(first)} : {first}");
-        _outputHelper.WriteLine($"{nameof(second)} : {second}");
+        outputHelper.WriteLine($"{nameof(first)} : {first}");
+        outputHelper.WriteLine($"{nameof(second)} : {second}");
 
         // Act
         bool actualResult = first.Equals(second);
@@ -220,20 +199,18 @@ public class NumericColumnTests : IDisposable
         actualResult.Should().Be(expectedResult, reason);
     }
 
-    public static IEnumerable<object[]> CloneCases
-    {
-        get
+    public static TheoryData<NumericColumn> CloneCases
+        => new()
         {
-            yield return new[] { 1.Literal() };
-            yield return new[] { 2.0f.Literal() };
-        }
-    }
+            1.Literal(),
+            2.0f.Literal()
+        };
 
     [Theory]
     [MemberData(nameof(CloneCases))]
     public void CloneTest(NumericColumn original)
     {
-        _outputHelper.WriteLine($"{nameof(original)} : {original}");
+        outputHelper.WriteLine($"{nameof(original)} : {original}");
 
         // Act
         IColumn copie = original.Clone();

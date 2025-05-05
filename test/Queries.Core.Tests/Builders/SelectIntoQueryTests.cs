@@ -16,14 +16,9 @@ namespace Queries.Core.Tests.Builders
     [UnitTest]
     [Feature(nameof(SelectIntoQuery))]
     [Feature("Builder")]
-    public class SelectIntoQueryTests
+    public class SelectIntoQueryTests(ITestOutputHelper outputHelper)
     {
-        private readonly ITestOutputHelper _outputHelper;
-
-        public SelectIntoQueryTests(ITestOutputHelper outputHelper)
-        {
-            _outputHelper = outputHelper;
-        }
+        private readonly ITestOutputHelper _outputHelper = outputHelper;
 
         [Fact]
         public void Given_table_is_null_Constructor_should_throw_ArgumentNullException()

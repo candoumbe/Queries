@@ -11,13 +11,6 @@ namespace Queries.Core.Tests.Parts.Columns;
 [UnitTest]
 public class SelectColumnTests
 {
-    private readonly ITestOutputHelper _outputHelper;
-
-    public SelectColumnTests(ITestOutputHelper outputHelper)
-    {
-        _outputHelper = outputHelper;
-    }
-
     [Property]
     public Property Should_set_As_property(string newAlias)
     {

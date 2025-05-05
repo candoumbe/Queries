@@ -16,19 +16,13 @@ namespace Queries.Core.Tests.Builders;
 [UnitTest]
 [Feature("Update")]
 [Feature("Builder")]
-public class UpdateQueryTests : IDisposable
+public class UpdateQueryTests(ITestOutputHelper outputHelper)
 {
-    private ITestOutputHelper _outputHelper;
-
-    public UpdateQueryTests(ITestOutputHelper outputHelper) => _outputHelper = outputHelper;
-
-    public void Dispose() => _outputHelper = null;
-
     [Fact]
     public void CtorWithNullStringArgumentThrowsArgumentNullException()
     {
         // Act
-        Action action = () => new UpdateQuery((string) null);
+        Action action = () => _ = new UpdateQuery((string) null);
 
         // Assert
         action.Should().Throw<ArgumentNullException>("name of the table to delete cannot be null").Which
@@ -40,7 +34,7 @@ public class UpdateQueryTests : IDisposable
     public void CtorWithNullTableArgumentThrowsArgumentNullException()
     {
         // Act
-        Action action = () => new UpdateQuery((Table)null);
+        Action action = () => _ = new UpdateQuery((Table)null);
 
         // Assert
         action.Should().Throw<ArgumentNullException>("name of the table to delete cannot be null").Which
@@ -54,7 +48,7 @@ public class UpdateQueryTests : IDisposable
     public void CtorWithEmptyOrWhiteSpaceArgumentThrowsArgumentOutOfRangeException(string tableName)
     {
         // Act
-        Action action = () => new UpdateQuery(tableName);
+        Action action = () => _ = new UpdateQuery(tableName);
 
         // Assert
         action.Should().Throw<ArgumentOutOfRangeException>("name of the table to delete cannot be null").Which
@@ -62,23 +56,20 @@ public class UpdateQueryTests : IDisposable
             .NotBeNullOrWhiteSpace();
     }
 
-    public static IEnumerable<object[]> EqualsCases
+    public static TheoryData<UpdateQuery, object, bool, string> EqualsCases => new()
     {
-        get
-        {
-            yield return new object[] { Update("SuperHero").Set("firstname".Field().UpdateValueTo("Bruce")), null, false, "comparing with a null instance" };
-            yield return new object[] { Update("SuperHero").Set("firstname".Field().UpdateValueTo("Bruce")), Update("SuperHero").Set("firstname".Field().UpdateValueTo("Bruce")), true, "comparing two instances with same tableName" };
-            yield return new object[] { Update("SuperHero").Set("firstname".Field().UpdateValueTo("Bruce")), Update("SuperHero").Set("firstname".Field().UpdateValueTo("Bruce")), true, "comparing two instances with same tableName" };
-            yield return new object[] { Update("SuperHero"), Select(1.Literal()), false, "comparing two different types of query" };
-        }
-    }
+        { Update("SuperHero").Set("firstname".Field().UpdateValueTo("Bruce")), null, false, "comparing with a null instance" },
+        { Update("SuperHero").Set("firstname".Field().UpdateValueTo("Bruce")), Update("SuperHero").Set("firstname".Field().UpdateValueTo("Bruce")), true, "comparing two instances with same tableName" },
+        { Update("SuperHero").Set("firstname".Field().UpdateValueTo("Bruce")), Update("SuperHero").Set("firstname".Field().UpdateValueTo("Bruce")), true, "comparing two instances with same tableName" },
+        { Update("SuperHero"), Select(1.Literal()), false, "comparing two different types of query" }
+    };
 
     [Theory]
     [MemberData(nameof(EqualsCases))]
     public void EqualTests(UpdateQuery first, object second, bool expectedResult, string reason)
     {
-        _outputHelper.WriteLine($"{nameof(first)} : {first}");
-        _outputHelper.WriteLine($"{nameof(second)} : {second}");
+        outputHelper.WriteLine($"{nameof(first)} : {first}");
+        outputHelper.WriteLine($"{nameof(second)} : {second}");
 
         // Act
         bool actualResult = first.Equals(second);

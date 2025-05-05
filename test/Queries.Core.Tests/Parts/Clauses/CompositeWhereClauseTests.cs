@@ -1,13 +1,13 @@
-﻿using FluentAssertions;
+﻿using System;
+using System.Collections.Generic;
+using FluentAssertions;
 using Queries.Core.Parts.Clauses;
 using Queries.Core.Parts.Columns;
-using System;
-using System.Collections.Generic;
 using Xunit;
 using Xunit.Categories;
 using static Queries.Core.Parts.Clauses.ClauseLogic;
 
-namespace Queries.Core.Tests.Parts;
+namespace Queries.Core.Tests.Parts.Clauses;
 
 [UnitTest]
 [Feature("Where")]

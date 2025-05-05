@@ -11,31 +11,25 @@ namespace Queries.Renderers.MySQL.Tests;
 
 // This project can output the Class library as a NuGet Package.
 // To enable this option, right-click on the project and select the Properties menu item. In the Build tab select "Produce outputs on build".
-public class MySQLRendererTest
+public class MySqlRendererTest
 {
-    public static IEnumerable<object[]> SelectTestCases
-    {
-        get
+    public static TheoryData<SelectQuery, MySqlRendererSettings, string> SelectTestCases
+        => new()
         {
-            yield return new object[]
             {
                 Select(Concat("firstname".Field(), " ".Literal(), "lastname".Field())),
                 new MySqlRendererSettings { PrettyPrint = false },
                 @"SELECT CONCAT(""firstname"", ' ', ""lastname"")"
-            };
-
-            yield return new object[]
+            },
             {
                 new SelectQuery(Concat("firstname".Field(), " ".Literal(), "lastname".Field())),
                 new MySqlRendererSettings { PrettyPrint = false },
                 @"SELECT CONCAT(""firstname"", ' ', ""lastname"")"
-            };
-        }
-    }
+            }
+        };
 
     [Theory]
     [MemberData(nameof(SelectTestCases))]
-    //[TestCaseSource(typeof(Cases), nameof(Cases.SelectTestCases))]
     public void SelectTest(SelectQuery query, QueryRendererSettings settings, string expectedString)
         => IsQueryOk(query, settings, expectedString);
 

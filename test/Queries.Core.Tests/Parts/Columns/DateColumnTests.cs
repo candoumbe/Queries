@@ -1,14 +1,8 @@
-﻿#if NET6_0_OR_GREATER
-
+﻿#if NET8_0_OR_GREATER
 namespace Queries.Core.Tests.Parts.Columns;
-
 using FluentAssertions;
-
 using Queries.Core.Parts.Columns;
-
 using System;
-using System.Collections.Generic;
-
 using Xunit;
 using Xunit.Categories;
 
@@ -17,16 +11,13 @@ using Xunit.Categories;
 [Feature(nameof(DateColumn))]
 public class DateColumnTests
 {
-    public static IEnumerable<object[]> ConstructorWithFormatCases
+    public static TheoryData<DateOnly, string> ConstructorWithFormatCases => new()
     {
-        get
-        {
-            yield return new object[] { DateOnly.MinValue, null };
-            yield return new object[] { DateOnly.MinValue, "" };
-            yield return new object[] { DateOnly.MaxValue, "" };
-            yield return new object[] { DateOnly.MaxValue, null };
-        }
-    }
+        { DateOnly.MinValue, null },
+        { DateOnly.MinValue, "" },
+        { DateOnly.MaxValue, "" },
+        { DateOnly.MaxValue, null }
+    };
 
     [Theory]
     [MemberData(nameof(ConstructorWithFormatCases))]
@@ -41,14 +32,11 @@ public class DateColumnTests
         dc.StringFormat.Should().Be(format);
     }
 
-    public static IEnumerable<object[]> ConstructorWithoutFormatCases
+    public static TheoryData<DateOnly> ConstructorWithoutFormatCases => new()
     {
-        get
-        {
-            yield return new object[] { DateOnly.MinValue };
-            yield return new object[] { DateOnly.MaxValue };
-        }
-    }
+        DateOnly.MinValue,
+        DateOnly.MaxValue
+    };
 
     [Theory]
     [MemberData(nameof(ConstructorWithoutFormatCases))]
@@ -63,5 +51,4 @@ public class DateColumnTests
         dc.StringFormat.Should().Be("yyyy-MM-dd");
     }
 }
-
 #endif

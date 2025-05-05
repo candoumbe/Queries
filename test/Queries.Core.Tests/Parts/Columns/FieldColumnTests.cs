@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Queries.Core.Parts.Columns;
 using Xunit;
 using Queries.Core.Parts.Functions;
@@ -11,19 +10,13 @@ namespace Queries.Core.Tests.Parts.Columns;
 
 [UnitTest]
 [Feature(nameof(FieldColumn))]
-public class FieldColumnTests : IDisposable
+public class FieldColumnTests(ITestOutputHelper outputHelper)
 {
-    private ITestOutputHelper _outputHelper;
-
-    public FieldColumnTests(ITestOutputHelper outputHelper) => _outputHelper = outputHelper;
-
-    public void Dispose() => _outputHelper = null;
-
     [Fact]
     public void ConstructorTestWithNullArgument()
     {
         // Act
-        Action action = () => new FieldColumn(null);
+        Action action = () => _ = new FieldColumn(null);
 
         // Arrange
         action.Should().Throw<ArgumentNullException>().Which
@@ -35,7 +28,7 @@ public class FieldColumnTests : IDisposable
     public void ConstructorTestWithEmptyArgument()
     {
         // Act
-        Action action = () => new FieldColumn(string.Empty);
+        Action action = () => _ = new FieldColumn(string.Empty);
 
         // Arrange
         action.Should().Throw<ArgumentOutOfRangeException>().Which
@@ -47,7 +40,7 @@ public class FieldColumnTests : IDisposable
     public void ConstructorTestWithWhitespaceStringArgument()
     {
         // Act
-        Action action = () => new FieldColumn("   ");
+        Action action = () => _ = new FieldColumn("   ");
 
         // Arrange
         action.Should().Throw<ArgumentOutOfRangeException>().Which
@@ -55,40 +48,33 @@ public class FieldColumnTests : IDisposable
             .NotBeNullOrWhiteSpace();
     }
 
-    public static IEnumerable<object[]> AsTestCases
+    public static TheoryData<AggregateFunction, string> AsTestCases => new()
     {
-        get
-        {
-            yield return new object[]
-            {
-                new CountFunction("firstname".Field()),
-                null,
-            };
-
-            yield return new object[]
-            {
-                new CountFunction("firstname".Field()).As(string.Empty),
-                string.Empty,
-            };
-        }
-    }
+        { new CountFunction("firstname".Field()), null },
+        { new CountFunction("firstname".Field()).As(string.Empty), string.Empty }
+    };
 
     [Theory]
     [MemberData(nameof(AsTestCases))]
     public void SettingAliasTest(CountFunction column, string expectedAlias)
         => column.Alias.Should().Be(expectedAlias);
 
-    public static IEnumerable<object[]> EqualsCases
+    public static TheoryData<FieldColumn, object, bool, string> EqualsCases
     {
         get
         {
-            yield return new object[] { new FieldColumn("firstname"), null, false, "object is null" };
-            yield return new object[] { new FieldColumn("firstname"), new FieldColumn("firstname"), true, $"object is a {nameof(FieldColumn)} with exactly the same {nameof(FieldColumn.Name)} and {nameof(FieldColumn.Alias)}" };
-            
+            TheoryData<FieldColumn, object, bool, string> data = new()
+            {
+                { new FieldColumn("firstname"), null, false, "object is null" },
+                { new FieldColumn("firstname"), new FieldColumn("firstname"), true, $"object is a {nameof(FieldColumn)} with exactly the same {nameof(FieldColumn.Name)} and {nameof(FieldColumn.Alias)}" }
+            };
+
             {
                 FieldColumn column = new("firstname");
-                yield return new object[] { column, column, true, "Equals with same instance" };
+                data.Add(column, column, true, "Equals with same instance");
             }
+
+            return data;
         }
     }
 
@@ -96,8 +82,8 @@ public class FieldColumnTests : IDisposable
     [MemberData(nameof(EqualsCases))]
     public void EqualTests(FieldColumn first, object second, bool expectedResult, string reason)
     {
-        _outputHelper.WriteLine($"First : {first}");
-        _outputHelper.WriteLine($"Second : {second}");
+        outputHelper.WriteLine($"First : {first}");
+        outputHelper.WriteLine($"Second : {second}");
 
         // Act
         bool actualResult = first.Equals(second);
@@ -106,19 +92,16 @@ public class FieldColumnTests : IDisposable
         actualResult.Should().Be(expectedResult, reason);
     }
 
-    public static IEnumerable<object[]> CloneCases
+    public static TheoryData<FieldColumn> CloneCases => new()
     {
-        get
-        {
-            yield return new[] { "Firstname".Field() };
-        }
-    }
+        { "Firstname".Field() }
+    };
     [Theory]
     [MemberData(nameof(CloneCases))]
     public void CloneTest(FieldColumn original)
     {
         // Act
-        FieldColumn copie = (FieldColumn) original.Clone();
+        FieldColumn copie = original.Clone();
 
         // Assert
         copie.Should()

@@ -4,7 +4,7 @@ using Xunit;
 using Xunit.Categories;
 using static Queries.Core.Parts.Clauses.ClauseLogic;
 
-namespace Queries.Core.Tests.Parts;
+namespace Queries.Core.Tests.Parts.Clauses;
 
 [UnitTest]
 [Feature("Having clause")]

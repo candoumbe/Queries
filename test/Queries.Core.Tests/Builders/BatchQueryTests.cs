@@ -57,24 +57,23 @@ public class BatchQueryTests
     public void CtorPreserveStatementOrder()
     {
         // Arrange
-        IEnumerable<IQuery> queries = new IQuery[]
-        {
+        IEnumerable<IQuery> queries =
+        [
             Select(1.Literal()),
             Select(2.Literal()),
             Select(3.Literal())
-        };
+        ];
 
         // Act
         BatchQuery batchQuery = new(queries.ToArray());
 
         // Assert 
         batchQuery.Statements.Should()
-            .Equal(new[]
-            {
+            .Equal([
                 Select(1.Literal()),
                 Select(2.Literal()),
                 Select(3.Literal())
 
-            });
+            ]);
     }
 }

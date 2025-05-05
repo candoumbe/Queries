@@ -1,76 +1,51 @@
-﻿using FluentAssertions;
-using Queries.Core.Builders;
-using Queries.Core.Parts.Clauses;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using FluentAssertions;
+using Queries.Core.Builders;
+using Queries.Core.Parts.Clauses;
+using Queries.Core.Parts.Columns;
 using Xunit;
-using Xunit.Abstractions;
 using Xunit.Categories;
 
-namespace Queries.Core.Parts.Columns.Tests;
+namespace Queries.Core.Tests.Extensions;
 
 [UnitTest]
 [Feature(nameof(FieldColumn))]
 [Feature("Extensions")]
-public class FieldColumnExtensionsTests : IDisposable
+public class FieldColumnExtensionsTests
 {
-    private ITestOutputHelper _outputHelper;
-
-    public FieldColumnExtensionsTests(ITestOutputHelper outputHelper) => _outputHelper = outputHelper;
-
-    public void Dispose() => _outputHelper = null;
-
-    public static IEnumerable<object[]> EqualToExtensionCases
-    {
-        get
+    public static TheoryData<FieldColumn, string, UpdateFieldValue> EqualToExtensionCases
+        => new()
         {
-            yield return new object[]
             {
                 new FieldColumn("firstname"),
                 "Bruce",
-                (Expression<Func<UpdateFieldValue, bool>>)(x =>
-                    x.Source != null
-                    && x.Source is Literal
-                    && ((Literal)x.Source).Value is string
-                    && "Bruce".Equals(((Literal)x.Source).Value)
-                    && x.Destination != null
-                    && "firstname".Equals(x.Destination.Name)
-                )
-            };
-
-            yield return new object[]
+                new UpdateFieldValue("firstname".Field(), "Bruce".Literal())
+            },
             {
                 new FieldColumn("firstname"),
                 null,
-                (Expression<Func<UpdateFieldValue, bool>>)(x =>
-                    x.Source  == null
-                    && x.Destination != null
-                    && "firstname".Equals(x.Destination.Name)
-                )
-            };
-        }
-    }
+                new UpdateFieldValue("firstname".Field(), null)
+            }
+        };
 
     [Theory]
     [MemberData(nameof(EqualToExtensionCases))]
-    public void EqualToExtension(FieldColumn fc, ColumnBase value, Expression<Func<UpdateFieldValue, bool>> expectation)
+    public void EqualToExtension(FieldColumn fc, ColumnBase value, UpdateFieldValue expected)
     {
         // Act
-        UpdateFieldValue ufv  = fc.UpdateValueTo(value);
+        UpdateFieldValue actual  = fc.UpdateValueTo(value);
 
         // Assert
-        ufv.Should().Match(expectation);
+        actual.Should().Be(expected);
     }
 
     [Fact]
     public void EqualToExtensionThrowsArgumentNullExceptionWhenDestinationIsNull()
     {
-        // Arrange
-        FieldColumn fieldColumn = null;
-
         // Act
-        Action action = () => fieldColumn.UpdateValueTo("Bruce");
+        Action action = () => ((FieldColumn)null).UpdateValueTo("Bruce");
 
         // Assert
         action.Should().Throw<ArgumentNullException>().Which
@@ -96,11 +71,8 @@ public class FieldColumnExtensionsTests : IDisposable
     [Fact]
     public void IsNullExtensionThrowsArgumentNullExceptionWhenDestinationIsNull()
     {
-        // Arrange
-        FieldColumn fieldColumn = null;
-
         // Act
-        Action action = () => fieldColumn.IsNull();
+        Action action = () => ((FieldColumn)null).IsNull();
 
         // Assert
         action.Should().Throw<ArgumentNullException>().Which
@@ -126,11 +98,8 @@ public class FieldColumnExtensionsTests : IDisposable
     [Fact]
     public void IsNotNullExtensionThrowsArgumentNullExceptionWhenDestinationIsNull()
     {
-        // Arrange
-        FieldColumn fieldColumn = null;
-
         // Act
-        Action action = () => fieldColumn.IsNotNull();
+        Action action = () => ( (FieldColumn )null).IsNotNull();
 
         // Assert
         action.Should().Throw<ArgumentNullException>().Which
@@ -159,11 +128,8 @@ public class FieldColumnExtensionsTests : IDisposable
     [Fact]
     public void LessThanExtensionThrowsArgumentNullExceptionWhenDestinationIsNull()
     {
-        // Arrange
-        FieldColumn fieldColumn = null;
-
         // Act
-        Action action = () => fieldColumn.LessThan(18);
+        Action action = () => ((FieldColumn)null).LessThan(18);
 
         // Assert
         action.Should().Throw<ArgumentNullException>().Which
@@ -192,11 +158,8 @@ public class FieldColumnExtensionsTests : IDisposable
     [Fact]
     public void GreaterThanExtensionThrowsArgumentNullExceptionWhenDestinationIsNull()
     {
-        // Arrange
-        FieldColumn fieldColumn = null;
-
         // Act
-        Action action = () => fieldColumn.GreaterThan(18);
+        Action action = () => ((FieldColumn)null).GreaterThan(18);
 
         // Assert
         action.Should().Throw<ArgumentNullException>().Which
@@ -225,11 +188,8 @@ public class FieldColumnExtensionsTests : IDisposable
     [Fact]
     public void GreaterThanOrEqualToExtensionThrowsArgumentNullExceptionWhenDestinationIsNull()
     {
-        // Arrange
-        FieldColumn fieldColumn = null;
-
         // Act
-        Action action = () => fieldColumn.GreaterThanOrEqualTo(18);
+        Action action = () => ((FieldColumn)null).GreaterThanOrEqualTo(18);
 
         // Assert
         action.Should().Throw<ArgumentNullException>().Which
@@ -258,11 +218,8 @@ public class FieldColumnExtensionsTests : IDisposable
     [Fact]
     public void LessThanOrEqualToExtensionThrowsArgumentNullExceptionWhenDestinationIsNull()
     {
-        // Arrange
-        FieldColumn fieldColumn = null;
-
         // Act
-        Action action = () => fieldColumn.LessThanOrEqualTo(18);
+        Action action = () => ((FieldColumn)null).LessThanOrEqualTo(18);
 
         // Assert
         action.Should().Throw<ArgumentNullException>().Which

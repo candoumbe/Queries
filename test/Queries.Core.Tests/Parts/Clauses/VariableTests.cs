@@ -17,7 +17,7 @@ public class VariableTests
     public void CtorDoesNotThrowsArgumentNullExceptionIfValueIsNull(VariableType variableType)
     {
         // Act
-        Action action = () => new Variable("p", variableType, null);
+        Action action = () => _ = new Variable("p", variableType, null);
 
         // Assert
         action.Should().NotThrow<ArgumentNullException>($"{nameof(Variable)}.{nameof(Variable.Value)} can be null");
@@ -31,7 +31,7 @@ public class VariableTests
     public void CtorThrowsArgumentNullExceptionIfParameterNameIsNull(string parameterName, VariableType constraintType)
     {
         // Act
-        Action action = () => new Variable(parameterName, constraintType, 3);
+        Action action = () => _ = new Variable(parameterName, constraintType, 3);
 
         // Assert
         action.Should().Throw<ArgumentNullException>($"{nameof(Variable)}.{nameof(Variable.Name)} cannot be null").Which
@@ -51,7 +51,7 @@ public class VariableTests
     public void CtorThrowsArgumentOutOfRangeExceptionIfParameterNameIsEmptyOrWhiteSpace(string parameterName, VariableType constraintType)
     {
         // Act
-        Action action = () => new Variable(parameterName, constraintType, 3);
+        Action action = () => _ = new Variable(parameterName, constraintType, 3);
 
         // Assert
         action.Should().Throw<ArgumentOutOfRangeException>($"{nameof(Variable)}.{nameof(Variable.Name)} cannot be null").Which

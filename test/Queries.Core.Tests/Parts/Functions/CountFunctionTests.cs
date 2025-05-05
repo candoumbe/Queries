@@ -1,12 +1,11 @@
+using System;
 using FluentAssertions;
 using Queries.Core.Attributes;
 using Queries.Core.Parts.Functions;
-using System;
-using System.Collections.Generic;
 using Xunit;
 using Xunit.Categories;
 
-namespace Queries.Core.Tests.Parts.Columns;
+namespace Queries.Core.Tests.Parts.Functions;
 
 [UnitTest]
 [Feature(nameof(CountFunction))]
@@ -17,7 +16,7 @@ public class CountFunctionTests
     public void ConstructorTestWithNullArgument()
     {
         // Act
-        Action action = () => new CountFunction(null);
+        Action action = () => _ = new CountFunction(null);
 
         // Assert
         action.Should().Throw<ArgumentNullException>($"{nameof(CountFunction)} constructor called with null argument").Which
@@ -25,23 +24,18 @@ public class CountFunctionTests
             .NotBeNullOrWhiteSpace();
     }
 
-    public static IEnumerable<object[]> AsTestCases
-    {
-        get
+    public static TheoryData<CountFunction, string> AsTestCases
+        => new()
         {
-            yield return new object[]
             {
                 new CountFunction("firstname".Field()),
-                null,
-            };
-
-            yield return new object[]
+                null
+            },
             {
                 new CountFunction("firstname".Field()).As(string.Empty),
-                string.Empty,
-            };
-        }
-    }
+                string.Empty
+            }
+        };
 
     [Theory]
     [MemberData(nameof(AsTestCases))]
