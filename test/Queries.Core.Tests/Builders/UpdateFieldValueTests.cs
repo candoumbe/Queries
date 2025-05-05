@@ -12,19 +12,17 @@ namespace Queries.Core.Tests.Builders;
 
 [UnitTest]
 [Feature("Builder")]
-public class UpdateFieldValueTests : IDisposable
+public class UpdateFieldValueTests(ITestOutputHelper outputHelper) : IDisposable
 {
-    private ITestOutputHelper _outputHelper;
-
-    public UpdateFieldValueTests(ITestOutputHelper outputHelper) => _outputHelper = outputHelper;
+    private ITestOutputHelper _outputHelper = outputHelper;
 
     public void Dispose() => _outputHelper = null;
 
     [Fact]
-    public void CtorWithNullieldColumnArgumentThrowsArgumentNullException()
+    public void CtorWithNullFieldColumnArgumentThrowsArgumentNullException()
     {
         // Act
-        Action action = () => new UpdateFieldValue(null, 10);
+        Action action = () => _ = new UpdateFieldValue(null, 10);
 
         // Assert
         action.Should().Throw<ArgumentNullException>("name of the table to delete cannot be null").Which

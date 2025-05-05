@@ -32,7 +32,7 @@ public abstract class AggregateFunction : IAliasable<AggregateFunction>, IEquata
     /// Builds a new <see cref="AggregateFunction"/> instance.
     /// </summary>
     /// <param name="aggregate">The aggregate function to create</param>
-    /// <param name="column">The cokumn onto which the aggregate will be applied</param>
+    /// <param name="column">The column onto which the aggregate will be applied</param>
     /// <exception cref="ArgumentNullException">if <paramref name="column"/> is null.</exception>
     protected AggregateFunction(AggregateType aggregate, IColumn column)
     {
@@ -43,10 +43,10 @@ public abstract class AggregateFunction : IAliasable<AggregateFunction>, IEquata
     /// <summary>
     /// The alias associated with the column
     /// </summary>
-    public string Alias { get; private set; }
+    public string Alias { get; protected set; }
 
     ///<inheritdoc/>
-    public AggregateFunction As(string alias)
+    public virtual AggregateFunction As(string alias)
     {
         Alias = alias;
 

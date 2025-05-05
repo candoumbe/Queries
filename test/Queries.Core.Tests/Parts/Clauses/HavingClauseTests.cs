@@ -13,11 +13,9 @@ namespace Queries.Core.Tests.Parts.Clauses
 {
     [UnitTest]
     [Feature("Having")]
-    public class HavingClauseTests : IDisposable
+    public class HavingClauseTests(ITestOutputHelper outputHelper) : IDisposable
     {
-        private ITestOutputHelper _outputHelper;
-
-        public HavingClauseTests(ITestOutputHelper outputHelper) => _outputHelper = outputHelper;
+        private ITestOutputHelper _outputHelper = outputHelper;
 
         public void Dispose() => _outputHelper = null;
 
@@ -25,7 +23,7 @@ namespace Queries.Core.Tests.Parts.Clauses
         public void CtorShouldThrowsArgumentNullExceptionWhenColumnIsNull()
         {
             // Act
-            Action action = () => new HavingClause(null, default);
+            Action action = () => _ = new HavingClause(null, default);
 
             // Assert
             action.Should().Throw<ArgumentNullException>().Which
@@ -37,8 +35,8 @@ namespace Queries.Core.Tests.Parts.Clauses
         {
             get
             {
-                ClauseOperator[] operators = new[]
-                {
+                ClauseOperator[] operators =
+                [
                     EqualTo,
                     NotEqualTo,
                     GreaterThan,
@@ -46,7 +44,7 @@ namespace Queries.Core.Tests.Parts.Clauses
                     ClauseOperator.LessThan,
                     LessThanOrEqualTo,
                     NotEqualTo
-                };
+                ];
 
                 return operators
                     .Select(op => new object[] { new MaxFunction("age"), op, 18 });

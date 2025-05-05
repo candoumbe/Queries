@@ -15,23 +15,19 @@ namespace Queries.Core.Tests.Parts.Functions;
 [UnitTest]
 [Feature(nameof(ConcatFunction))]
 [Feature("Functions")]
-public class ConcatFunctionFunctionTests : IDisposable
+public class ConcatFunctionFunctionTests(ITestOutputHelper outputHelper) : IDisposable
 {
-    private ITestOutputHelper _outputHelper;
-
-    public ConcatFunctionFunctionTests(ITestOutputHelper outputHelper) => _outputHelper = outputHelper;
+    private ITestOutputHelper _outputHelper = outputHelper;
 
     public void Dispose() => _outputHelper = null;
 
-    public static IEnumerable<object[]> CtorWithNullAsFirstOrSecondArgumentCases
-    {
-        get
+    public static TheoryData<IColumn, IColumn> CtorWithNullAsFirstOrSecondArgumentCases
+        => new()
         {
-            yield return new object[] { null, null };
-            yield return new object[] { 1.Literal(), null };
-            yield return new object[] { null, 1.Literal() };
-        }
-    }
+            { null, null },
+            { 1.Literal(), null },
+            { null, 1.Literal() }
+        };
 
     [Theory]
     [MemberData(nameof(CtorWithNullAsFirstOrSecondArgumentCases))]
@@ -41,7 +37,7 @@ public class ConcatFunctionFunctionTests : IDisposable
         _outputHelper.WriteLine($"{nameof(second)} : {second}");
 
         // Act
-        Action action = () => new ConcatFunction(first, second);
+        Action action = () => _ = new ConcatFunction(first, second);
 
         // Assert
         action.Should().Throw<ArgumentNullException>().Which
@@ -53,20 +49,14 @@ public class ConcatFunctionFunctionTests : IDisposable
     public void HasFunctionAttribute() => typeof(ConcatFunction).Should()
             .BeDecoratedWithOrInherit<FunctionAttribute>($"{nameof(ConcatFunction)} must be marked with {nameof(FunctionAttribute)}");
 
-    public static IEnumerable<object[]> EqualsCases
-    {
-        get
+    public static TheoryData<ConcatFunction, object, bool, string> EqualsCases
+        => new()
         {
-            yield return new object[] { Concat("Firstname".Field(), "Lastname".Field()), null, false, "comparing with a null instance" };
-            yield return new object[] { Concat("Firstname".Field(), "Lastname".Field()), Concat("Firstname".Field(), "Lastname".Field()), true, "comparing two instances with same columns names and same columns count" };
-            yield return new object[] { Concat("Firstname".Field(), "Lastname".Field()), Concat("Lastname".Field(), "Firstname".Field()), false, "comparing two instances with same columns names and same columns count but in different order" };
-
-            {
-                ConcatFunction function = Concat("Firstname".Field(), "Lastname".Field());
-                yield return new object[] { function, function, true, "comparing instance to itself" };
-            }
-        }
-    }
+            { Concat("Firstname".Field(), "Lastname".Field()), null, false, "comparing with a null instance" },
+            { Concat("Firstname".Field(), "Lastname".Field()), Concat("Firstname".Field(), "Lastname".Field()), true, "comparing two instances with same columns names and same columns count" },
+            { Concat("Firstname".Field(), "Lastname".Field()), Concat("Lastname".Field(), "Firstname".Field()), false, "comparing two instances with same columns names and same columns count but in different order" },
+            { Concat("Firstname".Field(), "Lastname".Field()), Concat("Firstname".Field(), "Lastname".Field()), true, "comparing instance to itself" }
+        };
 
     [Theory]
     [MemberData(nameof(EqualsCases))]
@@ -83,23 +73,12 @@ public class ConcatFunctionFunctionTests : IDisposable
             .Be(expectedResult, reason);
     }
 
-    public static IEnumerable<object[]> AsTestCases
-    {
-        get
+    public static TheoryData<ConcatFunction, string> AsTestCases
+        => new()
         {
-            yield return new object[]
-            {
-                new ConcatFunction("firstname".Literal(), " ".Literal(), "lastname".Literal()).As(null),
-                null,
-            };
-
-            yield return new object[]
-            {
-                new ConcatFunction("firstname".Literal(), " ".Literal(), "lastname".Literal()).As(string.Empty),
-                string.Empty,
-            };
-        }
-    }
+            { new ConcatFunction("firstname".Literal(), " ".Literal(), "lastname".Literal()).As(null), null },
+            { new ConcatFunction("firstname".Literal(), " ".Literal(), "lastname".Literal()).As(string.Empty), string.Empty }
+        };
 
     [Theory]
     [MemberData(nameof(AsTestCases))]

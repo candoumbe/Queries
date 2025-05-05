@@ -21,30 +21,26 @@ namespace Queries.Core.Tests.Parts.Functions;
 [UnitTest]
 [Feature(nameof(NullFunction))]
 [Feature("Functions")]
-public class NullFunctionTests : IDisposable
+public class NullFunctionTests(ITestOutputHelper outputHelper) : IDisposable
 {
-    private ITestOutputHelper _outputHelper;
-
-    public NullFunctionTests(ITestOutputHelper outputHelper) => _outputHelper = outputHelper;
+    private ITestOutputHelper _outputHelper = outputHelper;
 
     public void Dispose() => _outputHelper = null;
 
-    public static IEnumerable<object[]> CtorThrowsArgumentNullExceptionCases
-    {
-        get
+    public static TheoryData<IColumn, IColumn> CtorThrowsArgumentNullExceptionCases
+        => new()
         {
-            yield return new object[]{null, null};
-            yield return new object[]{null, "".Literal()};
-            yield return new object[]{"firstname".Field(), null};
-        }
-    }
+            { null, null },
+            { null, "".Literal() },
+            { "firstname".Field(), null }
+        };
 
     [Theory]
     [MemberData(nameof(CtorThrowsArgumentNullExceptionCases))]
     public void CtorThrowsArgumentNullExceptionIfAnyParameterIsNull(IColumn column, IColumn defaultValue)
     {
         // Act
-        Action action = () => new NullFunction(column, defaultValue);
+        Action action = () => _ = new NullFunction(column, defaultValue);
 
         // Assert
         action.Should().Throw<ArgumentNullException>().Which
@@ -52,13 +48,11 @@ public class NullFunctionTests : IDisposable
             .NotBeNullOrWhiteSpace();
     }
 
-    public static IEnumerable<object[]> CtorBuildAValidInstanceCases
-    {
-        get
+    public static TheoryData<IColumn, IColumn> CtorBuildAValidInstanceCases
+        => new()
         {
-            yield return new object[] { "firstname".Field(), string.Empty.Literal() };
-        }
-    }
+            { "firstname".Field(), string.Empty.Literal() }
+        };
 
     [Theory]
     [MemberData(nameof(CtorBuildAValidInstanceCases))]
@@ -77,29 +71,30 @@ public class NullFunctionTests : IDisposable
         => typeof(NullFunction).Should()
         .BeDecoratedWith<FunctionAttribute>($"{nameof(NullFunction)} must be marked with {nameof(FunctionAttribute)}");
 
-    public static IEnumerable<object[]> EqualsCases
-    {
-        get
+    public static TheoryData<NullFunction, object, bool, string> EqualsCases
+        => new()
         {
-            yield return new object[] {
+            {
                 new NullFunction("nickname".Field(), "Unknown".Literal()),
                 null,
                 false, $"comparing {nameof(NullFunction)} instance with a null"
-            };
-            yield return new object[] {
+            },
+            {
                 new NullFunction("nickname".Field(), "Unknown".Literal()),
                 new NullFunction("nickname".Field(), "Unknown".Literal()),
-                true, $"comparing two {nameof(NullFunction)} instances with same inputs" };
-            yield return new object[] {
+                true, $"comparing two {nameof(NullFunction)} instances with same inputs"
+            },
+            {
                 new NullFunction("nickname".Field(), 1.Literal()),
                 new NullFunction("nickname".Field(), "Unknown".Literal()),
-                false, $"comparing two {nameof(NullFunction)} instances with same inputs but different types of {nameof(NullFunction.DefaultValue)}" };
-            yield return new object[] {
+                false, $"comparing two {nameof(NullFunction)} instances with same inputs but different types of {nameof(NullFunction.DefaultValue)}"
+            },
+            {
                 new NullFunction("nickname".Field(), "Unknown".Literal()),
                 Select(1.Literal()),
-                false, "comparing two different types of query" };
-        }
-    }
+                false, "comparing two different types of query"
+            }
+        };
 
     [Theory]
     [MemberData(nameof(EqualsCases))]

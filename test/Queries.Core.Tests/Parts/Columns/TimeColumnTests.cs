@@ -17,16 +17,14 @@ using Xunit.Categories;
 [Feature(nameof(TimeColumn))]
 public class TimeColumnTests
 {
-    public static IEnumerable<object[]> ConstructorWithFormatCases
-    {
-        get
+    public static TheoryData<TimeOnly, string> ConstructorWithFormatCases
+        => new()
         {
-            yield return new object[] { TimeOnly.MinValue, null };
-            yield return new object[] { TimeOnly.MinValue, "" };
-            yield return new object[] { TimeOnly.MaxValue, "" };
-            yield return new object[] { TimeOnly.MaxValue, null };
-        }
-    }
+            { TimeOnly.MinValue, null },
+            { TimeOnly.MinValue, "" },
+            { TimeOnly.MaxValue, "" },
+            { TimeOnly.MaxValue, null }
+        };
 
     [Theory]
     [MemberData(nameof(ConstructorWithFormatCases))]
@@ -41,14 +39,12 @@ public class TimeColumnTests
         dc.StringFormat.Should().Be(format);
     }
 
-    public static IEnumerable<object[]> ConstructorWithoutFormatCases
-    {
-        get
+    public static TheoryData<TimeOnly> ConstructorWithoutFormatCases
+        => new()
         {
-            yield return new object[] { TimeOnly.MinValue };
-            yield return new object[] { TimeOnly.MaxValue };
-        }
-    }
+            { TimeOnly.MinValue },
+            { TimeOnly.MaxValue }
+        };
 
     [Theory]
     [MemberData(nameof(ConstructorWithoutFormatCases))]

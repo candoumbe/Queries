@@ -1,7 +1,6 @@
 ﻿using FluentAssertions;
 using Queries.Core.Parts.Columns;
 using System;
-using System.Collections.Generic;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Categories;
@@ -11,14 +10,8 @@ namespace Queries.Core.Tests.Parts.Columns;
 [UnitTest]
 [Feature(nameof(Literal))]
 [Feature("Column")]
-public class LiteralTests : IDisposable
+public class LiteralTests(ITestOutputHelper outputHelper)
 {
-    private ITestOutputHelper _outputHelper;
-
-    public LiteralTests(ITestOutputHelper outputHelper) => _outputHelper = outputHelper;
-
-    public void Dispose() => _outputHelper = null;
-
     [Theory]
     [InlineData(null)]
     [InlineData("")]
@@ -35,26 +28,20 @@ public class LiteralTests : IDisposable
         column.Alias.Should().Be(newAlias);
     }
 
-    public static IEnumerable<object[]> EqualsCases
-    {
-        get
+    public static TheoryData<Literal, object, bool, string> EqualsCases
+        => new()
         {
-            yield return new object[] { "firstname".Literal(), null, false, "object is null" };
-            yield return new object[] { "firstname".Literal(), "firstname".Literal(), true, $"object is a {nameof(Literal)} with exactly the same {nameof(Literal.Value)} and {nameof(Literal.Alias)}" };
-
-            {
-                Literal column = "firstname".Literal();
-                yield return new object[] { column, column, true, "Equals with same instance" };
-            }
-        }
-    }
+            { "firstname".Literal(), null, false, "object is null" },
+            { "firstname".Literal(), "firstname".Literal(), true, $"object is a {nameof(Literal)} with exactly the same {nameof(Literal.Value)} and {nameof(Literal.Alias)}" },
+            { "firstname".Literal(), "firstname".Literal(), true, "Equals with same instance" }
+        };
 
     [Theory]
     [MemberData(nameof(EqualsCases))]
     public void EqualTests(Literal first, object second, bool expectedResult, string reason)
     {
-        _outputHelper.WriteLine($"{nameof(first)} : {first}");
-        _outputHelper.WriteLine($"{nameof(second)} : {second}");
+        outputHelper.WriteLine($"{nameof(first)} : {first}");
+        outputHelper.WriteLine($"{nameof(second)} : {second}");
 
         // Act
         bool actualResult = first.Equals(second);
@@ -63,14 +50,12 @@ public class LiteralTests : IDisposable
         actualResult.Should().Be(expectedResult, reason);
     }
 
-    public static IEnumerable<object[]> CloneCases
-    {
-        get
+    public static TheoryData<Literal> CloneCases
+        => new()
         {
-            yield return new[] { 1.Literal() };
-            yield return new[] { "Bruce".Literal() };
-        }
-    }
+            { 1.Literal() },
+            { "Bruce".Literal() }
+        };
 
     [Theory]
     [MemberData(nameof(CloneCases))]

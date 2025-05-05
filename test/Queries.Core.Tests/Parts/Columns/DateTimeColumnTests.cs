@@ -1,7 +1,6 @@
 ﻿using FluentAssertions;
 using Queries.Core.Parts.Columns;
 using System;
-using System.Collections.Generic;
 using Xunit;
 using Xunit.Categories;
 
@@ -12,16 +11,13 @@ namespace Queries.Core.Tests.Parts.Columns;
 [Feature(nameof(DateTimeColumn))]
 public class DateTimeColumnTests
 {
-    public static IEnumerable<object[]> ConstructorWithFormatCases
+    public static TheoryData<DateTime, string> ConstructorWithFormatCases => new()
     {
-        get
-        {
-            yield return new object[] { DateTime.MinValue, null };
-            yield return new object[] { DateTime.MinValue, "" };
-            yield return new object[] { DateTime.MaxValue, "" };
-            yield return new object[] { DateTime.MaxValue, null };
-        }
-    }
+        { DateTime.MinValue, null },
+        { DateTime.MinValue, "" },
+        { DateTime.MaxValue, "" },
+        { DateTime.MaxValue, null }
+    };
 
     [Theory]
     [MemberData(nameof(ConstructorWithFormatCases))]
@@ -36,14 +32,11 @@ public class DateTimeColumnTests
         dc.StringFormat.Should().Be(format);
     }
 
-    public static IEnumerable<object[]> ConstructorWithoutFormatCases
+    public static TheoryData<DateTime> ConstructorWithoutFormatCases => new()
     {
-        get
-        {
-            yield return new object[] { DateTime.MinValue};
-            yield return new object[] { DateTime.MaxValue};
-        }
-    }
+        DateTime.MinValue,
+        DateTime.MaxValue
+    };
 
     [Theory]
     [MemberData(nameof(ConstructorWithoutFormatCases))]

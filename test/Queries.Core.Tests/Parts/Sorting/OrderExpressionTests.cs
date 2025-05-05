@@ -17,7 +17,7 @@ public class OrderExpressionTests
     public void CtorThrowArgumentNullExpressionWhenStringParameterIsNull()
     {
         // Act
-        Action action = () => new OrderExpression((string)null);
+        Action action = () => _ = new OrderExpression((string)null);
 
         // Assert
         action.Should().Throw<ArgumentNullException>().Which
@@ -29,7 +29,7 @@ public class OrderExpressionTests
     public void CtorThrowArgumentNullExpressionWhenColumnParameterIsNull()
     {
         // Act
-        Action action = () => new OrderExpression((ColumnBase)null);
+        Action action = () => _ = new OrderExpression((ColumnBase)null);
 
         // Assert
         action.Should().Throw<ArgumentNullException>().Which
@@ -37,46 +37,33 @@ public class OrderExpressionTests
             .NotBeNullOrWhiteSpace();
     }
 
-    public static IEnumerable<object[]> EqualsCases
+    public static TheoryData<IOrder, object, bool, string> EqualsCases => new()
     {
-        get
         {
-            yield return new object[]
-            {
-                new OrderExpression("Name"),
-                null,
-                false,
-                "The second element is null"
-            };
-
-            yield return new object[]
-            {
-                new OrderExpression("Name"),
-                new OrderExpression("Name"),
-                true,
-                "Distinct instances with same column and direction"
-            };
-
-            yield return new object[]
-            {
-                new OrderExpression("Name", Descending),
-                new OrderExpression("Name"),
-                false,
-                "Distinct instances with same column but different directions"
-            };
-
-            {
-                OrderExpression expression = new("Name");
-                yield return new object[]
-                {
-                    expression,
-                    expression,
-                    true,
-                    "Comparing to itself"
-                };
-            }
+            new OrderExpression("Name"),
+            null,
+            false,
+            "The second element is null"
+        },
+        {
+            new OrderExpression("Name"),
+            new OrderExpression("Name"),
+            true,
+            "Distinct instances with same column and direction"
+        },
+        {
+            new OrderExpression("Name", Descending),
+            new OrderExpression("Name"),
+            false,
+            "Distinct instances with same column but different directions"
+        },
+        {
+            new OrderExpression("Name"),
+            new OrderExpression("Name"),
+            true,
+            "Comparing to itself"
         }
-    }
+    };
 
     [Theory]
     [MemberData(nameof(EqualsCases))]

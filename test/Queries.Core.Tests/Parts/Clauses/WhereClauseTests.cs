@@ -14,14 +14,8 @@ namespace Queries.Core.Tests.Parts.Clauses;
 
 [UnitTest]
 [Feature("Where")]
-public class WhereClauseTests : IDisposable
+public class WhereClauseTests(ITestOutputHelper outputHelper)
 {
-    private ITestOutputHelper _outputHelper;
-
-    public WhereClauseTests(ITestOutputHelper outputHelper) => _outputHelper = outputHelper;
-
-    public void Dispose() => _outputHelper = null;
-
     [Theory]
     [InlineData(EqualTo)]
     [InlineData(GreaterThan)]
@@ -37,7 +31,7 @@ public class WhereClauseTests : IDisposable
     public void CtorShouldThrowsArgumentNullExceptionWhenColumnIsNull(ClauseOperator @operator)
     {
         // Act
-        Action action = () => new WhereClause(null, @operator);
+        Action action = () => _ = new WhereClause(null, @operator);
 
         // Assert
         action.Should().Throw<ArgumentNullException>().Which
@@ -45,25 +39,22 @@ public class WhereClauseTests : IDisposable
             .NotBeNullOrWhiteSpace();
     }
 
-    public static IEnumerable<object[]> CtorThrowsArgumentNullExceptionCases
-    {
-        get
+    public static TheoryData<ClauseOperator, IColumn, string> CtorThrowsArgumentNullExceptionCases
+        => new()
         {
-            yield return new object[]
             {
                 In,
                 null,
                 $"The column constraint cannot be null when using '{nameof(In)}' operator"
-            };
-        }
-    }
+            }
+        };
 
     [Theory]
     [MemberData(nameof(CtorThrowsArgumentNullExceptionCases))]
     public void CtorThrowsArgumentNullExceptionWhenValueIsNull(ClauseOperator @operator, IColumn value, string reason)
     {
         // Act
-        Action action = () => new WhereClause("Firstname".Field(), @operator, value);
+        Action action = () => _ = new WhereClause("Firstname".Field(), @operator, value);
 
         // Assert
         action.Should()
@@ -72,51 +63,50 @@ public class WhereClauseTests : IDisposable
             .NotBeNullOrWhiteSpace();
     }
 
-    public static IEnumerable<object[]> ObjectShouldBeInCorrectStateAfterBeingBuiltCases
-    {
-        get
+    public static TheoryData<IColumn, ClauseOperator, ColumnBase, Expression<Func<WhereClause, bool>>> ObjectShouldBeInCorrectStateAfterBeingBuiltCases
+        => new()
         {
-            yield return new object[]
             {
-                1.Literal(), EqualTo, 1,
+                1.Literal(),
+                EqualTo,
+                1,
                 (Expression<Func<WhereClause, bool>>)(clause =>
                     1.Literal().Equals(clause.Column)
                     && EqualTo == clause.Operator
                     && 1.Literal().Equals(clause.Constraint)
                 )
-            };
-
-            yield return new object[]
+            },
             {
-                new NumericColumn(1), EqualTo, "a",
+                new NumericColumn(1),
+                EqualTo,
+                "a",
                 (Expression<Func<WhereClause, bool>>)(clause =>
                     1.Literal().Equals(clause.Column)
                     && EqualTo == clause.Operator
                     && "a".Literal().Equals(clause.Constraint)
                 )
-            };
-
-            yield return new object[]
+            },
             {
-                "Firstname".Field(), ClauseOperator.LessThan, "Bruce",
+                "Firstname".Field(),
+                ClauseOperator.LessThan,
+                "Bruce",
                 (Expression<Func<WhereClause, bool>>)(clause =>
                     "Firstname".Field().Equals(clause.Column)
                     && ClauseOperator.LessThan == clause.Operator
                     && "Bruce".Literal().Equals(clause.Constraint)
                 )
-            };
-
-            yield return new object[]
+            },
             {
-                "Firstname".Field(), In, new StringValues("Bruce", "Lex", "Clark"),
+                "Firstname".Field(),
+                In,
+                new StringValues("Bruce", "Lex", "Clark"),
                 (Expression<Func<WhereClause, bool>>)(clause =>
                     "Firstname".Field().Equals(clause.Column)
                     && In == clause.Operator
                     && new StringValues("Bruce", "Lex", "Clark").Equals(clause.Constraint)
                 )
-            };
-        }
-    }
+            }
+        };
 
     [Theory]
     [MemberData(nameof(ObjectShouldBeInCorrectStateAfterBeingBuiltCases))]
@@ -150,62 +140,52 @@ public class WhereClauseTests : IDisposable
         clause.Constraint.Should().BeNull();
     }
 
-    public static IEnumerable<object[]> EqualsCases
-    {
-        get
+    public static TheoryData<WhereClause, object, bool, string> EqualsCases
+        => new()
         {
-            yield return new object[]
             {
                 new WhereClause("firstname".Field(), EqualTo, "Bruce"),
                 null,
                 false,
                 "comparing with a null instance"
-            };
-            yield return new object[] { new WhereClause("firstname".Field(), EqualTo, "Bruce"), new WhereClause("firstname".Field(), EqualTo, "Bruce"), true, "comparing two instances with same columns and constrains" };
-            yield return new object[] { new WhereClause("firstname".Field(), EqualTo, "Bruce"), new WhereClause("Firstname".Field(), EqualTo, "Bruce"), false, "comparing two instances with same columns but different casing" };
-            yield return new object[] { new WhereClause("firstname".Field(), EqualTo, "Bruce"), Select(1.Literal()), false, "comparing two different types of query" };
-            yield return new object[] { new WhereClause("firstname".Field(), EqualTo, new Variable("p0", VariableType.String, "Bruce")), new WhereClause("firstname".Field(), EqualTo, new Variable("p0", VariableType.String, "Bruce")), true, "comparing two different types with same data" };
-            yield return new object[] { new WhereClause("firstname".Field(), EqualTo, new Variable("p0", VariableType.String, "Bruce")), new WhereClause("firstname".Field(), EqualTo, new Variable("p0", VariableType.String, "Bruce")), true, "comparing two different types with same data" };
-            yield return new object[]
+            },
+            { new WhereClause("firstname".Field(), EqualTo, "Bruce"), new WhereClause("firstname".Field(), EqualTo, "Bruce"), true, "comparing two instances with same columns and constrains" },
+            { new WhereClause("firstname".Field(), EqualTo, "Bruce"), new WhereClause("Firstname".Field(), EqualTo, "Bruce"), false, "comparing two instances with same columns but different casing" },
+            { new WhereClause("firstname".Field(), EqualTo, "Bruce"), Select(1.Literal()), false, "comparing two different types of query" },
+            { new WhereClause("firstname".Field(), EqualTo, new Variable("p0", VariableType.String, "Bruce")), new WhereClause("firstname".Field(), EqualTo, new Variable("p0", VariableType.String, "Bruce")), true, "comparing two different types with same data" },
+            { new WhereClause("firstname".Field(), EqualTo, new Variable("p0", VariableType.String, "Bruce")), new WhereClause("firstname".Field(), EqualTo, new Variable("p0", VariableType.String, "Bruce")), true, "comparing two different types with same data" },
             {
                 new WhereClause("firstname".Field(), EqualTo, "Bruce"),
                 "firstname".Field().EqualTo("Bruce"),
                 true,
                 "comparing a to a fluent instance with same columns and constrains"
-            };
-
-            yield return new object[]
+            },
             {
                 new WhereClause("XP".Field(), LessThanOrEqualTo, 10),
                 new WhereClause("XP".Field(), LessThanOrEqualTo, 10L),
                 true,
                 "Comparing 2 where clauses with same field and long/int constraint"
-            };
-
-            yield return new object[]
+            },
             {
                 new WhereClause("XP".Field(), LessThanOrEqualTo, 6.4m),
                 new WhereClause("XP".Field(), LessThanOrEqualTo, 6.4m),
                 true,
                 "Comparing 2 where clauses with same field and decimal constraint"
-            };
-
-            yield return new object[]
+            },
             {
                 new WhereClause("XP".Field(), LessThanOrEqualTo, 6m),
                 new WhereClause("XP".Field(), LessThanOrEqualTo, 6),
                 true,
                 "Comparing 2 where clauses with same field and decimal/int constraints"
-            };
-        }
-    }
+            }
+        };
 
     [Theory]
     [MemberData(nameof(EqualsCases))]
     public void EqualTests(WhereClause first, object second, bool expectedResult, string reason)
     {
-        _outputHelper.WriteLine($"{nameof(first)} : {first}");
-        _outputHelper.WriteLine($"{nameof(second)} : {second}");
+        outputHelper.WriteLine($"{nameof(first)} : {first}");
+        outputHelper.WriteLine($"{nameof(second)} : {second}");
 
         // Act
         bool actualResult = first.Equals(second);
@@ -214,25 +194,23 @@ public class WhereClauseTests : IDisposable
         actualResult.Should().Be(expectedResult, reason);
     }
 
-    public static IEnumerable<object[]> CloneCases
-    {
-        get
+    public static TheoryData<WhereClause> CloneCases
+        => new()
         {
-            yield return new[] { new WhereClause("Firstname".Field(), EqualTo, "Bruce") };
-            yield return new[] { new WhereClause("Firstname".Field(), IsNull) };
-            yield return new[] { new WhereClause("Firstname".Field(), IsNotNull, "Bruce") };
-            yield return new[] { new WhereClause(1.Literal(), ClauseOperator.LessThan, 2) };
-            yield return new[] { new WhereClause(1.Literal(), GreaterThan, 2) };
-            yield return new[] { new WhereClause(1.Literal(), GreaterThanOrEqualTo, 2) };
-            yield return new[] { new WhereClause("Height".Field(), GreaterThanOrEqualTo, 2.3m) };
-        }
-    }
+            new WhereClause("Firstname".Field(), EqualTo, "Bruce"),
+            new WhereClause("Firstname".Field(), IsNull),
+            new WhereClause("Firstname".Field(), IsNotNull, "Bruce"),
+            new WhereClause(1.Literal(), ClauseOperator.LessThan, 2),
+            new WhereClause(1.Literal(), GreaterThan, 2),
+            new WhereClause(1.Literal(), GreaterThanOrEqualTo, 2),
+            new WhereClause("Height".Field(), GreaterThanOrEqualTo, 2.3m)
+        };
 
     [Theory]
     [MemberData(nameof(CloneCases))]
     public void CloneTest(WhereClause original)
     {
-        _outputHelper.WriteLine($"{nameof(original)} : {original}");
+        outputHelper.WriteLine($"{nameof(original)} : {original}");
 
         // Act
         IWhereClause copie = original.Clone();

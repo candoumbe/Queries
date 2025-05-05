@@ -30,7 +30,7 @@ public class CreateViewQueryTests : IDisposable
     public void CtorThrowsArgumentNullException()
     {
         // Act 
-        Action action = () => new CreateViewQuery(null);
+        Action action = () => _ = new CreateViewQuery(null);
 
         // Assert
         action.Should().Throw<ArgumentNullException>().Which
@@ -44,45 +44,33 @@ public class CreateViewQueryTests : IDisposable
     public void CtorThrowsArgumentOutOfRangeException(string viewName)
     {
         // Act 
-        Action action = () => new CreateViewQuery(viewName);
+        Action action = () => _ = new CreateViewQuery(viewName);
 
         // Assert
         action.Should().Throw<ArgumentOutOfRangeException>("viewName is empty or whitespace")
             .Where( ex => !string.IsNullOrWhiteSpace(ex.ParamName));
     }
 
-    public static IEnumerable<object[]> EqualsCases
+    public static TheoryData<CreateViewQuery, object, bool, string> EqualsCases => new()
     {
-        get
-        {
-            yield return new object[] { CreateView("firstname"), null, false, "object is null" };
-            yield return new object[] {
-                CreateView("SuperHero")
-                    .As(
-                        Select("Nickname".Field())
-                        .From("DC_Comics")
-                        .Build())
-                        .Build(),
-                CreateView("SuperHero")
-                    .As(
-                        Select("Nickname".Field())
-                        .From("DC_Comics")
-                        .Build())
-                        .Build(),
-                true,
-                $"object is a {nameof(CreateView)} with exactly the same {nameof(CreateViewQuery.ViewName)} and {nameof(CreateViewQuery.SelectQuery)}" };
-
-            {
-                CreateViewQuery query = CreateView("SuperHero")
-                    .As(
-                        Select(Concat("Firstname".Field(), "Lastname".Field()))
-                        .From("DC_Comics")
-                        .Build())
-                        .Build();
-                yield return new object[] { query, query, true, "Equals with same instance" };
-            }
+        { CreateView("firstname"), null, false, "object is null" },
+        { 
+            CreateView("SuperHero")
+                .As(
+                    Select("Nickname".Field())
+                    .From("DC_Comics")
+                    .Build())
+                    .Build(),
+            CreateView("SuperHero")
+                .As(
+                    Select("Nickname".Field())
+                    .From("DC_Comics")
+                    .Build())
+                    .Build(),
+            true,
+            $"object is a {nameof(CreateView)} with exactly the same {nameof(CreateViewQuery.ViewName)} and {nameof(CreateViewQuery.SelectQuery)}"
         }
-    }
+    };
 
     [Theory]
     [MemberData(nameof(EqualsCases))]

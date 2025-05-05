@@ -25,7 +25,7 @@ public class NativeQueryTests
     public void Ctor_throws_ArgumentNullException_when_Statement_is_null()
     {
         // Act
-        Action ctorWithNullStatement = () => new NativeQuery(null);
+        Action ctorWithNullStatement = () => _ = new NativeQuery(null);
 
         // Assert
         ctorWithNullStatement.Should()

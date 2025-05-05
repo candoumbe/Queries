@@ -52,28 +52,23 @@ public class DeleteQueryTests : IDisposable
             .NotBeNull($"{nameof(DeleteQuery)} must be marked with {nameof(DataManipulationLanguageAttribute)}");
     }
 
-    public static IEnumerable<object[]> EqualsCases
+    public static TheoryData<DeleteQuery, object, bool, string> EqualsCases => new()
     {
-        get
+        { Delete("firstname"), null, false, $"{nameof(DeleteQuery)} can never equals null" },
         {
-            yield return new object[] { Delete("firstname"), null, false, $"{nameof(DeleteQuery)} can never equals null" };
-            yield return new object[] {
-                Delete("SuperHero"),
-                Delete("SuperHero"),
-                true,
-                $"Two {nameof(DeleteQuery)} instances with exactly the same {nameof(DeleteQuery.Table)} and no criteria must be equal." };
-
-            yield return new object[] {
-                Delete("SuperHero"),
-                null,
-                false,
-                $"{nameof(DeleteQuery)} instance is never equal to null"};
-            {
-                DeleteQuery query = Delete("SuperHero");
-                yield return new object[] { query, query, true, "Equals with same instance" };
-            }
-        }
-    }
+            Delete("SuperHero"),
+            Delete("SuperHero"),
+            true,
+            $"Two {nameof(DeleteQuery)} instances with exactly the same {nameof(DeleteQuery.Table)} and no criteria must be equal."
+        },
+        {
+            Delete("SuperHero"),
+            null,
+            false,
+            $"{nameof(DeleteQuery)} instance is never equal to null"
+        },
+        { Delete("SuperHero"), Delete("SuperHero"), true, "Equals with same instance" }
+    };
 
     [Theory]
     [MemberData(nameof(EqualsCases))]

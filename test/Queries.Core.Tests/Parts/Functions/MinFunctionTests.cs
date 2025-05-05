@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
-using Queries.Core.Parts.Columns;
-using Xunit;
-using Queries.Core.Parts.Functions;
 using FluentAssertions;
 using Queries.Core.Attributes;
+using Queries.Core.Parts.Columns;
+using Queries.Core.Parts.Functions;
+using Xunit;
 using Xunit.Categories;
 
-namespace Queries.Core.Tests.Parts.Columns;
+namespace Queries.Core.Tests.Parts.Functions;
 
 [UnitTest]
 [Feature(nameof(MinFunction))]

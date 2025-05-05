@@ -14,11 +14,9 @@ namespace Queries.Core.Tests.Builders;
 [UnitTest]
 [Feature("Truncate")]
 [Feature("Builder")]
-public class TruncateQueryTests : IDisposable
+public class TruncateQueryTests(ITestOutputHelper outputHelper) : IDisposable
 {
-    private ITestOutputHelper _outputHelper;
-
-    public TruncateQueryTests(ITestOutputHelper outputHelper) => _outputHelper = outputHelper;
+    private ITestOutputHelper _outputHelper = outputHelper;
 
     public void Dispose() => _outputHelper = null;
 
@@ -26,7 +24,7 @@ public class TruncateQueryTests : IDisposable
     public void CtorWithNullArgumentThrowsArgumentNullException()
     {
         // Act
-        Action action = () => new TruncateQuery(null);
+        Action action = () => _ = new TruncateQuery(null);
 
         // Assert
         action.Should().Throw<ArgumentNullException>("name of the table to delete cannot be null").Which

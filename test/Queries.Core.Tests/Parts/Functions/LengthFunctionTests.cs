@@ -19,7 +19,7 @@ public class LengthFunctionTests
     public void CtorThrowsArgumentNullExceptionIfAnyParameterIsNull()
     {
         // Act
-        Action action = () => new LengthFunction(null);
+        Action action = () => _ = new LengthFunction(null);
 
         // Assert
         action.Should().Throw<ArgumentNullException>().Which

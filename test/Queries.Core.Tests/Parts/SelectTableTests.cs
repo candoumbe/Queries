@@ -16,7 +16,7 @@ public class SelectTableTests
     public void Ctor_Throws_ArgumentNullException_If_Argument_Is_Null()
     {
         // Arrange
-        Action action = () => new SelectTable(null);
+        Action action = () => _ = new SelectTable(null);
 
         // Assert
         action.Should().Throw<ArgumentNullException>().Which

@@ -47,7 +47,7 @@ public class InsertIntoQuery : IInsertIntoQuery<InsertIntoQuery>, IBuild<InsertI
     /// <returns></returns>
     public IBuild<InsertIntoQuery> Values(InsertedValue value, params InsertedValue[] values)
     {
-        InsertedValues insertedValues = new() { value };
+        InsertedValues insertedValues = [value];
         foreach (InsertedValue insertedValue in values)
         {
             insertedValues.Add(insertedValue);

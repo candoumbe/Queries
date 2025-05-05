@@ -17,21 +17,18 @@ namespace Queries.Core.Tests.Parts.Functions;
 [Feature("Functions")]
 public class SubstringFunctionTests
 {
-    public static IEnumerable<object[]> CtorThrowsArgumentOutOfRangeExceptionCases
-    {
-        get
+    public static TheoryData<IColumn, int, int?, string> CtorThrowsArgumentOutOfRangeExceptionCases
+        => new()
         {
-            IColumn column = "Firstname".Field();
-            yield return new object[]{column, -1, null, $"start value is negative"};
-            yield return new object[]{column, 1, -1, $"length value is negative"};
-        }
-    }
+            { "Firstname".Field(), -1, null, $"start value is negative" },
+            { "Firstname".Field(), 1, -1, $"length value is negative" }
+        };
 
     [Fact]
     public void CtorThrowsArgumentNullException()
     {
         // Act
-        Action action = () => new SubstringFunction(null, 1, 1);
+        Action action = () => _ = new SubstringFunction(null, 1, 1);
 
         // Assert
         action.Should().Throw<ArgumentNullException>($"first parameter of {nameof(SubstringFunction)}'s constructor cannot be null")
@@ -45,7 +42,7 @@ public class SubstringFunctionTests
     public void CtorThrowsArgumentOutOfRangeExceptionIfAnyParameterIsNull(IColumn column, int start, int? length, string reason)
     {
         // Act
-        Action action = () => new SubstringFunction(column, start, length);
+        Action action = () => _ = new SubstringFunction(column, start, length);
 
         // Assert
         action.Should().Throw<ArgumentOutOfRangeException>(reason).Which
