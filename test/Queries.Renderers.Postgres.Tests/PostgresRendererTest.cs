@@ -11,7 +11,7 @@ using Queries.Core.Renderers;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-
+using Queries.Core.Builders.Fluent;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Categories;
@@ -70,7 +70,7 @@ public class PostgresRendererTest(ITestOutputHelper outputHelper)
                         ).As("logins")
                     ).Build(),
                 new PostgresRendererSettings{ PrettyPrint = false },
-                @"SELECT * FROM (SELECT ""identifier"" FROM ""identities"" UNION SELECT ""username"" FROM ""members"") ""logins""" 
+                @"SELECT * FROM (SELECT ""identifier"" FROM ""identities"" UNION SELECT ""username"" FROM ""members"") ""logins"""
             },
             {
                 Select("*").From("Table").Build(),
@@ -81,13 +81,13 @@ public class PostgresRendererTest(ITestOutputHelper outputHelper)
                 Select("*".Field()).From("Table")
                     .Build(),
                 new PostgresRendererSettings{ PrettyPrint = false },
-                @"SELECT * FROM ""Table""" 
+                @"SELECT * FROM ""Table"""
             },
             {
                 Select("Employees.*").From("Table")
                     .Build(),
                 new PostgresRendererSettings{ PrettyPrint = false },
-                @"SELECT ""Employees"".* FROM ""Table""" 
+                @"SELECT ""Employees"".* FROM ""Table"""
             },
             {
                 Select(Concat("firstname".Field(), " ".Literal(), "lastname".Field()))
@@ -547,35 +547,28 @@ public class PostgresRendererTest(ITestOutputHelper outputHelper)
         }
     }
 
-    public static IEnumerable<object[]> FieldnameCasingStrategyCases
-    {
-        get
+    public static TheoryData<IBuild<SelectQuery>, FieldnameCasingStrategy, string> FieldnameCasingStrategyCases
+        => new ()
         {
-            yield return new object[]
             {
                 Select("FirstName".Field(), "LastName".Field())
                     .From("members"),
                 FieldnameCasingStrategy.Default,
                 @"SELECT ""FirstName"", ""LastName"" FROM ""members"""
-            };
-
-            yield return new object[]
+            },
             {
                 Select("FirstName".Field(), "LastName".Field())
                     .From("members"),
                 FieldnameCasingStrategy.CamelCase,
                 @"SELECT ""firstName"", ""lastName"" FROM ""members"""
-            };
-
-            yield return new object[]
+            },
             {
                 Select("FirstName".Field(), "LastName".Field())
                     .From("members"),
                 FieldnameCasingStrategy.SnakeCase,
                 @"SELECT ""first_name"", ""last_name"" FROM ""members"""
-            };
-        }
-    }
+            }
+        };
 
     [Theory]
     [MemberData(nameof(FieldnameCasingStrategyCases))]
