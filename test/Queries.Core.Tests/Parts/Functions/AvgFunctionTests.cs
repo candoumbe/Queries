@@ -106,12 +106,12 @@ public class AvgFunctionTests(ITestOutputHelper outputHelper)
     public void SettingAliasTest(AvgFunction column, string newAlias)
     {
         // Act
-        column = column.As(newAlias);
+        AggregateFunction actual = column.As(newAlias);
 
         // Assert
         _ = newAlias switch
         {
-            null => column.Alias.Should().BeEmpty(),
+            null => actual.Alias.Should().BeEmpty(),
             string value when string.IsNullOrEmpty(value) => column.Alias.Should().BeEmpty(),
             _ => column.Alias.Should().Be(newAlias)
         };
