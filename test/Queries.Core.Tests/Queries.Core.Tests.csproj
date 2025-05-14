@@ -9,5 +9,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Queries.Core\Queries.Core.csproj" />
+    <ProjectReference Include="..\TestsHelpers\TestsHelpers.csproj" />
   </ItemGroup>
 </Project>
