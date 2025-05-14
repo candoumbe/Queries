@@ -9,7 +9,7 @@
 
     <ItemGroup>
         <PackageReference Include="Npgsql" Version="8.0.7" />
-        <PackageReference Include="Testcontainers.PostgreSql" Version="4.1.0" />
+        <PackageReference Include="Testcontainers.PostgreSql" Version="4.4.0" />
         <PackageReference Include="Xunit.Extensions.AssemblyFixture" Version="2.6.0" />
     </ItemGroup>
 
