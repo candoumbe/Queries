@@ -1,6 +1,7 @@
 using System;
 using FluentAssertions;
 using FsCheck;
+using FsCheck.Fluent;
 using FsCheck.Xunit;
 using Queries.Core.Builders;
 using Xunit;

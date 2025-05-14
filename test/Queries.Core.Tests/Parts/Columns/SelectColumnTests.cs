@@ -5,6 +5,7 @@ using Xunit.Categories;
 using static Queries.Core.Builders.Fluent.QueryBuilder;
 using FsCheck.Xunit;
 using FsCheck;
+using FsCheck.Fluent;
 
 namespace Queries.Core.Tests.Parts.Columns;
 

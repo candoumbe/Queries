@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using FluentAssertions;
 using FsCheck;
+using FsCheck.Fluent;
 using FsCheck.Xunit;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Queries.Core.Builders;
@@ -13,36 +15,44 @@ namespace Queries.EntityFrameworkCore.Extensions.Tests;
 [UnitTest]
 public class MigrationBuilderExtensionsTests
 {
-    [Property(Arbitrary = new[] { typeof(QueryGenerators) })]
-    public Property CreateView(NonWhiteSpaceString providerName, CreateViewQuery createView, string schema)
+    [Property(Arbitrary = [typeof(QueryGenerators)])]
+    public void CreateView(NonWhiteSpaceString providerName, CreateViewQuery createView, string schema)
     {
         // Arrange
-        Lazy<MigrationBuilder> createViewLazy = new(() =>
+        Func<MigrationBuilder> createViewLazy = () =>
         {
             MigrationBuilder builder = new(providerName.Item);
             return builder.CreateView(createView, schema);
-        });
+        };
 
-        // Act
-        return Prop.Throws<ArgumentNullException, MigrationBuilder>(createViewLazy).Label("ArgumentNullCases")
-                   .When(createView is null)
-                   .Or(createViewLazy.Value.Operations.Once(op => op is CreateViewMigrationOperation).ToProperty().Label("Builder must have the corresponding operation")).When(createView is not null);
+        // Assert
+        object _ = (createView is null) switch
+        {
+            true => createViewLazy.Should().ThrowExactly<ArgumentNullException>(),
+            _ => createViewLazy.Should().NotThrow()
+                .Which.Operations.Should()
+                .HaveCount(1)
+                .And.Contain(op => op is CreateViewMigrationOperation, "Builder must have the corresponding operation")
+        };
     }
 
-    [Property(Arbitrary = new[] { typeof(QueryGenerators) })]
-    public Property Delete(NonWhiteSpaceString providerName, DeleteQuery deleteQuery, string schema)
+    [Property(Arbitrary = [typeof(QueryGenerators)])]
+    public void Delete(NonWhiteSpaceString providerName, DeleteQuery deleteQuery, string schema)
     {
         // Arrange
-        Lazy<MigrationBuilder> deleteQueryLazy = new(() =>
+        Func<MigrationBuilder> deleteQueryLazy = () =>
         {
             MigrationBuilder builder = new(providerName.Item);
             return builder.Delete(deleteQuery, schema);
-        });
-
+        };
         // Act
-        return Prop.Throws<ArgumentNullException, MigrationBuilder>(deleteQueryLazy).Label("ArgumentNullCases")
-                   .When(deleteQuery is null)
-                   .Or(deleteQueryLazy.Value.Operations.Once(op => op is DeleteMigrationOperation)).When(deleteQuery is not null)
-                                                                                                   .Label("Builder must have the corresponding operation");
+        object _ = (deleteQuery is null) switch
+        {
+            true => deleteQueryLazy.Should().ThrowExactly<ArgumentNullException>(),
+            _ => deleteQueryLazy.Should()
+                .NotThrow().Which
+                .Operations.Should().HaveCount(1)
+                .And.Contain(op => op is DeleteMigrationOperation, "Builder must have the corresponding operation")
+        };
     }
 }

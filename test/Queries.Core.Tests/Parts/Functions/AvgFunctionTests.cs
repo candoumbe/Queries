@@ -2,7 +2,6 @@
 using Queries.Core.Parts.Columns;
 using Queries.Core.Parts.Functions;
 using System;
-using System.Collections.Generic;
 using Xunit;
 using Xunit.Abstractions;
 using static Queries.Core.Builders.Fluent.QueryBuilder;
@@ -127,8 +126,10 @@ public class AvgFunctionTests(ITestOutputHelper outputHelper)
 
         // Assert
         copie.Should()
-            .BeOfType<AvgFunction>().Which.Should()
-            .NotBeSameAs(original).And
-            .Be(original);
+            .BeOfType<AvgFunction>()
+            .Which
+            .Should()
+            .NotBeSameAs(original)
+            .And.Be(original);
     }
 }

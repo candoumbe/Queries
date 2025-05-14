@@ -1,5 +1,7 @@
 using System;
+using FluentAssertions;
 using FsCheck;
+using FsCheck.Fluent;
 using FsCheck.Xunit;
 using Xunit.Categories;
 using Queries.EntityFrameworkCore.Extensions.Operations;
@@ -12,13 +14,13 @@ namespace Queries.EntityFrameworkCore.Extensions.Tests.Operations;
 public class DeleteMigrationOperationTests
 {
     [Property]
-    public Property Ctor_throws_ArgumentNullException_when_query_is_null(string schema)
+    public void Ctor_throws_ArgumentNullException_when_query_is_null(string schema)
     {
         // Act
-        Lazy<DeleteMigrationOperation> ctorWithNullLazy = new(() => new DeleteMigrationOperation(null, schema));
+        Action ctorWithNullLazy = () => _ = new DeleteMigrationOperation(null, schema);
 
         // Assert
-        return Prop.Throws<ArgumentNullException, DeleteMigrationOperation>(ctorWithNullLazy);
+        ctorWithNullLazy.Should().ThrowExactly<ArgumentNullException>();
     }
 
     [Property(Arbitrary = new[] { typeof(QueryGenerators) })]
