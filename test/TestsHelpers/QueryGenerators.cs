@@ -7,6 +7,7 @@ using FsCheck.Fluent;
 using Queries.Core.Builders;
 using Queries.Core.Parts.Clauses;
 using Queries.Core.Parts.Columns;
+using Queries.Core.Parts.Functions;
 using static Queries.Core.Builders.Fluent.QueryBuilder;
 
 namespace TestsHelpers;
@@ -76,4 +77,9 @@ public static class QueryGenerators
 
     private static Arbitrary<ClauseOperator> ClauseOperatorGenerators()
         => Gen.Elements(Enum.GetValues(typeof(ClauseOperator)).Cast<ClauseOperator>()).ToArbitrary();
+
+    private static Arbitrary<AvgFunction> GetAvgFunctions()
+        => FieldColumnGenerators()
+            .Generator.Select(column => new AvgFunction(column))
+            .ToArbitrary();
 }
