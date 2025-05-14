@@ -38,11 +38,18 @@ public abstract class ColumnBase : IColumn, IEquatable<ColumnBase>
     /// <returns>An instance of <see cref="NumericColumn"/> representing the given value.</returns>
     public static implicit operator ColumnBase(float value) => new NumericColumn(value);
 
+#if NET8_0_OR_GREATER
     /// <summary>
     /// Defines an operator that enables implicit casting to <see cref="ColumnBase"/> from various types such as
     /// <see cref="int"/>, <see cref="string"/>, <see cref="bool"/>, <see cref="double"/>, <see cref="float"/>,
     /// <see cref="DateTime"/>, <see cref="DateOnly"/>, and <see cref="TimeOnly"/>.
     /// </summary>
+#else
+    /// <summary>
+    /// Defines an operator that enables implicit casting to <see cref="ColumnBase"/> from various types such as
+    /// <see cref="int"/>, <see cref="string"/>, <see cref="bool"/>, <see cref="double"/>, <see cref="float"/>
+    /// </summary>
+#endif
     public static implicit operator ColumnBase(string value) => new StringColumn(value);
 
     /// <summary>
@@ -54,7 +61,7 @@ public abstract class ColumnBase : IColumn, IEquatable<ColumnBase>
     ///<inheritdoc/>
     public static implicit operator ColumnBase(DateTime value) => new DateTimeColumn(value);
 
-#if NET6_0_OR_GREATER
+#if NET8_0_OR_GREATER
     ///<inheritdoc/>
     public static implicit operator ColumnBase(DateOnly value) => new DateColumn(value);
 

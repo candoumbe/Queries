@@ -1,5 +1,6 @@
 using FsCheck.Xunit;
 using FsCheck;
+using FsCheck.Fluent;
 using Queries.Core.Parts.Columns;
 
 namespace Queries.Core.Tests.Parts.Columns;

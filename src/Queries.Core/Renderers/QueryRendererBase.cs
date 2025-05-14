@@ -976,7 +976,11 @@ namespace Queries.Core.Renderers
         /// </summary>
         public virtual string BatchStatementSeparator => ";";
 
-
+        /// <summary>
+        /// Builds a <see cref="CompiledQuery"/> where all <see cref="Literal"/>s in <paramref name="query"/> were "replaced" with <see cref="Variable"/>s.
+        /// </summary>
+        /// <param name="query">The query to "compile"</param>
+        /// <returns><see cref="CompiledQuery"/></returns>
         public virtual CompiledQuery Compile(IQuery query)
         {
             CollectVariableVisitor visitor = new();

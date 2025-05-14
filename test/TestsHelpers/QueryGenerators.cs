@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using FsCheck;
+using FsCheck.Fluent;
 using Queries.Core.Builders;
 using Queries.Core.Parts.Clauses;
 using Queries.Core.Parts.Columns;
@@ -21,12 +22,12 @@ public static class QueryGenerators
     /// </summary>
     public static Arbitrary<CreateViewQuery> CreateViewGenerators()
     {
-        Gen<NonWhiteSpaceString> viewNameGenerator = Arb.Generate<NonWhiteSpaceString>();
+        Gen<NonWhiteSpaceString> viewNameGenerator = ArbMap.Default.ArbFor<NonWhiteSpaceString>().Generator;
 
-        Gen<IList<FieldColumn>> columnsGenerator = FieldColumnGenerators().Generator
+        Gen<List<FieldColumn>> columnsGenerator = FieldColumnGenerators().Generator
                                                                           .NonEmptyListOf();
 
-        return Gen.Zip(viewNameGenerator, columnsGenerator).Select(tuple =>
+        return viewNameGenerator.Zip(columnsGenerator).Select(tuple =>
         {
             (NonWhiteSpaceString view, IEnumerable<IColumn> cols) = tuple;
             return new CreateViewQuery(view.Item).As(Select(cols.ToArray()))
@@ -39,9 +40,10 @@ public static class QueryGenerators
     /// </summary>
     public static Arbitrary<FieldColumn> FieldColumnGenerators()
     {
-        return Arb.Generate<NonWhiteSpaceString>()
-                   .Select(columnName => columnName.Item.Field())
-                   .ToArbitrary();
+        return ArbMap.Default.ArbFor<NonWhiteSpaceString>()
+                    .Generator
+                    .Select(columnName => columnName.Item.Field())
+                    .ToArbitrary();
     }
 
     /// <summary>
@@ -49,15 +51,18 @@ public static class QueryGenerators
     /// </summary>
     public static Arbitrary<DeleteQuery> DeleteQueryGenerators()
     {
-        Gen<NonWhiteSpaceString> tableNameGenerator = Arb.Generate<NonWhiteSpaceString>();
+        Gen<NonWhiteSpaceString> tableNameGenerator = ArbMap.Default.ArbFor<NonWhiteSpaceString>().Generator;
 
-        Gen<IList<FieldColumn>> columnsGenerator = FieldColumnGenerators().Generator
+        Gen<List<FieldColumn>> columnsGenerator = FieldColumnGenerators().Generator
                                                                           .NonEmptyListOf();
 
         Gen<IColumn> constraintGenerator = FieldColumnGenerators().Generator
                                                                   .Select(field => field.As<IColumn>());
 
-        return Gen.Zip(tableNameGenerator, columnsGenerator, constraintGenerator)
+        return tableNameGenerator
+                    .Zip(columnsGenerator, (tableName, columns) => (tableName, columns))
+                    .Select(tuple => (tuple.tableName, tuple.columns))
+                    .Zip(constraintGenerator, (tuple, constraint) => (tuple.tableName, tuple.columns, constraint))
                   .Select(tuple =>
                     {
                         (NonWhiteSpaceString tableName, IEnumerable<FieldColumn> cols, IColumn constraint) = tuple;
@@ -71,18 +76,4 @@ public static class QueryGenerators
 
     private static Arbitrary<ClauseOperator> ClauseOperatorGenerators()
         => Gen.Elements(Enum.GetValues(typeof(ClauseOperator)).Cast<ClauseOperator>()).ToArbitrary();
-
-    private static Arbitrary<WhereClause> WhereGenerator(Gen<IColumn> columnGenerator)
-    {
-        Gen<ClauseOperator> opGenerator = ClauseOperatorGenerators().Generator;
-        Gen<IColumn> valueGenerator = FieldColumnGenerators().Generator.Select(column => column as IColumn);
-
-        return Gen.Zip(columnGenerator, opGenerator, valueGenerator)
-                  .Select(tuple =>
-                  {
-                      (IColumn columnName, ClauseOperator op, IColumn constraint) = tuple;
-
-                      return new WhereClause(columnName, op, constraint);
-                  }).ToArbitrary();
-    }
 }
