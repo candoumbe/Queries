@@ -2,10 +2,12 @@
 using Queries.Core.Parts.Columns;
 using Queries.Core.Parts.Functions;
 using System;
+using FsCheck.Xunit;
 using Xunit;
 using Xunit.Abstractions;
 using static Queries.Core.Builders.Fluent.QueryBuilder;
 using Queries.Core.Attributes;
+using TestsHelpers;
 using Xunit.Categories;
 
 namespace Queries.Core.Tests.Parts.Functions;
@@ -100,16 +102,20 @@ public class AvgFunctionTests(ITestOutputHelper outputHelper)
     public void ConstructorTestColumnArgument() => new AvgFunction("age").Type
         .Should().Be(AggregateType.Average);
 
-    public static TheoryData<AvgFunction, string> AsTestCases => new()
+    [Property(Arbitrary = [typeof(QueryGenerators)])]
+    public void SettingAliasTest(AvgFunction column, string newAlias)
     {
-        { new AvgFunction("age".Field()), null },
-        { new AvgFunction("age".Field()).As(string.Empty), string.Empty }
-    };
+        // Act
+        column = column.As(newAlias);
 
-    [Theory]
-    [MemberData(nameof(AsTestCases))]
-    public void SettingAliasTest(AvgFunction column, string expectedAlias)
-        => column.Alias.Should().Be(expectedAlias);
+        // Assert
+        _ = newAlias switch
+        {
+            null => column.Alias.Should().BeEmpty(),
+            string value when string.IsNullOrEmpty(value) => column.Alias.Should().BeEmpty(),
+            _ => column.Alias.Should().Be(newAlias)
+        };
+    }
 
     public static TheoryData<AvgFunction> CloneCases => new()
     {

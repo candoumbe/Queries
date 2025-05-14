@@ -1,7 +1,9 @@
 using System;
 using FluentAssertions;
+using FsCheck.Xunit;
 using Queries.Core.Attributes;
 using Queries.Core.Parts.Functions;
+using TestsHelpers;
 using Xunit;
 using Xunit.Categories;
 
@@ -24,23 +26,20 @@ public class CountFunctionTests
             .NotBeNullOrWhiteSpace();
     }
 
-    public static TheoryData<CountFunction, string> AsTestCases
-        => new()
-        {
-            {
-                new CountFunction("firstname".Field()),
-                null
-            },
-            {
-                new CountFunction("firstname".Field()).As(string.Empty),
-                string.Empty
-            }
-        };
+    [Property(Arbitrary = [typeof(QueryGenerators)])]
+    public void SettingAliasTest(CountFunction column, string newAlias)
+    {
+        // Act
+        column = column.As(newAlias);
 
-    [Theory]
-    [MemberData(nameof(AsTestCases))]
-    public void SettingAliasTest(CountFunction column, string expectedAlias)
-        => column.Alias.Should().Be(expectedAlias);
+        // Assert
+        _ = newAlias switch
+        {
+            null => column.Alias.Should().BeEmpty(),
+            string value when string.IsNullOrEmpty(value) => column.Alias.Should().BeEmpty(),
+            _ => column.Alias.Should().Be(newAlias)
+        };
+    }
 
     [Fact]
     public void HasFunctionAttribute() => typeof(CountFunction).Should()
