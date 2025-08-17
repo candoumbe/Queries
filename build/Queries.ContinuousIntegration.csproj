@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
@@ -10,9 +10,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Candoumbe.Pipelines" Version="0.13.3" />
+    <PackageReference Include="Candoumbe.Pipelines" />
     <PackageDownload Include="ReportGenerator" Version="[5.1.11]" />
     <PackageDownload Include="GitVersion.Tool" Version="[5.10.3]" />
-    <PackageReference Include="CodecovUploader" Version="0.8.0" />
+    <PackageReference Include="CodecovUploader" />
   </ItemGroup>
 </Project>

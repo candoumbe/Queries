@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="../../test.props"/>
+  <Import Project="../../test.props" />
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <IsPackable>false</IsPackable>
@@ -8,11 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Testcontainers.MsSql" Version="4.6.0"/>
-    <PackageReference Include="Xunit.Extensions.AssemblyFixture" Version="2.6.0"/>
+    <PackageReference Include="Testcontainers.MsSql" />
+    <PackageReference Include="Xunit.Extensions.AssemblyFixture" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Queries.Renderers.SqlServer\Queries.Renderers.SqlServer.csproj"/>
+    <ProjectReference Include="..\..\src\Queries.Renderers.SqlServer\Queries.Renderers.SqlServer.csproj" />
   </ItemGroup>
 </Project>
