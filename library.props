@@ -1,10 +1,10 @@
 <Project>
-  <Import Project="core.props"/>
+  <Import Project="core.props" />
   
   <PropertyGroup Condition="'$(TargetFramework)' != 'netstandard1.0' and '$(TargetFramework)' != 'netstandard1.1' and '$(TargetFramework)' != 'netstandard1.3'">
     <DefineConstants>SYSTEM_TEXT_JSON</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="System.Linq.Queryable" Version="4.3.0" />
+    <PackageReference Include="System.Linq.Queryable" />
   </ItemGroup>
 </Project>

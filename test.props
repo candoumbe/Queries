@@ -1,19 +1,19 @@
 <Project>
-  <Import Project="core.props"/>
+  <Import Project="core.props" />
   <PropertyGroup>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0"/>
-    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.4"/>
-    <PackageReference Include="xunit.categories" Version="2.0.8"/>
-    <PackageReference Include="FluentAssertions" Version="7.2.0"/>
-    <PackageReference Include="coverlet.msbuild" Version="6.0.4"/>
-    <PackageReference Include="FsCheck.Xunit" Version="3.3.0"/>
-    <PackageReference Include="Moq" Version="[4.20.72]"/>
-    <PackageReference Include="Bogus" Version="35.6.3"/>
-    <PackageReference Include="NaughtyStrings" Version="3.0.0"/>
-    <PackageReference Include="xunit.extensibility.core" Version="2.9.3"/>
-    <PackageReference Include="xunit.extensibility.execution" Version="2.9.3"/>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit.runner.visualstudio" />
+    <PackageReference Include="xunit.categories" />
+    <PackageReference Include="FluentAssertions" />
+    <PackageReference Include="coverlet.msbuild" />
+    <PackageReference Include="FsCheck.Xunit" />
+    <PackageReference Include="Moq" />
+    <PackageReference Include="Bogus" />
+    <PackageReference Include="NaughtyStrings" />
+    <PackageReference Include="xunit.extensibility.core" />
+    <PackageReference Include="xunit.extensibility.execution" />
   </ItemGroup>
 </Project>  

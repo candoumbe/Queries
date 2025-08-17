@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\..\test.props" />
   <PropertyGroup>
     <Description>Queries.Renderers.SqlServer.Tests Class Library</Description>
@@ -12,6 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="NaughtyStrings" Version="2.4.1" />
+    <PackageReference Include="NaughtyStrings" />
   </ItemGroup>
 </Project>
