@@ -10,8 +10,4 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Queries.Renderers.SqlServer\Queries.Renderers.SqlServer.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="NaughtyStrings" />
-  </ItemGroup>
 </Project>
