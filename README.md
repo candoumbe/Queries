@@ -336,7 +336,7 @@ All `xxxxQuery` classes are mutable (unless specified otherwise) meaning that an
 ## Functions
 
 Several functions are supported out of the box. See [IFunction][class-functions] implementations and associated unit
-tests to see how to use them when building statemeents.
+tests to see how to use them when building statements.
 
 💡 You can always use [NativeQuery](src/Queries.Core/Builders/NativeQuery.cs) whenever you need to write a statement that
 is not yet supported by the library.
