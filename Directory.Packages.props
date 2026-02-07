@@ -13,7 +13,7 @@
     <PackageVersion Include="Candoumbe.Pipelines" Version="0.13.4" />
     <PackageVersion Include="CodecovUploader" Version="0.8.0" />
     <PackageVersion Include="coverlet.msbuild" Version="6.0.4" />
-    <PackageVersion Include="FluentAssertions" Version="7.2.0" />
+    <PackageVersion Include="FluentAssertions" Version="7.2.1" />
     <PackageVersion Include="FluentValidation" Version="11.12.0" />
     <PackageVersion Include="FsCheck.Xunit" Version="3.3.2" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.12" />
