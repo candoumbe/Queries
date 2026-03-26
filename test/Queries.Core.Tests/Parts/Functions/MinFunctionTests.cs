@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using FluentAssertions;
+using AwesomeAssertions;
 using Queries.Core.Attributes;
 using Queries.Core.Parts.Columns;
 using Queries.Core.Parts.Functions;

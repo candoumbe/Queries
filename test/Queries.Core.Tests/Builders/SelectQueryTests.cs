@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+﻿using AwesomeAssertions;
 using Queries.Core.Builders;
 using Queries.Core.Parts.Columns;
 using System;

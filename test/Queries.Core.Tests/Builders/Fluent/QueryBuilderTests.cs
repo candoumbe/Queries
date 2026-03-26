@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Linq.Expressions;
-using FluentAssertions;
+using AwesomeAssertions;
 using Queries.Core.Builders;
 using Queries.Core.Builders.Fluent;
 using Queries.Core.Parts;

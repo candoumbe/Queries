@@ -1,7 +1,7 @@
-﻿using FluentAssertions;
+﻿using AwesomeAssertions;
 using Queries.Core.Parts.Clauses;
 using System.Collections.Generic;
-using FluentAssertions.Extensions;
+using AwesomeAssertions.Extensions;
 using Xunit;
 using Xunit.Abstractions;
 

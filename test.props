@@ -7,7 +7,7 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="xunit.runner.visualstudio" />
     <PackageReference Include="xunit.categories" />
-    <PackageReference Include="FluentAssertions" />
+    <PackageReference Include="AwesomeAssertions" />
     <PackageReference Include="coverlet.msbuild" />
     <PackageReference Include="FsCheck.Xunit" />
     <PackageReference Include="Moq" />

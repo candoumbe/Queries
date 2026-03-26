@@ -1,5 +1,5 @@
 using System;
-using FluentAssertions;
+using AwesomeAssertions;
 using FsCheck.Xunit;
 using Queries.Core.Attributes;
 using Queries.Core.Parts.Functions;

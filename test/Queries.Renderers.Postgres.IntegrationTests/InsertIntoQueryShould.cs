@@ -1,7 +1,7 @@
 using System;
 using System.Data.Common;
 using System.Threading.Tasks;
-using FluentAssertions;
+using AwesomeAssertions;
 using Xunit.Categories;
 using Xunit.Extensions.AssemblyFixture;
 using Npgsql;

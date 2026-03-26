@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using FluentAssertions;
-using FluentAssertions.Extensions;
+using AwesomeAssertions;
+using AwesomeAssertions.Extensions;
 using NaughtyStrings;
 using Queries.Core;
 using Queries.Core.Builders;

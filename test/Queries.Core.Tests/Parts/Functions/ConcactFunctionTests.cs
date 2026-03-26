@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+﻿using AwesomeAssertions;
 using Newtonsoft.Json.Linq;
 using Queries.Core.Parts.Columns;
 using Queries.Core.Parts.Functions;

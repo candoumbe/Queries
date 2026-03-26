@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+﻿using AwesomeAssertions;
 using Queries.Core.Parts.Columns;
 using Queries.Renderers.Postgres.Parts.Columns;
 using System;

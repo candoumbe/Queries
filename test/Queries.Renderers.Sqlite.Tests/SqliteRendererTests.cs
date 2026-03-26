@@ -1,5 +1,5 @@
-﻿using FluentAssertions;
-using FluentAssertions.Extensions;
+﻿using AwesomeAssertions;
+using AwesomeAssertions.Extensions;
 
 using Queries.Core;
 using Queries.Core.Builders;

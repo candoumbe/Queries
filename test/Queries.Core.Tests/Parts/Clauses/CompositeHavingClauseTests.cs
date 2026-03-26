@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+﻿using AwesomeAssertions;
 using Queries.Core.Parts.Clauses;
 using Xunit;
 using Xunit.Categories;
