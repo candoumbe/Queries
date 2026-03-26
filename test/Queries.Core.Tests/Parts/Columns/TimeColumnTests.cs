@@ -2,7 +2,7 @@
 
 namespace Queries.Core.Tests.Parts.Columns;
 
-using FluentAssertions;
+using AwesomeAssertions;
 
 using Queries.Core.Parts.Columns;
 

@@ -1,6 +1,6 @@
 ﻿#if NET8_0_OR_GREATER
 namespace Queries.Core.Tests.Parts.Columns;
-using FluentAssertions;
+using AwesomeAssertions;
 using Queries.Core.Parts.Columns;
 using System;
 using Xunit;
