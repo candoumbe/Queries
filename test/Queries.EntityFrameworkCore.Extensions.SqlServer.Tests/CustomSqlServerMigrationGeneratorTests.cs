@@ -3,9 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Metadata;
 
 #endif
-using static Moq.MockBehavior;
-
-using Moq;
+using NSubstitute;
 
 using Queries.Renderers.SqlServer;
 #if NET7_0_OR_GREATER
@@ -17,21 +15,25 @@ namespace Queries.EntityFrameworkCore.Extensions.SqlServer.Tests;
 public class CustomSqlServerMigrationGeneratorTests
 {
     private readonly CustomSqlServerMigrationGenerator _sut;
-    private readonly Mock<MigrationsSqlGeneratorDependencies> _dependenciesMock;
+    private readonly MigrationsSqlGeneratorDependencies _dependenciesMock;
 #if NET7_0_OR_GREATER
-    private readonly Mock<ICommandBatchPreparer> _annotationProviderMock;
+    private readonly ICommandBatchPreparer _annotationProviderMock;
 #else
-    private readonly Mock<IRelationalAnnotationProvider> _annotationProviderMock;
+    private readonly IRelationalAnnotationProvider _annotationProviderMock;
 #endif
     private readonly SqlServerRenderer _renderer;
 
 
     public CustomSqlServerMigrationGeneratorTests()
     {
-        _dependenciesMock = new();
-        _annotationProviderMock = new(Strict);
+        _dependenciesMock = Substitute.For<MigrationsSqlGeneratorDependencies>();
+#if NET7_0_OR_GREATER
+        _annotationProviderMock = Substitute.For<ICommandBatchPreparer>();
+#else
+        _annotationProviderMock = Substitute.For<IRelationalAnnotationProvider>();
+#endif
         _renderer = new SqlServerRenderer();
-        _sut = new(null, _annotationProviderMock.Object);
+        _sut = new(null, _annotationProviderMock);
     }
 
     // [Property(Arbitrary = new[] { typeof(QueryGenerators) })]
