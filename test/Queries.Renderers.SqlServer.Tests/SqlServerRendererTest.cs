@@ -658,14 +658,23 @@ public class SqlServerRendererTest(ITestOutputHelper outputHelper)
 
                     @"DECLARE @p0 AS VARCHAR(8000) = 'Du\[pont'';--';" +
                     "SELECT [id] FROM [members] WHERE ([username] LIKE @p0)"
+                },
+                {
+                    Select("id".Field())
+                        .From("members")
+                        .Where("username".Field(), EqualTo, "Du[pont';--"),
+                    new SqlServerRendererSettings(),
+
+                    @"DECLARE @p0 AS VARCHAR(8000) = 'Du\[pont'';--';" +
+                    "SELECT [id] FROM [members] WHERE ([username] = @p0)"
                 }
             };
 
             foreach (string naughtyString in TheNaughtyStrings.SQLInjection)
             {
                 string escapedString = naughtyString
-                    .Replace("\'", "''")
-                    .Replace("[", "[");
+                    .Replace("'", "''")
+                    .Replace("[", @"\[");
                 cases.Add(
                     Select("*").From("superheroes")
                         .Where("name".Field(), EqualTo, naughtyString),
