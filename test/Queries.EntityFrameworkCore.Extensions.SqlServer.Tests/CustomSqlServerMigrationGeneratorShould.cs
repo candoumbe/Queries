@@ -74,7 +74,7 @@ public class CustomSqlServerMigrationGeneratorShould
     }
 
     [Property(Arbitrary = [typeof(QueryGenerators) ])]
-    public void Render_DeleteQuery_command_When_DeleteQuery_is_provided(DeleteQuery deleteQuery)
+    public void Render_delete_command_When_DeleteQuery_is_provided(DeleteQuery deleteQuery)
     {
         // Arrange
         string expected = _renderer.Render(deleteQuery);
