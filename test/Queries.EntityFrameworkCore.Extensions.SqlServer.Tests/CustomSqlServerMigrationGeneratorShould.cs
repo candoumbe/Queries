@@ -74,20 +74,35 @@ public class CustomSqlServerMigrationGeneratorShould
     }
 
     [Property(Arbitrary = [typeof(QueryGenerators) ])]
-    public void Render_delete_command_When_DeleteQuery_is_provided(DeleteQuery deleteQuery)
+    public void Render_DeleteQuery_command_When_DeleteQuery_is_provided(DeleteQuery deleteQuery)
     {
         // Arrange
+        string expected = _renderer.Render(deleteQuery);
         DeleteMigrationOperation op = new(deleteQuery);
 
-        IReadOnlyList<MigrationOperation> operations = new List<MigrationOperation>() { op }
-            .AsReadOnly();
+        IReadOnlyList<MigrationOperation> operations = [op];
 
         // Act
         IReadOnlyList<MigrationCommand> commands = _sut.Generate(operations, null);
 
         // Assert
-        string expected = _renderer.Render(deleteQuery);
+        commands.Once(cmd => cmd.CommandText == expected).ToProperty();
+    }
 
+    // insert tests for other query types (InsertQuery, UpdateQuery, etc.) here
+    [Property(Arbitrary = [typeof(QueryGenerators) ])]
+    public void Render_CreateView_command_When_CreateViewQuery_is_provided(CreateViewQuery createViewQuery)
+    {
+        // Arrange
+        string expected = _renderer.Render(createViewQuery);
+        CreateViewMigrationOperation op = new(createViewQuery);
+
+        IReadOnlyList<MigrationOperation> operations = [ op ];
+
+        // Act
+        IReadOnlyList<MigrationCommand> commands = _sut.Generate(operations, null);
+
+        // Assert
         commands.Once(cmd => cmd.CommandText == expected).ToProperty();
     }
 }
