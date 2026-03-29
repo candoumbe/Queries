@@ -4,7 +4,6 @@ using Queries.Core.Builders;
 using Queries.Core.Parts.Clauses;
 using Queries.Core.Parts.Columns;
 using System;
-using System.Collections.Generic;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Categories;
@@ -38,11 +37,9 @@ public class ReplaceParameterBySelectQueryVisitorTests
             .Where(ex => !string.IsNullOrWhiteSpace(ex.ParamName));
     }
 
-    public static IEnumerable<object[]> ReplaceParameterBySelectQueryVisitorCases
-    {
-        get
+    public static TheoryData<IQuery, Func<Variable, SelectQuery>, IQuery> ReplaceParameterBySelectQueryVisitorCases
+        => new()
         {
-            yield return new object[]
             {
                 Select("*").From("superHeroes")
                     .Where("Fullname".Field().Like("Bat%")),
@@ -59,9 +56,8 @@ public class ReplaceParameterBySelectQueryVisitorTests
                                 .Paginate(pageIndex:1, pageSize:1)
                         )
                     )
-            };
-        }
-    }
+            }
+        };
 
     [Theory]
     [MemberData(nameof(ReplaceParameterBySelectQueryVisitorCases))]

@@ -3,8 +3,6 @@ using Queries.Core.Parts.Clauses;
 using Queries.Core.Parts.Columns;
 using Queries.Core.Parts.Functions;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Categories;
@@ -31,7 +29,7 @@ namespace Queries.Core.Tests.Parts.Clauses
                 .NotBeNullOrWhiteSpace();
         }
 
-        public static IEnumerable<object[]> ObjectShouldBeInCorrectStateAfterBeingBuiltCases
+        public static TheoryData<AggregateFunction, ClauseOperator, ColumnBase> ObjectShouldBeInCorrectStateAfterBeingBuiltCases
         {
             get
             {
@@ -46,8 +44,12 @@ namespace Queries.Core.Tests.Parts.Clauses
                     NotEqualTo
                 ];
 
-                return operators
-                    .Select(op => new object[] { new MaxFunction("age"), op, 18 });
+                TheoryData<AggregateFunction, ClauseOperator, ColumnBase> cases = new();
+                foreach (ClauseOperator op in operators)
+                {
+                    cases.Add(new MaxFunction("age"), op, 18);
+                }
+                return cases;
             }
         }
 
@@ -64,16 +66,14 @@ namespace Queries.Core.Tests.Parts.Clauses
             clause.Constraint.Should().Be(constraint);
         }
 
-        public static IEnumerable<object[]> CloneCases
-        {
-            get
+        public static TheoryData<HavingClause> CloneCases
+            => new()
             {
-                yield return new[] { new HavingClause(new CountFunction("Firstname".Field()), EqualTo, "Bruce") };
-                yield return new[] { new HavingClause(new MinFunction("Firstname".Field()), IsNull, "Bruce") };
-                yield return new[] { new HavingClause(new MaxFunction(1.Literal()), GreaterThanOrEqualTo, 2) };
-                yield return new[] { new HavingClause(new AvgFunction(1.Literal()), GreaterThanOrEqualTo, 2) };
-            }
-        }
+                { new HavingClause(new CountFunction("Firstname".Field()), EqualTo, "Bruce") },
+                { new HavingClause(new MinFunction("Firstname".Field()), IsNull, "Bruce") },
+                { new HavingClause(new MaxFunction(1.Literal()), GreaterThanOrEqualTo, 2) },
+                { new HavingClause(new AvgFunction(1.Literal()), GreaterThanOrEqualTo, 2) }
+            };
 
         [Theory]
         [MemberData(nameof(CloneCases))]

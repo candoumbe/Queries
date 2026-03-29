@@ -3,7 +3,6 @@
 using Queries.Core.Parts;
 
 using System;
-using System.Collections.Generic;
 
 using Xunit;
 using Xunit.Abstractions;
@@ -30,17 +29,20 @@ public class TableTests(ITestOutputHelper outputHelper)
             .NotBeNullOrWhiteSpace();
     }
 
-    public static IEnumerable<object[]> EqualsCases
+    public static TheoryData<Table, object, bool, string> EqualsCases
     {
         get
         {
-            yield return new object[] { new Table("firstname"), null, false, "object is null" };
-            yield return new object[] { new Table("firstname"), new Table("firstname"), true, $"object is a {nameof(Table)} with exactly the same {nameof(Table.Name)} and {nameof(Table.Alias)}" };
-            
+            TheoryData<Table, object, bool, string> cases = new()
             {
-                Table column = new("firstname");
-                yield return new object[] { column, column, true, "Equals with same instance" };
-            }
+                { new Table("firstname"), null, false, "object is null" },
+                { new Table("firstname"), new Table("firstname"), true, $"object is a {nameof(Table)} with exactly the same {nameof(Table.Name)} and {nameof(Table.Alias)}" }
+            };
+
+            Table column = new("firstname");
+            cases.Add(column, column, true, "Equals with same instance");
+
+            return cases;
         }
     }
 

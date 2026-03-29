@@ -2,7 +2,6 @@
 using Queries.Core.Attributes;
 using Queries.Core.Builders;
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 using Xunit;
 using Xunit.Abstractions;
@@ -46,33 +45,28 @@ public class TruncateQueryTests(ITestOutputHelper outputHelper) : IDisposable
             .NotBeNullOrWhiteSpace();
     }
 
-    public static IEnumerable<object[]> EqualsCases
-    {
-        get
+    public static TheoryData<TruncateQuery, object, bool, string> EqualsCases
+        => new()
         {
-            yield return new object[]
             {
                 Truncate("SuperHero"),
                 null,
                 false,
                 "comparing with a null instance"
-            };
-            yield return new object[]
+            },
             {
                 Truncate("SuperHero"),
                 Truncate("SuperHero"),
                 true,
                 "comparing two instances with same tableName"
-            };
-            yield return new object[]
+            },
             {
                 Truncate("SuperHero"),
                 Select(1.Literal()),
                 false,
                 "comparing two different types of query"
-            };
-        }
-    }
+            }
+        };
 
     [Theory]
     [MemberData(nameof(EqualsCases))]

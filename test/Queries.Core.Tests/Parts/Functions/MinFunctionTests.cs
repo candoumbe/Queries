@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using AwesomeAssertions;
 using Queries.Core.Attributes;
 using Queries.Core.Parts.Columns;
@@ -59,20 +58,17 @@ public class MinFunctionTests
     [Fact]
     public void ConstructorTestColumnArgument() => new MinFunction("age").Type.Should().Be(AggregateType.Min);
 
-    public static IEnumerable<object[]> AsTestCases
+    public static TheoryData<MinFunction, string> AsTestCases
     {
         get
         {
-            yield return new object[]
-            {
-                new MinFunction("age".Field()),
-                null,
-            };
+            MinFunction withEmptyAlias = new("age".Field());
+            withEmptyAlias.As(string.Empty);
 
-            yield return new object[]
+            return new()
             {
-                new MinFunction("age".Field()).As(string.Empty),
-                string.Empty,
+                { new MinFunction("age".Field()), null },
+                { withEmptyAlias, string.Empty }
             };
         }
     }
