@@ -2,4 +2,4 @@
 set -euo pipefail
 
 echo "Running postCreateCommand..."
-echo "Runned postCreateCommand successfully."
+echo "Ran postCreateCommand successfully."

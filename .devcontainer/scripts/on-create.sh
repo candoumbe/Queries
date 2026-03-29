@@ -7,4 +7,4 @@ echo "Running onCreateCommand..."
 sudo apt-get update
 sudo apt-get install -y xdg-utils
 
-echo "Runned onCreateCommand successfully."
+echo "Ran onCreateCommand successfully."
