@@ -10,7 +10,7 @@
     <PackageReference Include="AwesomeAssertions" />
     <PackageReference Include="coverlet.msbuild" />
     <PackageReference Include="FsCheck.Xunit" />
-    <PackageReference Include="Moq" />
+    <PackageReference Include="NSubstitute" />
     <PackageReference Include="Bogus" />
     <PackageReference Include="NaughtyStrings" />
     <PackageReference Include="xunit.extensibility.core" />
