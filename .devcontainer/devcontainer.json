@@ -1,0 +1,29 @@
+{
+  "name": "Queries",
+  "image": "mcr.microsoft.com/devcontainers/dotnet:10.0",
+   "features": {
+    "ghcr.io/devcontainers-extra/features/gh-cli:1": {},
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/devcontainers/features/copilot-cli": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-dotnettools.csharp",
+        "ms-dotnettools.csdevkit",
+        "angular.ng-template",
+        "esbenp.prettier-vscode",
+        "ms-azuretools.vscode-docker",
+        "GitHub.copilot",
+        "EditorConfig.EditorConfig"
+      ],
+    "settings": {
+        "dotnet.defaultSolution": "Queries.sln"
+      }
+    }
+  },
+  "onCreateCommand": "./.devcontainer/scripts/on-create.sh",
+  "postCreateCommand": "./.devcontainer/scripts/post-create.sh",
+  "postStartCommand": "./.devcontainer/scripts/post-start.sh"
+}
