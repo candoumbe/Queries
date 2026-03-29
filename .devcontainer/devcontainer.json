@@ -1,0 +1,38 @@
+{
+  "$schema": "https://raw.githubusercontent.com/devcontainers/spec/main/schemas/devContainer.schema.json",
+  "name": "Queries",
+  "image": "mcr.microsoft.com/devcontainers/dotnet:9.0",
+   "features": {
+    "ghcr.io/devcontainers-extra/features/gh-cli:1": {},
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/copilot-cli": {
+        "version": "latest"
+    },
+    "ghcr.io/devcontainers/features/dotnet:2": {
+      "tabCompletions": true,
+      "version": "8.0",
+      "additionalVersions": "9.0,10.0"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-dotnettools.csharp",
+        "ms-dotnettools.csdevkit",
+        "esbenp.prettier-vscode",
+        "GitHub.copilot",
+        "EditorConfig.EditorConfig"
+      ],
+    "settings": {
+        "dotnet.defaultSolution": "Queries.sln"
+      }
+    }
+  },
+  "onCreateCommand": "./.devcontainer/scripts/on-create.sh",
+  "postCreateCommand": "./.devcontainer/scripts/post-create.sh",
+  "postStartCommand": "./.devcontainer/scripts/post-start.sh",
+  "runArgs": [
+    "--env-file",
+    "./.devcontainer/.env"
+  ]
+}

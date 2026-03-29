@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="Candoumbe.Pipelines" />
+    <PackageDownload Include="dotnet-stryker" Version="[4.14.0]" />
     <PackageDownload Include="ReportGenerator" Version="[5.1.11]" />
     <PackageDownload Include="GitVersion.Tool" Version="[5.10.3]" />
     <PackageReference Include="CodecovUploader" />

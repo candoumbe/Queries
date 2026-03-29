@@ -7,12 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### 🚀 New features
+
 - Added `CompileForPostgres`, `CompileForSqlServer`, `CompileForMySql` extension methods on [IQuery](./src/Queries.Core/IQuery.cs) type.
 
 ### 💥 Breaking changes
+
 - Changed the output of `UniqueIdentifierValue` column when rendering Postgres queries from `uuid_generate_v4()` to `gen_random_uuid()`
 
 ### ✨ Improvements
+
 - Improved `PrettyPrint` support
 - Enhance column type conversion and implicit casting documentation and support
 
@@ -24,8 +27,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed direct dependency to `xunit` NuGet package in favor of transitive dependency brought by `FsCheck.Xunit`
 - Replaced `Codecov.Tool` with `CodecovUploader` NuGet package
 - Implemented central package management
+- Initialized dev container for development
 
 ### 🖹 Documentation
+
 - Added more C# documentation.
 - Added specific documentation for parameterized queries usage with `CollectVariableVisitor`.
 

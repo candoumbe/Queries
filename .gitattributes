@@ -3,6 +3,10 @@
 ###############################################################################
 * text=auto
 
+# *.sh files are Linux shell scripts and should always use LF line endings, even on
+# Windows. This is important for tools like Git Bash and WSL to work correctly. Setting
+*.sh text eol=lf
+
 ###############################################################################
 # Set default behavior for command prompt diff.
 #
@@ -61,3 +65,8 @@
 #*.PDF   diff=astextplain
 #*.rtf   diff=astextplain
 #*.RTF   diff=astextplain
+
+###############################################################################
+# Force shell scripts to use LF line endings
+###############################################################################
+*.sh text eol=lf

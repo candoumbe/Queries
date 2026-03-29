@@ -64,8 +64,28 @@ jobs:
         with:
           name: unit-tests-coverage-history
           path: output/artifacts/reports/coverage-history/unit-tests-coverage-history
+      - name: 'Publish: integration-tests'
+        uses: actions/upload-artifact@v4
+        with:
+          name: integration-tests
+          path: output/artifacts/tests-results/integration-tests
+      - name: 'Publish: mutation-tests'
+        uses: actions/upload-artifact@v4
+        with:
+          name: mutation-tests
+          path: output/artifacts/tests-results/mutation-tests
       - name: 'Publish: packages'
         uses: actions/upload-artifact@v4
         with:
           name: packages
           path: output/artifacts/packages
+      - name: 'Publish: integration-tests-coverage'
+        uses: actions/upload-artifact@v4
+        with:
+          name: integration-tests-coverage
+          path: output/artifacts/reports/coverage-report/integration-tests-coverage
+      - name: 'Publish: integration-tests-coverage-history'
+        uses: actions/upload-artifact@v4
+        with:
+          name: integration-tests-coverage-history
+          path: output/artifacts/reports/coverage-history/integration-tests-coverage-history
