@@ -25,7 +25,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Queries.EntityFrameworkCore.Extensions.SqlServer.Tests;
 
-public class CustomSqlServerMigrationGeneratorTests
+public class CustomSqlServerMigrationGeneratorShould
 {
     private readonly CustomSqlServerMigrationGenerator _sut;
     private readonly MigrationsSqlGeneratorDependencies _dependenciesMock;
@@ -37,7 +37,7 @@ public class CustomSqlServerMigrationGeneratorTests
 
     private readonly SqlServerRenderer _renderer = new();
 
-    public CustomSqlServerMigrationGeneratorTests()
+    public CustomSqlServerMigrationGeneratorShould()
     {
         IRelationalCommandBuilder commandBuilder = Substitute.For<IRelationalCommandBuilder>();
         commandBuilder.Append(Arg.Any<string>()).Returns(commandBuilder);
@@ -73,8 +73,8 @@ public class CustomSqlServerMigrationGeneratorTests
         _sut = new(_dependenciesMock, _annotationProviderMock);
     }
 
-    [Property(Arbitrary = new[] { typeof(QueryGenerators) })]
-    public void Generate_should_create_expected_commands(DeleteQuery deleteQuery)
+    [Property(Arbitrary = [typeof(QueryGenerators) ])]
+    public void Render_delete_command_When_DeleteQuery_is_provided(DeleteQuery deleteQuery)
     {
         // Arrange
         DeleteMigrationOperation op = new(deleteQuery);
