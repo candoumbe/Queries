@@ -11,7 +11,7 @@
     "ghcr.io/devcontainers/features/dotnet:2": {
       "tabCompletions": true,
       "version": "8.0",
-      "additionalVersions": "10"
+      "additionalVersions": "9.0,10.0"
     }
   },
   "customizations": {
