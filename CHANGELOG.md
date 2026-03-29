@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed direct dependency to `xunit` NuGet package in favor of transitive dependency brought by `FsCheck.Xunit`
 - Replaced `Codecov.Tool` with `CodecovUploader` NuGet package
 - Implemented central package management
+- Initialize dev container for development
 
 ### 🖹 Documentation
 - Added more C# documentation.
