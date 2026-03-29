@@ -25,5 +25,9 @@
   },
   "onCreateCommand": "./.devcontainer/scripts/on-create.sh",
   "postCreateCommand": "./.devcontainer/scripts/post-create.sh",
-  "postStartCommand": "./.devcontainer/scripts/post-start.sh"
+  "postStartCommand": "./.devcontainer/scripts/post-start.sh",
+  "runArgs": [
+    "--env-file",
+    "${localWorkspaceFolder}/.devcontainer/.env"
+  ]
 }
