@@ -2,7 +2,6 @@
 using Queries.Core.Parts.Clauses;
 using Queries.Core.Parts.Columns;
 using System;
-using System.Collections.Generic;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Categories;
@@ -19,16 +18,11 @@ public class VariableTests :IDisposable
 
     public void Dispose() => _outputHelper = null;
 
-    public static IEnumerable<object[]> CloneCases
-    {
-        get
+    public static TheoryData<Variable> CloneCases
+        => new()
         {
-            yield return new[]
-            {
-                new Variable("p", VariableType.String, "value")
-            };
-        }
-    }
+            { new Variable("p", VariableType.String, "value") }
+        };
 
     [Theory]
     [MemberData(nameof(CloneCases))]
@@ -45,19 +39,14 @@ public class VariableTests :IDisposable
     }
 
 
-    public static IEnumerable<object[]> EqualsCases
-    {
-        get
+    public static TheoryData<Variable, object, bool, string> EqualsCases
+        => new()
         {
-            yield return new object[] { new Variable("firstname", VariableType.String, "Clark"), null, false, "comparing with a null instance" };
-            yield return new object[] { new Variable("firstname", VariableType.String, "Clark"), new Variable("firstname", VariableType.String, "Clark"), true, "comparing two instances with same name/type/value" };
-            yield return new object[] { new Variable("firstname", VariableType.Date, "Clark"), new Variable("firstname", VariableType.String, "Clark"), false, "comparing two instances with same name/value but different types." };
-            {
-                Variable variable = new("firstname", VariableType.Date, "Clark");
-                yield return new object[] { variable, variable.Clone(), true, "comparing a variable to its clone." };
-            }
-        }
-    }
+            { new Variable("firstname", VariableType.String, "Clark"), null, false, "comparing with a null instance" },
+            { new Variable("firstname", VariableType.String, "Clark"), new Variable("firstname", VariableType.String, "Clark"), true, "comparing two instances with same name/type/value" },
+            { new Variable("firstname", VariableType.Date, "Clark"), new Variable("firstname", VariableType.String, "Clark"), false, "comparing two instances with same name/value but different types." },
+            { new Variable("firstname", VariableType.Date, "Clark"), new Variable("firstname", VariableType.Date, "Clark").Clone(), true, "comparing a variable to its clone." }
+        };
 
 
     [Theory]

@@ -2,7 +2,6 @@
 using Queries.Core.Parts.Columns;
 using Queries.Core.Parts.Functions.Math;
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 using Xunit;
 using Xunit.Abstractions;
@@ -18,15 +17,13 @@ public class SubstractFunctionTests : IDisposable
 
     public void Dispose() => _outputHelper = null;
 
-    public static IEnumerable<object[]> CtorWithNullAsFirstOrSecondArgumentCases
-    {
-        get
+    public static TheoryData<IColumn, IColumn> CtorWithNullAsFirstOrSecondArgumentCases
+        => new()
         {
-            yield return new object[] { null, null };
-            yield return new object[] { 1.Literal(), null };
-            yield return new object[] { null, 1.Literal() };
-        }
-    }
+            { null, null },
+            { 1.Literal(), null },
+            { null, 1.Literal() }
+        };
 
     [Theory]
     [MemberData(nameof(CtorWithNullAsFirstOrSecondArgumentCases))]
@@ -61,19 +58,22 @@ public class SubstractFunctionTests : IDisposable
     }
 
 
-    public static IEnumerable<object[]> EqualsCases
+    public static TheoryData<SubstractFunction, object, bool, string> EqualsCases
     {
         get
         {
-            yield return new object[] { "Left".Field().Substract("Right".Field()), null, false, "comparing with a null instance" };
-            yield return new object[] { "Left".Field().Substract("Right".Field()), "Left".Field().Substract("Right".Field()), true, "comparing two instances with same columns names and same columns count" };
-            yield return new object[] { "Left".Field().Substract("Right".Field()), new SubstractFunction("Left".Field(), "Right".Field()), true, "comparing two instances with same columns names and same columns count" };
-            yield return new object[] { "Left".Field().Substract("Right".Field()), "Right".Field().Substract("Left".Field()), false, "comparing two instances with same columns names but in reversed order" };
-                                                                
-            {                                                   
-                SubstractFunction function = "Left".Field().Substract("Right".Field());
-                yield return new object[] { function, function, true, "comparing instance to itself" };
-            }
+            TheoryData<SubstractFunction, object, bool, string> cases = new()
+            {
+                { "Left".Field().Substract("Right".Field()), null, false, "comparing with a null instance" },
+                { "Left".Field().Substract("Right".Field()), "Left".Field().Substract("Right".Field()), true, "comparing two instances with same columns names and same columns count" },
+                { "Left".Field().Substract("Right".Field()), new SubstractFunction("Left".Field(), "Right".Field()), true, "comparing two instances with same columns names and same columns count" },
+                { "Left".Field().Substract("Right".Field()), "Right".Field().Substract("Left".Field()), false, "comparing two instances with same columns names but in reversed order" }
+            };
+
+            SubstractFunction function = "Left".Field().Substract("Right".Field());
+            cases.Add(function, function, true, "comparing instance to itself");
+
+            return cases;
         }
     }
 
@@ -92,23 +92,12 @@ public class SubstractFunctionTests : IDisposable
         actualResult.Should().Be(expectedResult, reason);
     }
 
-    public static IEnumerable<object[]> AsTestCases
-    {
-        get
+    public static TheoryData<SubstractFunction, string> AsTestCases
+        => new()
         {
-            yield return new object[]
-            {
-                new SubstractFunction("left".Literal(), "right".Literal()).As(null),
-                null,
-            };
-
-            yield return new object[]
-            {
-                new SubstractFunction("left".Literal(), "right".Literal()).As(string.Empty),
-                string.Empty,
-            };
-        }
-    }
+            { new SubstractFunction("left".Literal(), "right".Literal()).As(null), null },
+            { new SubstractFunction("left".Literal(), "right".Literal()).As(string.Empty), string.Empty }
+        };
 
     [Theory]
     [MemberData(nameof(AsTestCases))]

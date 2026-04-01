@@ -2,7 +2,6 @@
 using Queries.Core.Parts.Columns;
 using Queries.Renderers.Postgres.Parts.Columns;
 using System;
-using System.Collections.Generic;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Categories;
@@ -68,15 +67,13 @@ public class JsonFieldColumnTests
             .Be(original);
     }
 
-    public static IEnumerable<object[]> EqualsCases
-    {
-        get
+    public static TheoryData<JsonFieldColumn, object, bool, string> EqualsCases
+        => new()
         {
-            yield return new object[] { new JsonFieldColumn("prop".Field(), "path"), null, false, "The second parameter is null" };
-            yield return new object[] { new JsonFieldColumn("prop".Field(), "path"), "prop".Field(), false, $"The second parameter is not an instance of {nameof(JsonFieldColumn)} type" };
-            yield return new object[] { new JsonFieldColumn("prop".Field(), "path"), new JsonFieldColumn("prop".Field(), "path"), true, $"Two different instances of same type with equivalent value as parameter" };
-        }
-    }
+            { new JsonFieldColumn("prop".Field(), "path"), null, false, "The second parameter is null" },
+            { new JsonFieldColumn("prop".Field(), "path"), "prop".Field(), false, $"The second parameter is not an instance of {nameof(JsonFieldColumn)} type" },
+            { new JsonFieldColumn("prop".Field(), "path"), new JsonFieldColumn("prop".Field(), "path"), true, $"Two different instances of same type with equivalent value as parameter" }
+        };
 
     [Theory]
     [MemberData(nameof(EqualsCases))]

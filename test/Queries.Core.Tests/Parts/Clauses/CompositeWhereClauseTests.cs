@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using AwesomeAssertions;
 using Queries.Core.Parts.Clauses;
 using Queries.Core.Parts.Columns;
@@ -24,90 +23,84 @@ public class CompositeWhereClauseTests
         clause.Logic.Should().Be(And);
     }
 
-    public static IEnumerable<object[]> EqualsCases
+    public static TheoryData<CompositeWhereClause, object, bool, string> EqualsCases
     {
         get
         {
-            yield return new object[]
+            TheoryData<CompositeWhereClause, object, bool, string> cases = new()
             {
-                new CompositeWhereClause
                 {
-                    Logic = And,
-                    Clauses = new IWhereClause[]
+                    new CompositeWhereClause
                     {
-                       "Age".Field().LessThan(15),
-                       "Age".Field().GreaterThan(10)
-                    }
-                },
-                null,
-                false,
-                $"comparing {nameof(CompositeWhereClause)} instance to null"
-            };
-
-            yield return new object[]
-            {
-                new CompositeWhereClause
-                {
-                    Logic = And,
-                    Clauses = new IWhereClause[]
-                    {
-                       "Age".Field().LessThan(15),
-                       "Age".Field().GreaterThan(10)
-                    }
-                },
-                new CompositeWhereClause
-                {
-                    Logic = And,
-                    Clauses = new IWhereClause[]
-                    {
-                       "Age".Field().LessThan(15),
-                       "Age".Field().GreaterThan(10)
-                    }
-                },
-                true,
-                $"comparing two {nameof(CompositeWhereClause)} instances that holds same data"
-            };
-
-            yield return new object[]
-            {
-                new CompositeWhereClause
-                {
-                    Logic = And,
-                    Clauses = new IWhereClause[]
-                    {
-                       "Age".Field().LessThan(15),
-                       "Age".Field().GreaterThan(10)
-                    }
-                },
-                new CompositeWhereClause
-                {
-                    Logic = And,
-                    Clauses = new IWhereClause[]
-                    {
-                       "Age".Field().GreaterThan(10),
-                       "Age".Field().LessThan(15)
-                    }
-                },
-                false,
-                $"comparing two {nameof(CompositeWhereClause)} instances that holds same data but not in same order"
-            };
-            {
-                CompositeWhereClause clause = new()
-                {
-                    Logic = And,
-                    Clauses = new IWhereClause[]
+                        Logic = And,
+                        Clauses = new IWhereClause[]
                         {
                            "Age".Field().LessThan(15),
                            "Age".Field().GreaterThan(10)
                         }
-                };
-                yield return new object[]
+                    },
+                    null,
+                    false,
+                    $"comparing {nameof(CompositeWhereClause)} instance to null"
+                },
                 {
-                    clause, clause,
+                    new CompositeWhereClause
+                    {
+                        Logic = And,
+                        Clauses = new IWhereClause[]
+                        {
+                           "Age".Field().LessThan(15),
+                           "Age".Field().GreaterThan(10)
+                        }
+                    },
+                    new CompositeWhereClause
+                    {
+                        Logic = And,
+                        Clauses = new IWhereClause[]
+                        {
+                           "Age".Field().LessThan(15),
+                           "Age".Field().GreaterThan(10)
+                        }
+                    },
                     true,
-                    $"comparing {nameof(CompositeWhereClause)} instance to itself"
-                };
-            }
+                    $"comparing two {nameof(CompositeWhereClause)} instances that holds same data"
+                },
+                {
+                    new CompositeWhereClause
+                    {
+                        Logic = And,
+                        Clauses = new IWhereClause[]
+                        {
+                           "Age".Field().LessThan(15),
+                           "Age".Field().GreaterThan(10)
+                        }
+                    },
+                    new CompositeWhereClause
+                    {
+                        Logic = And,
+                        Clauses = new IWhereClause[]
+                        {
+                           "Age".Field().GreaterThan(10),
+                           "Age".Field().LessThan(15)
+                        }
+                    },
+                    false,
+                    $"comparing two {nameof(CompositeWhereClause)} instances that holds same data but not in same order"
+                }
+            };
+
+            CompositeWhereClause clause = new()
+            {
+                Logic = And,
+                Clauses = new IWhereClause[]
+                {
+                   "Age".Field().LessThan(15),
+                   "Age".Field().GreaterThan(10)
+                }
+            };
+            cases.Add(clause, clause, true, $"comparing {nameof(CompositeWhereClause)} instance to itself");
+
+            return cases;
         }
     }
 

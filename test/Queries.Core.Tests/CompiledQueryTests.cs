@@ -1,6 +1,5 @@
 ﻿using AwesomeAssertions;
 using Queries.Core.Parts.Clauses;
-using System.Collections.Generic;
 using AwesomeAssertions.Extensions;
 using Xunit;
 using Xunit.Abstractions;
@@ -9,27 +8,21 @@ namespace Queries.Core.Tests;
 
 public class CompiledQueryTests(ITestOutputHelper outputHelper)
 {
-    public static IEnumerable<object[]> EqualsCases
-    {
-        get
+    public static TheoryData<CompiledQuery, object, bool, string> EqualsCases
+        => new()
         {
-            yield return new object[]
             {
                 new CompiledQuery("A string", null),
                 null,
                 false,
                 "the current instance is compared to 'null'"
-            };
-
-            yield return new object[]
+            },
             {
                 new CompiledQuery("a statement", null),
                 new CompiledQuery("a statement", null),
                 true,
                 "the current instance is compared to another instance with same statement and variables"
-            };
-
-            yield return new object[]
+            },
             {
                 new CompiledQuery("a statement", new []{
                     new Variable("p0", VariableType.String, "Cape"),
@@ -41,9 +34,7 @@ public class CompiledQueryTests(ITestOutputHelper outputHelper)
                 }),
                 true,
                 "the current instance is compared to another instance with same statement and variables are not in the same order"
-            };
-
-            yield return new object[]
+            },
             {
                 new CompiledQuery("a statement", new []{
                     new Variable("p0", VariableType.String, "Cape"),
@@ -55,9 +46,8 @@ public class CompiledQueryTests(ITestOutputHelper outputHelper)
                 }),
                 true,
                 "the current instance is compared to another instance with same statement and variables are not in the same order"
-            };
-        }
-    }
+            }
+        };
 
     [Theory]
     [MemberData(nameof(EqualsCases))]

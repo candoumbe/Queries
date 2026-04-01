@@ -2,7 +2,6 @@
 using Queries.Core.Builders;
 using Queries.Core.Parts.Columns;
 using System;
-using System.Collections.Generic;
 using Xunit;
 using Xunit.Abstractions;
 using Xunit.Categories;
@@ -32,16 +31,14 @@ public class UpdateFieldValueTests(ITestOutputHelper outputHelper) : IDisposable
 
 
 
-    public static IEnumerable<object[]> EqualsCases
-    {
-        get
+    public static TheoryData<UpdateFieldValue, object, bool, string> EqualsCases
+        => new()
         {
-            yield return new object[] { "firstname".Field().UpdateValueTo("Bruce"), null, false, "comparing with a null instance" };
-            yield return new object[] { "firstname".Field().UpdateValueTo("Bruce"), "firstname".Field().UpdateValueTo("Bruce"), true, "comparing two instances with same fieldname" };
-            yield return new object[] { "firstname".Field().UpdateValueTo("Bruce"), "Firstname".Field().UpdateValueTo("Bruce"), false, "comparing two instances with same fieldname but different casing" };
-            yield return new object[] { "firstname".Field().UpdateValueTo("Bruce"), Select(1.Literal()), false, "comparing two different types of query" };
-        }
-    }
+            { "firstname".Field().UpdateValueTo("Bruce"), null, false, "comparing with a null instance" },
+            { "firstname".Field().UpdateValueTo("Bruce"), "firstname".Field().UpdateValueTo("Bruce"), true, "comparing two instances with same fieldname" },
+            { "firstname".Field().UpdateValueTo("Bruce"), "Firstname".Field().UpdateValueTo("Bruce"), false, "comparing two instances with same fieldname but different casing" },
+            { "firstname".Field().UpdateValueTo("Bruce"), Select(1.Literal()), false, "comparing two different types of query" }
+        };
 
 
     [Theory]
