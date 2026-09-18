@@ -3,16 +3,22 @@
   "name": "Queries",
   "image": "mcr.microsoft.com/devcontainers/dotnet:9.0",
    "features": {
-    "ghcr.io/devcontainers-extra/features/gh-cli:1": {},
-    "ghcr.io/devcontainers/features/git:1": {},
-    "ghcr.io/devcontainers/features/copilot-cli": {
-        "version": "latest"
+    "ghcr.io/devcontainers/features/node:2.1.0": {
+      "version": "24"
     },
+    "ghcr.io/devcontainers-extra/features/gh-cli:1": {},
+    "ghcr.io/devcontainers/features/git:1.3.8": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/devcontainers/features/copilot-cli:1.1.3": {},
     "ghcr.io/devcontainers/features/dotnet:2": {
       "tabCompletions": true,
       "version": "8.0",
-      "additionalVersions": "9.0,10.0"
-    }
+      "additionalVersions": "9.0, 10.0"
+    },
+    "ghcr.io/nils-geistmann/devcontainers-features/zsh": {
+      "plugins": "git npm gh docker"
+    },
+    "ghcr.io/devcontainers-extra/features/ripgrep": {}
   },
   "customizations": {
     "vscode": {
@@ -21,18 +27,29 @@
         "ms-dotnettools.csdevkit",
         "esbenp.prettier-vscode",
         "GitHub.copilot",
-        "EditorConfig.EditorConfig"
+        "EditorConfig.EditorConfig",
+        "github.vscode-github-actions",
+        "mhutchie.git-graph",
+        "zaaack.markdown-editor",
+        "github.vscode-github-actions"
       ],
     "settings": {
-        "dotnet.defaultSolution": "Queries.sln"
+        "dotnet.defaultSolution": "Queries.sln",
+        "chat.tools.compressOutput.enabled": true,
+        "chat.tools.riskAssessment.enabled": true,
+        "chat.permissions.default": "autoApprove"
       }
     }
+  },
+  "containerEnv": {
+    "TESTCONTAINERS_RYUK_CONTAINER_PRIVILEGED": "false"
   },
   "onCreateCommand": "./.devcontainer/scripts/on-create.sh",
   "postCreateCommand": "./.devcontainer/scripts/post-create.sh",
   "postStartCommand": "./.devcontainer/scripts/post-start.sh",
   "runArgs": [
+    "--privileged",
     "--env-file",
-    "./.devcontainer/.env"
+    "${localWorkspaceFolder}/.devcontainer/.env"
   ]
 }
