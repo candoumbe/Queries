@@ -27,6 +27,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed direct dependency to `xunit` NuGet package in favor of transitive dependency brought by `FsCheck.Xunit`
 - Replaced `Codecov.Tool` with `CodecovUploader` NuGet package
 - Implemented central package management
+- Aligned xUnit test dependencies with their declared package constraints
+- Updated SQL Server and PostgreSQL integration fixtures for the current Testcontainers configuration
+- Improved test naming and structure for migration and query rendering tests
+- Standardized repository coding style and Git configuration
+- Added and refined development container tooling
 - Initialized dev container for development
 
 ### 🖹 Documentation
