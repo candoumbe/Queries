@@ -15,8 +15,7 @@ public sealed class MsSqlDatabaseFixture : IAsyncLifetime
 	public MsSqlDatabaseFixture()
 	{
 		_password = new Faker().Internet.Password();
-		DatabaseContainer = new MsSqlBuilder()
-			.WithImage("mcr.microsoft.com/mssql/server:2022")
+		DatabaseContainer = new MsSqlBuilder("mcr.microsoft.com/mssql/server:2022")
 			.WithEnvironment("ACCEPT_EULA", "Y")
 			.WithPassword(_password)
 			.Build();
