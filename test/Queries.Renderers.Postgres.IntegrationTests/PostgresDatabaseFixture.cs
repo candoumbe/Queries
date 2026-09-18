@@ -12,7 +12,7 @@ public sealed class PostgresDatabaseFixture : IAsyncLifetime
 	/// <summary>
 	/// The underlying database container
 	/// </summary>
-	public PostgreSqlContainer DatabaseContainer { get; } = new PostgreSqlBuilder().WithImage("postgres:16").Build();
+	public PostgreSqlContainer DatabaseContainer { get; } = new PostgreSqlBuilder("postgres:16").Build();
 
 	/// <inheritdoc />
 	public async Task InitializeAsync() => await DatabaseContainer.StartAsync().ConfigureAwait(false);
