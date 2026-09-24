@@ -20,6 +20,8 @@ using static Queries.Core.Builders.Fluent.QueryBuilder;
 using static Queries.Core.Parts.Clauses.ClauseOperator;
 using static Queries.Core.Parts.Columns.SelectColumn;
 using static Queries.Renderers.Postgres.Builders.Fluent.ReturnBuilder;
+using NaughtyStrings;
+using System.Text.Json;
 
 
 namespace Queries.Renderers.Postgres.Tests;
@@ -231,7 +233,13 @@ public class PostgresRendererTest(ITestOutputHelper outputHelper)
                     .Where("settings".Field().Json("theme"), EqualTo, "dark")
                     .Build(),
                 new PostgresRendererSettings{ PrettyPrint = false},
-                @"SELECT * FROM ""members"" WHERE (""settings"" ->> 'theme' = 'dark')"
+                $"DO $${Environment.NewLine}" +
+                $"BEGIN{Environment.NewLine}" +
+                    $"DECLARE{Environment.NewLine}" +
+                    $"p0 text := 'dark';{Environment.NewLine}" +
+                    $@"SELECT * FROM ""members"" WHERE (""settings"" -> 'theme' = p0);{Environment.NewLine}" +
+                $"END{Environment.NewLine}" +
+                "$$;"
             },
             {
                 Select("*")
@@ -239,7 +247,13 @@ public class PostgresRendererTest(ITestOutputHelper outputHelper)
                     .Where("dark".Literal(), EqualTo, "settings".Field().Json("theme"))
                     .Build(),
                 new PostgresRendererSettings{ PrettyPrint = false},
-                @"SELECT * FROM ""members"" WHERE ('dark' = ""settings"" ->> 'theme')"
+                $"DO $${Environment.NewLine}" +
+                $"BEGIN{Environment.NewLine}" +
+                    $"DECLARE{Environment.NewLine}" +
+                    $"p0 text := 'dark';{Environment.NewLine}" +
+                    $@"SELECT * FROM ""members"" WHERE (p0 = ""settings"" -> 'theme');{Environment.NewLine}" +
+                $"END{Environment.NewLine}" +
+                "$$;"
             },
             {
                 Select("*")
@@ -247,7 +261,13 @@ public class PostgresRendererTest(ITestOutputHelper outputHelper)
                     .Where("settings".Field().Json("theme"), EqualTo, "dark")
                     .Build(),
                 new PostgresRendererSettings{ PrettyPrint = false},
-                @"SELECT * FROM ""members"" WHERE (""settings"" ->> 'theme' = 'dark')"
+                $"DO $${Environment.NewLine}" +
+                $"BEGIN{Environment.NewLine}" +
+                    $"DECLARE{Environment.NewLine}" +
+                    $"p0 text := 'dark';{Environment.NewLine}" +
+                    $@"SELECT * FROM ""members"" WHERE (""settings"" -> 'theme' = p0);{Environment.NewLine}" +
+                $"END{Environment.NewLine}" +
+                "$$;"
             },
             {
                 Select("*")
@@ -270,66 +290,17 @@ public class PostgresRendererTest(ITestOutputHelper outputHelper)
                     })
                     .Build(),
                 new PostgresRendererSettings{ PrettyPrint = false},
-                @"SELECT * FROM ""members"" WHERE ((""settings"" ->> 'theme' = 'dark') AND (""name"" = 'super-user'))"
+                $"DO $${Environment.NewLine}" +
+                $"BEGIN{Environment.NewLine}" +
+                    $"DECLARE{Environment.NewLine}" +
+                    $"p0 text := 'dark';{Environment.NewLine}" +
+                    $"p1 text := 'super-user';{Environment.NewLine}" +
+                    $@"SELECT * FROM ""members"" WHERE ((""settings"" -> 'theme' = p0) AND (""name"" = p1));{Environment.NewLine}" +
+                $"END{Environment.NewLine}" +
+                "$$;"
             }
        };
 
-    public static TheoryData<BatchQuery, PostgresRendererSettings, string> BatchTestCases
-        => new()
-        {
-            {
-                new BatchQuery(
-                    Delete("members").Where("firstname".Field().IsNull()),
-                    Select("*").From("members")
-                ),
-                new PostgresRendererSettings{ PrettyPrint = false },
-                $@"DELETE FROM ""members"" WHERE (""firstname"" IS NULL);SELECT * FROM ""members"";"
-            },
-            {
-                new BatchQuery(
-                    InsertInto("members").Values(
-                        "Firstname".InsertValue("Bruce".Literal()),
-                        "Lastname".InsertValue("Wayne".Literal())
-                    ),
-                    Return()
-                ),
-                new PostgresRendererSettings{ PrettyPrint = false },
-                @"INSERT INTO ""members"" (""Firstname"", ""Lastname"") VALUES ('Bruce', 'Wayne');RETURN ;"
-            },
-            {
-                new BatchQuery(
-                    InsertInto("members").Values(
-                        "Firstname".InsertValue("Bruce".Literal()),
-                        "Lastname".InsertValue("Wayne".Literal())
-                    ),
-                    Return(0.Literal())
-                ),
-                new PostgresRendererSettings{ PrettyPrint = false },
-                @"INSERT INTO ""members"" (""Firstname"", ""Lastname"") VALUES ('Bruce', 'Wayne');RETURN 0;"
-            },
-            {
-                new BatchQuery(
-                    InsertInto("members").Values(
-                        "Firstname".InsertValue("Bruce".Literal()),
-                        "Lastname".InsertValue("Wayne".Literal())
-                    ),
-                    Return("Id".Field())
-                ),
-                new PostgresRendererSettings{ PrettyPrint = false },
-                @"INSERT INTO ""members"" (""Firstname"", ""Lastname"") VALUES ('Bruce', 'Wayne');RETURN ""Id"";"
-            },
-            {
-                new BatchQuery(
-                    InsertInto("members").Values(
-                        "Firstname".InsertValue("Bruce".Literal()),
-                        "Lastname".InsertValue("Wayne".Literal())
-                    ),
-                    Return(Select(Max("Age".Field())).From("members").Build())
-                ),
-                new PostgresRendererSettings{ PrettyPrint = false },
-                @"INSERT INTO ""members"" (""Firstname"", ""Lastname"") VALUES ('Bruce', 'Wayne');RETURN SELECT MAX(""Age"") FROM ""members"";"
-            }
-        };
 
     [Theory]
     [MemberData(nameof(SelectTestCases))]
@@ -344,8 +315,10 @@ public class PostgresRendererTest(ITestOutputHelper outputHelper)
                     .From("members")
                     .Where("Firstname".Field(), In, new StringValues("Bruce", "Bane")),
                 new PostgresRendererSettings{ Parametrization = ParametrizationSettings.SkipVariableDeclaration },
-                new CompiledQuery(@"SELECT * FROM ""members"" WHERE (""Firstname"" IN (@p0, @p1))",
-                    [ new Variable("p0", VariableType.String, "Bruce"),
+                new CompiledQuery(
+                    @"SELECT * FROM ""members"" WHERE (""Firstname"" IN (p0, p1))",
+                    [
+                        new Variable("p0", VariableType.String, "Bruce"),
                         new Variable("p1", VariableType.String, "Bane")
                     ]
                 ),
@@ -359,10 +332,10 @@ public class PostgresRendererTest(ITestOutputHelper outputHelper)
                     Select("Fullname").From("SuperHero").Where("Nickname".Field(), Like, "B%"))
                 ),
                 new PostgresRendererSettings{ PrettyPrint = false, Parametrization = ParametrizationSettings.SkipVariableDeclaration },
-                new( "SELECT * FROM (" +
-                        @"SELECT ""Fullname"" FROM ""People"" WHERE (""Firstname"" LIKE @p0) " +
+                new("SELECT * FROM (" +
+                        @"SELECT ""Fullname"" FROM ""People"" WHERE (""Firstname"" LIKE p0) " +
                         "UNION " +
-                        @"SELECT ""Fullname"" FROM ""SuperHero"" WHERE (""Nickname"" LIKE @p0)" +
+                        @"SELECT ""Fullname"" FROM ""SuperHero"" WHERE (""Nickname"" LIKE p0)" +
                     ")",
                     [new Variable("p0", VariableType.String, "B%")]
                 ),
@@ -373,7 +346,7 @@ public class PostgresRendererTest(ITestOutputHelper outputHelper)
                     .From("documents")
                     .Where(new WhereClause("userAccount".Field(), Like, "vp%")),
                 new PostgresRendererSettings{ PrettyPrint = false, Parametrization = ParametrizationSettings.SkipVariableDeclaration },
-                new(@"SELECT ""id"", ""file_id"" FROM ""documents"" WHERE (""userAccount"" LIKE @p0)",
+                new(@"SELECT ""id"", ""file_id"" FROM ""documents"" WHERE (""userAccount"" LIKE p0)",
                     [new Variable("p0", VariableType.String, "vp%") ]),
                 "The select statement as two variables with SAME value"
             },
@@ -394,7 +367,7 @@ public class PostgresRendererTest(ITestOutputHelper outputHelper)
                 new PostgresRendererSettings{ PrettyPrint = false, Parametrization = ParametrizationSettings.SkipVariableDeclaration, FieldnameCasingStrategy = FieldnameCasingStrategy.SnakeCase },
                 new CompiledQuery(
                     @"SELECT ""id"", ""file_id"", COUNT(*) OVER() AS ""fullcount"" FROM ""documents"" " +
-                             @"WHERE ((""user_account"" LIKE @p0) AND (""created_on"" = @p1)) " +
+                             @"WHERE ((""user_account"" LIKE p0) AND (""created_on"" = p1)) " +
                              @"ORDER BY ""timestamp"" DESC " +
                              "LIMIT 3 OFFSET 3",
                     [
@@ -419,7 +392,8 @@ public class PostgresRendererTest(ITestOutputHelper outputHelper)
         outputHelper.WriteLine($"{nameof(actual)} : '{actual}'");
 
         // Assert
-        actual.Should().Be(expected, reason);
+        actual.Variables.Should().BeEquivalentTo(expected.Variables, reason);
+        actual.Statement.Should().BeEquivalentTo(expected.Statement, reason);
     }
 
     public static TheoryData<IBuild<SelectQuery>, FieldnameCasingStrategy, string> FieldnameCasingStrategyCases
@@ -585,6 +559,64 @@ public class PostgresRendererTest(ITestOutputHelper outputHelper)
     public void InsertIntoTest(InsertIntoQuery query, PostgresRendererSettings settings, string expectedString)
         => IsQueryOk(query, settings, expectedString);
 
+
+        public static TheoryData<BatchQuery, PostgresRendererSettings, string> BatchTestCases
+        => new()
+        {
+            {
+                new BatchQuery(
+                    Delete("members").Where("firstname".Field().IsNull()),
+                    Select("*").From("members")
+                ),
+                new PostgresRendererSettings{ PrettyPrint = false },
+                @"DELETE FROM ""members"" WHERE (""firstname"" IS NULL);SELECT * FROM ""members"";"
+            },
+            {
+                new BatchQuery(
+                    InsertInto("members").Values(
+                        "Firstname".InsertValue("Bruce".Literal()),
+                        "Lastname".InsertValue("Wayne".Literal())
+                    ),
+                    Return()
+                ),
+                new PostgresRendererSettings{ PrettyPrint = false },
+                @"INSERT INTO ""members"" (""Firstname"", ""Lastname"") VALUES ('Bruce', 'Wayne');RETURN ;"
+            },
+            {
+                new BatchQuery(
+                    InsertInto("members").Values(
+                        "Firstname".InsertValue("Bruce".Literal()),
+                        "Lastname".InsertValue("Wayne".Literal())
+                    ),
+                    Return(0.Literal())
+                ),
+                new PostgresRendererSettings{ PrettyPrint = false },
+                @"INSERT INTO ""members"" (""Firstname"", ""Lastname"") VALUES ('Bruce', 'Wayne');RETURN 0;"
+            },
+            {
+                new BatchQuery(
+                    InsertInto("members").Values(
+                        "Firstname".InsertValue("Bruce".Literal()),
+                        "Lastname".InsertValue("Wayne".Literal())
+                    ),
+                    Return("Id".Field())
+                ),
+                new PostgresRendererSettings{ PrettyPrint = false },
+                @"INSERT INTO ""members"" (""Firstname"", ""Lastname"") VALUES ('Bruce', 'Wayne');RETURN ""Id"";"
+            },
+            {
+                new BatchQuery(
+                    InsertInto("members").Values(
+                        "Firstname".InsertValue("Bruce".Literal()),
+                        "Lastname".InsertValue("Wayne".Literal())
+                    ),
+                    Return(Select(Max("Age".Field())).From("members").Build())
+                ),
+                new PostgresRendererSettings{ PrettyPrint = false },
+                @"INSERT INTO ""members"" (""Firstname"", ""Lastname"") VALUES ('Bruce', 'Wayne');RETURN SELECT MAX(""Age"") FROM ""members"";"
+            }
+        };
+
     [Theory]
     [MemberData(nameof(BatchTestCases))]
     public void BatchQueryTest(BatchQuery query, PostgresRendererSettings settings, string expectedString)
@@ -635,6 +667,88 @@ public class PostgresRendererTest(ITestOutputHelper outputHelper)
     private void IsQueryOk(IQuery query, PostgresRendererSettings settings, string expectedString)
     {
         outputHelper.WriteLine($"Expected string : {expectedString}");
-        query.ForPostgres(settings).Should().Be(expectedString);
+        outputHelper.WriteLine($"Settings is {JsonSerializer.Serialize(settings)}");
+
+        // Act
+        string actual = query.ForPostgres(settings);
+
+        // Assert
+        actual.Should().Be(expectedString);
     }
+
+    public static TheoryData<IQuery, PostgresRendererSettings, string> SqlInjectionAttackCases
+    {
+        get
+        {
+            TheoryData<IQuery, PostgresRendererSettings, string> cases = new()
+            {
+                {
+                    Select("id".Field())
+                        .From("members")
+                        .Where("username".Field(), EqualTo, "Dupont';--"),
+                    new PostgresRendererSettings(),
+                    $"DO $${Environment.NewLine}" +
+                    $"BEGIN{Environment.NewLine}" +
+                        $"DECLARE{Environment.NewLine}" +
+                        $"p0 text := 'Dupont'';--';{Environment.NewLine}" +
+                        $@"SELECT ""id"" FROM ""members"" WHERE (""username"" = p0);{Environment.NewLine}" +
+                    $"END{Environment.NewLine}" +
+                    "$$;"
+                },
+                {
+                    Select("id".Field())
+                        .From("members")
+                        .Where("username".Field(), Like, "Du[pont';--"),
+                    new PostgresRendererSettings(),
+
+                    $"DO $${Environment.NewLine}" +
+                    $"BEGIN{Environment.NewLine}" +
+                        $@"DECLARE{Environment.NewLine}"+
+                        $"p0 text := 'Du[pont'';--';{Environment.NewLine}" +
+                        $@"SELECT ""id"" FROM ""members"" WHERE (""username"" LIKE p0);{Environment.NewLine}" +
+                    $"END{Environment.NewLine}" +
+                    "$$;"
+                },
+                {
+                    Select("id".Field())
+                        .From("members")
+                        .Where("username".Field(), EqualTo, "Du[pont';--"),
+                    new PostgresRendererSettings(),
+
+                    $"DO $${Environment.NewLine}" +
+                    $"BEGIN{Environment.NewLine}" +
+                        $"DECLARE{Environment.NewLine}" +
+                        $"p0 text := 'Du[pont'';--';{Environment.NewLine}" +
+                        $@"SELECT ""id"" FROM ""members"" WHERE (""username"" = p0);{Environment.NewLine}" +
+                    $"END{Environment.NewLine}" +
+                    "$$;"
+                }
+            };
+
+            foreach (string naughtyString in TheNaughtyStrings.SQLInjection)
+            {
+                string escapedString = naughtyString.Replace("'", "''");
+                cases.Add(
+                    Select("*").From("superheroes")
+                        .Where("name".Field(), EqualTo, naughtyString),
+                    new PostgresRendererSettings (),
+                    $"DO $${Environment.NewLine}" +
+                    $"BEGIN{Environment.NewLine}" +
+                        $"DECLARE{Environment.NewLine}" +
+                        $"p0 text := '{escapedString}';{Environment.NewLine}" +
+                        $@"SELECT * FROM ""superheroes"" WHERE (""name"" = p0);{Environment.NewLine}" +
+                    $"END{Environment.NewLine}" +
+                    "$$;"
+                );
+            }
+
+            return cases;
+        }
+    }
+
+    [Theory]
+    [MemberData(nameof(SqlInjectionAttackCases))]
+    public void PreventSqlInjectionAttack(IQuery query, PostgresRendererSettings settings, string expectedString) => IsQueryOk(query, settings, expectedString);
+
+
 }
