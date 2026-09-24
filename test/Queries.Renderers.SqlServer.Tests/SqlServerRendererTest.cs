@@ -41,14 +41,16 @@ public class SqlServerRendererTest(ITestOutputHelper outputHelper)
     {
         get
         {
-            TheoryData<IPaginatedQuery<SelectQuery>, SqlServerRendererSettings, string> cases = new();
-            cases.Add(
-                Select("col1")
+            TheoryData<IPaginatedQuery<SelectQuery>, SqlServerRendererSettings, string> cases = new()
+            {
+                {
+                    Select("col1")
                     .From("table")
-                    .Paginate(pageIndex: 1, pageSize:10),
-                new SqlServerRendererSettings(),
-                "SELECT TOP 10 [col1] FROM [table]"
-            );
+                    .Paginate(pageIndex: 1, pageSize: 10),
+                    new SqlServerRendererSettings(),
+                    "SELECT TOP 10 [col1] FROM [table]"
+                }
+            };
             {
                 (int pageIndex, int pageSize) pagination = (pageIndex: 2, pageSize: 10);
                 cases.Add(

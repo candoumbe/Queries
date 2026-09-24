@@ -13,15 +13,12 @@ namespace Queries.Renderers.SqlServer;
 /// <summary>
 /// <see cref="IQueryRenderer"/> implementation for SQL Server
 /// </summary>
-public class SqlServerRenderer : QueryRendererBase
+/// <remarks>
+/// Builds a new <see cref="SqlServerRenderer"/> instance.
+/// </remarks>
+/// <param name="settings">defines how to render queries.</param>
+public class SqlServerRenderer(SqlServerRendererSettings settings = null) : QueryRendererBase(settings ?? new SqlServerRendererSettings { DateFormatString = "yyyy-MM-dd", PrettyPrint = true })
 {
-    /// <summary>
-    /// Builds a new <see cref="SqlServerRenderer"/> instance.
-    /// </summary>
-    /// <param name="settings">defines how to render queries.</param>
-    public SqlServerRenderer(SqlServerRendererSettings settings = null)
-        : base(settings ?? new SqlServerRendererSettings { DateFormatString = "yyyy-MM-dd", PrettyPrint = true })
-    { }
 
     ///<inheritdoc/>
     protected override string BeginEscapeWordString => "[";

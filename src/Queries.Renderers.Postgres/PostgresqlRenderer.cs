@@ -10,6 +10,13 @@ using Queries.Renderers.Postgres.Parts.Columns;
 
 using System.Linq;
 using System.Text;
+using Queries.Core.Builders;
+using System.Collections.Generic;
+
+
+#if DEBUG
+using System.Diagnostics;
+#endif
 
 using static Queries.Core.Builders.Fluent.QueryBuilder;
 
@@ -64,21 +71,130 @@ public class PostgresqlRenderer : QueryRendererBase
 
     ///<inheritdoc/>
     public override string Render(IQuery query)
-        => query is ReturnQuery returnQuery
-            ? returnQuery.Return.Match(
-                columnBase =>
-                {
-                    return columnBase switch
+    {
+        if (query is ReturnQuery returnQuery)
+        {
+            return returnQuery.Return.Match(
+                    columnBase =>
                     {
-                        FieldColumn field => $"RETURN {RenderColumn(field, renderAlias: false)}",
-                        Literal literal => $"RETURN {Render(Select(literal)).Substring("SELECT ".Length)}",
-                        null => "RETURN",
-                        _ => throw new InvalidQueryException(),
-                    };
-                },
-                select => $"RETURN {base.Render(select)}"
-            )
-            : base.Render(query);
+                        return columnBase switch
+                        {
+                            FieldColumn field => $"RETURN {RenderColumn(field, renderAlias: false)}",
+                            Literal literal => $"RETURN {Render(Select(literal))["SELECT ".Length..]}",
+                            null => "RETURN",
+                            _ => throw new InvalidQueryException(),
+                        };
+                    },
+                    select => $"RETURN {base.Render(select)}"
+                );
+        }
+        else
+        {
+            string result = string.Empty;
+            CollectVariableVisitor visitor = new();
+            switch (query)
+            {
+                case SelectQuery sq:
+                    if (Settings.Parametrization is not ParametrizationSettings.None)
+                    {
+                        visitor.Visit(sq);
+                    }
+                    result = Render(sq);
+                    break;
+                case SelectQueryBase selectQueryBase:
+                    result = Render(selectQueryBase);
+                    break;
+                case CreateViewQuery createViewQuery:
+                    if (Settings.Parametrization is not ParametrizationSettings.None)
+                    {
+                        visitor.Visit(createViewQuery.SelectQuery);
+                    }
+                    result = Render(createViewQuery);
+                    break;
+                case DeleteQuery deleteQuery:
+                    if (Settings.Parametrization is not ParametrizationSettings.None)
+                    {
+                        visitor.Visit(deleteQuery);
+                    }
+                    result = Render(deleteQuery);
+                    break;
+                case UpdateQuery updateQuery:
+                    result = Render(updateQuery);
+                    break;
+                case TruncateQuery truncateQuery:
+                    result = Render(truncateQuery);
+                    break;
+                case InsertIntoQuery insertIntoQuery:
+                    result = Render(insertIntoQuery);
+                    break;
+                case BatchQuery batchQuery:
+                    result = Render(batchQuery);
+                    break;
+                case NativeQuery nativeQuery:
+                    result = nativeQuery.Statement;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(query), "Unknown type of query");
+            }
+            int variableCount = visitor.Variables.Count;
+            StringBuilder sbParameters = new(variableCount * 100);
+
+#if DEBUG
+            if (variableCount > 0)
+            {
+                Debug.Assert(visitor.Variables.All(x => x.Value != null), $"{nameof(visitor)}.{nameof(visitor.Variables)} must not contains variables with null value");
+            }
+
+#endif
+            if (Settings.Parametrization is ParametrizationSettings.Default && variableCount > 0)
+            {
+
+                sbParameters.AppendLine("DO $$")
+                        .AppendLine("BEGIN")
+                        .AppendLine("DECLARE");
+
+
+                foreach (Variable variable in visitor.Variables)
+                {
+                    sbParameters.Append(variable.Name).Append(' ');
+                    switch (variable.Type)
+                    {
+                        case VariableType.Numeric:
+                            sbParameters = sbParameters.Append("NUMERIC := ").Append(variable.Value).AppendLine(BatchStatementSeparator);
+                            break;
+                        case VariableType.String:
+                            sbParameters = sbParameters.Append("text := '").Append(EscapeString(variable.Value.ToString())).Append('\'')
+                                .AppendLine(BatchStatementSeparator);
+                            break;
+                        case VariableType.Boolean:
+                            sbParameters = sbParameters.Append("BIT := ")
+                                .Append(true.Equals(variable.Value) ? '1' : '0')
+                                .AppendLine(BatchStatementSeparator);
+                            break;
+                        case VariableType.Date:
+                            sbParameters = sbParameters.Append("DATETIME := '").Append(EscapeString((variable.Value as DateTime?)?.ToString(Settings.DateFormatString)))
+                                .AppendLine(BatchStatementSeparator);
+                            break;
+                        default:
+                            throw new NotSupportedException($"Unexpected {variable.Type} variable type");
+                    }
+
+
+                }
+                if (sbParameters.Length > 0)
+                {
+                    sbParameters.Append(result).AppendLine(BatchStatementSeparator);
+                    sbParameters.AppendLine("END")
+                                .Append("$$").Append(BatchStatementSeparator);
+                }
+
+                result = sbParameters.ToString();
+            }
+
+            return result;
+        }
+    }
+
 
     ///<inheritdoc/>
     protected override string RenderWhere(IWhereClause clause, int blockLevel = 0)
@@ -88,14 +204,11 @@ public class PostgresqlRenderer : QueryRendererBase
         switch (clause)
         {
             case WhereClause { Column: JsonFieldColumn json } where:
-                switch (where.Operator)
+                result = where.Operator switch
                 {
-                    case ClauseOperator.EqualTo:
-                        result = $"({RenderJsonColumn(new JsonFieldColumn(json.Column, json.Path, renderAsString: where.Constraint is StringColumn), renderAlias: false)} = {RenderColumn(where.Constraint, renderAlias: false)})";
-                        break;
-                    default:
-                        throw new NotSupportedException($"Unsupported '{where.Operator}' when rendering WHERE for '{nameof(JsonFieldColumn)}'");
-                }
+                    ClauseOperator.EqualTo => $"({RenderJsonColumn(new JsonFieldColumn(json.Column, json.Path, renderAsString: where.Constraint is StringColumn), renderAlias: false)} = {RenderColumn(where.Constraint, renderAlias: false)})",
+                    _ => throw new NotSupportedException($"Unsupported '{where.Operator}' when rendering WHERE for '{nameof(JsonFieldColumn)}'"),
+                };
                 break;
             case WhereClause { Constraint: JsonFieldColumn jsonConstraint } where:
                 switch (where.Operator)
@@ -146,7 +259,7 @@ public class PostgresqlRenderer : QueryRendererBase
     protected override string BeginEscapeWordString => @"""";
 
     ///<inheritdoc/>
-    protected override string RenderVariable(Variable variable, bool renderAlias) => $"@{variable.Name}";
+    protected override string RenderVariable(Variable variable, bool renderAlias) => variable.Name;
 
     ///<inheritdoc/>
     protected override string RenderSubstringColumn(SubstringFunction substringColumn, bool renderAlias) => $"SUBSTRING({RenderColumn(substringColumn.Column, false)} FROM {substringColumn.Start}{(substringColumn.Length.HasValue ? $" FOR {substringColumn.Length.Value}" : string.Empty)})";
