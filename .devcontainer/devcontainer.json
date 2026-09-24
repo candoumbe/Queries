@@ -18,7 +18,8 @@
     "ghcr.io/nils-geistmann/devcontainers-features/zsh": {
       "plugins": "git npm gh docker"
     },
-    "ghcr.io/devcontainers-extra/features/ripgrep": {}
+    "ghcr.io/devcontainers-extra/features/ripgrep": {},
+    "ghcr.io/devcontainers/features/docker-in-docker": {}
   },
   "customizations": {
     "vscode": {
