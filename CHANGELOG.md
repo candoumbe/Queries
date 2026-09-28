@@ -10,12 +10,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added `CompileForPostgres`, `CompileForSqlServer`, `CompileForMySql` extension methods on [IQuery](./src/Queries.Core/IQuery.cs) type.
 
-### �️ Fixes
+### 🛠️ Fixes
 
-- Fixed PostgreSQL parameter collection for `SELECT INTO` and other parameterized query paths so generated variables remain valid across `WHERE`, `CASE`, and literal extraction scenarios.
-- Corrected `CollectVariableVisitor` handling for date and nested query values used during PostgreSQL rendering.
+- Fixed parameter collection for parameterized queries, including `WHERE`, `CASE`, literal, date, and nested-query values.
+- Fixed PostgreSQL rendering of parameterized queries, including `SELECT INTO` and batched statements, by emitting valid `DO $$ ... DECLARE ... BEGIN ... END $$;` blocks.
 
-### �💥 Breaking changes
+### 💥 Breaking changes
 
 - Changed the output of `UniqueIdentifierValue` column when rendering Postgres queries from `uuid_generate_v4()` to `gen_random_uuid()`
 
