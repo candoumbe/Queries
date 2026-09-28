@@ -27,7 +27,7 @@ public class WhereClause : IWhereClause, IClause<IColumn>, IEquatable<WhereClaus
     /// <summary>
     /// The constraint of the clause
     /// </summary>
-    public IColumn Constraint { get; internal set; }
+    public IColumn Constraint { get; set; }
 
     /// <summary>
     /// Builds a new <see cref="WhereClause"/> instance.

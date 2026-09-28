@@ -7,11 +7,13 @@ using AwesomeAssertions;
 using Npgsql;
 using Queries.Core.Builders;
 using Queries.Core.Parts.Columns;
+using Xunit.Abstractions;
 using static Queries.Core.Builders.Fluent.QueryBuilder;
+using static Queries.Core.Parts.Clauses.ClauseOperator;
 
 namespace Queries.Renderers.Postgres.IntegrationTests;
 
-public class SelectQueryShould(PostgresDatabaseFixture fixture) : IAsyncLifetime, IClassFixture<PostgresDatabaseFixture>
+public class SelectQueryShould(PostgresDatabaseFixture fixture, ITestOutputHelper outputHelper) : IAsyncLifetime, IClassFixture<PostgresDatabaseFixture>
 {
     private NpgsqlConnection _connection;
     private const string TableName = "heroes";
@@ -30,15 +32,18 @@ public class SelectQueryShould(PostgresDatabaseFixture fixture) : IAsyncLifetime
     {
         if (tableNames.Count > 0)
         {
-            BatchQuery query = new BatchQuery([.. tableNames.Select(table => new NativeQuery($"DROP TABLE IF EXISTS {table};"))]);
-            await using DbCommand command = new NpgsqlCommand(query.ForPostgres(), _connection);
+            string localConnectionString = fixture.DatabaseContainer.GetConnectionString();
+            NpgsqlConnection localConnection = new (localConnectionString);
+            await localConnection.OpenAsync();
+            BatchQuery query = new ([.. tableNames.Select(table => new NativeQuery($"DROP TABLE IF EXISTS {table};"))]);
+            await using DbCommand command = new NpgsqlCommand(query.ForPostgres(), localConnection);
             await command.ExecuteNonQueryAsync();
         }
 
         await _connection.CloseAsync();
     }
 
-    public static TheoryData<string> EscapeNaughtyStringsCases => new(NaughtyStrings.TheNaughtyStrings.All);
+    public static TheoryData<string> EscapeNaughtyStringsCases => [.. NaughtyStrings.TheNaughtyStrings.All];
 
     [Theory]
     [MemberData(nameof(EscapeNaughtyStringsCases))]
@@ -60,6 +65,32 @@ public class SelectQueryShould(PostgresDatabaseFixture fixture) : IAsyncLifetime
         reader.HasRows.Should().BeTrue();
         ( await reader.ReadAsync() ).Should().BeTrue();
         reader[0].Should().Be(naughtyString);
+    }
 
+    [Fact]
+    public async Task Be_parametrized_when_it_contains_problematic_values()
+    {
+        // Arrange
+        DbCommand createTableCommand = new NpgsqlCommand(@"CREATE TABLE IF NOT EXISTS ""members"" (""id"" UUID PRIMARY KEY, ""name"" VARCHAR(255), ""powers"" TEXT);", _connection);
+        await createTableCommand.ExecuteNonQueryAsync();
+        tableNames.Add("members");
+
+        SelectQuery query = Select("*")
+                    .From("members")
+                    .Where("invisibility".Literal(), EqualTo, "powers".Field())
+                    .Build();
+
+        string queryAsString = query.ForPostgres().Replace("SELECT", "PERFORM");
+        outputHelper.WriteLine($"Executing query: '{queryAsString}'");
+
+        DbCommand command = new NpgsqlCommand(queryAsString, _connection);
+        DbDataReader reader = null;
+
+        // Act
+        Func<Task> runningQuery = async () => reader = await command.ExecuteReaderAsync();
+
+        // Assert
+        await runningQuery.Should().NotThrowAsync();
+        reader.Should().NotBeNull();
     }
 }
