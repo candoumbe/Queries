@@ -234,9 +234,9 @@ public class PostgresRendererTest(ITestOutputHelper outputHelper)
                     .Build(),
                 new PostgresRendererSettings{ PrettyPrint = false},
                 $"DO $${Environment.NewLine}" +
-                $"BEGIN{Environment.NewLine}" +
                     $"DECLARE{Environment.NewLine}" +
                     $"p0 text := 'dark';{Environment.NewLine}" +
+                $"BEGIN{Environment.NewLine}" +
                     $@"SELECT * FROM ""members"" WHERE (""settings"" -> 'theme' = p0);{Environment.NewLine}" +
                 $"END{Environment.NewLine}" +
                 "$$;"
@@ -248,9 +248,9 @@ public class PostgresRendererTest(ITestOutputHelper outputHelper)
                     .Build(),
                 new PostgresRendererSettings{ PrettyPrint = false},
                 $"DO $${Environment.NewLine}" +
-                $"BEGIN{Environment.NewLine}" +
                     $"DECLARE{Environment.NewLine}" +
                     $"p0 text := 'dark';{Environment.NewLine}" +
+                $"BEGIN{Environment.NewLine}" +
                     $@"SELECT * FROM ""members"" WHERE (p0 = ""settings"" -> 'theme');{Environment.NewLine}" +
                 $"END{Environment.NewLine}" +
                 "$$;"
@@ -262,9 +262,9 @@ public class PostgresRendererTest(ITestOutputHelper outputHelper)
                     .Build(),
                 new PostgresRendererSettings{ PrettyPrint = false},
                 $"DO $${Environment.NewLine}" +
-                $"BEGIN{Environment.NewLine}" +
                     $"DECLARE{Environment.NewLine}" +
                     $"p0 text := 'dark';{Environment.NewLine}" +
+                $"BEGIN{Environment.NewLine}" +
                     $@"SELECT * FROM ""members"" WHERE (""settings"" -> 'theme' = p0);{Environment.NewLine}" +
                 $"END{Environment.NewLine}" +
                 "$$;"
@@ -291,10 +291,10 @@ public class PostgresRendererTest(ITestOutputHelper outputHelper)
                     .Build(),
                 new PostgresRendererSettings{ PrettyPrint = false},
                 $"DO $${Environment.NewLine}" +
-                $"BEGIN{Environment.NewLine}" +
                     $"DECLARE{Environment.NewLine}" +
                     $"p0 text := 'dark';{Environment.NewLine}" +
                     $"p1 text := 'super-user';{Environment.NewLine}" +
+                $"BEGIN{Environment.NewLine}" +
                     $@"SELECT * FROM ""members"" WHERE ((""settings"" -> 'theme' = p0) AND (""name"" = p1));{Environment.NewLine}" +
                 $"END{Environment.NewLine}" +
                 "$$;"
@@ -688,9 +688,9 @@ public class PostgresRendererTest(ITestOutputHelper outputHelper)
                         .Where("username".Field(), EqualTo, "Dupont';--"),
                     new PostgresRendererSettings(),
                     $"DO $${Environment.NewLine}" +
-                    $"BEGIN{Environment.NewLine}" +
                         $"DECLARE{Environment.NewLine}" +
                         $"p0 text := 'Dupont'';--';{Environment.NewLine}" +
+                    $"BEGIN{Environment.NewLine}" +
                         $@"SELECT ""id"" FROM ""members"" WHERE (""username"" = p0);{Environment.NewLine}" +
                     $"END{Environment.NewLine}" +
                     "$$;"
@@ -702,9 +702,9 @@ public class PostgresRendererTest(ITestOutputHelper outputHelper)
                     new PostgresRendererSettings(),
 
                     $"DO $${Environment.NewLine}" +
-                    $"BEGIN{Environment.NewLine}" +
                         $@"DECLARE{Environment.NewLine}"+
                         $"p0 text := 'Du[pont'';--';{Environment.NewLine}" +
+                    $"BEGIN{Environment.NewLine}" +
                         $@"SELECT ""id"" FROM ""members"" WHERE (""username"" LIKE p0);{Environment.NewLine}" +
                     $"END{Environment.NewLine}" +
                     "$$;"
@@ -716,9 +716,9 @@ public class PostgresRendererTest(ITestOutputHelper outputHelper)
                     new PostgresRendererSettings(),
 
                     $"DO $${Environment.NewLine}" +
-                    $"BEGIN{Environment.NewLine}" +
                         $"DECLARE{Environment.NewLine}" +
                         $"p0 text := 'Du[pont'';--';{Environment.NewLine}" +
+                    $"BEGIN{Environment.NewLine}" +
                         $@"SELECT ""id"" FROM ""members"" WHERE (""username"" = p0);{Environment.NewLine}" +
                     $"END{Environment.NewLine}" +
                     "$$;"
@@ -733,9 +733,9 @@ public class PostgresRendererTest(ITestOutputHelper outputHelper)
                         .Where("name".Field(), EqualTo, naughtyString),
                     new PostgresRendererSettings (),
                     $"DO $${Environment.NewLine}" +
-                    $"BEGIN{Environment.NewLine}" +
                         $"DECLARE{Environment.NewLine}" +
                         $"p0 text := '{escapedString}';{Environment.NewLine}" +
+                    $"BEGIN{Environment.NewLine}" +
                         $@"SELECT * FROM ""superheroes"" WHERE (""name"" = p0);{Environment.NewLine}" +
                     $"END{Environment.NewLine}" +
                     "$$;"

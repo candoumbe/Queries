@@ -150,7 +150,6 @@ public class PostgresqlRenderer : QueryRendererBase
             {
 
                 sbParameters.AppendLine("DO $$")
-                        .AppendLine("BEGIN")
                         .AppendLine("DECLARE");
 
 
@@ -183,7 +182,8 @@ public class PostgresqlRenderer : QueryRendererBase
                 }
                 if (sbParameters.Length > 0)
                 {
-                    sbParameters.Append(result).AppendLine(BatchStatementSeparator);
+                    sbParameters.AppendLine("BEGIN")
+                            .Append(result).AppendLine(BatchStatementSeparator);
                     sbParameters.AppendLine("END")
                                 .Append("$$").Append(BatchStatementSeparator);
                 }
