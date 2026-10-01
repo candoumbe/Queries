@@ -93,6 +93,19 @@
 **What:** All exchanges between squad members (agent-to-agent communication, logged decisions, orchestration-log entries, session logs, history entries) must be recorded in English, since this is a public repository.
 **Why:** User directive — extends the 2026-08-14 documentation-language rule to cover all inter-agent communication artifacts, not just repository documentation.
 
+### 2026-09-28T00:00:00Z: CI-as-code migration from Nuke to Fallout — task created (#402)
+**By:** Morpheus (Platform/DevOps), requested by Cyrille NDOUMBE
+**What:** Full inventory of Nuke usage in the repository and creation of GitHub issue [#402](https://github.com/candoumbe/Queries/issues/402) describing the migration to Fallout. No build file was modified.
+
+Key inventory findings:
+- No `PackageReference Include="Nuke.*"` in the repository: the 12 `Nuke.* 9.0.4` packages arrive **transitively** through `Candoumbe.Pipelines 2.0.1`.
+- `Candoumbe.Pipelines` has already migrated: `3.0.0` is the first release based on `Fallout.Common 10.3.49`, and the `3.x` line targets **`net10.0` exclusively**.
+- The repository pins SDK `9.0.317` in `global.json` and the build project targets `net8.0`: the migration therefore forces a .NET 10 SDK jump.
+- Only the `[GitHubActions]` generator is used (3 generated workflows); `build-release.yaml` is a hand-written Azure DevOps pipeline with no Nuke dependency. Fallout dropping multi-provider support ([Fallout#8](https://github.com/Fallout-build/Fallout/issues/8)) therefore has **no impact** here.
+- 16 targets exposed, including `UnitTests` and `IntegrationTests` used daily via `./build.sh unit-tests integration-tests`.
+
+**Why:** NUKE `10.x` is end-of-line; Fallout is the official hard-fork successor. More importantly, the build's main dependency (`Candoumbe.Pipelines`) has already switched — staying on Nuke means freezing the build on `Candoumbe.Pipelines 2.0.1` permanently. The task was produced before any modification so that the `.NET 10` + `Candoumbe.Pipelines 3.x` jump is decided and planned explicitly rather than incurred accidentally through a `dotnet tool update`.
+
 ## Governance
 
 - All meaningful changes require team consensus

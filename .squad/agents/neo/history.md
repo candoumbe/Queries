@@ -10,3 +10,4 @@
 ## Learnings
 
 <!-- Append new learnings below. Each entry is something lasting about the project. -->
+📌 Team update (2026-09-28T00:00:00Z): CI-as-code migration from Nuke to Fallout planned in issue #402 — decided by Morpheus. The `UnitTests` and `IntegrationTests` targets (invoked via `./build.sh unit-tests integration-tests`) will be impacted: the move to `Candoumbe.Pipelines 3.x` implies a .NET 10 SDK jump and a rewrite of the build entry points.

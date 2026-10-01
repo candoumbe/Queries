@@ -557,35 +557,25 @@ namespace Queries.Core.Renderers
         /// <returns></returns>
         /// <exception cref="ArgumentOutOfRangeException">The <paramref name="column"/>'s type is not supported</exception>
         protected virtual string RenderColumn(IColumn column, bool renderAlias)
-        {
-            string columnString;
-            switch (column)
+            => column switch
             {
-                case null:
-                    columnString = "NULL";
-                    break;
-                default:
-                    columnString = column.GetType().GetTypeInfo().GetCustomAttribute<FunctionAttribute>() is not null
-                        ? RenderFunction(column, renderAlias)
-                        : column switch
-                        {
-                            FieldColumn fieldColumn => !renderAlias || string.IsNullOrWhiteSpace(fieldColumn.Alias)
-                                ? EscapeName(Settings.FieldnameCasingStrategy.Handle(fieldColumn.Name))
-                                : RenderColumnNameWithAlias(EscapeName(Settings.FieldnameCasingStrategy.Handle(fieldColumn.Name)), EscapeName(fieldColumn.Alias)),
-                            Literal literalColumn => RenderLiteralColumn(literalColumn, renderAlias),
-                            SelectColumn selectColumn => RenderInlineSelect(selectColumn, renderAlias),
-                            UniqueIdentifierValue _ => RenderUUIDValue(),
-                            Variable variable => RenderVariable(variable, renderAlias),
-                            SelectQuery select => RenderInlineSelect(select, renderAlias),
-                            CasesColumn casesColumn => RenderCasesColumn(casesColumn, renderAlias),
-                            _ => throw new ArgumentOutOfRangeException(nameof(column), column, $"Unexpected {column?.GetType()} rendering as column")
-                        };
-
-                    break;
-            }
-
-            return columnString;
-        }
+                null => "NULL",
+                _ => column.GetType().GetTypeInfo().GetCustomAttribute<FunctionAttribute>() is not null
+                                        ? RenderFunction(column, renderAlias)
+                                        : column switch
+                                        {
+                                            FieldColumn fieldColumn => !renderAlias || string.IsNullOrWhiteSpace(fieldColumn.Alias)
+                                                ? EscapeName(Settings.FieldnameCasingStrategy.Handle(fieldColumn.Name))
+                                                : RenderColumnNameWithAlias(EscapeName(Settings.FieldnameCasingStrategy.Handle(fieldColumn.Name)), EscapeName(fieldColumn.Alias)),
+                                            Literal literalColumn => RenderLiteralColumn(literalColumn, renderAlias),
+                                            SelectColumn selectColumn => RenderInlineSelect(selectColumn, renderAlias),
+                                            UniqueIdentifierValue _ => RenderUUIDValue(),
+                                            Variable variable => RenderVariable(variable, renderAlias),
+                                            SelectQuery select => RenderInlineSelect(select, renderAlias),
+                                            CasesColumn casesColumn => RenderCasesColumn(casesColumn, renderAlias),
+                                            _ => throw new ArgumentOutOfRangeException(nameof(column), column, $"Unexpected {column?.GetType()} rendering as column")
+                                        },
+            };
 
         /// <summary>
         /// Renders <see cref="CasesColumn"/>.
