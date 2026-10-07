@@ -3,7 +3,7 @@
   "name": "Queries",
   "image": "mcr.microsoft.com/devcontainers/dotnet:9.0",
    "features": {
-    "ghcr.io/devcontainers/features/node:2.1.0": {
+    "ghcr.io/devcontainers/features/node:2.1.1": {
       "version": "24"
     },
     "ghcr.io/devcontainers-extra/features/gh-cli:1": {},
