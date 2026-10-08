@@ -51,7 +51,7 @@ public class SelectIntoQueryShould(PostgresDatabaseFixture fixture, ITestOutputH
     public async Task CreateCorrespondingRowsFromSelectQueryAsync()
     {
         // Arrange
-        BatchQuery batch = new BatchQuery([
+        BatchQuery batch = new([
             new NativeQuery($"CREATE TABLE {_tableName} (id uuid PRIMARY KEY, firstname VARCHAR(50) NOT NULL, lastname VARCHAR(50) NOT NULL, alias VARCHAR(50) NOT NULL)"),
             InsertInto(_tableName).Values(
                 "id".InsertValue(SelectColumn.UUID()),
