@@ -1,0 +1,42 @@
+[
+  {
+    "id": "2cac8d60-3384-4fbb-abd3-cd015d957508",
+    "class": "POLICY",
+    "loadGuidance": "ALWAYS",
+    "title": "Pending changes commit policy",
+    "path": ".squad/memory/policy-inbox/cyrille-ndoumbe-via-copilot-squad-pending-changes-commit-policy-2cac8d60.md",
+    "status": "active",
+    "createdAt": "2026-09-22T21:27:59.333Z",
+    "updatedAt": "2026-09-22T21:27:59.333Z"
+  },
+  {
+    "id": "8daa96ad-27de-4c1f-a4aa-2ad67820c30a",
+    "class": "POLICY",
+    "loadGuidance": "ALWAYS",
+    "title": "Changelog without semicolons",
+    "path": ".squad/memory/policy-inbox/user-changelog-without-semicolons-8daa96ad.md",
+    "status": "active",
+    "createdAt": "2026-10-01T11:16:29.002Z",
+    "updatedAt": "2026-10-01T11:16:29.002Z"
+  },
+  {
+    "id": "fda0001d-323e-4111-b8b4-2bef3db0c9c6",
+    "class": "POLICY",
+    "loadGuidance": "ALWAYS",
+    "title": "Atomic Conventional Commits",
+    "path": ".squad/memory/policy-inbox/user-atomic-conventional-commits-fda0001d.md",
+    "status": "active",
+    "createdAt": "2026-10-01T11:18:55.887Z",
+    "updatedAt": "2026-10-01T11:18:55.887Z"
+  },
+  {
+    "id": "ce408f6d-01c7-481d-a177-808c4a085336",
+    "class": "POLICY",
+    "loadGuidance": "ALWAYS",
+    "title": "Repository documents in English",
+    "path": ".squad/memory/policy-inbox/user-repository-documents-in-english-ce408f6d.md",
+    "status": "active",
+    "createdAt": "2026-10-01T11:20:51.992Z",
+    "updatedAt": "2026-10-01T11:20:51.992Z"
+  }
+]
