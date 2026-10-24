@@ -12,7 +12,7 @@
     "ghcr.io/devcontainers/features/copilot-cli:1.1.3": {},
     "ghcr.io/devcontainers/features/dotnet:2": {
       "tabCompletions": true,
-      "version": "10.0"
+      "version": "10.0.402"
     },
     "ghcr.io/nils-geistmann/devcontainers-features/zsh": {
       "plugins": "git npm gh docker"
