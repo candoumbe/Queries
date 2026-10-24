@@ -26,6 +26,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### 🧹 Housekeeping
 
+- Migrated the library, test projects, and build to .NET 10, and updated the repository SDK and dev container to .NET SDK 10.0.402.
+- Aligned the local .NET tool manifest and build configuration on Stryker.NET 5.0.0 ([#409](https://github.com/candoumbe/Queries/issues/409)).
+- Upgraded Candoumbe.Pipelines to 3.1.0 and migrated the build from Nuke to Fallout, regenerating the GitHub Actions workflows ([#402](https://github.com/candoumbe/Queries/issues/402)).
+- Documented how to run unit tests and how generated GitHub Actions workflows are maintained.
 - Updated `Candoumbe.Pipelines` to 0.7.0
 - Added unit tests for `SelectIntoQuery` class
 - Added documentation for `QueryWriter` class
