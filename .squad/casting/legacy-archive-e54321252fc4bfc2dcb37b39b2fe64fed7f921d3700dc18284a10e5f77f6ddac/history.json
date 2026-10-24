@@ -1,0 +1,22 @@
+{
+  "universe_usage_history": [
+    {
+      "universe": "The Matrix",
+      "assignment_id": "2026-07-14-medeasy-init",
+      "used_at": "2026-07-14T01:20:55+0000"
+    }
+  ],
+  "assignment_cast_snapshots": {
+    "2026-07-14-medeasy-init": {
+      "universe": "The Matrix",
+      "agents": {
+        "lead": "Neo",
+        "backend": "Trinity",
+        "frontend": "Switch",
+        "platform": "Morpheus",
+        "tester": "Dozer"
+      },
+      "created_at": "2026-07-14T01:20:55+0000"
+    }
+  }
+}

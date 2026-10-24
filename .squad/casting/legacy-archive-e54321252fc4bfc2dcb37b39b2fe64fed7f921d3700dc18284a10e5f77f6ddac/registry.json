@@ -1,0 +1,39 @@
+{
+  "agents": {
+    "lead": {
+      "persistent_name": "Neo",
+      "universe": "The Matrix",
+      "created_at": "2026-07-14T01:20:55+0000",
+      "legacy_named": false,
+      "status": "active"
+    },
+    "backend": {
+      "persistent_name": "Trinity",
+      "universe": "The Matrix",
+      "created_at": "2026-07-14T01:20:55+0000",
+      "legacy_named": false,
+      "status": "active"
+    },
+    "frontend": {
+      "persistent_name": "Switch",
+      "universe": "The Matrix",
+      "created_at": "2026-07-14T01:20:55+0000",
+      "legacy_named": false,
+      "status": "active"
+    },
+    "platform": {
+      "persistent_name": "Morpheus",
+      "universe": "The Matrix",
+      "created_at": "2026-07-14T01:20:55+0000",
+      "legacy_named": false,
+      "status": "active"
+    },
+    "tester": {
+      "persistent_name": "Dozer",
+      "universe": "The Matrix",
+      "created_at": "2026-07-14T01:20:55+0000",
+      "legacy_named": false,
+      "status": "active"
+    }
+  }
+}

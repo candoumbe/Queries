@@ -1,39 +1,59 @@
 {
+  "schema": "squad-agent-provenance/v1",
+  "schema_version": 1,
+  "revision": 1,
+  "generated_at": "2026-10-24T20:52:50.516Z",
   "agents": {
     "lead": {
       "persistent_name": "Neo",
       "universe": "The Matrix",
       "created_at": "2026-07-14T01:20:55+0000",
       "legacy_named": false,
-      "status": "active"
+      "status": "active",
+      "display_name": "Neo",
+      "role": "lead",
+      "updated_at": "2026-07-14T01:20:55+0000"
     },
     "backend": {
       "persistent_name": "Trinity",
       "universe": "The Matrix",
       "created_at": "2026-07-14T01:20:55+0000",
       "legacy_named": false,
-      "status": "active"
+      "status": "active",
+      "display_name": "Trinity",
+      "role": "backend",
+      "updated_at": "2026-07-14T01:20:55+0000"
     },
     "frontend": {
       "persistent_name": "Switch",
       "universe": "The Matrix",
       "created_at": "2026-07-14T01:20:55+0000",
       "legacy_named": false,
-      "status": "active"
+      "status": "active",
+      "display_name": "Switch",
+      "role": "frontend",
+      "updated_at": "2026-07-14T01:20:55+0000"
     },
     "platform": {
       "persistent_name": "Morpheus",
       "universe": "The Matrix",
       "created_at": "2026-07-14T01:20:55+0000",
       "legacy_named": false,
-      "status": "active"
+      "status": "active",
+      "display_name": "Morpheus",
+      "role": "platform",
+      "updated_at": "2026-07-14T01:20:55+0000"
     },
     "tester": {
       "persistent_name": "Dozer",
       "universe": "The Matrix",
       "created_at": "2026-07-14T01:20:55+0000",
       "legacy_named": false,
-      "status": "active"
+      "status": "active",
+      "display_name": "Dozer",
+      "role": "tester",
+      "updated_at": "2026-07-14T01:20:55+0000"
     }
-  }
+  },
+  "transaction_id": "97cd9192-9d41-46eb-97a1-b872cb44e080"
 }
