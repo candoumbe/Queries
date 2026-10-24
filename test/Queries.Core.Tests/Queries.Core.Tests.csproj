@@ -3,7 +3,7 @@
   <Import Project="..\..\test.props" />
   <PropertyGroup>
     <Description>Queries.Core.Tests Class Library</Description>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
   </PropertyGroup>
 
 
