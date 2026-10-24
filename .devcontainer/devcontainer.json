@@ -37,7 +37,11 @@
         "dotnet.defaultSolution": "Queries.sln",
         "chat.tools.compressOutput.enabled": true,
         "chat.tools.riskAssessment.enabled": true,
-        "chat.permissions.default": "autoApprove"
+        "chat.permissions.default": "autoApprove",
+        "chat.defaultConfiguration": {
+          "mode": "interactive",
+          "approvals": "assisted"
+        }
       }
     }
   },
