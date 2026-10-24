@@ -10,6 +10,19 @@ the developers managing and developing this open source project. In return,
 they should reciprocate that respect in addressing your issue or assessing
 patches and features.
 
+## Building and running unit tests
+
+Install the .NET SDK specified in `global.json`, then run:
+
+```bash
+./build.sh UnitTests
+```
+
+On Windows, use `.\build.cmd UnitTests`. The build uses Candoumbe.Pipelines 3.1
+and Fallout, runs the unit test projects, and generates their coverage report.
+GitHub Actions workflows are generated from the attributes in `build/Build.cs`;
+update those attributes rather than editing the generated workflows directly.
+
 
 ## Using the issue tracker
 
