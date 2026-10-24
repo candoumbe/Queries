@@ -5,10 +5,10 @@ using Candoumbe.Pipelines.Components;
 using Candoumbe.Pipelines.Components.GitHub;
 using Candoumbe.Pipelines.Components.NuGet;
 using Candoumbe.Pipelines.Components.Workflows;
-using Nuke.Common;
-using Nuke.Common.CI.GitHubActions;
-using Nuke.Common.IO;
-using Nuke.Common.ProjectModel;
+using Fallout.Common;
+using Fallout.Common.CI.GitHubActions;
+using Fallout.Common.IO;
+using Fallout.Common.ProjectModel;
 
 namespace Queries.ContinuousIntegration;
 
@@ -108,7 +108,7 @@ namespace Queries.ContinuousIntegration;
     PublishArtifacts = true
 )]
 
-public class Build : EnhancedNukeBuild,
+public class Build : EnhancedBuild,
     IHaveSourceDirectory,
     IHaveTestDirectory,
     IGitFlowWithPullRequest,

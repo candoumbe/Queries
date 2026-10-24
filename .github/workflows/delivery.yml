@@ -9,7 +9,7 @@
 #
 #     - To trigger manual generation invoke:
 #
-#         nuke --generate-configuration GitHubActions_delivery --host GitHubActions
+#         fallout --generate-configuration GitHubActions_delivery --host GitHubActions
 #
 # </auto-generated>
 # ------------------------------------------------------------------------------
@@ -22,25 +22,25 @@ on:
       - main
       - 'release/*'
   pull_request:
-    paths:
-      - '!docs/*'
-      - '!README.md'
-      - '!CHANGELOG.md'
-      - '!LICENSE'
+    paths-ignore:
+      - 'docs/*'
+      - 'README.md'
+      - 'CHANGELOG.md'
+      - LICENSE
 
 jobs:
   ubuntu-latest:
     name: ubuntu-latest
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
-      - name: 'Cache: .nuke/temp, ~/.nuget/packages'
+      - name: 'Cache: .fallout/temp, ~/.nuget/packages'
         uses: actions/cache@v4
         with:
           path: |
-            .nuke/temp
+            .fallout/temp
             ~/.nuget/packages
           key: ${{ runner.os }}-${{ hashFiles('global.json', 'src/**/*.csproj') }}
       - name: 'Run: UnitTests, Publish, AddGithubRelease'
@@ -50,42 +50,37 @@ jobs:
           CodecovToken: ${{ secrets.CODECOV_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: 'Publish: unit-tests'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: unit-tests
           path: output/artifacts/tests-results/unit-tests
       - name: 'Publish: unit-tests-coverage'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: unit-tests-coverage
           path: output/artifacts/reports/coverage-report/unit-tests-coverage
       - name: 'Publish: unit-tests-coverage-history'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: unit-tests-coverage-history
           path: output/artifacts/reports/coverage-history/unit-tests-coverage-history
       - name: 'Publish: integration-tests'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: integration-tests
           path: output/artifacts/tests-results/integration-tests
-      - name: 'Publish: mutation-tests'
-        uses: actions/upload-artifact@v4
-        with:
-          name: mutation-tests
-          path: output/artifacts/tests-results/mutation-tests
       - name: 'Publish: packages'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: packages
           path: output/artifacts/packages
       - name: 'Publish: integration-tests-coverage'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: integration-tests-coverage
           path: output/artifacts/reports/coverage-report/integration-tests-coverage
       - name: 'Publish: integration-tests-coverage-history'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: integration-tests-coverage-history
           path: output/artifacts/reports/coverage-history/integration-tests-coverage-history
